@@ -43,10 +43,10 @@ end
 
 instances = [Individual() for _ in 1:1223237]
 
-# Determine the number of threads to use for parallel execution
+# determine the number of threads to use for parallel execution
 threads = Threads.nthreads()
 
-# Split the instances into chunks for parallel processing
+# split the instances into chunks for parallel processing
 chunk_size = div(length(instances), threads)
 chunks = [instances[(i-1)*chunk_size+1:i*chunk_size] for i in 1:threads]
 if length(instances) % threads != 0
@@ -62,7 +62,7 @@ start = time()
   end
 end
 
-# cCollect and concatenate the processed chunks
+# collect and concatenate the processed chunks
 instances = vcat(chunks...)
 
 stop = time()
