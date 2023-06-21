@@ -1,7 +1,6 @@
-package test.individuals.update_previous_neighbor_data.java.non_optimized;
+package test.individuals.update_previous_neighbor_data.java.optimized;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import test.individuals.update_previous_neighbor_data.java.Individual;
@@ -19,22 +18,21 @@ public class Main {
 
     long start = System.currentTimeMillis();
 
-    Iterator<Individual> iterator = instances.iterator();
     Individual prevInstance = null;
-    Individual currentInstance = iterator.next();
-    Individual nextInstance = iterator.next();
+    Individual currentInstance = instances.get(0);
+    Individual nextInstance = instances.get(1);
 
-    while (iterator.hasNext()) {
+    for (int i = 1; i < instanceCount - 1; i++) {
       processWindow(prevInstance, currentInstance, nextInstance);
 
       prevInstance = currentInstance;
       currentInstance = nextInstance;
-      nextInstance = iterator.next();
+      nextInstance = instances.get(i + 1);
     }
 
     long end = System.currentTimeMillis();
-    System.out.println((end - start) / 1000.0); // avarage: 0.007 seconds
-    System.out.println(size); // avarge: 4892948 bytes - 4.8 mb
+    System.out.println((end - start) / 1000.0); // average: 0.01 seconds
+    System.out.println(size); // average: 4892948 bytes - 4.8 mb
   }
 
   static void processWindow(Individual prevInstance, Individual currentInstance, Individual nextInstance) {

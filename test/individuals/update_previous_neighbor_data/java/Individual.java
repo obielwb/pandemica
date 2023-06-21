@@ -1,6 +1,6 @@
-package test.individuals.update_previous_neighbor_data.java.non_optimized;
+package test.individuals.update_previous_neighbor_data.java;
 
-class Individual {
+public class Individual {
   private int data;
   private String riskProfile;
   private String interaction;
@@ -134,7 +134,7 @@ class Individual {
     setVoice(voice);
   }
 
-  void computeNeighbor(int neighborData) {
+  public void computeNeighbor(int neighborData) {
     if (neighborData == 0) {
       this.data = 1;
     } else {
