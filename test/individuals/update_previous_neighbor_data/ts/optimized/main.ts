@@ -1,58 +1,62 @@
 class Individual {
   data: number;
-  risk_profile: string;
+  riskProfile: string;
   interaction: string;
-  person_count: number;
-  symptoms_checked: string;
+  personCount: number;
+  symptomsChecked: string;
   setting: string;
   distance: string;
   duration: number;
-  their_mask: string;
-  your_mask: string;
+  theirMask: string;
+  yourMask: string;
   voice: string;
 
   constructor() {
     this.data = 0;
-    this.risk_profile = "riskprofile";
+    this.riskProfile = "risk_profile";
     this.interaction = "interaction";
-    this.person_count = 0;
-    this.symptoms_checked = "no";
+    this.personCount = 0;
+    this.symptomsChecked = "no";
     this.setting = "setting";
     this.distance = "distance";
     this.duration = 0;
-    this.their_mask = "their_mask";
-    this.your_mask = "your_mask";
+    this.theirMask = "their_mask";
+    this.yourMask = "your_mask";
     this.voice = "voice";
   }
 
   update(
     data: number,
-    risk_profile: string,
+    riskProfile: string,
     interaction: string,
-    person_count: number,
-    symptoms_checked: string,
+    personCount: number,
+    symptomsChecked: string,
     setting: string,
     distance: string,
     duration: number,
-    their_mask: string,
-    your_mask: string,
+    theirMask: string,
+    yourMask: string,
     voice: string
-  ) {
+  ): void {
     this.data = data;
-    this.risk_profile = risk_profile;
+    this.riskProfile = riskProfile;
     this.interaction = interaction;
-    this.person_count = person_count;
-    this.symptoms_checked = symptoms_checked;
+    this.personCount = personCount;
+    this.symptomsChecked = symptomsChecked;
     this.setting = setting;
     this.distance = distance;
     this.duration = duration;
-    this.their_mask = their_mask;
-    this.your_mask = your_mask;
+    this.theirMask = theirMask;
+    this.yourMask = yourMask;
     this.voice = voice;
   }
 
   computeNeighbor(neighborData: number): void {
-    this.data = neighborData === 0 ? 1 : 0;
+    if (neighborData === 0) {
+      this.data = 1;
+    } else {
+      this.data = 0;
+    }
   }
 }
 

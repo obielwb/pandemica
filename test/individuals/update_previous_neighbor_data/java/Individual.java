@@ -104,17 +104,14 @@ public class Individual {
   public Individual() {
     setData(0);
     setRiskProfile("riskprofile");
-    setRiskProfile("riskprofile");
     setInteraction("interaction");
     setPersonCount(0);
     setSymptomsChecked("no");
     setSetting("setting");
     setDistance("distance");
-    setDistance("distance");
     setDuration(0);
-    setTheirMask("theirmask");
-    setYourMask("yourmask");
-    setYourMask("yourmask");
+    setTheirMask("their_mask");
+    setYourMask("your_mask");
   }
 
   void update(int data, String riskProfile, String interaction, int personCount, String symptomsChecked, String setting,

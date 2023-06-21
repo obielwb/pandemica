@@ -2,34 +2,34 @@ using Distributed
 
 mutable struct Individual
   data::Int64
-  riskProfile::String
+  risk_profile::String
   interaction::String
-  personCount::Int64
-  symptomsChecked::String
+  person_count::Int64
+  symptoms_checked::String
   setting::String
   distance::String
   duration::Int64
-  theirMask::String
-  yourMask::String
+  their_mask::String
+  your_mask::String
   voice::String
 end
 
 function Individual()
-  return Individual(0, "riskprofile", "interaction", 0, "no", "setting", "distance", 0, "theirmask", "yourmask", "voice")
+  return Individual(0, "riskprofile", "interaction", 0, "no", "setting", "distance", 0, "their_mask", "your_mask", "voice")
 end
 
-function update!(individual::Individual, a, b, c, d, e, f, g, h, i, j)
-  individual.data += a
-  individual.riskProfile = b
-  individual.interaction = c
-  individual.personCount = d
-  individual.symptomsChecked = e
-  individual.setting = f
-  individual.distance = g
+function update!(individual::Individual, data, risk_profile, interaction, person_count, symptoms_checked, setting, distance, their_mask, your_mask, voice)
+  individual.data += data
+  individual.risk_profile = risk_profile
+  individual.interaction = interaction
+  individual.person_count = person_count
+  individual.symptoms_checked = symptoms_checked
+  individual.setting = setting
+  individual.distance = distance
   individual.duration = 0
-  individual.theirMask = h
-  individual.yourMask = i
-  individual.voice = j
+  individual.their_mask = their_mask
+  individual.your_mask = your_mask
+  individual.voice = voice
 end
 
 function compute_neighbor!(individual::Individual, neighbor_data)
