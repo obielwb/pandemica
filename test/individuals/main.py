@@ -39,7 +39,7 @@ class Individual:
   
 
 instances = [Individual() for _ in range(1223237)]
-size = sys.getsizeof(instances) # average: 10692984
+size = sys.getsizeof(instances) # average: 10692984 bytes - 10 mb
 
 # Create a sliding window of size 3 over the instances
 windows = itertools.islice(zip([None] + instances, instances, instances[1:] + [None]), 1, None)
