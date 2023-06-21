@@ -1,0 +1,13 @@
+{
+  "name": "@pandemica/test",
+  "private": "true",
+  "license": "mit",
+  "scripts": {
+    "optimized": "npx tsup ./optimized/main.ts && node ./dist/main.js",
+    "non-optimized": "npx tsup ./non_optimized/main.ts && node ./dist/main.js"
+  },
+  "devDependencies": {
+    "tsup": "^7.0.0",
+    "typescript": "^5.1.3"
+  }
+}
