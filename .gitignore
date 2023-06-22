@@ -1,3 +1,5 @@
-.exe
-.pdb
-.o
+*.exe
+*.pdb
+*.o
+node_modules
+dist
