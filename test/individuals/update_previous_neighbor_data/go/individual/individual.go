@@ -1,52 +1,52 @@
 package updatepreviousneighbordata
 
 type Individual struct {
-	data            int
-	riskProfile     string
-	interaction     string
-	personCount     int
-	symptomsChecked string
-	setting         string
-	distance        string
-	duration        int
-	theirMask       string
-	yourMask        string
-	voice           string
+	Data            int
+	RiskProfile     string
+	Interaction     string
+	PersonCount     int
+	SymptomsChecked string
+	Setting         string
+	Distance        string
+	Duration        int
+	TheirMask       string
+	YourMask        string
+	Voice           string
 }
 
 func NewIndividual() *Individual {
 	return &Individual{
-		data:            0,
-		riskProfile:     "riskprofile",
-		interaction:     "interaction",
-		personCount:     0,
-		symptomsChecked: "no",
-		setting:         "setting",
-		distance:        "distance",
-		duration:        0,
-		theirMask:       "their_mask",
-		yourMask:        "your_mask",
+		Data:            0,
+		RiskProfile:     "riskprofile",
+		Interaction:     "interaction",
+		PersonCount:     0,
+		SymptomsChecked: "no",
+		Setting:         "setting",
+		Distance:        "distance",
+		Duration:        0,
+		TheirMask:       "their_mask",
+		YourMask:        "your_mask",
 	}
 }
 
 func (i *Individual) Update(data int, riskProfile, interaction string, personCount int, symptomsChecked, setting, distance, theirMask, yourMask, voice string) {
-	i.data += data
-	i.riskProfile = riskProfile
-	i.interaction = interaction
-	i.personCount = personCount
-	i.symptomsChecked = symptomsChecked
-	i.setting = setting
-	i.distance = distance
-	i.duration = 0
-	i.theirMask = theirMask
-	i.yourMask = yourMask
-	i.voice = voice
+	i.Data += data
+	i.RiskProfile = riskProfile
+	i.Interaction = interaction
+	i.PersonCount = personCount
+	i.SymptomsChecked = symptomsChecked
+	i.Setting = setting
+	i.Distance = distance
+	i.Duration = 0
+	i.TheirMask = theirMask
+	i.YourMask = yourMask
+	i.Voice = voice
 }
 
 func (i *Individual) ComputeNeighbor(neighborData int) {
 	if neighborData == 0 {
-		i.data = 1
+		i.Data = 1
 	} else {
-		i.data = 0
+		i.Data = 0
 	}
 }
