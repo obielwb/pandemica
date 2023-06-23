@@ -2,11 +2,6 @@
   "name": "@pandemica/test",
   "private": "true",
   "license": "mit",
-  "scripts": {
-    "build-optimized": "npx tsup ./optimized/main.ts",
-    "build-unoptimized": "npx tsup ./unoptimized/main.ts",
-    "test": "node ./dist/main.js"
-  },
   "devDependencies": {
     "tsup": "^7.0.0",
     "typescript": "^5.1.3"
