@@ -82,6 +82,6 @@ const start = Date.now();
 
 processInstances(instances).then(() => {
   const end = Date.now();
-  console.log((end - start) / 1000); // average: 0.34 seconds
-  console.log(size);
+
+  console.log(`${size},${(end - start) / 1000}`);
 });

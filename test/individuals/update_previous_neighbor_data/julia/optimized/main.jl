@@ -1,4 +1,5 @@
 using Distributed
+using Printf
 
 mutable struct Individual
   data::Int64
@@ -66,8 +67,7 @@ end
 instances = vcat(chunks...)
 
 stop = time()
-println(stop - start) # average: 0.06 seconds
 
 size = sizeof(instances)
 
-println(size) # average: 9785896 bytes - 9.7 mb
+@printf("%d,%f", size, stop - start)

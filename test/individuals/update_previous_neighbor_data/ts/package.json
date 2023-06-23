@@ -3,8 +3,9 @@
   "private": "true",
   "license": "mit",
   "scripts": {
-    "optimized": "npx tsup ./optimized/main.ts && node ./dist/main.js",
-    "non-optimized": "npx tsup ./non_optimized/main.ts && node ./dist/main.js"
+    "build_optimized": "npx tsup ./optimized/main.ts",
+    "build_non_optimized": "npx tsup ./non_optimized/main.ts",
+    "test": "node ./dist/main.js"
   },
   "devDependencies": {
     "tsup": "^7.0.0",

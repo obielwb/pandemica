@@ -1,5 +1,6 @@
 *.exe
 *.pdb
 *.o
+*.class
 node_modules
 dist

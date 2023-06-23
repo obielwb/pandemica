@@ -54,6 +54,5 @@ for prev_instance, current_instance, next_instance in windows:
         prev_instance.data if prev_instance else 0)
 
 end = time.time()
-print(end - start)  # average: 0.22 seconds
 
-print(size)
+print(f"{size},{end - start}")

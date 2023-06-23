@@ -82,5 +82,5 @@ for (let i = 0; i < instances.length; i++) {
 }
 
 const end = Date.now();
-console.log((end - start) / 1000); // average: 0.22 seconds
-console.log(size);
+
+console.log(`${size},${(end - start) / 1000}`);

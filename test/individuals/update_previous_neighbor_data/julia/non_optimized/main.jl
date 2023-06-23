@@ -1,3 +1,5 @@
+using Printf
+
 mutable struct Individual
   data::Int64
   risk_profile::String
@@ -52,6 +54,4 @@ for window in windows
 end
 
 stop = time()
-println(stop - start) # average: 0.23 seconds
-
-println(size) # average: 9785896 bytes - 9.7 mb
+@printf("%d,%f", size, stop - start)
