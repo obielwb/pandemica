@@ -69,9 +69,7 @@ int main()
   time_point end = high_resolution_clock::now();
   seconds duration = duration_cast<seconds>(end - start);
 
-  cout << duration.count() << " seconds" << endl; // average: 0.012 seconds
-
-  cout << size << endl;
+  cout << size << "," << duration.count() << endl;
 
   return 0;
 }
