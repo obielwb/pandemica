@@ -72,7 +72,5 @@ fn main() {
     let end = Instant::now();
     let duration = end - start;
 
-    println!("{} seconds", duration.as_secs_f64()); // average: 0.023 seconds
-
-    println!("{}", size);
+    println!("{},{}", size, duration.as_secs_f64());
 }
