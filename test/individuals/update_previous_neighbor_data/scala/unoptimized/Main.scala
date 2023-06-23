@@ -1,4 +1,4 @@
-package test.individuals.update_previous_neighbor_data.scala.non_optimized
+package test.individuals.update_previous_neighbor_data.scala.unoptimized
 
 import scala.collection.mutable.ListBuffer
 
