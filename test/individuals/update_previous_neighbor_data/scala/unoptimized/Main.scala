@@ -139,8 +139,8 @@ object Main {
     }
 
     val end = System.currentTimeMillis()
-    println((end - start) / 1000.0) // avarage: 0.01 seconds
-    println(size) // 4892948 bytes - 4.9 mb
+    val runtime = (end - start) / 1000.0
+    println(s"$size,$runtime")
   }
 
   def processWindow(prevInstance: Individual, currentInstance: Individual, nextInstance: Individual): Unit = {
