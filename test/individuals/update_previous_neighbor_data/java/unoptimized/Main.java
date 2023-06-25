@@ -171,8 +171,7 @@ public class Main {
     }
 
     long end = System.currentTimeMillis();
-    System.out.println((end - start) / 1000.0); // avarage: 0.007 seconds
-    System.out.println(size); // avarge: 4892948 bytes - 4.8 mb
+    System.out.println("%d,%f".formatted(size, (end - start) / 1000.0));
   }
 
   static void processWindow(Individual prevInstance, Individual currentInstance, Individual nextInstance) {
