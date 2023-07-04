@@ -1,4 +1,4 @@
-package test.individuals.city_behavior.java;
+package test.individuals.city_behavior.java.rtree;
 
 public class Individual {
   private int age;
