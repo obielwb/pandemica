@@ -1,4 +1,4 @@
-package test.individuals.city_behavior.java.phtree;
+package test.individuals.city_behavior.search.java.phtree;
 
 public import rx.Observable;
 

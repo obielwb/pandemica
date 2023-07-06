@@ -1,3 +1,4 @@
+package test.individuals.city_behavior.search.java.phtree;
 import ch.ethz.globis.phtree.*;
 import ch.ethz.globis.phtree.util.PhTreeStats;
 

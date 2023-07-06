@@ -1,4 +1,4 @@
-package test.individuals.city_behavior.java.rtree;
+package test.individuals.city_behavior.search.java.rtree;
 
 
 import com.github.davidmoten.rtree.RTree;

@@ -1,4 +1,4 @@
-package test.individuals.city_behavior.java.rtree;
+package test.individuals.city_behavior.search.java.rtree;
 import rx.Observable;
 
 import java.util.ArrayList;
