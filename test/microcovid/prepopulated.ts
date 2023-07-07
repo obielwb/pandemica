@@ -25,18 +25,18 @@ export const prepopulated: {
   [key: string]: PartialData;
 } = {
   outdoorMasked2: {
-    riskProfile: "average",
+    riskProfile: "average", // individuo
     interaction: "oneTime",
     personCount: 2,
-    symptomsChecked: "no",
+    symptomsChecked: "no", // individuo / vizinho
 
-    setting: "outdoor",
-    distance: "normal",
-    duration: 60,
-    theirMask: "basic",
-    yourMask: "basic",
-    voice: "normal",
-    theirVaccine: "undefined",
+    setting: "outdoor", // ambiente
+    distance: "normal", // ambiente
+    duration: 60, // ambiente
+    theirMask: "basic", // informação do vizinho
+    yourMask: "basic", // informação do indivíduo
+    voice: "normal", // ambiente
+    theirVaccine: "undefined", // vizinho
     scenarioName: "outdoorMasked2",
   },
 
