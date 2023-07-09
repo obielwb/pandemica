@@ -117,22 +117,94 @@ export interface Activity {
   // Activity Risk
   setting: string;
   distance: string;
-  duration: number;
+  duration?: number; // minutes
   voice: string;
 
   // Activity Setting
-  coordinate: {
-    x: number;
-    y: number;
-  };
+  // coordinate: {
+  //   x: number;
+  //   y: number;
+  // };
 }
 
-export const Activities: { [key: string]: Activity } = {
-  test: {
+export const activities: { [key: string]: Activity } = {
+  shopping: {
+    setting: "indoor",
+    distance: "sixFt",
+    duration: 60,
+    voice: "silent",
+  },
+  restaurantOutdoors: {
+    setting: "outdoor",
+    distance: "sixFt",
+    duration: 90,
+    voice: "normal",
+  },
+  restaurantIndoors: {
+    setting: "outdoor",
+    distance: "sixFt",
+    duration: 90,
+    voice: "normal",
+  },
+  bar: {
+    setting: "indoor",
+    distance: "sixFt",
+    duration: 120,
+    voice: "loud",
+  },
+  outdoorParty: {
     setting: "outdoor",
     distance: "normal",
-    duration: 60,
+    duration: 180,
+    voice: "loud",
+  },
+  indoorParty: {
+    setting: "indoor",
+    distance: "normal",
+    duration: 180,
     voice: "normal",
-    coordinate: { x: 0, y: 0 },
+  },
+  house: {
+    setting: "indoor",
+    distance: "intimate",
+    duration: 600,
+    voice: "normal",
+  },
+  school: {
+    setting: "indoor",
+    distance: "normal",
+    duration: 480, // 8 hours
+    voice: "normal",
+  },
+  hospital: {
+    setting: "indoor",
+    distance: "sixFt",
+    voice: "normal",
+  },
+  publicTransportStation: {
+    setting: "outdoor",
+    distance: "normal",
+    voice: "normal",
+    duration: 60,
+  },
+  publicTransportStationCrowded: {
+    setting: "outdoor",
+    distance: "close",
+    voice: "normal",
+    duration: 60,
+  },
+  parks: {
+    setting: "outdoor",
+    distance: "tenFt",
+    voice: "silent",
+    duration: 90,
   },
 };
+
+/*
+Questões em aberto:
+  - fazer a linha de produção
+  - coordenadas
+  - duração
+  - symptoms checked - hospital capacity
+*/
