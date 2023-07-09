@@ -112,6 +112,12 @@ export const eightyToEightyfourHabitants = {
   male: 4094,
 };
 
+// IBGE 2022
+export const car = 623743;
+export const motorcycle = 130933;
+export const bus = 5418;
+export const uttility = 13218;
+
 // Activity + person + neighbor +x
 export interface Activity {
   // Activity Risk
