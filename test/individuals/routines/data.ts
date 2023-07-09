@@ -118,7 +118,17 @@ export const motorcycle = 130933;
 export const bus = 5418;
 export const uttility = 13218;
 
-// Activity + person + neighbor +x
+// IBGE 2010 - Habitantes pro faixa de renda
+export const zeroToHalfBasicSalary = 10400;
+export const halfToOneBasicSalary = 98800;
+export const oneToTwoBasicSalary = 225500;
+export const twoToThreeBasicSalary = 98600;
+export const threeToFiveBasicSalary = 89300;
+export const fiveToTenBasicSalary = 72300;
+export const tenToFifteenBasicSalary = 15700;
+export const fifteenToTwentyBasicSalary = 13400;
+export const twentyOrMoreBasicSalary = 10400;
+export const withoutSalary = 316000;
 export interface Activity {
   // Activity Risk
   setting: string;
