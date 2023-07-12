@@ -18,7 +18,6 @@ program UpdatePreviousNeighborData
   ! Declare variables
   integer :: i
   integer, parameter :: n_instances = 1223237
-  integer :: size
   type(Individual), allocatable :: instances(:)
   type(Individual), dimension(3) :: window
   integer :: prev_instance_data
@@ -54,8 +53,7 @@ program UpdatePreviousNeighborData
 
   end_time = second()
 
-  ! Print size
-  write(*, '(I0,A,F6.4)', advance="no") size, ",", end_time - start_time
+  write(*, '(I0,A,F6.4)', advance="no") size(instances), ",", end_time - start_time
 
 contains
 
