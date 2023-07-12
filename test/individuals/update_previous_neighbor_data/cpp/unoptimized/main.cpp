@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
+#include <iomanip>
 
 using namespace std;
 using namespace chrono;
@@ -67,9 +68,9 @@ int main()
   }
 
   time_point end = high_resolution_clock::now();
-  seconds duration = duration_cast<seconds>(end - start);
+  milliseconds duration = duration_cast<milliseconds>(end - start);
 
-  cout << size << "," << duration.count() << endl;
+  cout << size << "," << std::fixed << std::setprecision(3) << (float)(duration.count() / 1000.0) << endl;
 
   return 0;
 }
