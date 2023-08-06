@@ -118,7 +118,7 @@ export const motorcycle = 130933;
 export const bus = 5418;
 export const uttility = 13218;
 
-// IBGE 2010 - Habitantes pro faixa de renda
+// IBGE 2010 - Habitantes por faixa de renda
 export const zeroToHalfBasicSalary = 10400;
 export const halfToOneBasicSalary = 98800;
 export const oneToTwoBasicSalary = 225500;
@@ -129,6 +129,19 @@ export const tenToFifteenBasicSalary = 15700;
 export const fifteenToTwentyBasicSalary = 13400;
 export const twentyOrMoreBasicSalary = 10400;
 export const withoutSalary = 316000;
+
+// IBGE 2010 - Frequência em escola ou crechê
+export const attendSchools = 324646;
+export const ageZeroToThree = 21685;
+export const ageFourToFive = 21201;
+export const ageSix = 12535;
+export const ageSevenToFourteen = 113766;
+export const ageFifteenToSeventeen = 41497;
+export const ageEighteenToNineteen = 15200;
+export const ageTwentyToTwentyFour = 29289;
+export const ageTwentyfiveOrMore = 69474;
+export const alreadyAttended = 687104;
+export const neverAttended = 68363;
 export interface Activity {
   // Activity Risk
   setting: string;
