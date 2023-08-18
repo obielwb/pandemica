@@ -1,3 +1,5 @@
+// todo: normalize data
+
 /*
  * generate random age
  * generate random sex
@@ -15,7 +17,7 @@
  * for simplicity, the population does not have a growth rate
  */
 
-// Relatório de Informações Sociais 2016
+// 2016 social information report
 export const totalPopulation = 1138309
 export const eastPopulation = 248939
 export const northwestPopulation = 133086
@@ -26,7 +28,7 @@ export const southPopulation = 316671
 export const malePercentage = 51.78
 export const femalePercentage = 48.22
 
-// IBGE 2010
+// 2010 ibge
 export const zeroToFourHabitants = {
   female: 31330,
   male: 32541
@@ -118,7 +120,7 @@ export const motorcycle = 130933
 export const bus = 5418
 export const uttility = 13218
 
-// IBGE 2010 - Habitantes por faixa de renda
+// 2010 ibge - habitants by income
 export const zeroToHalfBasicSalary = 10400
 export const halfToOneBasicSalary = 98800
 export const oneToTwoBasicSalary = 225500
@@ -130,7 +132,7 @@ export const fifteenToTwentyBasicSalary = 13400
 export const twentyOrMoreBasicSalary = 10400
 export const withoutSalary = 316000
 
-// IBGE 2010 - Frequência em escola ou crechê
+// 2010 ibge - preschool and school attendants
 export const attendSchools = 324646
 export const ageZeroToThree = 21685
 export const ageFourToFive = 21201
