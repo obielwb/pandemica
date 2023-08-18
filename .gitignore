@@ -1,8 +1,10 @@
-*.exe
-*.pdb
-*.o
 *.class
-node_modules
-dist
-.venv
+*.exe
+*.o
+*.pdb
+
 .DS_Store
+
+/dist
+/node_modules
+/.venv
