@@ -1,30 +1,35 @@
 import { calculateActivityRisk, CalculatorData } from './calculate'
+import { totalPopulation } from '../individuals/routines/data'
 
-const data: CalculatorData = {
+const test_data: CalculatorData = {
   riskBudget: 0,
   useManualEntry: 0,
   topLocation: '',
   subLocation: '',
   subSubLocation: null,
-  population: '',
-  casesPastWeek: 0,
+  population: totalPopulation.toString(),
+  casesPastWeek: 1918,
   casesIncreasingPercentage: 0,
-  positiveCasePercentage: null,
-  prevalanceDataDate: undefined,
-  percentFullyVaccinated: null,
-  unvaccinatedPrevalenceRatio: null,
+  positiveCasePercentage: 2,
+  prevalanceDataDate: new Date(),
+  percentFullyVaccinated: 0,
+  unvaccinatedPrevalenceRatio: 100,
   averageFullyVaccinatedMultiplier: null,
-  riskProfile: '',
-  interaction: '',
-  personCount: 0,
+  riskProfile: 'average',
+  interaction: 'repeated',
+  personCount: 2,
   symptomsChecked: '',
-  setting: '',
-  distance: '',
-  duration: 0,
-  theirMask: '',
-  yourMask: '',
-  voice: '',
+  setting: 'indoor',
+  distance: 'normal',
+  duration: 60,
+  theirMask: 'none',
+  yourMask: 'none',
+  voice: 'normal',
   yourVaccineType: '',
   yourVaccineDoses: 0,
-  theirVaccine: ''
+  theirVaccine: 'undefined'
 }
+
+const result = calculateActivityRisk(test_data)
+
+console.log(result)

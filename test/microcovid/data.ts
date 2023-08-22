@@ -43,27 +43,19 @@ export const partnerMult = 0.6 // partner = dorme na mesma cama
 // oneTime multiplier parece valer por 1 hora
 export const Interaction: { [key: string]: FormValue } = {
   oneTime: {
-    label: i18n.t('data.oneTime', {
-      percentage: formatPercent(oneTimeMult, { decimalPointsToShow: 2 })
-    }),
+    label: formatPercent(oneTimeMult, { decimalPointsToShow: 2 }),
     multiplier: oneTimeMult
   },
   workplace: {
-    label: i18n.t('data.workplace', {
-      percentage: formatPercent(oneTimeMult)
-    }),
+    label: formatPercent(oneTimeMult),
     multiplier: oneTimeMult
   },
   partner: {
-    label: i18n.t('data.partner', {
-      percentage: formatPercent(partnerMult)
-    }),
+    label: formatPercent(partnerMult),
     multiplier: partnerMult
   },
   repeated: {
-    label: i18n.t('data.repeated', {
-      percentage: formatPercent(housemateMult)
-    }),
+    label: formatPercent(housemateMult),
     multiplier: housemateMult
   }
 }
@@ -73,14 +65,14 @@ export const Interaction: { [key: string]: FormValue } = {
  * filtered = ?
  */
 export const Setting: { [key: string]: FormValue } = {
-  indoor: { label: i18n.t('data.indoor'), multiplier: 1 },
-  outdoor: { label: i18n.t('data.outdoor'), multiplier: 0.05 },
-  filtered: { label: i18n.t('data.filtered'), multiplier: 0.25 },
-  transit: { label: i18n.t('data.transit'), multiplier: 0.25 },
-  plane: { label: i18n.t('data.plane'), multiplier: 1 / 6 },
-  carWindowsDown: { label: i18n.t('data.car_windows_down'), multiplier: 0.25 },
+  indoor: { label: 'data.indoor', multiplier: 1 },
+  outdoor: { label: 'data.outdoor', multiplier: 0.05 },
+  filtered: { label: 'data.filtered', multiplier: 0.25 },
+  transit: { label: 'data.transit', multiplier: 0.25 },
+  plane: { label: 'data.plane', multiplier: 1 / 6 },
+  carWindowsDown: { label: 'data.car_windows_down', multiplier: 0.25 },
   partiallyEnclosed: {
-    label: i18n.t('data.partially_enclosed'),
+    label: 'data.partially_enclosed',
     multiplier: 0.25
   }
 }
@@ -88,33 +80,33 @@ export const Setting: { [key: string]: FormValue } = {
 export const intimateDurationFloor = 20 // duração de atividades íntimas, como beijo
 
 export const Distance: { [key: string]: FormValue } = {
-  intimate: formValue(i18n.t('data.intimate_distance'), 5),
-  close: formValue(i18n.t('data.close_distance'), 2),
-  normal: formValue(i18n.t('data.normal_distance'), 1),
-  sixFt: formValue(i18n.t('data.sixft_distance'), 0.5),
-  tenFt: formValue(i18n.t('data.tenft_distance'), 0.25)
+  intimate: formValue('data.intimate_distance', 5),
+  close: formValue('data.close_distance', 2),
+  normal: formValue('data.normal_distance', 1),
+  sixFt: formValue('data.sixft_distance', 0.5),
+  tenFt: formValue('data.tenft_distance', 0.25)
 }
 
 // label para diferentes tipos de máscaras
-const noneLabel = i18n.t('data.no_mask_short')
-const thinLabel = i18n.t('data.thin_mask_short')
-const basicLabel = i18n.t('data.basic_mask_short')
-const surgicalLabel = i18n.t('data.surgical_mask_short')
-const filteredLabel = i18n.t('data.filtered_mask_short')
-const n95Label = i18n.t('data.n95_mask_short')
-const n95SealedLabel = i18n.t('data.n95_sealed_mask_short')
-const p100Label = i18n.t('data.p100_mask_short')
+const noneLabel = 'data.no_mask_short'
+const thinLabel = 'data.thin_mask_short'
+const basicLabel = 'data.basic_mask_short'
+const surgicalLabel = 'data.surgical_mask_short'
+const filteredLabel = 'data.filtered_mask_short'
+const n95Label = 'data.n95_mask_short'
+const n95SealedLabel = 'data.n95_sealed_mask_short'
+const p100Label = 'data.p100_mask_short'
 
 // descrição para diferentesa tipos de máscaras
-const noneDesc = i18n.t('data.no_mask')
-const thinDesc = i18n.t('data.thin_mask')
-const basicDesc = i18n.t('data.basic_mask')
-const surgicalDesc = i18n.t('data.surgical_mask')
-const filteredDesc = i18n.t('data.filtered_mask')
-const n95Desc = i18n.t('data.n95_mask')
-const n95SealedDesc = i18n.t('data.n95_sealed_mask')
-const p100DescTheirs = i18n.t('data.p100_mask_theirs')
-const p100DescYours = i18n.t('data.p100_mask_yours')
+const noneDesc = 'data.no_mask'
+const thinDesc = 'data.thin_mask'
+const basicDesc = 'data.basic_mask'
+const surgicalDesc = 'data.surgical_mask'
+const filteredDesc = 'data.filtered_mask'
+const n95Desc = 'data.n95_mask'
+const n95SealedDesc = 'data.n95_sealed_mask'
+const p100DescTheirs = 'data.p100_mask_theirs'
+const p100DescYours = 'data.p100_mask_yours'
 
 export const TheirMask: { [key: string]: CheckBoxFormValue } = {
   none: segmentedFormValue(noneLabel, noneDesc, 1.0),
@@ -140,18 +132,18 @@ export const YourMask: { [key: string]: CheckBoxFormValue } = {
 
 export const Voice: { [key: string]: FormValue } = {
   silent: {
-    label: i18n.t('data.silent_voice'),
-    label_short: i18n.t('data.silent_voice_short'),
+    label: 'data.silent_voice',
+    label_short: 'data.silent_voice_short',
     multiplier: 0.2
   },
   normal: {
-    label: i18n.t('data.normal_voice'),
-    label_short: i18n.t('data.normal_voice_short'),
+    label: 'data.normal_voice',
+    label_short: 'data.normal_voice_short',
     multiplier: 1
   },
   loud: {
-    label: i18n.t('data.loud_voice'),
-    label_short: i18n.t('data.loud_voice_short'),
+    label: 'data.loud_voice',
+    label_short: 'data.loud_voice_short',
     multiplier: 5
   }
 }
