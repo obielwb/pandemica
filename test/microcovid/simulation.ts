@@ -1,0 +1,30 @@
+import { calculateActivityRisk, CalculatorData } from './calculate'
+
+const data: CalculatorData = {
+  riskBudget: 0,
+  useManualEntry: 0,
+  topLocation: '',
+  subLocation: '',
+  subSubLocation: null,
+  population: '',
+  casesPastWeek: 0,
+  casesIncreasingPercentage: 0,
+  positiveCasePercentage: null,
+  prevalanceDataDate: undefined,
+  percentFullyVaccinated: null,
+  unvaccinatedPrevalenceRatio: null,
+  averageFullyVaccinatedMultiplier: null,
+  riskProfile: '',
+  interaction: '',
+  personCount: 0,
+  symptomsChecked: '',
+  setting: '',
+  distance: '',
+  duration: 0,
+  theirMask: '',
+  yourMask: '',
+  voice: '',
+  yourVaccineType: '',
+  yourVaccineDoses: 0,
+  theirVaccine: ''
+}
