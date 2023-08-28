@@ -1,3 +1,7 @@
+import fs from 'fs'
+import { parse } from 'csv-parse'
+import * as path from 'path'
+
 import { calculateActivityRisk, CalculatorData } from './calculate'
 import { totalPopulation } from '../individuals/routines/data'
 
@@ -30,6 +34,56 @@ const test_data: CalculatorData = {
   theirVaccine: 'undefined'
 }
 
-const result = calculateActivityRisk(test_data)
+type CampinasCases = {
+  epi_week: number
+  date: string
+  state: string
+  city: string
+  ibgeID: string
+  newDeaths: number
+  deaths: number
+  newCases: number
+  totalCases: number
+  deaths_per_100k_inhabitants: number
+  totalCases_per_100k_inhabitants: number
+  deaths_by_totalCases: number
+}
 
-console.log(result)
+let campinasCasesData: CampinasCases[] = []
+
+async function readData() {
+  const csvFilePath = path.resolve(__dirname, './data/campinas_2020_21_cases.csv')
+  const headers = [
+    'epi_week',
+    'date',
+    'state',
+    'city',
+    'ibgeID',
+    'newDeaths',
+    'deaths',
+    'newCases',
+    'totalCases',
+    'deaths_per_100k_inhabitants',
+    'totalCases_per_100k_inhabitants',
+    'deaths_by_totalCases'
+  ]
+
+  const data = fs.readFileSync(csvFilePath, { encoding: 'utf-8' })
+
+  parse(
+    data,
+    {
+      delimiter: ',',
+      columns: headers
+    },
+    (error, result: CampinasCases[]) => {
+      if (error) {
+        console.error(error)
+      }
+
+      campinasCasesData = result
+    }
+  )
+}
+
+readData()
