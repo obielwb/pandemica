@@ -6,7 +6,7 @@ import { calculateActivityRisk, CalculatorData } from './calculate'
 import { totalPopulation } from '../individuals/routines/data'
 
 const test_data: CalculatorData = {
-  riskBudget: 0,
+  riskBudget: 10000,
   useManualEntry: 0,
   topLocation: '',
   subLocation: '',
@@ -86,4 +86,4 @@ async function readData() {
   )
 }
 
-readData()
+console.log(calculateActivityRisk(test_data))

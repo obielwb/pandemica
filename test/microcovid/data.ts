@@ -157,26 +157,26 @@ export const BUDGET_ONE_TENTH_PERCENT = 1000
 export const budgetOptions: { [key: string]: CheckBoxFormValue } = {}
 
 budgetOptions[BUDGET_ONE_TENTH_PERCENT.toString()] = {
-  label: i18n.t('calculator.risk_tolerance_point1_percent_label'),
-  sublabel: i18n.t('calculator.risk_tolerance_point1_percent_explanation'),
+  label: 'calculator.risk_tolerance_point1_percent_label',
+  sublabel: 'calculator.risk_tolerance_point1_percent_explanation',
   multiplier: 0.1
 }
 
 budgetOptions[BUDGET_ONE_PERCENT.toString()] = {
-  label: i18n.t('calculator.risk_tolerance_1_percent_label'),
-  sublabel: i18n.t('calculator.risk_tolerance_1_percent_explanation'),
+  label: 'calculator.risk_tolerance_1_percent_label',
+  sublabel: 'calculator.risk_tolerance_1_percent_explanation',
   multiplier: 1
 }
 
 budgetOptions[BUDGET_THREE_PERCENT.toString()] = {
-  label: i18n.t('calculator.risk_tolerance_3_percent_label'),
-  sublabel: i18n.t('calculator.risk_tolerance_3_percent_explanation'),
+  label: 'calculator.risk_tolerance_3_percent_label',
+  sublabel: 'calculator.risk_tolerance_3_percent_explanation',
   multiplier: 3
 }
 
 budgetOptions[BUDGET_TEN_PERCENT.toString()] = {
-  label: i18n.t('calculator.risk_tolerance_10_percent_label'),
-  sublabel: i18n.t('calculator.risk_tolerance_10_percent_explanation'),
+  label: 'calculator.risk_tolerance_10_percent_label',
+  sublabel: 'calculator.risk_tolerance_10_percent_explanation',
   multiplier: 10
 }
 
@@ -231,18 +231,18 @@ const noContacts = {
 // diferentes perfis de risco
 export const RiskProfile: { [key: string]: PersonRiskValue } = {
   average: {
-    label: i18n.t('data.person.average'),
+    label: 'data.person.average',
     personalMultiplier: 1.0,
     ...noContacts
   },
   livingAlone: {
-    label: i18n.t('data.person.livingAlone'),
+    label: 'data.person.livingAlone',
     personalMultiplier: livingAloneMult,
     ...noContacts
   },
 
   livingWithPartner: {
-    label: i18n.t('data.person.livingWithPartner'),
+    label: 'data.person.livingWithPartner',
     personalMultiplier: livingAloneMult,
     numHousemates: 1,
     numOtherTraceableContacts: 0,
@@ -250,7 +250,7 @@ export const RiskProfile: { [key: string]: PersonRiskValue } = {
   },
 
   closedPod4: {
-    label: i18n.t('data.person.closedPod4'),
+    label: 'data.person.closedPod4',
     personalMultiplier: livingAloneMult,
     numHousemates: 3,
     numOtherTraceableContacts: 0,
@@ -258,7 +258,7 @@ export const RiskProfile: { [key: string]: PersonRiskValue } = {
   },
 
   closedPod10: {
-    label: i18n.t('data.person.closedPod10'),
+    label: 'data.person.closedPod10',
     personalMultiplier: livingAloneMult,
     numHousemates: 9,
     numOtherTraceableContacts: 0,
@@ -266,7 +266,7 @@ export const RiskProfile: { [key: string]: PersonRiskValue } = {
   },
 
   closedPod20: {
-    label: i18n.t('data.person.closedPod20'),
+    label: 'data.person.closedPod20',
     personalMultiplier: livingAloneMult,
     numHousemates: 19,
     numOtherTraceableContacts: 0,
@@ -274,7 +274,7 @@ export const RiskProfile: { [key: string]: PersonRiskValue } = {
   },
 
   contact1: {
-    label: i18n.t('data.person.contact1'),
+    label: 'data.person.contact1',
     personalMultiplier: livingAloneMult,
     numHousemates: 0,
     numOtherTraceableContacts: 1,
@@ -282,7 +282,7 @@ export const RiskProfile: { [key: string]: PersonRiskValue } = {
   },
 
   contact4: {
-    label: i18n.t('data.person.contact4'),
+    label: 'data.person.contact4',
     personalMultiplier: livingAloneMult,
     numHousemates: 0,
     numOtherTraceableContacts: 3,
@@ -290,7 +290,7 @@ export const RiskProfile: { [key: string]: PersonRiskValue } = {
   },
 
   contact10: {
-    label: i18n.t('data.person.contact10'),
+    label: 'data.person.contact10',
     personalMultiplier: livingAloneMult,
     numHousemates: 0,
     numOtherTraceableContacts: 9,
@@ -298,7 +298,7 @@ export const RiskProfile: { [key: string]: PersonRiskValue } = {
   },
 
   contactWorks: {
-    label: i18n.t('data.person.contactWorks'),
+    label: 'data.person.contactWorks',
     personalMultiplier: livingAloneMult,
     numHousemates: 0,
     numOtherTraceableContacts: 1,
@@ -306,7 +306,7 @@ export const RiskProfile: { [key: string]: PersonRiskValue } = {
   },
 
   bars: {
-    label: i18n.t('data.person.bars'),
+    label: 'data.person.bars',
     /*
      * Six hours of indoor exposure to a dozen people (2 near you, 10 six feet away)
      * who are not wearing masks and are talking loudly.
@@ -330,7 +330,7 @@ export const RiskProfilesUnaffectedByVaccines: {
 }
 
 RiskProfile[RiskProfilesUnaffectedByVaccines.ONE_PERCENT] = {
-  label: i18n.t('data.person.microcovid_budget_one_percent'),
+  label: 'data.person.microcovid_budget_one_percent',
   personalMultiplier: NaN,
   numHousemates: NaN,
   numOtherTraceableContacts: NaN,
@@ -338,7 +338,7 @@ RiskProfile[RiskProfilesUnaffectedByVaccines.ONE_PERCENT] = {
 }
 
 RiskProfile[RiskProfilesUnaffectedByVaccines.DECI_PERCENT] = {
-  label: i18n.t('data.person.microcovid_budget_deci_percent'),
+  label: 'data.person.microcovid_budget_deci_percent',
   personalMultiplier: NaN,
   numHousemates: NaN,
   numOtherTraceableContacts: NaN,
@@ -346,7 +346,7 @@ RiskProfile[RiskProfilesUnaffectedByVaccines.DECI_PERCENT] = {
 }
 
 RiskProfile[RiskProfilesUnaffectedByVaccines.HAS_COVID] = {
-  label: i18n.t('data.person.hasCovid'),
+  label: 'data.person.hasCovid',
   personalMultiplier: NaN,
   numHousemates: NaN,
   numOtherTraceableContacts: NaN,
@@ -360,45 +360,45 @@ export interface VaccineValue {
 
 export const Vaccines: { [key: string]: VaccineValue } = {
   pfizer: {
-    label: i18n.t('data.vaccine.pfizer'),
+    label: 'data.vaccine.pfizer',
     multiplierPerDose: [1, 1, 0.8, 0.25]
   },
   moderna: {
-    label: i18n.t('data.vaccine.moderna'),
+    label: 'data.vaccine.moderna',
     multiplierPerDose: [1, 1, 0.8, 0.25]
   },
   astraZeneca: {
-    label: i18n.t('data.vaccine.astra_zeneca'),
+    label: 'data.vaccine.astra_zeneca',
     multiplierPerDose: [1, 1, 1, 0.3]
   },
   johnson: {
-    label: i18n.t('data.vaccine.johnson_johnson'),
+    label: 'data.vaccine.johnson_johnson',
     multiplierPerDose: [1, 1, 0.95]
   },
   sputnik: {
-    label: i18n.t('data.vaccine.sputnik'),
+    label: 'data.vaccine.sputnik',
     multiplierPerDose: [1, 1, 0.8, 0.25]
   },
   unknown: {
-    label: i18n.t('data.vaccine.unknown'),
+    label: 'data.vaccine.unknown',
     multiplierPerDose: [1, 1, 1, 0.3]
   }
 }
 
 export const TheirVaccine: { [key: string]: CheckBoxFormValue } = {
   vaccinated: {
-    label: i18n.t('data.their_vaccine.yes'),
-    description: i18n.t('data.their_vaccine.yes_description'),
+    label: 'data.their_vaccine.yes',
+    description: 'data.their_vaccine.yes_description',
     multiplier: 0
   },
   unvaccinated: {
-    label: i18n.t('data.their_vaccine.no'),
-    description: i18n.t('data.their_vaccine.no_description'),
+    label: 'data.their_vaccine.no',
+    description: 'data.their_vaccine.no_description',
     multiplier: 0
   },
   undefined: {
-    label: i18n.t('data.their_vaccine.unknown'),
-    description: i18n.t('data.their_vaccine.unknown_description'),
+    label: 'data.their_vaccine.unknown',
+    description: 'data.their_vaccine.unknown_description',
     multiplier: 0
   }
 }

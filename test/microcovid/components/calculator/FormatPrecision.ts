@@ -1,5 +1,3 @@
-import i18n from 'i18n'
-
 /**
  * Format points for display - fixed point with a set precision.
  * By default, show 2 sigfigs for numbers greater than 1 and 1 sigfig for
@@ -22,7 +20,7 @@ export function fixedPointPrecision(
   const useGrouping = options.useGrouping === undefined || options.useGrouping
 
   if (!valOrNull) {
-    return Number(0).toLocaleString(i18n.language, { style: numberStyle })
+    return Number(0).toLocaleString('pt-br', { style: numberStyle })
   }
   const val: number = valOrNull
   const orderOfMagnitude = Math.floor(Math.log10(val))
@@ -53,7 +51,7 @@ export function fixedPointPrecision(
       ++shift
     }
   }
-  return val.toLocaleString(i18n.language, {
+  return val.toLocaleString('pt-br', {
     maximumSignificantDigits: sigFigsToShow,
     style: numberStyle,
     useGrouping: useGrouping
@@ -77,7 +75,7 @@ export function formatPercent(
       numberStyle: 'percent'
     })
   }
-  return Number(!val ? 0 : val).toLocaleString(i18n.language, {
+  return Number(!val ? 0 : val).toLocaleString('pt-br', {
     style: 'percent',
     minimumFractionDigits: options.decimalPointsToShow,
     maximumFractionDigits: options.decimalPointsToShow
