@@ -85,5 +85,3 @@ async function readData() {
     }
   )
 }
-
-console.log(calculateActivityRisk(test_data))

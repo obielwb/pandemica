@@ -144,6 +144,21 @@ export const ageTwentyToTwentyFour = 29289
 export const ageTwentyfiveOrMore = 69474
 export const alreadyAttended = 687104
 export const neverAttended = 68363
+
+export const houses = 348268
+
+// Número de moradores nas residências
+export const oneResident = 48687
+export const twoResidents = 87532
+export const threeResidents = 87969
+export const fourResidents = 72222
+export const fiveResidents = 31014
+export const sixResidents = 11744
+export const sevenResidents = 4937
+export const eightResidents = 2137
+export const nineResidents = 1027
+export const tenResidents = 532
+export const elevenOrMoreResidents = 467
 export interface Activity {
   // Activity Risk
   setting: string
