@@ -114,13 +114,7 @@ export const eightyToEightyfourHabitants = {
   male: 4094
 }
 
-// IBGE 2022
-export const car = 623743
-export const motorcycle = 130933
-export const bus = 5418
-export const uttility = 13218
-
-// 2010 ibge - habitants by income
+// 2010 ibge - habitants by income - 950.400 - desconsidera pessoas abaixo de 10 anos
 export const zeroToHalfBasicSalary = 10400
 export const halfToOneBasicSalary = 98800
 export const oneToTwoBasicSalary = 225500
@@ -147,7 +141,7 @@ export const neverAttended = 68363
 
 export const houses = 348268
 
-// Número de moradores nas residências
+// Número de moradores nas residências - 1.068.980
 export const oneResident = 48687
 export const twoResidents = 87532
 export const threeResidents = 87969
