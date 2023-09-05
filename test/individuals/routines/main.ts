@@ -1,27 +1,18 @@
 import {
-  zeroToHalfBasicSalary,
-  halfToOneBasicSalary,
-  oneToTwoBasicSalary,
-  twoToThreeBasicSalary,
-  threeToFiveBasicSalary,
-  fiveToTenBasicSalary,
-  tenToFifteenBasicSalary,
-  fifteenToTwentyBasicSalary,
-  twentyOrMoreBasicSalary,
-  withoutSalary
+  industries,
+  commerceAndServices,
+  industriesEmployees,
+  commerceAndServicesEmployees,
+  totalPopulation
 } from './data'
 
-const salaries = [
-  zeroToHalfBasicSalary,
-  halfToOneBasicSalary,
-  oneToTwoBasicSalary,
-  twoToThreeBasicSalary,
-  threeToFiveBasicSalary,
-  fiveToTenBasicSalary,
-  tenToFifteenBasicSalary,
-  fifteenToTwentyBasicSalary,
-  twentyOrMoreBasicSalary,
-  withoutSalary
-]
+const totalIndustryEmployees = industries.reduce((total, category) => total + category.count, 0)
+const totalCommerceEmployees = commerceAndServices.reduce(
+  (total, category) => total + category.count,
+  0
+)
 
-console.log(salaries.reduce((sum, salary) => sum + salary, 0))
+const industryRatios = industries.map((category) => category.count / totalIndustryEmployees)
+const commerceRatios = commerceAndServices.map(
+  (category) => category.count / totalCommerceEmployees
+)

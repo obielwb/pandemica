@@ -1,5 +1,3 @@
-// todo: normalize data
-
 /*
  * generate random age
  * generate random sex
@@ -166,6 +164,76 @@ export interface Activity {
   //   y: number;
   // };
 }
+
+// ibge 2018
+export const microIndustries = {
+  count: 14398,
+  label: 'industry.micro'
+}
+export const smallIndustries = {
+  count: 2846,
+  label: 'industry.small'
+}
+export const mediumIndustries = {
+  count: 724,
+  label: 'industry.medium'
+}
+export const largeIndustries = {
+  count: 160,
+  label: 'industry.large'
+}
+export const industries = [microIndustries, smallIndustries, mediumIndustries, largeIndustries]
+
+export const microCommerceAndServices = {
+  count: 109612,
+  label: 'commerce_services.micro'
+}
+export const smallCommerceAndServices = {
+  count: 7834,
+  label: 'commerce_services.small'
+}
+export const mediumCommerceAndServices = {
+  count: 1202,
+  label: 'commerce_services.medium'
+}
+export const largeCommerceAndServices = {
+  count: 0,
+  label: 'commerce_services.large'
+}
+export const commerceAndServices = [
+  microCommerceAndServices,
+  smallCommerceAndServices,
+  mediumCommerceAndServices,
+  largeCommerceAndServices
+]
+
+// mte 2016
+export const microIndustriesEmployees = [1, 19]
+export const smallIndustriesEmployees = [20, 99]
+export const mediumIndustriesEmployees = [100, 499]
+export const largeIndustriesEmployees = [500, 899]
+export const industriesEmployees = [
+  microIndustriesEmployees,
+  smallIndustriesEmployees,
+  mediumIndustriesEmployees,
+  largeIndustriesEmployees
+]
+
+export const employees = 428584
+export const selfEmployeds = 92989
+export const employers = 14474
+export const totalWorkers = employees + selfEmployeds + employers
+
+export const microCommerceAndServicesEmployees = [1, 9]
+export const smallCommerceAndServicesEmployees = [10, 49]
+export const mediumCommerceAndServicesEmployees = [50, 99]
+export const largeCommerceAndServicesEmployees = [100, 299]
+export const commerceAndServicesEmployees = [
+  microCommerceAndServicesEmployees,
+  smallCommerceAndServicesEmployees,
+  mediumCommerceAndServicesEmployees,
+  largeCommerceAndServicesEmployees
+]
 
 export const activities: { [key: string]: Activity } = {
   shopping: {
