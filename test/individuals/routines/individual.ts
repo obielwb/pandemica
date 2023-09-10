@@ -1,5 +1,5 @@
 import { Activity } from './data'
-import { Workstation } from './workstation'
+import { Occupation } from './occupation'
 
 export class Individual {
   public id: string
@@ -9,8 +9,14 @@ export class Individual {
   public housemates: number
   public studyLevel: string
   public currentActivity?: Activity
+  public region: string
   public income: boolean
-  public workstation?: Workstation
+  public occupationType: [string, string?]
+  // workstation and study site
+  public occupations?: [Occupation?, Occupation?]
+  // talk to gabriel about creating students bellow ageSevenToFourteen, but not using them
+  // also using is valid to invalidate a individual if needed
+  public isValid?: boolean
   public riskProfile: {
     label: string
     label_short?: string

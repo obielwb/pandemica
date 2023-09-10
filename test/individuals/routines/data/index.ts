@@ -1,128 +1,226 @@
 /*
- * generate random age
- * generate random sex
  * generate activities:
- *    - search in microCovid to see if what they have
- * generate basic routines based on age, sex, location, etc
- *    variables:
- *    - house location
- *    - have car / dont have car
- *    - work location
- *    - school location
- *    -
- *
- *
- * for simplicity, the population does not have a growth rate
+ *    - search in microCovid to see if what they've done
  */
 
+export type Parameter = {
+  label: string
+  count: number
+}
+
 // 2016 social information report
-export const totalPopulation = 1138309
-export const eastPopulation = 248939
-export const northwestPopulation = 133086
-export const northPopulation = 212342
-export const southwestPopulation = 253061
-export const southPopulation = 316671
+// todo: a soma das regiões dá 1164099 ao invés de 1138309
+// export const totalPopulation = 1138309
+export const totalPopulation = 1164099
+export const eastPopulation = {
+  label: 'east',
+  count: 248939
+}
+export const northwestPopulation = {
+  label: 'northwest',
+  count: 133086
+}
+export const northPopulation = {
+  label: 'north',
+  count: 212342
+}
+export const southwestPopulation = {
+  label: 'southwest',
+  count: 253061
+}
+export const southPopulation = {
+  label: 'south',
+  count: 316671
+}
+export const populationRegions = [
+  eastPopulation,
+  northwestPopulation,
+  northPopulation,
+  southwestPopulation,
+  southPopulation
+]
 
 export const malePercentage = 51.78
 export const femalePercentage = 48.22
 
 // 2010 ibge
-export const zeroToFourHabitants = {
+// todo: normalize: returns 1072021
+export const zeroToFourYears = {
+  interval: [0, 4],
   female: 31330,
   male: 32541
 }
 
-export const fiveToNineHabitants = {
+export const fiveToNineYears = {
+  interval: [5, 9],
   female: 32214,
   male: 33570
 }
 
-export const tenToFourteenHabitants = {
+export const tenToFourteenYears = {
+  interval: [10, 14],
   female: 38690,
   male: 39891
 }
 
-export const fifteenToNineteenHabitants = {
+export const fifteenToNineteenYears = {
+  interval: [15, 19],
   female: 40346,
   male: 41344
 }
 
-export const twentyToTwentyfourHabitants = {
+export const twentyToTwentyfourYears = {
+  interval: [20, 24],
   female: 48593,
   male: 48225
 }
 
-export const twentyfiveToTwentynineHabitants = {
+export const twentyfiveToTwentynineYears = {
+  interval: [25, 29],
   female: 52883,
   male: 51178
 }
 
-export const thirtyToThirtyfourHabitants = {
+export const thirtyToThirtyfourYears = {
+  interval: [30, 34],
   female: 49301,
   male: 47315
 }
 
-export const thirtyfiveToThirtynineHabitants = {
+export const thirtyfiveToThirtynineYears = {
+  interval: [35, 39],
   female: 43304,
   male: 40812
 }
 
-export const fourtyToFourtyfourHabitants = {
+export const fourtyToFourtyfourYears = {
+  interval: [40, 44],
   female: 41335,
   male: 37975
 }
 
-export const fourtyfiveToFourtynineHabitants = {
+export const fourtyfiveToFourtynineYears = {
+  interval: [45, 49],
   female: 38876,
   male: 34630
 }
 
-export const fiftyToFiftyfourHabitants = {
+export const fiftyToFiftyfourYears = {
+  interval: [50, 54],
   female: 35795,
   male: 31354
 }
 
-export const fiftyfiveToFiftynineHabitants = {
+export const fiftyfiveToFiftynineYears = {
+  interval: [55, 59],
   female: 29515,
   male: 25295
 }
 
-export const sixtyToSixtyfourHabitants = {
+export const sixtyToSixtyfourYears = {
+  interval: [60, 64],
   female: 23211,
   male: 19059
 }
 
-export const sixtyfiveToSixtynineHabitants = {
+export const sixtyfiveToSixtynineYears = {
+  interval: [65, 69],
   female: 16986,
   male: 13776
 }
 
-export const seventyToSeventyfourHabitants = {
+export const seventyToSeventyfourYears = {
+  interval: [70, 74],
   female: 13743,
   male: 10457
 }
 
-export const seventyfiveToSeventynineHabitants = {
+export const seventyfiveToSeventynineYears = {
+  interval: [75, 79],
   female: 6832,
   male: 10260
 }
 
-export const eightyToEightyfourHabitants = {
+export const eightyToEightyfourYears = {
+  interval: [80, 84],
   female: 7291,
   male: 4094
 }
+export const ages = [
+  zeroToFourYears,
+  fiveToNineYears,
+  tenToFourteenYears,
+  fifteenToNineteenYears,
+  twentyToTwentyfourYears,
+  twentyfiveToTwentynineYears,
+  thirtyToThirtyfourYears,
+  thirtyfiveToThirtynineYears,
+  fourtyToFourtyfourYears,
+  fourtyfiveToFourtynineYears,
+  fiftyToFiftyfourYears,
+  fiftyfiveToFiftynineYears,
+  sixtyToSixtyfourYears,
+  sixtyfiveToSixtynineYears,
+  seventyToSeventyfourYears,
+  seventyfiveToSeventynineYears,
+  eightyToEightyfourYears
+]
 
 // 2010 ibge - habitants by income - 950.400 - desconsidera pessoas abaixo de 10 anos
-export const zeroToHalfBasicSalary = 10400
-export const halfToOneBasicSalary = 98800
-export const oneToTwoBasicSalary = 225500
-export const twoToThreeBasicSalary = 98600
-export const threeToFiveBasicSalary = 89300
-export const fiveToTenBasicSalary = 72300
-export const tenToFifteenBasicSalary = 15700
-export const fifteenToTwentyBasicSalary = 13400
-export const twentyOrMoreBasicSalary = 10400
-export const withoutSalary = 316000
+export const zeroToHalfMinimumSalaries = {
+  label: 'zero_to_half_minimum_salaries',
+  count: 10400
+}
+export const halfToOneMinimumSalaries = {
+  label: 'half_to_one_minimum_salaries',
+  count: 98800
+}
+export const oneToTwoMinimumSalaries = {
+  label: 'one_to_two_minimum_salaries',
+  count: 225500
+}
+export const twoToThreeMinimumSalaries = {
+  label: 'two_to_three_minimum_salaries',
+  count: 98600
+}
+export const threeToFiveMinimumSalaries = {
+  label: 'three_to_five_minimum_salaries',
+  count: 89300
+}
+export const fiveToTenMinimumSalaries = {
+  label: 'five_to_ten_minimum_salaries',
+  count: 72300
+}
+export const tenToFifteenMinimumSalaries = {
+  label: 'ten_to_fifteen_minimum_salaries',
+  count: 15700
+}
+export const fifteenToTwentyMinimumSalaries = {
+  label: 'fifteen_to_twenty_minimum_salaries',
+  count: 13400
+}
+export const twentyOrMoreMinimumSalaries = {
+  label: 'twenty_or_more_minimum_salaries',
+  count: 10400
+}
+export const withoutSalary = {
+  label: 'none',
+  count: 316000
+}
+export const salaries = [
+  zeroToHalfMinimumSalaries,
+  halfToOneMinimumSalaries,
+  oneToTwoMinimumSalaries,
+  twoToThreeMinimumSalaries,
+  threeToFiveMinimumSalaries,
+  fiveToTenMinimumSalaries,
+  tenToFifteenMinimumSalaries,
+  fifteenToTwentyMinimumSalaries,
+  twentyOrMoreMinimumSalaries,
+  withoutSalary
+]
+
+// todo: fix relation between withoutSalary and ages bellow ageSevenToFourteen
 
 // 2010 ibge - preschool and school attendants
 export const attendSchools = 324646
@@ -140,17 +238,64 @@ export const neverAttended = 68363
 export const houses = 348268
 
 // Número de moradores nas residências - 1.068.980
-export const oneResident = 48687
-export const twoResidents = 87532
-export const threeResidents = 87969
-export const fourResidents = 72222
-export const fiveResidents = 31014
-export const sixResidents = 11744
-export const sevenResidents = 4937
-export const eightResidents = 2137
-export const nineResidents = 1027
-export const tenResidents = 532
-export const elevenOrMoreResidents = 467
+export const oneResident = {
+  label: 'one',
+  count: 48687
+}
+export const twoResidents = {
+  label: 'two',
+  count: 87532
+}
+export const threeResidents = {
+  label: 'three',
+  count: 87969
+}
+export const fourResidents = {
+  label: 'four',
+  count: 72222
+}
+export const fiveResidents = {
+  label: 'five',
+  count: 31014
+}
+export const sixResidents = {
+  label: 'six',
+  count: 11744
+}
+export const sevenResidents = {
+  label: 'seven',
+  count: 4937
+}
+export const eightResidents = {
+  label: 'eight',
+  count: 2137
+}
+export const nineResidents = {
+  label: 'nine',
+  count: 1027
+}
+export const tenResidents = {
+  label: 'ten',
+  count: 532
+}
+export const elevenOrMoreResidents = {
+  label: 'eleven_or_more',
+  count: 467
+}
+export const residentsPerHouse = [
+  oneResident,
+  twoResidents,
+  threeResidents,
+  fourResidents,
+  fiveResidents,
+  sixResidents,
+  sevenResidents,
+  eightResidents,
+  nineResidents,
+  tenResidents,
+  elevenOrMoreResidents
+]
+
 export interface Activity {
   // Activity Risk
   setting: string
@@ -222,7 +367,7 @@ export const industriesEmployees = [
 export const employees = 428584
 export const selfEmployeds = 92989
 export const employers = 14474
-export const totalWorkers = employees + selfEmployeds + employers
+export const totalEmployees = employees + selfEmployeds + employers
 
 export const microCommerceAndServicesEmployees = [1, 9]
 export const smallCommerceAndServicesEmployees = [10, 49]
