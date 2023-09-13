@@ -11,7 +11,7 @@ export class Individual {
   public currentActivity?: Activity
   public region: string
   public income: boolean
-  public occupationType: [string, string?]
+  public occupationType: [string, string?] // ['study'] | ['works'] | ['study', 'works']
   // workstation and study site
   public occupations?: [Occupation?, Occupation?]
   // talk to gabriel about creating students bellow ageSevenToFourteen, but not using them

@@ -21,17 +21,12 @@ import { Individual } from './individual'
 import { nanoid } from 'nanoid'
 import { Workstation } from './occupation'
 
-const determineSex = () => {
-  return Math.random() * 100 < malePercentage ? 'male' : 'female'
-}
-
 const individuals: Individual[] = []
 
 for (let i = 0; i < totalPopulation; i++) {
   const individual = new Individual()
 
   individual.id = nanoid()
-  individual.sex = determineSex()
 
   individual.currentActivity = {} as Activity
 
@@ -48,8 +43,19 @@ for (let i = 0; i < totalPopulation; i++) {
 const assignParameter = (label: string, parameter: Parameter[]) => {
   let index = 0
   parameter.forEach((entry) => {
-    for (let i = 0; i < entry.count; i++) individuals[index++][label] = entry.label
+    for (let i = 0; i < entry.value; i++) individuals[index++][label] = entry.label
   })
+}
+
+const assignSex = () => {
+  for (let i = 0; i < Math.round((malePercentage / 100) * individuals.length); i++)
+    individuals[i].sex = 'male'
+  for (
+    let i = Math.round((malePercentage / 100) * individuals.length - 1);
+    i < individuals.length;
+    i++
+  )
+    individuals[i].sex = 'female'
 }
 
 // const assignParameter = (label: string, parameter: Parameter[]) => {
@@ -77,6 +83,8 @@ const assignParameter = (label: string, parameter: Parameter[]) => {
 //   }
 // })
 // }
+
+assignSex()
 
 assignParameter('region', populationRegions)
 // todo: number of residentsPerHouse is not normalized.
@@ -139,13 +147,13 @@ const createWorkstations = (
 
   categories.forEach((category, index) => {
     const [minEmployees, maxEmployees] = employeesRanges[index]
-    for (let i = 0; i < category.count; i++) {
+    for (let i = 0; i < category.value; i++) {
       const employeesCount =
         Math.floor(Math.random() * (maxEmployees - minEmployees + 1)) + minEmployees
 
       const workstation = {
-        id: `${category.label}_${nanoid()}`,
-        label: category.label,
+        id: nanoid(),
+        label: category.label as string,
         size: employeesCount
       }
 
@@ -166,6 +174,8 @@ const commerceAndServicesWorkstations = createWorkstations(
 // todo: improve calculation (currently returns 1502524)
 const allWorkstations = [...industryWorkstations, ...commerceAndServicesWorkstations]
 
-console.log(allWorkstations.reduce((total, workstation) => total + workstation.size, 0))
+console.log(allWorkstations.sort((a, b) => (a.size > b.size ? -1 : 1))[0])
+
+// console.log(individuals[individuals.length - 1])
 
 // todo: define risk profile

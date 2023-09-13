@@ -4,8 +4,8 @@
  */
 
 export type Parameter = {
-  label: string
-  count: number
+  label: string | number
+  value: number
 }
 
 // 2016 social information report
@@ -14,23 +14,23 @@ export type Parameter = {
 export const totalPopulation = 1164099
 export const eastPopulation = {
   label: 'east',
-  count: 248939
+  value: 248939
 }
 export const northwestPopulation = {
   label: 'northwest',
-  count: 133086
+  value: 133086
 }
 export const northPopulation = {
   label: 'north',
-  count: 212342
+  value: 212342
 }
 export const southwestPopulation = {
   label: 'southwest',
-  count: 253061
+  value: 253061
 }
 export const southPopulation = {
   label: 'south',
-  count: 316671
+  value: 316671
 }
 export const populationRegions = [
   eastPopulation,
@@ -169,43 +169,43 @@ export const ages = [
 // 2010 ibge - habitants by income - 950.400 - desconsidera pessoas abaixo de 10 anos
 export const zeroToHalfMinimumSalaries = {
   label: 'zero_to_half_minimum_salaries',
-  count: 10400
+  value: 10400
 }
 export const halfToOneMinimumSalaries = {
   label: 'half_to_one_minimum_salaries',
-  count: 98800
+  value: 98800
 }
 export const oneToTwoMinimumSalaries = {
   label: 'one_to_two_minimum_salaries',
-  count: 225500
+  value: 225500
 }
 export const twoToThreeMinimumSalaries = {
   label: 'two_to_three_minimum_salaries',
-  count: 98600
+  value: 98600
 }
 export const threeToFiveMinimumSalaries = {
   label: 'three_to_five_minimum_salaries',
-  count: 89300
+  value: 89300
 }
 export const fiveToTenMinimumSalaries = {
   label: 'five_to_ten_minimum_salaries',
-  count: 72300
+  value: 72300
 }
 export const tenToFifteenMinimumSalaries = {
   label: 'ten_to_fifteen_minimum_salaries',
-  count: 15700
+  value: 15700
 }
 export const fifteenToTwentyMinimumSalaries = {
   label: 'fifteen_to_twenty_minimum_salaries',
-  count: 13400
+  value: 13400
 }
 export const twentyOrMoreMinimumSalaries = {
   label: 'twenty_or_more_minimum_salaries',
-  count: 10400
+  value: 10400
 }
 export const withoutSalary = {
   label: 'none',
-  count: 316000
+  value: 316000
 }
 export const salaries = [
   zeroToHalfMinimumSalaries,
@@ -235,52 +235,56 @@ export const ageTwentyfiveOrMore = 69474
 export const alreadyAttended = 687104
 export const neverAttended = 68363
 
+// igbe 2021
+export const elementarySchools = 313
+export const highSchools = 150
+
 export const houses = 348268
 
 // Número de moradores nas residências - 1.068.980
 export const oneResident = {
-  label: 'one',
-  count: 48687
+  label: 1,
+  value: 48687
 }
 export const twoResidents = {
-  label: 'two',
-  count: 87532
+  label: 2,
+  value: 87532
 }
 export const threeResidents = {
-  label: 'three',
-  count: 87969
+  label: 3,
+  value: 87969
 }
 export const fourResidents = {
-  label: 'four',
-  count: 72222
+  label: 4,
+  value: 72222
 }
 export const fiveResidents = {
-  label: 'five',
-  count: 31014
+  label: 5,
+  value: 31014
 }
 export const sixResidents = {
-  label: 'six',
-  count: 11744
+  label: 6,
+  value: 11744
 }
 export const sevenResidents = {
-  label: 'seven',
-  count: 4937
+  label: 7,
+  value: 4937
 }
 export const eightResidents = {
-  label: 'eight',
-  count: 2137
+  label: 8,
+  value: 2137
 }
 export const nineResidents = {
-  label: 'nine',
-  count: 1027
+  label: 9,
+  value: 1027
 }
 export const tenResidents = {
-  label: 'ten',
-  count: 532
+  label: 10,
+  value: 532
 }
 export const elevenOrMoreResidents = {
-  label: 'eleven_or_more',
-  count: 467
+  label: 11,
+  value: 467
 }
 export const residentsPerHouse = [
   oneResident,
@@ -312,37 +316,37 @@ export interface Activity {
 
 // ibge 2018
 export const microIndustries = {
-  count: 14398,
+  value: 14398,
   label: 'industry.micro'
 }
 export const smallIndustries = {
-  count: 2846,
+  value: 2846,
   label: 'industry.small'
 }
 export const mediumIndustries = {
-  count: 724,
+  value: 724,
   label: 'industry.medium'
 }
 export const largeIndustries = {
-  count: 160,
+  value: 160,
   label: 'industry.large'
 }
 export const industries = [microIndustries, smallIndustries, mediumIndustries, largeIndustries]
 
 export const microCommerceAndServices = {
-  count: 109612,
+  value: 109612,
   label: 'commerce_services.micro'
 }
 export const smallCommerceAndServices = {
-  count: 7834,
+  value: 7834,
   label: 'commerce_services.small'
 }
 export const mediumCommerceAndServices = {
-  count: 1202,
+  value: 1202,
   label: 'commerce_services.medium'
 }
 export const largeCommerceAndServices = {
-  count: 0,
+  value: 0,
   label: 'commerce_services.large'
 }
 export const commerceAndServices = [
