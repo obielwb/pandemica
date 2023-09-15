@@ -3,8 +3,6 @@
   "private": "true",
   "license": "mit",
   "dependencies": {
-    "nanoid": "^5.0.1",
-    "tsup": "^7.2.0",
-    "tsx": "^3.12.9"
+    "nanoid": "^5.0.1"
   }
 }
