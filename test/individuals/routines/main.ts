@@ -94,6 +94,49 @@ assignParameter('housemates', residentsPerHouse)
 assignParameter('income', salaries)
 
 // todo: properly assign age
+const normalizeAge = () => {
+  const agedIndividuals = ages.reduce((total, age) => total + age.female + age.male, 0)
+  let agePercentages = ages.map((age) => {
+    return {
+      interval: age.interval,
+      female: age.female / agedIndividuals,
+      male: age.male / agedIndividuals
+    }
+  })
+
+  console.log(ages)
+  const missingAgedInviduals = individuals.length - agedIndividuals
+
+  const normalizedAges = ages.map((age, i) => {
+    const agePercentage = agePercentages[i]
+
+    return {
+      interval: age.interval,
+      female: Math.round(age.female + missingAgedInviduals * agePercentage.female),
+      male: Math.round(age.male + missingAgedInviduals * agePercentage.male)
+    }
+  })
+
+  const normalizedAgesCount = normalizedAges.reduce(
+    (total, age) => total + age.female + age.male,
+    0
+  )
+  console.log(individuals.length)
+  console.log()
+
+  agePercentages = normalizedAges.map((age) => {
+    return {
+      interval: age.interval,
+      female: age.female / individuals.length,
+      male: age.male / individuals.length
+    }
+  })
+
+  console.log(normalizedAges)
+}
+
+normalizeAge()
+
 const determineAge = (sex: 'male' | 'female') => {
   const ageDistribution = Math.random()
   let selectedAgeRange: {

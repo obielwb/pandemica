@@ -50,97 +50,81 @@ export const zeroToFourYears = {
   female: 31330,
   male: 32541
 }
-
 export const fiveToNineYears = {
   interval: [5, 9],
   female: 32214,
   male: 33570
 }
-
 export const tenToFourteenYears = {
   interval: [10, 14],
   female: 38690,
   male: 39891
 }
-
 export const fifteenToNineteenYears = {
   interval: [15, 19],
   female: 40346,
   male: 41344
 }
-
 export const twentyToTwentyfourYears = {
   interval: [20, 24],
   female: 48593,
   male: 48225
 }
-
 export const twentyfiveToTwentynineYears = {
   interval: [25, 29],
   female: 52883,
   male: 51178
 }
-
 export const thirtyToThirtyfourYears = {
   interval: [30, 34],
   female: 49301,
   male: 47315
 }
-
 export const thirtyfiveToThirtynineYears = {
   interval: [35, 39],
   female: 43304,
   male: 40812
 }
-
 export const fourtyToFourtyfourYears = {
   interval: [40, 44],
   female: 41335,
   male: 37975
 }
-
 export const fourtyfiveToFourtynineYears = {
   interval: [45, 49],
   female: 38876,
   male: 34630
 }
-
 export const fiftyToFiftyfourYears = {
   interval: [50, 54],
   female: 35795,
   male: 31354
 }
-
 export const fiftyfiveToFiftynineYears = {
   interval: [55, 59],
   female: 29515,
   male: 25295
 }
-
 export const sixtyToSixtyfourYears = {
   interval: [60, 64],
   female: 23211,
   male: 19059
 }
-
 export const sixtyfiveToSixtynineYears = {
   interval: [65, 69],
   female: 16986,
   male: 13776
 }
-
 export const seventyToSeventyfourYears = {
   interval: [70, 74],
   female: 13743,
   male: 10457
 }
-
 export const seventyfiveToSeventynineYears = {
   interval: [75, 79],
   female: 6832,
   male: 10260
 }
-
 export const eightyToEightyfourYears = {
   interval: [80, 84],
   female: 7291,
