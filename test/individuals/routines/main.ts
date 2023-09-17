@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid'
+
 import {
   ageEighteenToNineteen,
   ageFifteenToSeventeen,
@@ -12,16 +14,15 @@ import {
   malePercentage,
   Activity,
   residentsPerHouse,
-  Parameter,
   salaries,
-  ages,
-  totalEmployees
+  ages
 } from './data'
+import { Parameter, assign, normalize, assignSex, normalizeAge } from './parameter'
 import { Individual } from './individual'
-import { nanoid } from 'nanoid'
 import { Workstation } from './occupation'
+import { log } from './utilities'
 
-const individuals: Individual[] = []
+let individuals: Individual[] = []
 
 for (let i = 0; i < totalPopulation; i++) {
   const individual = new Individual()
@@ -40,104 +41,18 @@ for (let i = 0; i < totalPopulation; i++) {
   individuals.push(individual)
 }
 
-const assignParameter = (label: string, parameter: Parameter[]) => {
-  let index = 0
-  parameter.forEach((entry) => {
-    for (let i = 0; i < entry.value; i++) individuals[index++][label] = entry.label
-  })
-}
+individuals = assignSex(individuals, malePercentage)
 
-const assignSex = () => {
-  for (let i = 0; i < Math.round((malePercentage / 100) * individuals.length); i++)
-    individuals[i].sex = 'male'
-  for (
-    let i = Math.round((malePercentage / 100) * individuals.length - 1);
-    i < individuals.length;
-    i++
-  )
-    individuals[i].sex = 'female'
-}
-
-// const assignParameter = (label: string, parameter: Parameter[]) => {
-//   const totalParameterCount = parameter.reduce((total, entry) => total + entry.count, 0)
-
-//   const totalIndividuals = individuals.length
-
-//   const percentages = parameter.map((entry) => entry.count / totalParameterCount)
-
-//   if (totalParameterCount < totalIndividuals) {
-//     console.log(totalIndividuals - totalParameterCount)
-// todo: add calc to normalize via percentage
-//   }
-
-// let index = 0
-// percentages.forEach((percentage, i) => {
-//   const labelCount = Math.round((percentage / 100) * totalIndividuals)
-
-//   for (let j = 0; j < labelCount; j++) {
-//     if (index >= totalIndividuals) {
-//       // Handle the case where there are more labels than individuals
-//       break
-//     }
-//     individuals[index++][label] = parameter[i].label
-//   }
-// })
-// }
-
-assignSex()
-
-assignParameter('region', populationRegions)
+individuals = assign(individuals, 'region', populationRegions)
 // todo: number of residentsPerHouse is not normalized.
 // strategies: use percentage calculation on assign parameter to round up data?
 // write about this on the diary
-assignParameter('housemates', residentsPerHouse)
-assignParameter('income', salaries)
+individuals = assign(individuals, 'housemates', residentsPerHouse)
+individuals = assign(individuals, 'income', salaries)
+const normalizedAges = normalizeAge(ages, individuals)
 
-// todo: properly assign age
-const normalizeAge = () => {
-  const agedIndividuals = ages.reduce((total, age) => total + age.female + age.male, 0)
-  let agePercentages = ages.map((age) => {
-    return {
-      interval: age.interval,
-      female: age.female / agedIndividuals,
-      male: age.male / agedIndividuals
-    }
-  })
-
-  console.log(ages)
-  const missingAgedInviduals = individuals.length - agedIndividuals
-
-  const normalizedAges = ages.map((age, i) => {
-    const agePercentage = agePercentages[i]
-
-    return {
-      interval: age.interval,
-      female: Math.round(age.female + missingAgedInviduals * agePercentage.female),
-      male: Math.round(age.male + missingAgedInviduals * agePercentage.male)
-    }
-  })
-
-  const normalizedAgesCount = normalizedAges.reduce(
-    (total, age) => total + age.female + age.male,
-    0
-  )
-  console.log(individuals.length)
-  console.log()
-
-  agePercentages = normalizedAges.map((age) => {
-    return {
-      interval: age.interval,
-      female: age.female / individuals.length,
-      male: age.male / individuals.length
-    }
-  })
-
-  console.log(normalizedAges)
-}
-
-normalizeAge()
-
-const determineAge = (sex: 'male' | 'female') => {
+// todo: properly set ages
+const setAge = (sex: 'male' | 'female') => {
   const ageDistribution = Math.random()
   let selectedAgeRange: {
     interval: number[]
@@ -146,11 +61,12 @@ const determineAge = (sex: 'male' | 'female') => {
   } = {} as any
 
   if (sex === 'male') {
-    const malePercentage = ages.reduce((total, age) => total + age.male, 0) / individuals.length
+    const malePercentage =
+      normalizedAges.reduce((total, age) => total + age.male, 0) / individuals.length
     const adjustedDistribution = ageDistribution * malePercentage
 
     let cumulativePercentage = 0
-    for (const ageRange of ages) {
+    for (const ageRange of normalizedAges) {
       cumulativePercentage += ageRange.male * malePercentage
       if (adjustedDistribution <= cumulativePercentage) {
         selectedAgeRange = ageRange
@@ -158,11 +74,12 @@ const determineAge = (sex: 'male' | 'female') => {
       }
     }
   } else if (sex === 'female') {
-    const femalePercentage = ages.reduce((total, age) => total + age.female, 0) / individuals.length
+    const femalePercentage =
+      normalizedAges.reduce((total, age) => total + age.female, 0) / individuals.length
     const adjustedDistribution = ageDistribution * femalePercentage
 
     let cumulativePercentage = 0
-    for (const ageRange of ages) {
+    for (const ageRange of normalizedAges) {
       cumulativePercentage += ageRange.female * femalePercentage
       if (adjustedDistribution <= cumulativePercentage) {
         selectedAgeRange = ageRange
@@ -174,9 +91,31 @@ const determineAge = (sex: 'male' | 'female') => {
   return selectedAgeRange.interval
 }
 
+// problem: the dataset might be inverted, since the number
+// of females is 30k greater than it should be, while the
+// number of males is 30k less -> fix it
+const femaleIndividuals = individuals.reduce(
+  (total, individual) => (individual.sex === 'female' ? total + 1 : total),
+  0
+)
+const maleIndividuals = individuals.reduce(
+  (total, individual) => (individual.sex === 'male' ? total + 1 : total),
+  0
+)
+log(`Total females '${femaleIndividuals}' - Total males '${maleIndividuals}'`)
+
+const agedFemales = normalizedAges.reduce((total, age) => total + age.female, 0)
+const agedMales = normalizedAges.reduce((total, age) => total + age.male, 0)
+log(`Aged females '${agedFemales}' - Aged males '${agedMales}'`)
+
+log(`Total individuals '${individuals.length}' - Aged individuals '${agedFemales + agedMales}'`)
+
+log('Setting individuals `age`', { time: true, timeLabel: 'SETTING' })
 individuals.forEach((individual) => {
-  individual.age = determineAge(individual.sex)
+  individual.age = setAge(individual.sex)
 })
+log('', { timeEnd: true, timeLabel: 'SETTING' })
+////////////////////////////////////////////////
 
 // todo: review this number
 const students =
@@ -217,8 +156,6 @@ const commerceAndServicesWorkstations = createWorkstations(
 // todo: improve calculation (currently returns 1502524)
 const allWorkstations = [...industryWorkstations, ...commerceAndServicesWorkstations]
 
-console.log(allWorkstations.sort((a, b) => (a.size > b.size ? -1 : 1))[0])
-
-// console.log(individuals[individuals.length - 1])
+log(allWorkstations.sort((a, b) => (a.size > b.size ? -1 : 1))[0])
 
 // todo: define risk profile

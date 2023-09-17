@@ -3,11 +3,6 @@
  *    - search in microCovid to see if what they've done
  */
 
-export type Parameter = {
-  label: string | number
-  value: number
-}
-
 // 2016 social information report
 // todo: a soma das regiões dá 1164099 ao invés de 1138309
 // export const totalPopulation = 1138309
@@ -43,89 +38,94 @@ export const populationRegions = [
 export const malePercentage = 51.78
 export const femalePercentage = 48.22
 
+export type Age = {
+  interval: [number, number]
+  female: number
+  male: number
+}
+
 // 2010 ibge
-// todo: normalize: returns 1072021
-export const zeroToFourYears = {
+export const zeroToFourYears: Age = {
   interval: [0, 4],
   female: 31330,
   male: 32541
 }
-export const fiveToNineYears = {
+export const fiveToNineYears: Age = {
   interval: [5, 9],
   female: 32214,
   male: 33570
 }
-export const tenToFourteenYears = {
+export const tenToFourteenYears: Age = {
   interval: [10, 14],
   female: 38690,
   male: 39891
 }
-export const fifteenToNineteenYears = {
+export const fifteenToNineteenYears: Age = {
   interval: [15, 19],
   female: 40346,
   male: 41344
 }
-export const twentyToTwentyfourYears = {
+export const twentyToTwentyfourYears: Age = {
   interval: [20, 24],
   female: 48593,
   male: 48225
 }
-export const twentyfiveToTwentynineYears = {
+export const twentyfiveToTwentynineYears: Age = {
   interval: [25, 29],
   female: 52883,
   male: 51178
 }
-export const thirtyToThirtyfourYears = {
+export const thirtyToThirtyfourYears: Age = {
   interval: [30, 34],
   female: 49301,
   male: 47315
 }
-export const thirtyfiveToThirtynineYears = {
+export const thirtyfiveToThirtynineYears: Age = {
   interval: [35, 39],
   female: 43304,
   male: 40812
 }
-export const fourtyToFourtyfourYears = {
+export const fourtyToFourtyfourYears: Age = {
   interval: [40, 44],
   female: 41335,
   male: 37975
 }
-export const fourtyfiveToFourtynineYears = {
+export const fourtyfiveToFourtynineYears: Age = {
   interval: [45, 49],
   female: 38876,
   male: 34630
 }
-export const fiftyToFiftyfourYears = {
+export const fiftyToFiftyfourYears: Age = {
   interval: [50, 54],
   female: 35795,
   male: 31354
 }
-export const fiftyfiveToFiftynineYears = {
+export const fiftyfiveToFiftynineYears: Age = {
   interval: [55, 59],
   female: 29515,
   male: 25295
 }
-export const sixtyToSixtyfourYears = {
+export const sixtyToSixtyfourYears: Age = {
   interval: [60, 64],
   female: 23211,
   male: 19059
 }
-export const sixtyfiveToSixtynineYears = {
+export const sixtyfiveToSixtynineYears: Age = {
   interval: [65, 69],
   female: 16986,
   male: 13776
 }
-export const seventyToSeventyfourYears = {
+export const seventyToSeventyfourYears: Age = {
   interval: [70, 74],
   female: 13743,
   male: 10457
 }
-export const seventyfiveToSeventynineYears = {
+export const seventyfiveToSeventynineYears: Age = {
   interval: [75, 79],
   female: 6832,
   male: 10260
 }
-export const eightyToEightyfourYears = {
+export const eightyToEightyfourYears: Age = {
   interval: [80, 84],
   female: 7291,
   male: 4094
