@@ -104,11 +104,22 @@ const maleIndividuals = individuals.reduce(
 )
 log(`Total females '${femaleIndividuals}' - Total males '${maleIndividuals}'`)
 
-const agedFemales = normalizedAges.reduce((total, age) => total + age.female, 0)
-const agedMales = normalizedAges.reduce((total, age) => total + age.male, 0)
+// todo: use different dataset
+const agedFemales = ages.reduce((total, age) => total + age.female, 0)
+const agedMales = ages.reduce((total, age) => total + age.male, 0)
 log(`Aged females '${agedFemales}' - Aged males '${agedMales}'`)
 
-log(`Total individuals '${individuals.length}' - Aged individuals '${agedFemales + agedMales}'`)
+const normalizedAgedFemales = normalizedAges.reduce((total, age) => total + age.female, 0)
+const normalizedAgedMales = normalizedAges.reduce((total, age) => total + age.male, 0)
+log(
+  `Normalized aged females '${normalizedAgedFemales}' - Normalized aged males '${normalizedAgedMales}'`
+)
+
+log(
+  `Total individuals '${individuals.length}' - Aged individuals ${
+    agedFemales + agedMales
+  } - Normalized aged individuals '${normalizedAgedFemales + normalizedAgedMales}'`
+)
 
 log('Setting individuals `age`', { time: true, timeLabel: 'SETTING' })
 individuals.forEach((individual) => {
@@ -156,6 +167,6 @@ const commerceAndServicesWorkstations = createWorkstations(
 // todo: improve calculation (currently returns 1502524)
 const allWorkstations = [...industryWorkstations, ...commerceAndServicesWorkstations]
 
-log(allWorkstations.sort((a, b) => (a.size > b.size ? -1 : 1))[0])
+// log(allWorkstations.sort((a, b) => (a.size > b.size ? -1 : 1))[0])
 
 // todo: define risk profile

@@ -28,7 +28,6 @@ export const assignSex = (individuals: Individual[], malePercentage: number) => 
   log('Assigning `sex` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
 
   let i = 0
-  log(Math.round((malePercentage / 100) * individuals.length))
   for (; i < Math.round((malePercentage / 100) * individuals.length); i++)
     individuals[i].sex = 'male'
 
