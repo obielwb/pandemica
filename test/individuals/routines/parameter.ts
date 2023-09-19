@@ -38,6 +38,14 @@ export const assignSex = (individuals: Individual[], malePercentage: number) => 
   return individuals
 }
 
+export const asignTransportationVehicle = (
+  individuals: Individual[],
+  busPercentage: number,
+  carPercentage: number
+) => {
+  log('Assigning `transportation vehicle` to individuals')
+}
+
 export const normalizeAge = (ages: Age[], individuals: Individual[]) => {
   log('Normalizing `age`', { time: true, timeLabel: 'NORMALIZATION' })
 
@@ -80,3 +88,5 @@ export const normalizeAge = (ages: Age[], individuals: Individual[]) => {
 
   return normalizedAges
 }
+
+// da tabela

@@ -225,7 +225,7 @@ export const highSchools = 150
 
 export const houses = 348268
 
-// Número de moradores nas residências - 1.068.980
+// Número de moradores nas residências - 1.068.980 moradores
 export const oneResident = {
   label: 1,
   value: 48687
