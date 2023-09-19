@@ -11,6 +11,7 @@ export class Individual {
   public currentActivity?: Activity
   public region: string
   public income: boolean
+  public vehicle: string
   public occupationType: ['study'?, 'work'?]
   public occupations?: [Occupation?, Occupation?]
   public isValid?: boolean

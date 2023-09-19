@@ -35,8 +35,12 @@ export const populationRegions = [
   southPopulation
 ]
 
-export const malePercentage = 51.78
-export const femalePercentage = 48.22
+// export const malePercentage = 51.78
+// export const femalePercentage = 48.22
+
+// ibge 2010
+export const malePercentage = (520865 / 1080113) * 100
+export const femalePercentage = (559248 / 1080113) * 100
 
 export const car = 226053
 
