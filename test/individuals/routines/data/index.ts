@@ -38,6 +38,8 @@ export const populationRegions = [
 export const malePercentage = 51.78
 export const femalePercentage = 48.22
 
+export const car = 226053
+
 export type Age = {
   interval: [number, number]
   female: number
