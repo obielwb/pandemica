@@ -1,4 +1,4 @@
-import { Age } from './data'
+import { Age, populationRegions, totalPopulation } from './data'
 import { Individual } from './individual'
 import { log } from './utilities'
 
@@ -8,7 +8,7 @@ export type Parameter = {
 }
 
 // generic assign and normalize functions
-export const assign = (individuals: Individual[], label: string, parameter: Parameter[]) => {
+export function assign(individuals: Individual[], label: string, parameter: Parameter[]) {
   log('Assigning `' + label + '` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
 
   let index = 0
@@ -21,10 +21,46 @@ export const assign = (individuals: Individual[], label: string, parameter: Para
   return individuals
 }
 
-export const normalize = (individuals: Individual[], label: string, parameter: Parameter[]) => {}
+export function normalize(individuals: Individual[], label: string, parameter: Parameter[]) {
+  log('Normalizing `' + label + '`', { time: true, timeLabel: 'NORMALIZATION' })
+
+  const labeledIndividuals = parameter.reduce((acc, p) => acc + p.value, 0)
+  let labelPercentages = parameter.map((p) => p.value / labeledIndividuals)
+
+  const unlabeledIndividuals = individuals.length - labeledIndividuals
+
+  const normalizedLabels = parameter.map((p, i) => {
+    const labelPercentage = labelPercentages[i]
+    return {
+      label: p.label,
+      value: Math.round(p.value + unlabeledIndividuals * labelPercentage)
+    }
+  })
+
+  const normalizedLabeledIndividuals = normalizedLabels.reduce(
+    (acc, normalizedLabel) => acc + normalizedLabel.value,
+    0
+  )
+
+  let stillUnlabeledIndividuals = individuals.length - normalizedLabeledIndividuals
+  while (stillUnlabeledIndividuals > 0) {
+    for (
+      let i = 0;
+      i < stillUnlabeledIndividuals / parameter.length;
+      i = (i + 1) % normalizedLabels.length
+    ) {
+      normalizedLabels[i].value++
+      stillUnlabeledIndividuals--
+    }
+  }
+
+  log('', { timeEnd: true, timeLabel: 'NORMALIZATION' })
+
+  return normalizedLabels
+}
 
 // specific assign and normalize functions
-export const assignSex = (individuals: Individual[], malePercentage: number) => {
+export function assignSex(individuals: Individual[], malePercentage: number) {
   log('Assigning `sex` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
 
   let i = 0
@@ -38,18 +74,18 @@ export const assignSex = (individuals: Individual[], malePercentage: number) => 
   return individuals
 }
 
-export const asignTransportationVehicle = (
+export function asignTransportationVehicle(
   individuals: Individual[],
   busPercentage: number,
   carPercentage: number
-) => {
+) {
   log('Assigning `transportation vehicle` to individuals')
 }
 
-export const normalizeAge = (ages: Age[], individuals: Individual[]) => {
+export function normalizeAge(ages: Age[], individuals: Individual[]) {
   log('Normalizing `age`', { time: true, timeLabel: 'NORMALIZATION' })
 
-  const agedIndividuals = ages.reduce((total, age) => total + age.female + age.male, 0)
+  const agedIndividuals = ages.reduce((acc, age) => acc + age.female + age.male, 0)
   let agePercentages = ages.map((age) => {
     return {
       interval: age.interval,
@@ -70,12 +106,12 @@ export const normalizeAge = (ages: Age[], individuals: Individual[]) => {
     }
   })
 
-  const normalizedAgesCount = normalizedAges.reduce(
-    (total, normalizedAge) => total + normalizedAge.male + normalizedAge.female,
+  const normalizedAgedIndividuals = normalizedAges.reduce(
+    (acc, normalizedAge) => acc + normalizedAge.male + normalizedAge.female,
     0
   )
 
-  let stillUnagedIndividuals = individuals.length - normalizedAgesCount
+  let stillUnagedIndividuals = individuals.length - normalizedAgedIndividuals
   while (stillUnagedIndividuals > 0) {
     for (let i = 0; i < stillUnagedIndividuals / 2; i = (i + 1) % normalizedAges.length) {
       normalizedAges[i].female++

@@ -3,10 +3,10 @@
  *    - search in microCovid to see if what they've done
  */
 
-// 2016 social information report
-// todo: a soma das regiões dá 1164099 ao invés de 1138309
-// export const totalPopulation = 1138309
-export const totalPopulation = 1164099
+// ibge 2010
+export const totalPopulation = 1080113
+
+// 2016 social information report - needs normalization down
 export const eastPopulation = {
   label: 'east',
   value: 248939
@@ -34,9 +34,6 @@ export const populationRegions = [
   southwestPopulation,
   southPopulation
 ]
-
-// export const malePercentage = 51.78
-// export const femalePercentage = 48.22
 
 // ibge 2010
 export const malePercentage = (520865 / 1080113) * 100
