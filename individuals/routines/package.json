@@ -1,0 +1,9 @@
+{
+  "name": "@pandemica/test",
+  "private": "true",
+  "license": "mit",
+  "dependencies": {
+    "moment": "^2.29.4",
+    "nanoid": "^5.0.1"
+  }
+}
