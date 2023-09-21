@@ -2,4 +2,4 @@ The contamination calculator is based on [microCOVID Project](https://www.microc
 
 Many adaptations were made so the calculator fits our use case.
 
-Please take note that Pandemica is also under permissive [MIT License](https://github.com/obielwb/pandemica/blob/main/license)
+Please take note that Pandemica is also under permissive [MIT License](https://github.com/obielwb/pandemica/blob/main/LICENSE).
