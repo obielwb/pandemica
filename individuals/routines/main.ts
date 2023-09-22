@@ -10,7 +10,7 @@ import {
   industries,
   industriesEmployees,
   totalPopulation,
-  populationRegions,
+  regionsPopulation,
   malePercentage,
   Activity,
   residentsPerHouse,
@@ -43,7 +43,7 @@ for (let i = 0; i < totalPopulation; i++) {
 
 individuals = assignSex(individuals, malePercentage)
 
-individuals = assign(individuals, 'region', populationRegions)
+individuals = assign(individuals, 'region', normalize(individuals, 'region', regionsPopulation))
 // todo: number of residentsPerHouse is not normalized.
 // strategies: use percentage calculation on assign parameter to round up data?
 // write about this on the diary

@@ -27,7 +27,7 @@ export const southPopulation = {
   label: 'south',
   value: 316671
 }
-export const populationRegions = [
+export const regionsPopulation = [
   eastPopulation,
   northwestPopulation,
   northPopulation,

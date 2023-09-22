@@ -1,4 +1,4 @@
-import { Age, populationRegions, totalPopulation } from './data'
+import { Age, regionsPopulation, totalPopulation } from './data'
 import { Individual } from './individual'
 import { log } from './utilities'
 
