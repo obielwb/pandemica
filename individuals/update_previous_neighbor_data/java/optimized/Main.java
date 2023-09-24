@@ -1,4 +1,4 @@
-package test.individuals.update_previous_neighbor_data.java.optimized;
+package individuals.update_previous_neighbor_data.java.optimized;
 
 import java.util.ArrayList;
 import java.util.List;

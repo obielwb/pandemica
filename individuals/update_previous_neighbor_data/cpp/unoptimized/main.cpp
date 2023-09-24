@@ -56,7 +56,7 @@ int main()
   vector<Individual> instances(1223237);
   size_t size = sizeof(instances[0]) * instances.size(); // average: 342506360 bytes - 342 mb
 
-  time_point start = high_resolution_clock::now();
+  auto start = high_resolution_clock::now();
 
   // process each window of three instances
   for (size_t i = 1; i < instances.size() - 1; i++)
@@ -67,7 +67,7 @@ int main()
     current_instance.compute_neighbor(prev_instance.data);
   }
 
-  time_point end = high_resolution_clock::now();
+  auto end = high_resolution_clock::now();
   milliseconds duration = duration_cast<milliseconds>(end - start);
 
   cout << size << "," << std::fixed << std::setprecision(3) << (float)(duration.count() / 1000.0) << endl;
