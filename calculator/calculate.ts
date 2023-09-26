@@ -248,7 +248,6 @@ export const calculateLocationPersonAverage = (data: CalculatorData): number | n
       MAX_DELAY_FACTOR
     )
 
-    // --------
     // Points for "random person from X location"
     const personRisk = prevalence * underreportingFactor * delayFactor
 
@@ -399,6 +398,41 @@ export const calculateActivityRisk = (data: CalculatorData): number | null => {
     }
 
     return multiplier * vaccineMultiplier
+  } catch (e) {
+    return null
+  }
+}
+
+export const calculate = (data: CalculatorData): CalculatorResult | null => {
+  try {
+    const personRiskEach = calculatePersonRiskEach(data)
+    if (personRiskEach === null) {
+      return null
+    }
+
+    // Activity risk
+    const activityRisk = calculateActivityRisk(data)
+    if (activityRisk === null) {
+      return null
+    }
+
+    const pointsNaive = personRiskEach * data.personCount * activityRisk
+    if (pointsNaive < MAX_POINTS) {
+      return {
+        expectedValue: pointsNaive,
+        lowerBound: pointsNaive / ERROR_FACTOR,
+        upperBound: pointsNaive * ERROR_FACTOR
+      }
+    }
+
+    const riskEach = personRiskEach * activityRisk * 1e-6
+    const expectedValue = probabilityEventHappensAtLeastOnce(riskEach, data.personCount) * 1e6
+    const lowerBound =
+      probabilityEventHappensAtLeastOnce(riskEach / ERROR_FACTOR, data.personCount) * 1e6
+    const upperBound =
+      probabilityEventHappensAtLeastOnce(Math.min(1, riskEach * ERROR_FACTOR), data.personCount) *
+      1e6
+    return { expectedValue, lowerBound, upperBound }
   } catch (e) {
     return null
   }
