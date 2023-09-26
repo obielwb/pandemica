@@ -50,9 +50,6 @@ for (let i = 0; i < totalPopulation; i++) {
 
 individuals = assignSex(individuals, malePercentage)
 
-const normalizedResidentsPerHouse = normalizeResidentsPerHouse(residentsPerHouse, totalPopulation)
-individuals = assignHouse(individuals, normalizedResidentsPerHouse, regionsPopulation)
-
 const normalizedAges = normalizeAge(ages, totalPopulation)
 // todo: properly set ages
 const setAge = (sex: 'male' | 'female') => {
@@ -94,8 +91,6 @@ const setAge = (sex: 'male' | 'female') => {
   return selectedAgeRange.interval
 }
 
-individuals = assign(individuals, 'income', salaries)
-
 const agedFemales = ages.reduce((total, age) => total + age.female, 0)
 const agedMales = ages.reduce((total, age) => total + age.male, 0)
 log(`Aged females '${agedFemales}' - Aged males '${agedMales}'`)
@@ -118,6 +113,15 @@ individuals.forEach((individual) => {
 })
 log('', { timeEnd: true, timeLabel: 'SETTING' })
 ////////////////////////////////////////////////
+
+const normalizedResidentsPerHouse = normalizeResidentsPerHouse(residentsPerHouse, totalPopulation)
+individuals = assignHouse(individuals, normalizedResidentsPerHouse, regionsPopulation)
+
+// todo: properly set number of students, income among individuals
+// considerations: individuals under 10 years do not work
+// income depends on age
+const normalizedSalaries = normalize('salaries', salaries, totalPopulation)
+individuals = assign(individuals, 'income', normalizedSalaries)
 
 // todo: review this number
 const students =
