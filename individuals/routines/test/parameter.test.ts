@@ -24,9 +24,14 @@ describe('Parameter', () => {
   })
 
   test('Should normalize residents per house', () => {
-    const labeledIndividuals = residentsPerHouse.reduce((acc, p) => acc + p.value * p.label, 0)
+    const labeledIndividuals = residentsPerHouse.reduce(
+      (acc, p) => acc + p.value * Number(p.label),
+      0
+    )
 
-    let labelPercentages = residentsPerHouse.map((p) => (p.value * p.label) / labeledIndividuals)
+    let labelPercentages = residentsPerHouse.map(
+      (p) => (p.value * Number(p.label)) / labeledIndividuals
+    )
 
     const unlabeledIndividuals = individuals.length - labeledIndividuals
 
@@ -38,25 +43,21 @@ describe('Parameter', () => {
       }
     })
 
-    console.log(
-      normalizedLabels.reduce((acc, p) => acc + (p.value * p.label) / individuals.length, 0)
-    )
+    let stillUnlabeledIndividuals =
+      normalizedLabels.reduce((acc, p) => acc + p.value * p.label, 0) - individuals.length
+    while (stillUnlabeledIndividuals > 0) {
+      for (
+        let i = 0;
+        i < stillUnlabeledIndividuals / residentsPerHouse.length;
+        i = (i + 1) % normalizedLabels.length
+      ) {
+        normalizedLabels[i].value--
+        stillUnlabeledIndividuals -= normalizedLabels[i].label
+      }
+    }
 
-    // const normalizedLabeledIndividuals = normalizedLabels.reduce(
-    //   (acc, normalizedLabel) => acc + normalizedLabel.value,
-    //   0
-    // )
-
-    // let stillUnlabeledIndividuals = individuals.length - normalizedLabeledIndividuals
-    // while (stillUnlabeledIndividuals > 0) {
-    //   for (
-    //     let i = 0;
-    //     i < stillUnlabeledIndividuals / parameter.length;
-    //     i = (i + 1) % normalizedLabels.length
-    //   ) {
-    //     normalizedLabels[i].value++
-    //     stillUnlabeledIndividuals--
-    //   }
-    // }
+    expect(
+      normalizedLabels.reduce((acc, p) => acc + (p.value * p.label) / totalPopulation, 0)
+    ).toBe(1)
   })
 })
