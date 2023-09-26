@@ -17,9 +17,16 @@ import {
   salaries,
   ages
 } from './data'
-import { Parameter, assign, normalize, assignSex, normalizeAge } from './parameter'
-import { Individual } from './individual'
-import { Workstation } from './occupation'
+import {
+  Parameter,
+  assign,
+  normalize,
+  assignSex,
+  normalizeAge,
+  normalizeResidentsPerHouse,
+  assignHouse
+} from './parameter'
+import { Individual, Workstation } from './individual'
 import { log } from './utilities'
 
 let individuals: Individual[] = []
@@ -43,14 +50,10 @@ for (let i = 0; i < totalPopulation; i++) {
 
 individuals = assignSex(individuals, malePercentage)
 
-individuals = assign(individuals, 'region', normalize(individuals, 'region', regionsPopulation))
-// todo: number of residentsPerHouse is not normalized.
-// strategies: use percentage calculation on assign parameter to round up data?
-// write about this on the diary
-individuals = assign(individuals, 'housemates', residentsPerHouse)
-individuals = assign(individuals, 'income', salaries)
-const normalizedAges = normalizeAge(ages, individuals)
+const normalizedResidentsPerHouse = normalizeResidentsPerHouse(residentsPerHouse, totalPopulation)
+individuals = assignHouse(individuals, normalizedResidentsPerHouse, regionsPopulation)
 
+const normalizedAges = normalizeAge(ages, totalPopulation)
 // todo: properly set ages
 const setAge = (sex: 'male' | 'female') => {
   const ageDistribution = Math.random()
@@ -91,20 +94,8 @@ const setAge = (sex: 'male' | 'female') => {
   return selectedAgeRange.interval
 }
 
-// problem: the dataset might be inverted, since the number
-// of females is 30k greater than it should be, while the
-// number of males is 30k less -> fix it
-const femaleIndividuals = individuals.reduce(
-  (total, individual) => (individual.sex === 'female' ? total + 1 : total),
-  0
-)
-const maleIndividuals = individuals.reduce(
-  (total, individual) => (individual.sex === 'male' ? total + 1 : total),
-  0
-)
-log(`Total females '${femaleIndividuals}' - Total males '${maleIndividuals}'`)
+individuals = assign(individuals, 'income', salaries)
 
-// todo: use different dataset
 const agedFemales = ages.reduce((total, age) => total + age.female, 0)
 const agedMales = ages.reduce((total, age) => total + age.male, 0)
 log(`Aged females '${agedFemales}' - Aged males '${agedMales}'`)

@@ -1,5 +1,6 @@
-import { Age, regionsPopulation, totalPopulation } from './data'
-import { Individual } from './individual'
+import { nanoid } from 'nanoid'
+import { Age, totalPopulation } from './data'
+import { House, Individual } from './individual'
 import { log } from './utilities'
 
 export type Parameter = {
@@ -21,13 +22,13 @@ export function assign(individuals: Individual[], label: string, parameter: Para
   return individuals
 }
 
-export function normalize(individuals: Individual[], label: string, parameter: Parameter[]) {
+export function normalize(label: string, parameter: Parameter[], totalPopulation: number) {
   log('Normalizing `' + label + '`', { time: true, timeLabel: 'NORMALIZATION' })
 
   const labeledIndividuals = parameter.reduce((acc, p) => acc + p.value, 0)
   let labelPercentages = parameter.map((p) => p.value / labeledIndividuals)
 
-  const unlabeledIndividuals = individuals.length - labeledIndividuals
+  const unlabeledIndividuals = totalPopulation - labeledIndividuals
 
   const normalizedLabels = parameter.map((p, i) => {
     const labelPercentage = labelPercentages[i]
@@ -42,7 +43,7 @@ export function normalize(individuals: Individual[], label: string, parameter: P
     0
   )
 
-  let stillUnlabeledIndividuals = individuals.length - normalizedLabeledIndividuals
+  let stillUnlabeledIndividuals = totalPopulation - normalizedLabeledIndividuals
   while (stillUnlabeledIndividuals > 0) {
     for (
       let i = 0;
@@ -74,7 +75,55 @@ export function assignSex(individuals: Individual[], malePercentage: number) {
   return individuals
 }
 
-export function asignTransportationVehicle(
+export function assignHouse(
+  individuals: Individual[],
+  residentsPerHouse: Parameter[],
+  regionsPopulation: Parameter[]
+): Individual[] {
+  log('Assigning `house` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
+
+  const houses: House[] = []
+
+  const normalizedResidentsPerHouse = normalizeResidentsPerHouse(residentsPerHouse, totalPopulation)
+
+  for (let i = 0; i < normalizedResidentsPerHouse.length; i++) {
+    for (let j = 0; j < normalizedResidentsPerHouse[i].value; j++) {
+      const house = {
+        id: nanoid(),
+        region: '',
+        residents: normalizedResidentsPerHouse[i].label as number
+      }
+
+      for (let k = 0; k < (normalizedResidentsPerHouse[i].label as number); k++) houses.push(house)
+    }
+  }
+
+  // Fisher-Yates shuffle
+  let i = houses.length,
+    j: number,
+    house: House
+
+  while (i) {
+    j = Math.floor(Math.random() * i--)
+    house = houses[i]
+    houses[i] = houses[j]
+    houses[j] = house
+  }
+
+  const normalizedRegions = normalize('region', regionsPopulation, totalPopulation)
+  let index = 0
+  normalizedRegions.forEach((entry) => {
+    for (let i = 0; i < entry.value; i++) houses[index++].region = entry.label as string
+  })
+
+  log('', { timeEnd: true, timeLabel: 'NORMALIZATION' })
+
+  for (let i = 0; i < individuals.length; i++) individuals[i].house = houses[i]
+
+  return individuals
+}
+
+export function assignTransportationVehicle(
   individuals: Individual[],
   busPercentage: number,
   carPercentage: number
@@ -82,7 +131,7 @@ export function asignTransportationVehicle(
   log('Assigning `transportation vehicle` to individuals')
 }
 
-export function normalizeAge(ages: Age[], individuals: Individual[]) {
+export function normalizeAge(ages: Age[], totalPopulation: number) {
   log('Normalizing `age`', { time: true, timeLabel: 'NORMALIZATION' })
 
   const agedIndividuals = ages.reduce((acc, age) => acc + age.female + age.male, 0)
@@ -94,7 +143,7 @@ export function normalizeAge(ages: Age[], individuals: Individual[]) {
     }
   })
 
-  const unagedIndividuals = individuals.length - agedIndividuals
+  const unagedIndividuals = totalPopulation - agedIndividuals
 
   const normalizedAges = ages.map((age, i) => {
     const agePercentage = agePercentages[i]
@@ -111,7 +160,7 @@ export function normalizeAge(ages: Age[], individuals: Individual[]) {
     0
   )
 
-  let stillUnagedIndividuals = individuals.length - normalizedAgedIndividuals
+  let stillUnagedIndividuals = totalPopulation - normalizedAgedIndividuals
   while (stillUnagedIndividuals > 0) {
     for (let i = 0; i < stillUnagedIndividuals / 2; i = (i + 1) % normalizedAges.length) {
       normalizedAges[i].female++
@@ -125,4 +174,45 @@ export function normalizeAge(ages: Age[], individuals: Individual[]) {
   return normalizedAges
 }
 
-// da tabela
+export function normalizeResidentsPerHouse(
+  residentsPerHouse: Parameter[],
+  totalPopulation: number
+) {
+  log('Normalizing `residentsPerHouse`', { time: true, timeLabel: 'NORMALIZATION' })
+
+  const labeledIndividuals = residentsPerHouse.reduce(
+    (acc, p) => acc + p.value * (p.label as number),
+    0
+  )
+
+  let labelPercentages = residentsPerHouse.map(
+    (p) => (p.value * (p.label as number)) / labeledIndividuals
+  )
+
+  const unlabeledIndividuals = totalPopulation - labeledIndividuals
+
+  const normalizedLabels = residentsPerHouse.map((p, i) => {
+    const labelPercentage = labelPercentages[i]
+    return {
+      label: p.label,
+      value: Math.round(p.value + unlabeledIndividuals * labelPercentage)
+    }
+  })
+
+  let stillUnlabeledIndividuals =
+    normalizedLabels.reduce((acc, p) => acc + p.value * (p.label as number), 0) - totalPopulation
+  while (stillUnlabeledIndividuals > 0) {
+    for (
+      let i = 0;
+      i < stillUnlabeledIndividuals / residentsPerHouse.length;
+      i = (i + 1) % normalizedLabels.length
+    ) {
+      normalizedLabels[i].value--
+      stillUnlabeledIndividuals -= normalizedLabels[i].label as number
+    }
+  }
+
+  log('', { timeEnd: true, timeLabel: 'NORMALIZATION' })
+
+  return normalizedLabels
+}
