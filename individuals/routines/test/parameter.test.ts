@@ -4,6 +4,7 @@ import { normalize, normalizeResidentsPerHouse } from '../parameter'
 import { totalPopulation, regionsPopulation, residentsPerHouse } from '../data'
 import { House, Individual } from '../individual'
 import { nanoid } from 'nanoid'
+import { fisherYatesShuffle } from '../utilities'
 
 const individuals = Array.from({ length: totalPopulation }, () => new Individual())
 
@@ -63,7 +64,7 @@ describe('Parameter', () => {
   })
 
   test('Should assign houses', () => {
-    const houses: House[] = []
+    let houses: House[] = []
 
     const normalizedResidentsPerHouse = normalizeResidentsPerHouse(
       residentsPerHouse,
@@ -83,17 +84,7 @@ describe('Parameter', () => {
       }
     }
 
-    // Fisher-Yates shuffle
-    let i = houses.length,
-      j: number,
-      house: House
-
-    while (i) {
-      j = Math.floor(Math.random() * i--)
-      house = houses[i]
-      houses[i] = houses[j]
-      houses[j] = house
-    }
+    houses = fisherYatesShuffle(houses)
 
     const normalizedRegions = normalize('region', regionsPopulation, totalPopulation)
     let index = 0

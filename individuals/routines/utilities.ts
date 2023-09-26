@@ -1,12 +1,28 @@
 import moment from 'moment'
 
-type LogOptions = Partial<{
-  time: boolean
-  timeEnd: boolean
-  timeLabel: string
-}>
+export function fisherYatesShuffle(array: any[]) {
+  let i = array.length,
+    j: number,
+    k: any
 
-export const log = (message: any, options?: LogOptions) => {
+  while (i) {
+    j = Math.floor(Math.random() * i--)
+    k = array[i]
+    array[i] = array[j]
+    array[j] = k
+  }
+
+  return array
+}
+
+export function log(
+  message: any,
+  options?: Partial<{
+    time: boolean
+    timeEnd: boolean
+    timeLabel: string
+  }>
+) {
   if (options?.time && options?.timeEnd)
     throw new Error('[LOG] Cannot specify both "time" and "timeEnd" options simultaneously')
 
