@@ -50,7 +50,7 @@ for (let i = 0; i < totalPopulation; i++) {
 
 individuals = assignSex(individuals, malePercentage)
 
-const normalizedAges = normalizeAge(ages, totalPopulation)
+const normalizedAges = normalizeAge(ages, totalPopulation, malePercentage)
 // todo: properly set ages
 const setAge = (sex: 'male' | 'female') => {
   const ageDistribution = Math.random()
@@ -163,5 +163,11 @@ const commerceAndServicesWorkstations = createWorkstations(
 const allWorkstations = [...industryWorkstations, ...commerceAndServicesWorkstations]
 
 // log(allWorkstations.sort((a, b) => (a.size > b.size ? -1 : 1))[0])
+
+let i = ''
+individuals.forEach((individual) => {
+  if (individual.house.residents == 3) i = individual.house.id
+})
+log(individuals.filter((individual) => individual.house.id === i))
 
 // todo: define risk profile

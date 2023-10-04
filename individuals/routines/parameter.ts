@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { Age, totalPopulation } from './data'
+import { Age, femalePercentage, totalPopulation } from './data'
 import { House, Individual } from './individual'
 import { fisherYatesShuffle, log } from './utilities'
 
@@ -121,7 +121,7 @@ export function assignTransportationVehicle(
   log('Assigning `transportation vehicle` to individuals')
 }
 
-export function normalizeAge(ages: Age[], totalPopulation: number) {
+export function normalizeAge(ages: Age[], totalPopulation: number, malePercentage: number) {
   log('Normalizing `age`', { time: true, timeLabel: 'NORMALIZATION' })
 
   const agedIndividuals = ages.reduce((acc, age) => acc + age.female + age.male, 0)
@@ -153,11 +153,26 @@ export function normalizeAge(ages: Age[], totalPopulation: number) {
   let stillUnagedIndividuals = totalPopulation - normalizedAgedIndividuals
   while (stillUnagedIndividuals > 0) {
     for (let i = 0; i < stillUnagedIndividuals / 2; i = (i + 1) % normalizedAges.length) {
-      normalizedAges[i].female++
-      normalizedAges[i].male++
-      stillUnagedIndividuals -= 2
+      if (Math.random() < malePercentage / 100) {
+        normalizedAges[i].male++
+        if ((stillUnagedIndividuals -= 2) > 0) normalizedAges[i].female++
+      } else {
+        normalizedAges[i].female++
+        if ((stillUnagedIndividuals -= 2) > 0) normalizedAges[i].male++
+      }
     }
   }
+
+  const normalizedAgedFemales = normalizedAges.reduce((acc, age) => acc + age.female, 0)
+  const normalizedAgedMales = normalizedAges.reduce((acc, age) => acc + age.male, 0)
+
+  const totalMales = Math.round(totalPopulation * (malePercentage / 100))
+  const totalFemales = totalPopulation - totalMales
+
+  const normalizedAgedFemalesDifference = totalFemales - normalizedAgedFemales
+  const normalizedAgedMalesDifference = totalMales - normalizedAgedMales
+
+  console.log(normalizedAgedFemalesDifference, normalizedAgedMalesDifference)
 
   log('', { timeEnd: true, timeLabel: 'NORMALIZATION' })
 

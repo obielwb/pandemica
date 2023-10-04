@@ -1,12 +1,18 @@
 import { describe, expect, test } from 'bun:test'
 
-import { normalize, normalizeResidentsPerHouse } from '../parameter'
-import { totalPopulation, regionsPopulation, residentsPerHouse } from '../data'
+import { assignSex, normalize, normalizeAge, normalizeResidentsPerHouse } from '../parameter'
+import {
+  totalPopulation,
+  regionsPopulation,
+  residentsPerHouse,
+  ages,
+  malePercentage
+} from '../data'
 import { House, Individual } from '../individual'
 import { nanoid } from 'nanoid'
 import { fisherYatesShuffle } from '../utilities'
 
-const individuals = Array.from({ length: totalPopulation }, () => new Individual())
+let individuals = Array.from({ length: totalPopulation }, () => new Individual())
 
 describe('Parameter', () => {
   test('Should differ if regions are not normalized', () => {
@@ -99,5 +105,24 @@ describe('Parameter', () => {
 
     const residentLabels = normalizedResidentsPerHouse.map((entry) => entry.label as number)
     expect(houses.every((h) => residentLabels.includes(h.residents))).toBe(true)
+  })
+
+  test('Age should be the same as total male and female', () => {
+    individuals = assignSex(individuals, malePercentage)
+
+    const femaleIndividuals = individuals.reduce(
+      (acc, individual) => acc + (individual.sex === 'female' ? 1 : 0),
+      0
+    )
+    const maleIndividuals = individuals.length - femaleIndividuals
+
+    const normalizedAges = normalizeAge(ages, totalPopulation, malePercentage)
+    const normalizedAgedFemales = normalizedAges.reduce((acc, age) => acc + age.female, 0)
+    const normalizedAgedMales = normalizedAges.reduce((acc, age) => acc + age.male, 0)
+
+    console.log(normalizedAgedFemales, femaleIndividuals, normalizedAgedMales, maleIndividuals)
+
+    expect(normalizedAgedFemales).toBe(femaleIndividuals)
+    expect(normalizedAgedMales).toBe(maleIndividuals)
   })
 })
