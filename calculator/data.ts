@@ -20,8 +20,6 @@ export interface PersonRiskValue extends BaseFormValue {
   label: string
   personalMultiplier: number
   numHousemates: number
-  numOtherTraceableContacts: number // Not including housemates
-  contactsMultiplier: number
 }
 
 const formValue = function (label: string, multiplier: number): FormValue {
@@ -87,7 +85,6 @@ export const Distance: { [key: string]: FormValue } = {
   tenFt: formValue('data.tenft_distance', 0.25)
 }
 
-// label para diferentes tipos de máscaras
 const noneLabel = 'data.no_mask_short'
 const thinLabel = 'data.thin_mask_short'
 const basicLabel = 'data.basic_mask_short'
@@ -97,7 +94,6 @@ const n95Label = 'data.n95_mask_short'
 const n95SealedLabel = 'data.n95_sealed_mask_short'
 const p100Label = 'data.p100_mask_short'
 
-// descrição para diferentesa tipos de máscaras
 const noneDesc = 'data.no_mask'
 const thinDesc = 'data.thin_mask'
 const basicDesc = 'data.basic_mask'
@@ -148,38 +144,6 @@ export const Voice: { [key: string]: FormValue } = {
   }
 }
 
-// parece ser uma taxa de risco
-export const BUDGET_TEN_PERCENT = 100000
-export const BUDGET_THREE_PERCENT = 30000
-export const BUDGET_ONE_PERCENT = 10000
-export const BUDGET_ONE_TENTH_PERCENT = 1000
-
-export const budgetOptions: { [key: string]: CheckBoxFormValue } = {}
-
-budgetOptions[BUDGET_ONE_TENTH_PERCENT.toString()] = {
-  label: 'calculator.risk_tolerance_point1_percent_label',
-  sublabel: 'calculator.risk_tolerance_point1_percent_explanation',
-  multiplier: 0.1
-}
-
-budgetOptions[BUDGET_ONE_PERCENT.toString()] = {
-  label: 'calculator.risk_tolerance_1_percent_label',
-  sublabel: 'calculator.risk_tolerance_1_percent_explanation',
-  multiplier: 1
-}
-
-budgetOptions[BUDGET_THREE_PERCENT.toString()] = {
-  label: 'calculator.risk_tolerance_3_percent_label',
-  sublabel: 'calculator.risk_tolerance_3_percent_explanation',
-  multiplier: 3
-}
-
-budgetOptions[BUDGET_TEN_PERCENT.toString()] = {
-  label: 'calculator.risk_tolerance_10_percent_label',
-  sublabel: 'calculator.risk_tolerance_10_percent_explanation',
-  multiplier: 10
-}
-
 /*
  * Exposed to ten (silent distanced masked) average people indoors,
  * while wearing a surgical mask, one-time, for one hour per week.
@@ -209,14 +173,12 @@ export const personRiskMultiplier: (arg: {
       ? SYMPTOM_FREE_LAST_SEEN_MORE_THAN_THREE_DAYS_AGO
       : symptomFreeMult
 
-  // Remove the person doing the calculation from the number of contacts if applicable.
   const housematesNotIncludingUser = Math.max(0, riskProfile.numHousemates - (isHousemate ? 1 : 0))
+  // TODO: ver como lidar com esse contacts multiplier
   const housematesRisk =
     housemateSymptomFreeMult * housematesNotIncludingUser * riskProfile.contactsMultiplier
-  const otherContactsRisk =
-    contactSymptomFreeMult * riskProfile.numOtherTraceableContacts * riskProfile.contactsMultiplier
 
-  const riskFromAllContacts = (housematesRisk + otherContactsRisk) * housemateMult
+  const riskFromAllContacts = housematesRisk * housemateMult
 
   return (riskProfile.personalMultiplier + riskFromAllContacts) * symptomFreeMult
 }
@@ -228,7 +190,7 @@ const noContacts = {
   contactsMultiplier: 0
 }
 
-// diferentes perfis de risco
+// TODO: analisar para ver se o multiplicador será realmente livingAlone para todos
 export const RiskProfile: { [key: string]: PersonRiskValue } = {
   average: {
     label: 'data.person.average',
@@ -244,78 +206,61 @@ export const RiskProfile: { [key: string]: PersonRiskValue } = {
   livingWithPartner: {
     label: 'data.person.livingWithPartner',
     personalMultiplier: livingAloneMult,
-    numHousemates: 1,
-    numOtherTraceableContacts: 0,
-    contactsMultiplier: livingAloneMult
+    numHousemates: 1
+  },
+
+  closedPod3: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 2
   },
 
   closedPod4: {
     label: 'data.person.closedPod4',
     personalMultiplier: livingAloneMult,
-    numHousemates: 3,
-    numOtherTraceableContacts: 0,
-    contactsMultiplier: livingAloneMult
+    numHousemates: 3
+  },
+  closedPod5: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 4
+  },
+  closedPod6: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 5
+  },
+  closedPod7: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 6
+  },
+  closedPod8: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 7
+  },
+  closedPod9: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 10
+  },
+  closedPod10: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 9
   },
 
-  closedPod10: {
+  closedPod11: {
     label: 'data.person.closedPod10',
     personalMultiplier: livingAloneMult,
-    numHousemates: 9,
-    numOtherTraceableContacts: 0,
-    contactsMultiplier: livingAloneMult
-  },
-
-  closedPod20: {
-    label: 'data.person.closedPod20',
-    personalMultiplier: livingAloneMult,
-    numHousemates: 19,
-    numOtherTraceableContacts: 0,
-    contactsMultiplier: livingAloneMult
-  },
-
-  contact1: {
-    label: 'data.person.contact1',
-    personalMultiplier: livingAloneMult,
-    numHousemates: 0,
-    numOtherTraceableContacts: 1,
-    contactsMultiplier: 1
-  },
-
-  contact4: {
-    label: 'data.person.contact4',
-    personalMultiplier: livingAloneMult,
-    numHousemates: 0,
-    numOtherTraceableContacts: 3,
-    contactsMultiplier: 1
-  },
-
-  contact10: {
-    label: 'data.person.contact10',
-    personalMultiplier: livingAloneMult,
-    numHousemates: 0,
-    numOtherTraceableContacts: 9,
-    contactsMultiplier: 1
+    numHousemates: 10
   },
 
   contactWorks: {
     label: 'data.person.contactWorks',
     personalMultiplier: livingAloneMult,
-    numHousemates: 0,
-    numOtherTraceableContacts: 1,
-    contactsMultiplier: HEALTHCARE_MULT
-  },
-
-  bars: {
-    label: 'data.person.bars',
-    /*
-     * Six hours of indoor exposure to a dozen people (2 near you, 10 six feet away)
-     * who are not wearing masks and are talking loudly.
-     */
-    personalMultiplier:
-      6 *
-      Interaction.oneTime.multiplier *
-      (2 + 10 * Distance.sixFt.multiplier * Voice.loud.multiplier),
-    ...noContacts
+    numHousemates: 0
   }
 }
 
