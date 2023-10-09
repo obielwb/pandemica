@@ -1,3 +1,4 @@
+import { Individual } from '../individuals/routines/individual'
 import {
   BUDGET_ONE_PERCENT,
   Distance,
@@ -21,9 +22,6 @@ import { PartialData, prepopulated } from './prepopulated'
 export interface CalculatorData {
   // Persistence
   persistedAt?: number
-
-  // Budget (in microCOVIDs/year)
-  riskBudget: number
 
   // Prevalence - temos estes dados a partir da planilha de casos
   useManualEntry: number
@@ -64,8 +62,6 @@ export interface CalculatorData {
 }
 
 export const defaultValues: CalculatorData = {
-  riskBudget: BUDGET_ONE_PERCENT,
-
   useManualEntry: 1,
   topLocation: '',
   subLocation: '',
@@ -337,6 +333,20 @@ export const calculatePersonRiskEach = (data: CalculatorData): number | null => 
   }
 }
 
+export const calculatePersonRiskCombine = (
+  data: CalculatorData,
+  individuals: Individual[]
+): number | null => {
+  const isHousemate = data.interaction === 'partner' || data.interaction === 'repeated'
+  const unadjustedRisk = personRiskMultiplier({
+    riskProfile: RiskProfile[data.riskProfile],
+    isHousemate,
+    symptomsChecked: data.symptomsChecked
+  })
+
+  return 0
+}
+
 const getVaccineMultiplier = (data: CalculatorData): number | null => {
   if (data.yourVaccineType === '') {
     return 1
@@ -405,18 +415,17 @@ export const calculateActivityRisk = (data: CalculatorData): number | null => {
 
 export const calculate = (data: CalculatorData): CalculatorResult | null => {
   try {
-    const personRiskEach = calculatePersonRiskEach(data)
-    if (personRiskEach === null) {
+    const totalPersonRiskCombine = calculatePersonRiskCombine(data, [])
+    if (totalPersonRiskCombine === null) {
       return null
     }
 
-    // Activity risk
     const activityRisk = calculateActivityRisk(data)
     if (activityRisk === null) {
       return null
     }
 
-    const pointsNaive = personRiskEach * data.personCount * activityRisk
+    const pointsNaive = totalPersonRiskCombine * activityRisk
     if (pointsNaive < MAX_POINTS) {
       return {
         expectedValue: pointsNaive,
@@ -425,12 +434,12 @@ export const calculate = (data: CalculatorData): CalculatorResult | null => {
       }
     }
 
-    const riskEach = personRiskEach * activityRisk * 1e-6
-    const expectedValue = probabilityEventHappensAtLeastOnce(riskEach, data.personCount) * 1e6
+    const riskMean = (totalPersonRiskCombine / data.personCount) * activityRisk * 1e-6
+    const expectedValue = probabilityEventHappensAtLeastOnce(riskMean, data.personCount) * 1e6
     const lowerBound =
-      probabilityEventHappensAtLeastOnce(riskEach / ERROR_FACTOR, data.personCount) * 1e6
+      probabilityEventHappensAtLeastOnce(riskMean / ERROR_FACTOR, data.personCount) * 1e6
     const upperBound =
-      probabilityEventHappensAtLeastOnce(Math.min(1, riskEach * ERROR_FACTOR), data.personCount) *
+      probabilityEventHappensAtLeastOnce(Math.min(1, riskMean * ERROR_FACTOR), data.personCount) *
       1e6
     return { expectedValue, lowerBound, upperBound }
   } catch (e) {
@@ -438,9 +447,6 @@ export const calculate = (data: CalculatorData): CalculatorResult | null => {
   }
 }
 
-// Given an event that happens with probability |probabilityOfOnce| that is repeated |numberOfTimes|,
-// return the probability that it happens at least once
-// (e.g. an event has |probabilityOfOnce| chance of giving you covid and you do it |numberOfTimes|, how likely are you to get covid?)
 const probabilityEventHappensAtLeastOnce = (
   probabilityOfOnce: number,
   numberOfTimes: number
