@@ -4,9 +4,9 @@ import * as path from 'path'
 
 import { calculateActivityRisk, CalculatorData } from './calculate'
 import { totalPopulation } from '../individuals/routines/data'
+import { Individual } from '../individuals/routines/individual'
 
 const test_data: CalculatorData = {
-  riskBudget: 10000,
   useManualEntry: 0,
   topLocation: '',
   subLocation: '',
@@ -51,37 +51,5 @@ type CampinasCases = {
 
 let campinasCasesData: CampinasCases[] = []
 
-async function readData() {
-  const csvFilePath = path.resolve(__dirname, './data/campinas_2020_21_cases.csv')
-  const headers = [
-    'epi_week',
-    'date',
-    'state',
-    'city',
-    'ibgeID',
-    'newDeaths',
-    'deaths',
-    'newCases',
-    'totalCases',
-    'deaths_per_100k_inhabitants',
-    'totalCases_per_100k_inhabitants',
-    'deaths_by_totalCases'
-  ]
-
-  const data = fs.readFileSync(csvFilePath, { encoding: 'utf-8' })
-
-  parse(
-    data,
-    {
-      delimiter: ',',
-      columns: headers
-    },
-    (error, result: CampinasCases[]) => {
-      if (error) {
-        console.error(error)
-      }
-
-      campinasCasesData = result
-    }
-  )
-}
+const individual_one = new Individual()
+const individual_two = new Individual()
