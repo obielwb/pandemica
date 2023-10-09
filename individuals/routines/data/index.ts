@@ -287,18 +287,15 @@ export const residentsPerHouse = [
   elevenOrMoreResidents
 ]
 
+export interface Interaction {
+  label: 'oneTime' | 'workplace' | 'partner' | 'repeated'
+}
 export interface Activity {
-  // Activity Risk
   setting: string
   distance: string
   duration?: number // minutes
   voice: string
-
-  // Activity Setting
-  // coordinate: {
-  //   x: number;
-  //   y: number;
-  // };
+  interaction: Interaction
 }
 
 // ibge 2018
