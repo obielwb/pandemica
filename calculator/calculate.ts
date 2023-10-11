@@ -1,6 +1,5 @@
 import { Individual } from '../individuals/routines/individual'
 import {
-  BUDGET_ONE_PERCENT,
   Distance,
   FormValue,
   Interaction,
@@ -16,7 +15,7 @@ import {
   intimateDurationFloor,
   partnerMult,
   personRiskMultiplier
-} from './data'
+} from './calculatorData'
 import { PartialData, prepopulated } from './prepopulated'
 
 export interface CalculatorData {
@@ -413,9 +412,12 @@ export const calculateActivityRisk = (data: CalculatorData): number | null => {
   }
 }
 
-export const calculate = (data: CalculatorData): CalculatorResult | null => {
+export const calculate = (
+  data: CalculatorData,
+  individuals: Individual[]
+): CalculatorResult | null => {
   try {
-    const totalPersonRiskCombine = calculatePersonRiskCombine(data, [])
+    const totalPersonRiskCombine = calculatePersonRiskCombine(data, individuals)
     if (totalPersonRiskCombine === null) {
       return null
     }

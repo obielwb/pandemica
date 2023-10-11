@@ -153,7 +153,7 @@ export const livingAloneMult =
   Voice.silent.multiplier *
   Distance.sixFt.multiplier *
   TheirMask.basic.multiplier *
-  YourMask.surgical.multiplier *
+  YourMask.surgical.mu ltiplier *
   Interaction.oneTime.multiplier *
   Setting.indoor.multiplier
 
@@ -168,13 +168,10 @@ export const personRiskMultiplier: (arg: {
 }) => number = ({ riskProfile, isHousemate, symptomsChecked }) => {
   const symptomFreeMult = symptomsChecked !== 'no' ? SYMPTOM_FREE_LAST_SEEN_TODAY_MULT : 1
   const housemateSymptomFreeMult = symptomFreeMult
-  const contactSymptomFreeMult =
-    symptomsChecked === 'yesThreeDays'
-      ? SYMPTOM_FREE_LAST_SEEN_MORE_THAN_THREE_DAYS_AGO
-      : symptomFreeMult
+
 
   const housematesNotIncludingUser = Math.max(0, riskProfile.numHousemates - (isHousemate ? 1 : 0))
-  // TODO: ver como lidar com esse contacts multiplier
+
   const housematesRisk =
     housemateSymptomFreeMult * housematesNotIncludingUser * riskProfile.contactsMultiplier
 
@@ -293,9 +290,7 @@ RiskProfile[RiskProfilesUnaffectedByVaccines.DECI_PERCENT] = {
 RiskProfile[RiskProfilesUnaffectedByVaccines.HAS_COVID] = {
   label: 'data.person.hasCovid',
   personalMultiplier: NaN,
-  numHousemates: NaN,
-  numOtherTraceableContacts: NaN,
-  contactsMultiplier: NaN
+  numHousemates: NaN
 }
 
 export interface VaccineValue {

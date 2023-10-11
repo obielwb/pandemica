@@ -1,0 +1,850 @@
+Nível;Indicador;2010;Unidade
+17;Universo - Características da população e dos domicílios;;
+17.1;Domicílios particulares permanentes;348268;domicílios
+17.1.1;Classe de rendimento nominal mensal domiciliar;;
+17.1.1.1;Sem rendimento;15448;domicílios
+17.1.1.2;Até 1/2 salário mínimo;1523;domicílios
+17.1.1.3;Mais de 1/2 a 1 salário mínimo;16782;domicílios
+17.1.1.4;Mais de 1 a 2 salários mínimos;48128;domicílios
+17.1.1.5;Mais de 2 a 5 salários mínimos;123604;domicílios
+17.1.1.6;Mais de 5 a 10 salários mínimos;81657;domicílios
+17.1.1.7;Mais de 10 a 20 salários mínimos;40965;domicílios
+17.1.1.8;Mais de 20 salários mínimos;20161;domicílios
+17.1.1.9;Sem declaração;;domicílios
+17.1.2;Condição de ocupação do domicílio;;
+17.1.2.1;Alugado;69221;domicílios
+17.1.2.2;Cedido;18826;domicílios
+17.1.2.2.1;Por empregador;3301;domicílios
+17.1.2.2.2;De outra forma;15525;domicílios
+17.1.2.3;Próprio;255903;domicílios
+17.1.2.3.1;Já quitado;223310;domicílios
+17.1.2.3.2;Em aquisição;32593;domicílios
+17.1.2.4;Outra condição;4318;domicílios
+17.1.3;Destino do lixo;;
+17.1.3.1;Coletado;346702;domicílios
+17.1.3.1.1;Por serviço de limpeza;332599;domicílios
+17.1.3.1.2;Em caçamba de serviço de limpeza;14103;domicílios
+17.1.3.2;Enterrado (na propriedade);78;domicílios
+17.1.3.3;Jogado em rio, lago ou mar;59;domicílios
+17.1.3.4;Jogado em terreno baldio ou logradouro;351;domicílios
+17.1.3.5;Queimado (na propriedade);803;domicílios
+17.1.3.6;Outro destino;275;domicílios
+17.1.4;Forma de abastecimento de água;;
+17.1.4.1;Poço ou nascente na propriedade;4547;domicílios
+17.1.4.2;Poço ou nascente fora da propriedade;1071;domicílios
+17.1.4.3;Rede geral;341754;domicílios
+17.1.4.4;Outra forma;;
+17.1.4.4.1;Água da chuva armazenada em cisterna;7;domicílios
+17.1.4.4.2;Água da chuva armazenada de outra forma;8;domicílios
+17.1.4.4.3;Carro-pipa;104;domicílios
+17.1.4.4.4;Poço ou nascente na aldeia;;domicílios
+17.1.4.4.5;Poço ou nascente fora da aldeia;;domicílios
+17.1.4.4.6;Rio, açude, lago ou igarapé;24;domicílios
+17.1.4.4.7;Outra;753;domicílios
+17.1.5;Existência de banheiro ou sanitário e esgotamento sanitário;;
+17.1.5.1;Tinham banheiro;;
+17.1.5.1.1;Uso exclusivo do domicílio;346587;domicílios
+17.1.5.1.1.1;Tipo de esgotamento sanitário;;
+17.1.5.1.1.1.1;Rede geral de esgoto ou pluvial;299177;domicílios
+17.1.5.1.1.1.2;Fossa séptica;19656;domicílios
+17.1.5.1.1.1.3;Outro escoadouro;;
+17.1.5.1.1.1.3.1;Fossa rudimentar;15693;domicílios
+17.1.5.1.1.1.3.2;Vala;1640;domicílios
+17.1.5.1.1.1.3.3;Rio, lago ou mar;9763;domicílios
+17.1.5.1.1.1.3.4;Outro;658;domicílios
+17.1.5.2;Tinham sanitário;1549;domicílios
+17.1.5.2.1;Tipo de esgotamento sanitário;;
+17.1.5.2.1.1;Rede geral de esgoto ou pluvial;1002;domicílios
+17.1.5.2.1.2;Fossa séptica;57;domicílios
+17.1.5.2.1.3;Outro escoadouro;;
+17.1.5.2.1.3.1;Fossa rudimentar;217;domicílios
+17.1.5.2.1.3.2;Vala;162;domicílios
+17.1.5.2.1.3.3;Rio, lago ou mar;;
+17.1.5.2.1.3.4;Outro;17;domicílios
+17.1.5.3;Não tinham banheiro nem sanitário;132;domicílios
+17.1.6;Existência de energia elétrica;;
+17.1.6.1;Tinham;348155;domicílios
+17.1.6.1.1;De companhia distribuidora;345426;domicílios
+17.1.6.1.1.1;Com medidor;335878;domicílios
+17.1.6.1.1.1.1;Comum a mais de um domicílio;27545;domicílios
+17.1.6.1.1.1.2;Uso exclusivo;308333;domicílios
+17.1.6.1.1.2;Sem medidor;9548;domicílios
+17.1.6.1.2;De outra fonte;2729;domicílios
+17.1.6.2;Não tinham;113;domicílios
+17.1.7;Número de moradores;;
+17.1.7.1;1 morador;48687;domicílios
+17.1.7.1.1;Sexo;;
+17.1.7.1.1.1;Masculino;21510;domicílios
+17.1.7.1.1.2;Feminino;27177;domicílios
+17.1.7.2;2 moradores;87532;domicílios
+17.1.7.2.1;Sexo;;
+17.1.7.2.1.1;Masculino;49655;domicílios
+17.1.7.2.1.2;Feminino;37877;domicílios
+17.1.7.3;3 moradores;87969;domicílios
+17.1.7.3.1;Sexo;;
+17.1.7.3.1.1;Masculino;55980;domicílios
+17.1.7.3.1.2;Feminino;31989;domicílios
+17.1.7.4;4 moradores;72222;domicílios
+17.1.7.4.1;Sexo;;
+17.1.7.4.1.1;Masculino;49532;domicílios
+17.1.7.4.1.2;Feminino;22690;domicílios
+17.1.7.5;5 moradores;31014;domicílios
+17.1.7.5.1;Sexo;;
+17.1.7.5.1.1;Masculino;20380;domicílios
+17.1.7.5.1.2;Feminino;10634;domicílios
+17.1.7.6;6 moradores;11744;domicílios
+17.1.7.6.1;Sexo;;
+17.1.7.6.1.1;Masculino;7292;domicílios
+17.1.7.6.1.2;Feminino;4452;domicílios
+17.1.7.7;7 moradores;4937;domicílios
+17.1.7.7.1;Sexo;;
+17.1.7.7.1.1;Masculino;2871;domicílios
+17.1.7.7.1.2;Feminino;2066;domicílios
+17.1.7.8;8 moradores;2137;domicílios
+17.1.7.8.1;Sexo;;
+17.1.7.8.1.1;Masculino;1196;domicílios
+17.1.7.8.1.2;Feminino;941;domicílios
+17.1.7.9;9 moradores;1027;domicílios
+17.1.7.9.1;Sexo;;
+17.1.7.9.1.1;Masculino;531;domicílios
+17.1.7.9.1.2;Feminino;496;domicílios
+17.1.7.10;10 moradores;532;domicílios
+17.1.7.10.1;Sexo;;
+17.1.7.10.1.1;Masculino;278;domicílios
+17.1.7.10.1.2;Feminino;254;domicílios
+17.1.7.11;11 moradores ou mais;467;domicílios
+17.1.7.11.1;Sexo;;
+17.1.7.11.1.1;Masculino;217;domicílios
+17.1.7.11.1.2;Feminino;250;domicílios
+17.1.8;Tipo de domicílio;;
+17.1.8.1;Apartamento;85011;domicílios
+17.1.8.2;Casa;252029;domicílios
+17.1.8.3;Casa de vila ou em condomínio;9879;domicílios
+17.1.8.4;Habitação em casa de cômodo, cortiço ou cabeça de porco;1349;domicílios
+17.1.8.5;Oca ou maloca;;domicílios
+17.2;Pessoas de 10 anos ou mais de idade;;
+17.2.1;Classe de rendimento nominal mensal;;
+17.2.1.1;Sem rendimento;316025;pessoas
+17.2.1.1.1;Sexo;;
+17.2.1.1.1.1;Masculino;116874;pessoas
+17.2.1.1.1.2;Feminino;199151;pessoas
+17.2.1.2;Até 1/4 de salário mínimo;4234;pessoas
+17.2.1.2.1;Sexo;;
+17.2.1.2.1.1;Masculino;1195;pessoas
+17.2.1.2.1.2;Feminino;3039;pessoas
+17.2.1.3;Mais de 1/4 a 1/2 salário mínimo;6175;pessoas
+17.2.1.3.1;Sexo;;
+17.2.1.3.1.1;Masculino;1903;pessoas
+17.2.1.3.1.2;Feminino;4272;pessoas
+17.2.1.4;Mais de 1/2 a 1 salário mínimo;98779;pessoas
+17.2.1.4.1;Sexo;;
+17.2.1.4.1.1;Masculino;35863;pessoas
+17.2.1.4.1.2;Feminino;62916;pessoas
+17.2.1.5;Mais de 1 a 2 salários mínimos;225561;pessoas
+17.2.1.5.1;Sexo;;
+17.2.1.5.1.1;Masculino;115117;pessoas
+17.2.1.5.1.2;Feminino;110444;pessoas
+17.2.1.6;Mais de 2 a 3 salários mínimos;98604;pessoas
+17.2.1.6.1;Sexo;;
+17.2.1.6.1.1;Masculino;59710;pessoas
+17.2.1.6.1.2;Feminino;38894;pessoas
+17.2.1.7;Mais de 3 a 5 salários mínimos;89329;pessoas
+17.2.1.7.1;Sexo;;
+17.2.1.7.1.1;Masculino;53320;pessoas
+17.2.1.7.1.2;Feminino;36009;pessoas
+17.2.1.8;Mais de 5 a 10 salários mínimos;72281;pessoas
+17.2.1.8.1;Sexo;;
+17.2.1.8.1.1;Masculino;42961;pessoas
+17.2.1.8.1.2;Feminino;29320;pessoas
+17.2.1.9;Mais de 10 a 15 salários mínimos;15662;pessoas
+17.2.1.9.1;Sexo;;
+17.2.1.9.1.1;Masculino;10094;pessoas
+17.2.1.9.1.2;Feminino;5568;pessoas
+17.2.1.10;Mais de 15 a 20 salários mínimos;13437;pessoas
+17.2.1.10.1;Sexo;;
+17.2.1.10.1.1;Masculino;9576;pessoas
+17.2.1.10.1.2;Feminino;3861;pessoas
+17.2.1.11;Mais de 20 a 30 salários mínimos;6835;pessoas
+17.2.1.11.1;Sexo;;
+17.2.1.11.1.1;Masculino;5280;pessoas
+17.2.1.11.1.2;Feminino;1555;pessoas
+17.2.1.12;Mais de 30 salários mínimos;3536;pessoas
+17.2.1.12.1;Sexo;;
+17.2.1.12.1.1;Masculino;2861;pessoas
+17.2.1.12.1.2;Feminino;675;pessoas
+17.2.1.13;Sem declaração;;pessoas
+17.2.1.13.1;Sexo;;
+17.2.1.13.1.1;Masculino;;pessoas
+17.2.1.13.1.2;Feminino;;pessoas
+17.2.2;Cor ou raça;;
+17.2.2.1;Amarela;;
+17.2.2.1.1;Classe de rendimento nominal mensal;;
+17.2.2.1.1.1;Sem rendimento;3895;pessoas
+17.2.2.1.1.2;Até 1/4 de salário mínimo;22;pessoas
+17.2.2.1.1.3;Mais de 1/4 a 1/2 salário mínimo;50;pessoas
+17.2.2.1.1.4;Mais de 1/2 a 1 salário mínimo;1041;pessoas
+17.2.2.1.1.5;Mais de 1 a 2 salários mínimos;2088;pessoas
+17.2.2.1.1.6;Mais de 2 a 3 salários mínimos;1149;pessoas
+17.2.2.1.1.7;Mais de 3 a 5 salários mínimos;1422;pessoas
+17.2.2.1.1.8;Mais de 5 a 10 salários mínimos;1592;pessoas
+17.2.2.1.1.9;Mais de 10 a 15 salários mínimos;398;pessoas
+17.2.2.1.1.10;Mais de 15 a 20 salários mínimos;342;pessoas
+17.2.2.1.1.11;Mais de 20 a 30 salários mínimos;206;pessoas
+17.2.2.1.1.12;Mais de 30 salários mínimos;86;pessoas
+17.2.2.1.1.13;Sem declaração;;pessoas
+17.2.2.2;Branca;;
+17.2.2.2.1;Classe de rendimento nominal mensal;;
+17.2.2.2.1.1;Sem rendimento;200487;pessoas
+17.2.2.2.1.2;Até 1/4 de salário mínimo;1766;pessoas
+17.2.2.2.1.3;Mais de 1/4 a 1/2 salário mínimo;2916;pessoas
+17.2.2.2.1.4;Mais de 1/2 a 1 salário mínimo;55572;pessoas
+17.2.2.2.1.5;Mais de 1 a 2 salários mínimos;133252;pessoas
+17.2.2.2.1.6;Mais de 2 a 3 salários mínimos;69438;pessoas
+17.2.2.2.1.7;Mais de 3 a 5 salários mínimos;70803;pessoas
+17.2.2.2.1.8;Mais de 5 a 10 salários mínimos;62842;pessoas
+17.2.2.2.1.9;Mais de 10 a 15 salários mínimos;14162;pessoas
+17.2.2.2.1.10;Mais de 15 a 20 salários mínimos;12454;pessoas
+17.2.2.2.1.11;Mais de 20 a 30 salários mínimos;6381;pessoas
+17.2.2.2.1.12;Mais de 30 salários mínimos;3324;pessoas
+17.2.2.2.1.13;Sem declaração;;pessoas
+17.2.2.3;Indígena;;
+17.2.2.3.1;Classe de rendimento nominal mensal;;
+17.2.2.3.1.1;Sem rendimento;307;pessoas
+17.2.2.3.1.2;Até 1/4 de salário mínimo;9;pessoas
+17.2.2.3.1.3;Mais de 1/4 a 1/2 salário mínimo;17;pessoas
+17.2.2.3.1.4;Mais de 1/2 a 1 salário mínimo;117;pessoas
+17.2.2.3.1.5;Mais de 1 a 2 salários mínimos;253;pessoas
+17.2.2.3.1.6;Mais de 2 a 3 salários mínimos;105;pessoas
+17.2.2.3.1.7;Mais de 3 a 5 salários mínimos;98;pessoas
+17.2.2.3.1.8;Mais de 5 a 10 salários mínimos;49;pessoas
+17.2.2.3.1.9;Mais de 10 a 15 salários mínimos;13;pessoas
+17.2.2.3.1.10;Mais de 15 a 20 salários mínimos;3;pessoas
+17.2.2.3.1.11;Mais de 20 a 30 salários mínimos;6;pessoas
+17.2.2.3.1.12;Mais de 30 salários mínimos;5;pessoas
+17.2.2.3.1.13;Sem declaração;;pessoas
+17.2.2.4;Parda;;
+17.2.2.4.1;Classe de rendimento nominal mensal;;
+17.2.2.4.1.1;Sem rendimento;89472;pessoas
+17.2.2.4.1.2;Até 1/4 de salário mínimo;1940;pessoas
+17.2.2.4.1.3;Mais de 1/4 a 1/2 salário mínimo;2527;pessoas
+17.2.2.4.1.4;Mais de 1/2 a 1 salário mínimo;32008;pessoas
+17.2.2.4.1.5;Mais de 1 a 2 salários mínimos;69221;pessoas
+17.2.2.4.1.6;Mais de 2 a 3 salários mínimos;20811;pessoas
+17.2.2.4.1.7;Mais de 3 a 5 salários mínimos;12403;pessoas
+17.2.2.4.1.8;Mais de 5 a 10 salários mínimos;5583;pessoas
+17.2.2.4.1.9;Mais de 10 a 15 salários mínimos;801;pessoas
+17.2.2.4.1.10;Mais de 15 a 20 salários mínimos;495;pessoas
+17.2.2.4.1.11;Mais de 20 a 30 salários mínimos;195;pessoas
+17.2.2.4.1.12;Mais de 30 salários mínimos;90;pessoas
+17.2.2.4.1.13;Sem declaração;;pessoas
+17.2.2.5;Preta;;
+17.2.2.5.1;Classe de rendimento nominal mensal;;
+17.2.2.5.1.1;Sem rendimento;21820;pessoas
+17.2.2.5.1.2;Até 1/4 de salário mínimo;497;pessoas
+17.2.2.5.1.3;Mais de 1/4 a 1/2 salário mínimo;662;pessoas
+17.2.2.5.1.4;Mais de 1/2 a 1 salário mínimo;10024;pessoas
+17.2.2.5.1.5;Mais de 1 a 2 salários mínimos;20721;pessoas
+17.2.2.5.1.6;Mais de 2 a 3 salários mínimos;7086;pessoas
+17.2.2.5.1.7;Mais de 3 a 5 salários mínimos;4586;pessoas
+17.2.2.5.1.8;Mais de 5 a 10 salários mínimos;2203;pessoas
+17.2.2.5.1.9;Mais de 10 a 15 salários mínimos;286;pessoas
+17.2.2.5.1.10;Mais de 15 a 20 salários mínimos;142;pessoas
+17.2.2.5.1.11;Mais de 20 a 30 salários mínimos;46;pessoas
+17.2.2.5.1.12;Mais de 30 salários mínimos;30;pessoas
+17.2.2.5.1.13;Sem declaração;;pessoas
+17.2.2.6;Sem declaração;;
+17.2.2.6.1;Classe de rendimento nominal mensal;;
+17.2.2.6.1.1;Sem rendimento;44;pessoas
+17.2.2.6.1.2;Até 1/4 de salário mínimo;;pessoas
+17.2.2.6.1.3;Mais de 1/4 a 1/2 salário mínimo;3;pessoas
+17.2.2.6.1.4;Mais de 1/2 a 1 salário mínimo;17;pessoas
+17.2.2.6.1.5;Mais de 1 a 2 salários mínimos;26;pessoas
+17.2.2.6.1.6;Mais de 2 a 3 salários mínimos;15;pessoas
+17.2.2.6.1.7;Mais de 3 a 5 salários mínimos;17;pessoas
+17.2.2.6.1.8;Mais de 5 a 10 salários mínimos;12;pessoas
+17.2.2.6.1.9;Mais de 10 a 15 salários mínimos;2;pessoas
+17.2.2.6.1.10;Mais de 15 a 20 salários mínimos;1;pessoas
+17.2.2.6.1.11;Mais de 20 a 30 salários mínimos;1;pessoas
+17.2.2.6.1.12;Mais de 30 salários mínimos;1;pessoas
+17.2.2.6.1.13;Sem declaração;;pessoas
+17.3;População residente;;
+17.3.1;Condição de alfabetizado;;
+17.3.1.1;Alfabetizado;968404;pessoas
+17.3.1.1.1;Grupo de idade;;
+17.3.1.1.1.1;10 anos ou mais;920667;pessoas
+17.3.1.1.1.1.1;Sexo;;
+17.3.1.1.1.1.1.1;Masculino;442528;pessoas
+17.3.1.1.1.1.1.2;Feminino;478139;pessoas
+17.3.1.1.1.2;15 anos ou mais;843425;pessoas
+17.3.1.1.1.2.1;Sexo;;
+17.3.1.1.1.2.1.1;Masculino;403465;pessoas
+17.3.1.1.1.2.1.2;Feminino;439960;pessoas
+17.3.1.1.1.3;5 a 9 anos;47737;pessoas
+17.3.1.1.1.3.1;Sexo;;
+17.3.1.1.1.3.1.1;Masculino;24034;pessoas
+17.3.1.1.1.3.1.2;Feminino;23703;pessoas
+17.3.1.1.1.4;10 a 14 anos;77242;pessoas
+17.3.1.1.1.4.1;Sexo;;
+17.3.1.1.1.4.1.1;Masculino;39063;pessoas
+17.3.1.1.1.4.1.2;Feminino;38179;pessoas
+17.3.1.1.1.5;20 a 24 anos;96009;pessoas
+17.3.1.1.1.5.1;Sexo;;
+17.3.1.1.1.5.1.1;Masculino;47727;pessoas
+17.3.1.1.1.5.1.2;Feminino;48282;pessoas
+17.3.1.1.1.6;25 a 29 anos;103082;pessoas
+17.3.1.1.1.6.1;Sexo;;
+17.3.1.1.1.6.1.1;Masculino;50551;pessoas
+17.3.1.1.1.6.1.2;Feminino;52531;pessoas
+17.3.1.1.1.7;30 a 34 anos;95269;pessoas
+17.3.1.1.1.7.1;Sexo;;
+17.3.1.1.1.7.1.1;Masculino;46558;pessoas
+17.3.1.1.1.7.1.2;Feminino;48711;pessoas
+17.3.1.1.1.8;35 a 39 anos;82621;pessoas
+17.3.1.1.1.8.1;Sexo;;
+17.3.1.1.1.8.1.1;Masculino;39991;pessoas
+17.3.1.1.1.8.1.2;Feminino;42630;pessoas
+17.3.1.1.1.9;40 a 44 anos;77322;pessoas
+17.3.1.1.1.9.1;Sexo;;
+17.3.1.1.1.9.1.1;Masculino;36953;pessoas
+17.3.1.1.1.9.1.2;Feminino;40369;pessoas
+17.3.1.1.1.10;45 a 49 anos;71384;pessoas
+17.3.1.1.1.10.1;Sexo;;
+17.3.1.1.1.10.1.1;Masculino;33661;pessoas
+17.3.1.1.1.10.1.2;Feminino;37723;pessoas
+17.3.1.1.1.11;50 a 54 anos;64748;pessoas
+17.3.1.1.1.11.1;Sexo;;
+17.3.1.1.1.11.1.1;Masculino;30391;pessoas
+17.3.1.1.1.11.1.2;Feminino;34357;pessoas
+17.3.1.1.1.12;55 a 59 anos;52300;pessoas
+17.3.1.1.1.12.1;Sexo;;
+17.3.1.1.1.12.1.1;Masculino;24320;pessoas
+17.3.1.1.1.12.1.2;Feminino;27980;pessoas
+17.3.1.1.1.13;60 a 64 anos;39454;pessoas
+17.3.1.1.1.13.1;Sexo;;
+17.3.1.1.1.13.1.1;Masculino;18078;pessoas
+17.3.1.1.1.13.1.2;Feminino;21376;pessoas
+17.3.1.1.1.14;65 a 69 anos;27970;pessoas
+17.3.1.1.1.14.1;Sexo;;
+17.3.1.1.1.14.1.1;Masculino;12861;pessoas
+17.3.1.1.1.14.1.2;Feminino;15109;pessoas
+17.3.1.1.1.15;70 a 74 anos;21495;pessoas
+17.3.1.1.1.15.1;Sexo;;
+17.3.1.1.1.15.1.1;Masculino;9599;pessoas
+17.3.1.1.1.15.1.2;Feminino;11896;pessoas
+17.3.1.1.1.16;75 a 79 anos;14731;pessoas
+17.3.1.1.1.16.1;Sexo;;
+17.3.1.1.1.16.1.1;Masculino;6134;pessoas
+17.3.1.1.1.16.1.2;Feminino;8597;pessoas
+17.3.1.1.1.17;80 a 89 anos;13971;pessoas
+17.3.1.1.1.17.1;Sexo;;
+17.3.1.1.1.17.1.1;Masculino;5111;pessoas
+17.3.1.1.1.17.1.2;Feminino;8860;pessoas
+17.3.1.1.1.18;90 a 99 anos;2005;pessoas
+17.3.1.1.1.18.1;Sexo;;
+17.3.1.1.1.18.1.1;Masculino;614;pessoas
+17.3.1.1.1.18.1.2;Feminino;1391;pessoas
+17.3.1.1.1.19;100 anos ou mais;63;pessoas
+17.3.1.1.1.19.1;Sexo;;
+17.3.1.1.1.19.1.1;Masculino;21;pessoas
+17.3.1.1.1.19.1.2;Feminino;42;pessoas
+17.3.1.1.2;Sexo;;
+17.3.1.1.2.1;Masculino;466562;pessoas
+17.3.1.1.2.1.1;Situação domiciliar;;
+17.3.1.1.2.1.1.1;Urbana;458610;pessoas
+17.3.1.1.2.1.1.2;Rural;7952;pessoas
+17.3.1.1.2.2;Feminino;501842;pessoas
+17.3.1.1.2.2.1;Situação domiciliar;;
+17.3.1.1.2.2.1.1;Urbana;494062;pessoas
+17.3.1.1.2.2.1.2;Rural;7780;pessoas
+17.3.1.1.3;Situação domiciliar;;
+17.3.1.1.3.1;Urbana;952672;pessoas
+17.3.1.1.3.2;Rural;15732;pessoas
+17.3.2;Condição no domicílio;;
+17.3.2.1;Pessoa responsável;348599;pessoas
+17.3.2.1.1;Sexo;;
+17.3.2.1.1.1;Masculino;209684;pessoas
+17.3.2.1.1.2;Feminino;138915;pessoas
+17.3.2.1.2;Compartilhamento da responsabilidade pelo domicílio;;
+17.3.2.1.2.1;Sem responsabilidade compartilhada;238339;pessoas
+17.3.2.1.2.1.1;Sexo;;
+17.3.2.1.2.1.1.1;Masculino;139747;pessoas
+17.3.2.1.2.1.1.2;Feminino;98592;pessoas
+17.3.2.1.2.2;Com responsabilidade compartilhada;110036;pessoas
+17.3.2.1.2.2.1;Sexo;;
+17.3.2.1.2.2.1.1;Masculino;69808;pessoas
+17.3.2.1.2.2.1.2;Feminino;40228;pessoas
+17.3.2.2;Cônjuge ou companheiro(a);221213;pessoas
+17.3.2.2.1;Cônjuge ou companheiro(a) de sexo diferente;220581;pessoas
+17.3.2.2.1.1;Sexo;;
+17.3.2.2.1.1.1;Masculino;51605;pessoas
+17.3.2.2.1.1.2;Feminino;168976;pessoas
+17.3.2.2.2;Cônjuge ou companheiro(a) do mesmo sexo;632;pessoas
+17.3.2.2.2.1;Sexo;;
+17.3.2.2.2.1.1;Masculino;368;pessoas
+17.3.2.2.2.1.2;Feminino;264;pessoas
+17.3.2.2.3;Sexo;;
+17.3.2.2.3.1;Masculino;51973;pessoas
+17.3.2.2.3.2;Feminino;169240;pessoas
+17.3.2.3;Agregado(a);2270;pessoas
+17.3.2.3.1;Sexo;;
+17.3.2.3.1.1;Masculino;1243;pessoas
+17.3.2.3.1.2;Feminino;1027;pessoas
+17.3.2.4;Avô ou avó;988;pessoas
+17.3.2.4.1;Sexo;;
+17.3.2.4.1.1;Masculino;218;pessoas
+17.3.2.4.1.2;Feminino;770;pessoas
+17.3.2.5;Bisneto(a);979;pessoas
+17.3.2.5.1;Sexo;;
+17.3.2.5.1.1;Masculino;493;pessoas
+17.3.2.5.1.2;Feminino;486;pessoas
+17.3.2.6;Enteado(a);12699;pessoas
+17.3.2.6.1;Sexo;;
+17.3.2.6.1.1;Masculino;6698;pessoas
+17.3.2.6.1.2;Feminino;6001;pessoas
+17.3.2.7;Filho(a);354816;pessoas
+17.3.2.7.1;Filiação da pessoa responsável e do cônjuge;248760;pessoas
+17.3.2.7.1.1;Sexo;;
+17.3.2.7.1.1.1;Masculino;129560;pessoas
+17.3.2.7.1.1.2;Feminino;119200;pessoas
+17.3.2.7.2;Filiação somente da pessoa responsável;106056;pessoas
+17.3.2.7.2.1;Sexo;;
+17.3.2.7.2.1.1;Masculino;54697;pessoas
+17.3.2.7.2.1.2;Feminino;51359;pessoas
+17.3.2.7.3;Sexo;;
+17.3.2.7.3.1;Masculino;184257;pessoas
+17.3.2.7.3.2;Feminino;170559;pessoas
+17.3.2.8;Genro ou nora;11811;pessoas
+17.3.2.8.1;Sexo;;
+17.3.2.8.1.1;Masculino;6077;pessoas
+17.3.2.8.1.2;Feminino;5734;pessoas
+17.3.2.9;Irmão ou irmã;22401;pessoas
+17.3.2.9.1;Sexo;;
+17.3.2.9.1.1;Masculino;11415;pessoas
+17.3.2.9.1.2;Feminino;10986;pessoas
+17.3.2.10;Neto(a);37750;pessoas
+17.3.2.10.1;Sexo;;
+17.3.2.10.1.1;Masculino;19624;pessoas
+17.3.2.10.1.2;Feminino;18126;pessoas
+17.3.2.11;Pai, mãe, padrasto ou madrasta;21290;pessoas
+17.3.2.11.1;Sexo;;
+17.3.2.11.1.1;Masculino;6283;pessoas
+17.3.2.11.1.2;Feminino;15007;pessoas
+17.3.2.12;Sogro(a);4825;pessoas
+17.3.2.12.1;Sexo;;
+17.3.2.12.1.1;Masculino;1133;pessoas
+17.3.2.12.1.2;Feminino;3692;pessoas
+17.3.2.13;Outro parente;21728;pessoas
+17.3.2.13.1;Sexo;;
+17.3.2.13.1.1;Masculino;11558;pessoas
+17.3.2.13.1.2;Feminino;10170;pessoas
+17.3.2.14;Convivente;11750;pessoas
+17.3.2.14.1;Sexo;;
+17.3.2.14.1.1;Masculino;6675;pessoas
+17.3.2.14.1.2;Feminino;5075;pessoas
+17.3.2.15;Empregado(a) doméstico(a);970;pessoas
+17.3.2.15.1;Sexo;;
+17.3.2.15.1.1;Masculino;84;pessoas
+17.3.2.15.1.2;Feminino;886;pessoas
+17.3.2.16;Individual em domicílio coletivo;5155;pessoas
+17.3.2.16.1;Sexo;;
+17.3.2.16.1.1;Masculino;2916;pessoas
+17.3.2.16.1.2;Feminino;2239;pessoas
+17.3.2.17;Parente do(a) empregado(a) doméstico(a);70;pessoas
+17.3.2.17.1;Sexo;;
+17.3.2.17.1.1;Masculino;39;pessoas
+17.3.2.17.1.2;Feminino;31;pessoas
+17.3.2.18;Pensionista;799;pessoas
+17.3.2.18.1;Sexo;;
+17.3.2.18.1.1;Masculino;495;pessoas
+17.3.2.18.1.2;Feminino;304;pessoas
+17.3.3;Cor ou raça;;
+17.3.3.1;Amarela;;
+17.3.3.1.1;Condição de alfabetizado;;
+17.3.3.1.1.1;Alfabetizado;12477;pessoas
+17.3.3.1.1.1.1;Sexo;;
+17.3.3.1.1.1.1.1;Masculino;6017;pessoas
+17.3.3.1.1.1.1.2;Feminino;6460;pessoas
+17.3.3.1.2;Grupo de idade;;
+17.3.3.1.2.1;0 a 4 anos;446;pessoas
+17.3.3.1.2.2;5 a 9 anos;538;pessoas
+17.3.3.1.2.3;10 a 14 anos;614;pessoas
+17.3.3.1.2.4;15 a 19 anos;763;pessoas
+17.3.3.1.2.4.1;15 a 17 anos;411;pessoas
+17.3.3.1.2.4.2;18 ou 19 anos;352;pessoas
+17.3.3.1.2.5;20 a 24 anos;1047;pessoas
+17.3.3.1.2.6;25 a 29 anos;1320;pessoas
+17.3.3.1.2.7;30 a 34 anos;1146;pessoas
+17.3.3.1.2.8;35 a 39 anos;1005;pessoas
+17.3.3.1.2.9;40 a 44 anos;993;pessoas
+17.3.3.1.2.10;45 a 49 anos;920;pessoas
+17.3.3.1.2.11;50 a 54 anos;905;pessoas
+17.3.3.1.2.12;55 a 59 anos;889;pessoas
+17.3.3.1.2.13;60 a 64 anos;806;pessoas
+17.3.3.1.2.14;65 a 69 anos;671;pessoas
+17.3.3.1.2.15;70 a 74 anos;517;pessoas
+17.3.3.1.2.16;75 a 79 anos;319;pessoas
+17.3.3.1.2.17;80 a 89 anos;321;pessoas
+17.3.3.1.2.18;90 a 99 anos;52;pessoas
+17.3.3.1.2.19;100 anos ou mais;3;pessoas
+17.3.3.2;Branca;;
+17.3.3.2.1;Condição de alfabetizado;;
+17.3.3.2.1.1;Alfabetizado;650394;pessoas
+17.3.3.2.1.1.1;Sexo;;
+17.3.3.2.1.1.1.1;Masculino;307274;pessoas
+17.3.3.2.1.1.1.2;Feminino;343120;pessoas
+17.3.3.2.2;Grupo de idade;;
+17.3.3.2.2.1;0 a 4 anos;42253;pessoas
+17.3.3.2.2.2;5 a 9 anos;40736;pessoas
+17.3.3.2.2.3;10 a 14 anos;45634;pessoas
+17.3.3.2.2.4;15 a 19 anos;48910;pessoas
+17.3.3.2.2.4.1;15 a 17 anos;28417;pessoas
+17.3.3.2.2.4.2;18 ou 19 anos;20493;pessoas
+17.3.3.2.2.5;20 a 24 anos;60840;pessoas
+17.3.3.2.2.6;25 a 29 anos;68010;pessoas
+17.3.3.2.2.7;30 a 34 anos;62794;pessoas
+17.3.3.2.2.8;35 a 39 anos;54652;pessoas
+17.3.3.2.2.9;40 a 44 anos;52626;pessoas
+17.3.3.2.2.10;45 a 49 anos;50847;pessoas
+17.3.3.2.2.11;50 a 54 anos;47095;pessoas
+17.3.3.2.2.12;55 a 59 anos;39629;pessoas
+17.3.3.2.2.13;60 a 64 anos;31180;pessoas
+17.3.3.2.2.14;65 a 69 anos;23071;pessoas
+17.3.3.2.2.15;70 a 74 anos;18583;pessoas
+17.3.3.2.2.16;75 a 79 anos;13596;pessoas
+17.3.3.2.2.17;80 a 89 anos;13791;pessoas
+17.3.3.2.2.18;90 a 99 anos;2076;pessoas
+17.3.3.2.2.19;100 anos ou mais;63;pessoas
+17.3.3.3;Indígena;;
+17.3.3.3.1;Condição de alfabetizado;;
+17.3.3.3.1.1;Alfabetizado;953;pessoas
+17.3.3.3.1.1.1;Sexo;;
+17.3.3.3.1.1.1.1;Masculino;479;pessoas
+17.3.3.3.1.1.1.2;Feminino;474;pessoas
+17.3.3.3.2;Grupo de idade;;
+17.3.3.3.2.1;0 a 4 anos;23;pessoas
+17.3.3.3.2.2;5 a 9 anos;38;pessoas
+17.3.3.3.2.3;10 a 14 anos;53;pessoas
+17.3.3.3.2.4;15 a 19 anos;65;pessoas
+17.3.3.3.2.4.1;15 a 17 anos;35;pessoas
+17.3.3.3.2.4.2;18 ou 19 anos;30;pessoas
+17.3.3.3.2.5;20 a 24 anos;102;pessoas
+17.3.3.3.2.6;25 a 29 anos;94;pessoas
+17.3.3.3.2.7;30 a 34 anos;96;pessoas
+17.3.3.3.2.8;35 a 39 anos;104;pessoas
+17.3.3.3.2.9;40 a 44 anos;85;pessoas
+17.3.3.3.2.10;45 a 49 anos;81;pessoas
+17.3.3.3.2.11;50 a 54 anos;86;pessoas
+17.3.3.3.2.12;55 a 59 anos;67;pessoas
+17.3.3.3.2.13;60 a 64 anos;49;pessoas
+17.3.3.3.2.14;65 a 69 anos;42;pessoas
+17.3.3.3.2.15;70 a 74 anos;31;pessoas
+17.3.3.3.2.16;75 a 79 anos;13;pessoas
+17.3.3.3.2.17;80 a 89 anos;12;pessoas
+17.3.3.3.2.18;90 a 99 anos;1;pessoas
+17.3.3.3.2.19;100 anos ou mais;1;pessoas
+17.3.3.4;Parda;;
+17.3.3.4.1;Condição de alfabetizado;;
+17.3.3.4.1.1;Alfabetizado;237352;pessoas
+17.3.3.4.1.1.1;Sexo;;
+17.3.3.4.1.1.1.1;Masculino;118874;pessoas
+17.3.3.4.1.1.1.2;Feminino;118478;pessoas
+17.3.3.4.2;Grupo de idade;;
+17.3.3.4.2.1;0 a 4 anos;18238;pessoas
+17.3.3.4.2.2;5 a 9 anos;20804;pessoas
+17.3.3.4.2.3;10 a 14 anos;26867;pessoas
+17.3.3.4.2.4;15 a 19 anos;25881;pessoas
+17.3.3.4.2.4.1;15 a 17 anos;15719;pessoas
+17.3.3.4.2.4.2;18 ou 19 anos;10162;pessoas
+17.3.3.4.2.5;20 a 24 anos;27711;pessoas
+17.3.3.4.2.6;25 a 29 anos;26941;pessoas
+17.3.3.4.2.7;30 a 34 anos;25004;pessoas
+17.3.3.4.2.8;35 a 39 anos;21925;pessoas
+17.3.3.4.2.9;40 a 44 anos;19583;pessoas
+17.3.3.4.2.10;45 a 49 anos;16308;pessoas
+17.3.3.4.2.11;50 a 54 anos;14348;pessoas
+17.3.3.4.2.12;55 a 59 anos;10637;pessoas
+17.3.3.4.2.13;60 a 64 anos;7445;pessoas
+17.3.3.4.2.14;65 a 69 anos;4938;pessoas
+17.3.3.4.2.15;70 a 74 anos;3567;pessoas
+17.3.3.4.2.16;75 a 79 anos;2221;pessoas
+17.3.3.4.2.17;80 a 89 anos;1853;pessoas
+17.3.3.4.2.18;90 a 99 anos;298;pessoas
+17.3.3.4.2.19;100 anos ou mais;19;pessoas
+17.3.3.5;Preta;;
+17.3.3.5.1;Condição de alfabetizado;;
+17.3.3.5.1.1;Alfabetizado;67098;pessoas
+17.3.3.5.1.1.1;Sexo;;
+17.3.3.5.1.1.1.1;Masculino;33853;pessoas
+17.3.3.5.1.1.1.2;Feminino;33245;pessoas
+17.3.3.5.2;Grupo de idade;;
+17.3.3.5.2.1;0 a 4 anos;2899;pessoas
+17.3.3.5.2.2;5 a 9 anos;3654;pessoas
+17.3.3.5.2.3;10 a 14 anos;5394;pessoas
+17.3.3.5.2.4;15 a 19 anos;6058;pessoas
+17.3.3.5.2.4.1;15 a 17 anos;3664;pessoas
+17.3.3.5.2.4.2;18 ou 19 anos;2394;pessoas
+17.3.3.5.2.5;20 a 24 anos;7106;pessoas
+17.3.3.5.2.6;25 a 29 anos;7673;pessoas
+17.3.3.5.2.7;30 a 34 anos;7565;pessoas
+17.3.3.5.2.8;35 a 39 anos;6417;pessoas
+17.3.3.5.2.9;40 a 44 anos;6009;pessoas
+17.3.3.5.2.10;45 a 49 anos;5339;pessoas
+17.3.3.5.2.11;50 a 54 anos;4707;pessoas
+17.3.3.5.2.12;55 a 59 anos;3580;pessoas
+17.3.3.5.2.13;60 a 64 anos;2789;pessoas
+17.3.3.5.2.14;65 a 69 anos;2029;pessoas
+17.3.3.5.2.15;70 a 74 anos;1499;pessoas
+17.3.3.5.2.16;75 a 79 anos;943;pessoas
+17.3.3.5.2.17;80 a 89 anos;833;pessoas
+17.3.3.5.2.18;90 a 99 anos;150;pessoas
+17.3.3.5.2.19;100 anos ou mais;12;pessoas
+17.3.3.6;Sem declaração;;
+17.3.3.6.1;Condição de alfabetizado;;
+17.3.3.6.1.1;Alfabetizado;130;pessoas
+17.3.3.6.1.1.1;Sexo;;
+17.3.3.6.1.1.1.1;Masculino;65;pessoas
+17.3.3.6.1.1.1.2;Feminino;65;pessoas
+17.3.3.6.2;Grupo de idade;;
+17.3.3.6.2.1;0 a 4 anos;12;pessoas
+17.3.3.6.2.2;5 a 9 anos;14;pessoas
+17.3.3.6.2.3;10 a 14 anos;19;pessoas
+17.3.3.6.2.4;15 a 19 anos;13;pessoas
+17.3.3.6.2.4.1;15 a 17 anos;10;pessoas
+17.3.3.6.2.4.2;18 ou 19 anos;3;pessoas
+17.3.3.6.2.5;20 a 24 anos;12;pessoas
+17.3.3.6.2.6;25 a 29 anos;23;pessoas
+17.3.3.6.2.7;30 a 34 anos;11;pessoas
+17.3.3.6.2.8;35 a 39 anos;13;pessoas
+17.3.3.6.2.9;40 a 44 anos;14;pessoas
+17.3.3.6.2.10;45 a 49 anos;11;pessoas
+17.3.3.6.2.11;50 a 54 anos;8;pessoas
+17.3.3.6.2.12;55 a 59 anos;8;pessoas
+17.3.3.6.2.13;60 a 64 anos;1;pessoas
+17.3.3.6.2.14;65 a 69 anos;1;pessoas
+17.3.3.6.2.15;70 a 74 anos;3;pessoas
+17.3.3.6.2.16;75 a 79 anos;;pessoas
+17.3.3.6.2.17;80 a 89 anos;2;pessoas
+17.3.3.6.2.18;90 a 99 anos;;pessoas
+17.3.3.6.2.19;100 anos ou mais;;pessoas
+17.3.4;Grupo de idade;;
+17.3.4.1;Menos de 1 ano;13110;pessoas
+17.3.4.1.1;Grupo de idade;;
+17.3.4.1.1.1;Menos de 1 mês;980;pessoas
+17.3.4.1.1.1.1;Sexo;;
+17.3.4.1.1.1.1.1;Masculino;497;pessoas
+17.3.4.1.1.1.1.2;Feminino;483;pessoas
+17.3.4.1.1.2;1 mês;1038;pessoas
+17.3.4.1.1.2.1;Sexo;;
+17.3.4.1.1.2.1.1;Masculino;536;pessoas
+17.3.4.1.1.2.1.2;Feminino;502;pessoas
+17.3.4.1.1.3;2 meses;1132;pessoas
+17.3.4.1.1.3.1;Sexo;;
+17.3.4.1.1.3.1.1;Masculino;545;pessoas
+17.3.4.1.1.3.1.2;Feminino;587;pessoas
+17.3.4.1.1.4;3 meses;1089;pessoas
+17.3.4.1.1.4.1;Sexo;;
+17.3.4.1.1.4.1.1;Masculino;528;pessoas
+17.3.4.1.1.4.1.2;Feminino;561;pessoas
+17.3.4.1.1.5;4 meses;1174;pessoas
+17.3.4.1.1.5.1;Sexo;;
+17.3.4.1.1.5.1.1;Masculino;611;pessoas
+17.3.4.1.1.5.1.2;Feminino;563;pessoas
+17.3.4.1.1.6;5 meses;1054;pessoas
+17.3.4.1.1.6.1;Sexo;;
+17.3.4.1.1.6.1.1;Masculino;550;pessoas
+17.3.4.1.1.6.1.2;Feminino;504;pessoas
+17.3.4.1.1.7;6 meses;1135;pessoas
+17.3.4.1.1.7.1;Sexo;;
+17.3.4.1.1.7.1.1;Masculino;581;pessoas
+17.3.4.1.1.7.1.2;Feminino;554;pessoas
+17.3.4.1.1.8;7 meses;1087;pessoas
+17.3.4.1.1.8.1;Sexo;;
+17.3.4.1.1.8.1.1;Masculino;545;pessoas
+17.3.4.1.1.8.1.2;Feminino;542;pessoas
+17.3.4.1.1.9;8 meses;967;pessoas
+17.3.4.1.1.9.1;Sexo;;
+17.3.4.1.1.9.1.1;Masculino;482;pessoas
+17.3.4.1.1.9.1.2;Feminino;485;pessoas
+17.3.4.1.1.10;9 meses;1141;pessoas
+17.3.4.1.1.10.1;Sexo;;
+17.3.4.1.1.10.1.1;Masculino;547;pessoas
+17.3.4.1.1.10.1.2;Feminino;594;pessoas
+17.3.4.1.1.11;10 meses;1230;pessoas
+17.3.4.1.1.11.1;Sexo;;
+17.3.4.1.1.11.1.1;Masculino;622;pessoas
+17.3.4.1.1.11.1.2;Feminino;608;pessoas
+17.3.4.1.1.12;11 meses;1083;pessoas
+17.3.4.1.1.12.1;Sexo;;
+17.3.4.1.1.12.1.1;Masculino;568;pessoas
+17.3.4.1.1.12.1.2;Feminino;515;pessoas
+17.3.4.1.2;Sexo;;
+17.3.4.1.2.1;Masculino;6612;pessoas
+17.3.4.1.2.2;Feminino;6498;pessoas
+17.3.4.2;1 ano;12808;pessoas
+17.3.4.2.1;Sexo;;
+17.3.4.2.1.1;Masculino;6541;pessoas
+17.3.4.2.1.2;Feminino;6267;pessoas
+17.3.4.3;2 anos;12695;pessoas
+17.3.4.3.1;Sexo;;
+17.3.4.3.1.1;Masculino;6383;pessoas
+17.3.4.3.1.2;Feminino;6312;pessoas
+17.3.4.4;3 anos;12635;pessoas
+17.3.4.4.1;Sexo;;
+17.3.4.4.1.1;Masculino;6520;pessoas
+17.3.4.4.1.2;Feminino;6115;pessoas
+17.3.4.5;4 anos;12623;pessoas
+17.3.4.5.1;Sexo;;
+17.3.4.5.1.1;Masculino;6485;pessoas
+17.3.4.5.1.2;Feminino;6138;pessoas
+17.3.4.6;5 anos;12987;pessoas
+17.3.4.6.1;Sexo;;
+17.3.4.6.1.1;Masculino;6631;pessoas
+17.3.4.6.1.2;Feminino;6356;pessoas
+17.3.4.7;6 anos;12859;pessoas
+17.3.4.7.1;Sexo;;
+17.3.4.7.1.1;Masculino;6517;pessoas
+17.3.4.7.1.2;Feminino;6342;pessoas
+17.3.4.8;7 anos;12727;pessoas
+17.3.4.8.1;Sexo;;
+17.3.4.8.1.1;Masculino;6549;pessoas
+17.3.4.8.1.2;Feminino;6178;pessoas
+17.3.4.9;8 anos;13082;pessoas
+17.3.4.9.1;Sexo;;
+17.3.4.9.1.1;Masculino;6698;pessoas
+17.3.4.9.1.2;Feminino;6384;pessoas
+17.3.4.10;9 anos;14129;pessoas
+17.3.4.10.1;Sexo;;
+17.3.4.10.1.1;Masculino;7175;pessoas
+17.3.4.10.1.2;Feminino;6954;pessoas
+17.3.4.11;10 anos;15777;pessoas
+17.3.4.11.1;Sexo;;
+17.3.4.11.1.1;Masculino;7970;pessoas
+17.3.4.11.1.2;Feminino;7807;pessoas
+17.3.4.12;11 anos;15099;pessoas
+17.3.4.12.1;Sexo;;
+17.3.4.12.1.1;Masculino;7749;pessoas
+17.3.4.12.1.2;Feminino;7350;pessoas
+17.3.4.13;12 anos;15814;pessoas
+17.3.4.13.1;Sexo;;
+17.3.4.13.1.1;Masculino;8065;pessoas
+17.3.4.13.1.2;Feminino;7749;pessoas
+17.3.4.14;13 anos;15781;pessoas
+17.3.4.14.1;Sexo;;
+17.3.4.14.1.1;Masculino;7989;pessoas
+17.3.4.14.1.2;Feminino;7792;pessoas
+17.3.4.15;14 anos;16110;pessoas
+17.3.4.15.1;Sexo;;
+17.3.4.15.1.1;Masculino;8118;pessoas
+17.3.4.15.1.2;Feminino;7992;pessoas
+17.3.4.16;15 anos;16483;pessoas
+17.3.4.16.1;Sexo;;
+17.3.4.16.1.1;Masculino;8324;pessoas
+17.3.4.16.1.2;Feminino;8159;pessoas
+17.3.4.17;16 anos;15848;pessoas
+17.3.4.17.1;Sexo;;
+17.3.4.17.1.1;Masculino;8008;pessoas
+17.3.4.17.1.2;Feminino;7840;pessoas
+17.3.4.18;17 anos;15925;pessoas
+17.3.4.18.1;Sexo;;
+17.3.4.18.1.1;Masculino;8087;pessoas
+17.3.4.18.1.2;Feminino;7838;pessoas
+17.3.4.19;18 anos;16439;pessoas
+17.3.4.19.1;Sexo;;
+17.3.4.19.1.1;Masculino;8267;pessoas
+17.3.4.19.1.2;Feminino;8172;pessoas
+17.3.4.20;19 anos;16995;pessoas
+17.3.4.20.1;Sexo;;
+17.3.4.20.1.1;Masculino;8658;pessoas
+17.3.4.20.1.2;Feminino;8337;pessoas
+17.3.4.21;20 anos;18443;pessoas
+17.3.4.21.1;Sexo;;
+17.3.4.21.1.1;Masculino;9108;pessoas
+17.3.4.21.1.2;Feminino;9335;pessoas
+17.3.4.22;21 anos;18649;pessoas
+17.3.4.22.1;Sexo;;
+17.3.4.22.1.1;Masculino;9336;pessoas
+17.3.4.22.1.2;Feminino;9313;pessoas
+17.3.4.23;22 anos;19609;pessoas
+17.3.4.23.1;Sexo;;
+17.3.4.23.1.1;Masculino;9874;pessoas
+17.3.4.23.1.2;Feminino;9735;pessoas
+17.3.4.24;23 anos;19737;pessoas
+17.3.4.24.1;Sexo;;
+17.3.4.24.1.1;Masculino;9758;pessoas
+17.3.4.24.1.2;Feminino;9979;pessoas
+17.3.4.25;24 anos;20380;pessoas
+17.3.4.25.1;Sexo;;
+17.3.4.25.1.1;Masculino;10149;pessoas
+17.3.4.25.1.2;Feminino;10231;pessoas
+17.3.4.26;25 a 29 anos;104061;pessoas
+17.3.4.26.1;Sexo;;
+17.3.4.26.1.1;Masculino;51178;pessoas
+17.3.4.26.1.2;Feminino;52883;pessoas
+17.3.4.27;30 a 34 anos;96616;pessoas
+17.3.4.27.1;Sexo;;
+17.3.4.27.1.1;Masculino;47315;pessoas
+17.3.4.27.1.2;Feminino;49301;pessoas
+17.3.4.28;35 a 39 anos;84116;pessoas
+17.3.4.28.1;Sexo;;
+17.3.4.28.1.1;Masculino;40812;pessoas
+17.3.4.28.1.2;Feminino;43304;pessoas
+17.3.4.29;40 a 44 anos;79310;pessoas
+17.3.4.29.1;Sexo;;
+17.3.4.29.1.1;Masculino;37955;pessoas
+17.3.4.29.1.2;Feminino;41355;pessoas
+17.3.4.30;45 a 49 anos;73506;pessoas
+17.3.4.30.1;Sexo;;
+17.3.4.30.1.1;Masculino;34630;pessoas
+17.3.4.30.1.2;Feminino;38876;pessoas
+17.3.4.31;50 a 54 anos;67149;pessoas
+17.3.4.31.1;Sexo;;
+17.3.4.31.1.1;Masculino;31354;pessoas
+17.3.4.31.1.2;Feminino;35795;pessoas
+17.3.4.32;55 a 59 anos;54810;pessoas
+17.3.4.32.1;Sexo;;
+17.3.4.32.1.1;Masculino;25295;pessoas
+17.3.4.32.1.2;Feminino;29515;pessoas
+17.3.4.33;60 a 64 anos;42270;pessoas
+17.3.4.33.1;Sexo;;
+17.3.4.33.1.1;Masculino;19059;pessoas
+17.3.4.33.1.2;Feminino;23211;pessoas
+17.3.4.34;65 a 69 anos;30752;pessoas
+17.3.4.34.1;Sexo;;
+17.3.4.34.1.1;Masculino;13766;pessoas
+17.3.4.34.1.2;Feminino;16986;pessoas
+17.3.4.35;70 a 74 anos;24200;pessoas
+17.3.4.35.1;Sexo;;
+17.3.4.35.1.1;Masculino;10457;pessoas
+17.3.4.35.1.2;Feminino;13743;pessoas
+17.3.4.36;75 a 79 anos;17092;pessoas
+17.3.4.36.1;Sexo;;
+17.3.4.36.1.1;Masculino;6832;pessoas
+17.3.4.36.1.2;Feminino;10260;pessoas
+17.3.4.37;80 a 89 anos;16812;pessoas
+17.3.4.37.1;Sexo;;
+17.3.4.37.1.1;Masculino;5871;pessoas
+17.3.4.37.1.2;Feminino;10941;pessoas
+17.3.4.38;90 a 99 anos;2577;pessoas
+17.3.4.38.1;Sexo;;
+17.3.4.38.1.1;Masculino;739;pessoas
+17.3.4.38.1.2;Feminino;1838;pessoas
+17.3.4.39;100 anos ou mais;98;pessoas
+17.3.4.39.1;Sexo;;
+17.3.4.39.1.1;Masculino;31;pessoas
+17.3.4.39.1.2;Feminino;67;pessoas
+17.3.5;Sexo;;
+17.3.5.1;Masculino;520865;pessoas
+17.3.5.1.1;Situação domiciliar;;
+17.3.5.1.1.1;Urbana;511483;pessoas
+17.3.5.1.1.2;Rural;9382;pessoas
+17.3.5.2;Feminino;559248;pessoas
+17.3.5.2.1;Situação domiciliar;;
+17.3.5.2.1.1;Urbana;550057;pessoas
+17.3.5.2.1.2;Rural;9191;pessoas
+17.3.6;Situação domiciliar;;
+17.3.6.1;Urbana;1061540;pessoas
+17.3.6.2;Rural;18573;pessoas
+
+
+
+Fonte: IBGE, Censo Demográfico 2010

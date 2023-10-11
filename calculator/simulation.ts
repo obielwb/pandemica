@@ -1,8 +1,4 @@
-import fs from 'fs'
-import { parse } from 'csv-parse'
-import * as path from 'path'
-
-import { calculateActivityRisk, CalculatorData } from './calculate'
+import { CalculatorData } from './calculate'
 import { totalPopulation } from '../individuals/routines/data'
 import { Individual } from '../individuals/routines/individual'
 
