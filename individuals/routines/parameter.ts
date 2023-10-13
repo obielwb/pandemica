@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid'
-import { type Age, totalPopulation } from './data'
+
+import { type Age } from './data'
 import { type House, type Individual } from './individual'
 import { fisherYatesShuffle, log } from './utilities'
 
@@ -105,33 +106,87 @@ export function assignHouse(
 
   let houses: House[] = []
 
-  const normalizedResidentsPerHouse = normalizeResidentsPerHouse(residentsPerHouse, totalPopulation)
+  // categorization logic might need enhancements
+  let children = individuals.filter(ind => ind.age[1] < 18);
+  let youngAdults = individuals.filter(ind => ind.age[0] >= 18 && ind.age[1] < 40);
+  let middleAge = individuals.filter(ind => ind.age[0] >= 40 && ind.age[1] <= 65);
+  let elderly = individuals.filter(ind => ind.age[0] > 65);
 
-  for (let i = 0; i < normalizedResidentsPerHouse.length; i++) {
-    for (let j = 0; j < normalizedResidentsPerHouse[i].value; j++) {
-      const house: House = {
+  let couples: Individual[][] = [];
+
+  while (youngAdults.length > 0) {
+    let partnerA = youngAdults.pop();
+
+    let partnerB = youngAdults.find(ind => ind.sex !== partnerA!.sex);
+
+    if (partnerB) {
+      youngAdults = youngAdults.filter(ind => ind !== partnerB);
+      couples.push([partnerA!, partnerB]);
+    } else if (partnerA) {
+      houses.push({
         id: nanoid(),
         region: '',
-        housemates: normalizedResidentsPerHouse[i].label as number
-      }
-
-      for (let k = 0; k < (normalizedResidentsPerHouse[i].label as number); k++) houses.push(house)
+        housemates: [partnerA]
+      });
     }
   }
 
-  houses = fisherYatesShuffle(houses)
+  couples.forEach(couple => {
+    let numChildren = Math.floor(Math.random() * 3); // 0-2 children
+    for (let i = 0; i < numChildren; i++) {
+      if (children.length > 0) {
+        let childIndex = Math.floor(Math.random() * children.length);
+        couple.push(children[childIndex]);
+        children.splice(childIndex, 1);
+      }
+    }
+    houses.push({
+      id: nanoid(),
+      region: '',
+      housemates: couple
+    });
+  });
 
-  const normalizedRegions = normalize('region', regionsPopulation, totalPopulation)
-  let index = 0
-  normalizedRegions.forEach((entry) => {
-    for (let i = 0; i < entry.value; i++) houses[index++].region = entry.label as string
-  })
+  function selectHouseSize(residentsPerHouse: Parameter[]): number {
+    const total = residentsPerHouse.reduce((acc, p) => acc + p.value, 0);
+    const rand = Math.floor(Math.random() * total);
+    let sum = 0;
+
+    for (let p of residentsPerHouse) {
+      sum += p.value;
+      if (rand < sum) return p.label as number;
+    }
+
+    return residentsPerHouse[0].label as number;
+  }
+
+  [children, middleAge, elderly].forEach(group => {
+    while (group.length > 0) {
+      const houseSize = selectHouseSize(residentsPerHouse);
+      const housemates: Individual[] = group.splice(0, houseSize);
+      houses.push({
+        id: nanoid(),
+        region: '',
+        housemates: housemates
+      });
+    }
+  });
+
+  let regionIndex = 0;
+  houses.forEach(house => {
+    house.region = String(regionsPopulation[regionIndex].label);
+    regionIndex = (regionIndex + 1) % regionsPopulation.length;
+  });
+
+  houses.forEach(house => {
+    house.housemates.forEach(individual => {
+      individual.house = house;
+    });
+  });
 
   log('', { timeEnd: true, timeLabel: 'ASSIGNMENT' })
 
-  for (let i = 0; i < individuals.length; i++) individuals[i].house = houses[i]
-
-  return individuals
+  return individuals;
 }
 
 export function assignTransportationVehicle(

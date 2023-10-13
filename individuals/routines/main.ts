@@ -54,15 +54,14 @@ individuals = assignAge(individuals, normalizeAge(ages, totalPopulation, malePer
 
 individuals = assignHouse(
   individuals,
-  normalizeResidentsPerHouse(residentsPerHouse, totalPopulation),
-  regionsPopulation
+  normalizeResidentsPerHouse(residentsPerHouse, individuals.length),
+  normalize('region', regionsPopulation, individuals.length)
 )
 
 // todo: properly set number of students, income among individuals
 // considerations: individuals under 10 years do not work
 // income depends on age
-const normalizedSalaries = normalize('salaries', salaries, totalPopulation)
-individuals = assign(individuals, 'income', normalizedSalaries)
+individuals = assign(individuals, 'income', normalize('salaries', salaries, totalPopulation))
 
 // todo: review this number
 const students =

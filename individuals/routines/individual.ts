@@ -30,7 +30,7 @@ export type Study = Occupation
 export type House = {
   id: string
   region: string
-  housemates: number
+  housemates: Individual[]
 }
 
 export type RiskProfile = {
