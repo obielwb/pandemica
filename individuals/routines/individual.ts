@@ -3,7 +3,7 @@ import { Activity } from './data'
 export class Individual {
   public id: string // done
   public sex: 'male' | 'female' // done
-  public age: number[]
+  public age: number[] // done
   public isWearingMask: boolean // done
   public studyLevel: string
   public currentActivity?: Activity
@@ -13,30 +13,32 @@ export class Individual {
   public occupationType: ['study'?, 'work'?]
   public occupations?: [Occupation?, Occupation?]
   public isValid?: boolean // done
-  public riskProfile: {
-    label: string
-    label_short?: string
-    multiplier?: number
-    personalMultiplier: number
-    housemates: number
-    otherTraceableContacts: number
-    contactsMultiplier: number
-  }
+  public riskProfile: RiskProfile
   public isHospitalized: boolean // done
   public isDead: boolean // done
 }
 
-export interface Occupation {
+export type Occupation = {
   id: string
   label: string // occupation name, can be a industry, company or school
   size: number // number of people related to this occupation
 }
 
-export interface Workstation extends Occupation {}
-export interface Study extends Occupation {}
+export type Workstation = Occupation
+export type Study = Occupation
 
-export interface House {
+export type House = {
   id: string
   region: string
-  residents: number
+  housemates: number
+}
+
+export type RiskProfile = {
+  label: string
+  label_short?: string
+  multiplier?: number
+  personalMultiplier: number
+  housemates: number
+  otherTraceableContacts: number
+  contactsMultiplier: number
 }

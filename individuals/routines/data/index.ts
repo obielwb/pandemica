@@ -50,8 +50,8 @@ export type Age = {
 // 2010 ibge
 export const zeroToFourYears: Age = {
   interval: [0, 4],
-  female: 31330,
-  male: 32541
+  female: 31745,
+  male: 32660
 }
 export const fiveToNineYears: Age = {
   interval: [5, 9],
@@ -287,15 +287,15 @@ export const residentsPerHouse = [
   elevenOrMoreResidents
 ]
 
-export interface Interaction {
+export type Interaction = {
   label: 'oneTime' | 'workplace' | 'partner' | 'repeated'
 }
-export interface Activity {
+export type Activity = {
   setting: string
   distance: string
   duration?: number // minutes
   voice: string
-  interaction: Interaction
+  interaction?: Interaction
 }
 
 // ibge 2018

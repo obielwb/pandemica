@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid'
-import { Age, femalePercentage, totalPopulation } from './data'
-import { House, Individual } from './individual'
+import { type Age, totalPopulation } from './data'
+import { type House, type Individual } from './individual'
 import { fisherYatesShuffle, log } from './utilities'
 
 export type Parameter = {
@@ -75,6 +75,27 @@ export function assignSex(individuals: Individual[], malePercentage: number) {
   return individuals
 }
 
+export function assignAge(individuals: Individual[], ages: Age[]) {
+  log('Assigning `age` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
+
+  individuals = individuals.sort((a, b) => a.sex.localeCompare(b.sex))
+
+  let index = 0
+  ages.forEach((age) => {
+    for (let i = 0; i < age.female; i++) individuals[index++].age = age.interval
+  })
+
+  ages.forEach((age) => {
+    for (let i = 0; i < age.male; i++) {
+      individuals[index++].age = age.interval
+    }
+  })
+
+  log('', { timeEnd: true, timeLabel: 'ASSIGNMENT' })
+
+  return fisherYatesShuffle(individuals)
+}
+
 export function assignHouse(
   individuals: Individual[],
   residentsPerHouse: Parameter[],
@@ -88,10 +109,10 @@ export function assignHouse(
 
   for (let i = 0; i < normalizedResidentsPerHouse.length; i++) {
     for (let j = 0; j < normalizedResidentsPerHouse[i].value; j++) {
-      const house = {
+      const house: House = {
         id: nanoid(),
         region: '',
-        residents: normalizedResidentsPerHouse[i].label as number
+        housemates: normalizedResidentsPerHouse[i].label as number
       }
 
       for (let k = 0; k < (normalizedResidentsPerHouse[i].label as number); k++) houses.push(house)
@@ -106,7 +127,7 @@ export function assignHouse(
     for (let i = 0; i < entry.value; i++) houses[index++].region = entry.label as string
   })
 
-  log('', { timeEnd: true, timeLabel: 'NORMALIZATION' })
+  log('', { timeEnd: true, timeLabel: 'ASSIGNMENT' })
 
   for (let i = 0; i < individuals.length; i++) individuals[i].house = houses[i]
 
@@ -121,6 +142,10 @@ export function assignTransportationVehicle(
   log('Assigning `transportation vehicle` to individuals')
 }
 
+// apparently, there are more men then women in the data set
+// this normalization function properly scales the different sex-based age groups
+// to the total population while also normalizing the men-women difference, resulting
+// in a accurate, scaled and proportional data set
 export function normalizeAge(ages: Age[], totalPopulation: number, malePercentage: number) {
   log('Normalizing `age`', { time: true, timeLabel: 'NORMALIZATION' })
 
@@ -135,7 +160,7 @@ export function normalizeAge(ages: Age[], totalPopulation: number, malePercentag
 
   const unagedIndividuals = totalPopulation - agedIndividuals
 
-  const normalizedAges = ages.map((age, i) => {
+  let normalizedAges = ages.map((age, i) => {
     const agePercentage = agePercentages[i]
 
     return {
@@ -145,34 +170,47 @@ export function normalizeAge(ages: Age[], totalPopulation: number, malePercentag
     }
   })
 
-  const normalizedAgedIndividuals = normalizedAges.reduce(
-    (acc, normalizedAge) => acc + normalizedAge.male + normalizedAge.female,
-    0
-  )
-
-  let stillUnagedIndividuals = totalPopulation - normalizedAgedIndividuals
-  while (stillUnagedIndividuals > 0) {
-    for (let i = 0; i < stillUnagedIndividuals / 2; i = (i + 1) % normalizedAges.length) {
-      if (Math.random() < malePercentage / 100) {
-        normalizedAges[i].male++
-        if ((stillUnagedIndividuals -= 2) > 0) normalizedAges[i].female++
-      } else {
-        normalizedAges[i].female++
-        if ((stillUnagedIndividuals -= 2) > 0) normalizedAges[i].male++
-      }
-    }
-  }
-
-  const normalizedAgedFemales = normalizedAges.reduce((acc, age) => acc + age.female, 0)
-  const normalizedAgedMales = normalizedAges.reduce((acc, age) => acc + age.male, 0)
-
   const totalMales = Math.round(totalPopulation * (malePercentage / 100))
   const totalFemales = totalPopulation - totalMales
 
-  const normalizedAgedFemalesDifference = totalFemales - normalizedAgedFemales
-  const normalizedAgedMalesDifference = totalMales - normalizedAgedMales
+  let normalizedAgedFemales = normalizedAges.reduce((acc, age) => acc + age.female, 0)
+  let normalizedAgedMales = normalizedAges.reduce((acc, age) => acc + age.male, 0)
 
-  console.log(normalizedAgedFemalesDifference, normalizedAgedMalesDifference)
+  let normalizedAgedFemalesDifference = totalFemales - normalizedAgedFemales
+  let normalizedAgedMalesDifference = totalMales - normalizedAgedMales
+
+  const normalizedAgePercentages = normalizedAges.map((age) => {
+    return {
+      interval: age.interval,
+      female: age.female / normalizedAgedFemales,
+      male: age.male / normalizedAgedMales
+    }
+  })
+
+  normalizedAges = normalizedAges.map((age, i) => {
+    const agePercentage = normalizedAgePercentages[i]
+
+    return {
+      interval: age.interval,
+      female: Math.round(age.female + normalizedAgedFemalesDifference * agePercentage.female),
+      male: Math.round(age.male + normalizedAgedMalesDifference * agePercentage.male)
+    }
+  })
+
+  normalizedAgedFemales = normalizedAges.reduce((acc, age) => acc + age.female, 0)
+  normalizedAgedMales = normalizedAges.reduce((acc, age) => acc + age.male, 0)
+
+  let stillUnagedFemales = totalFemales - normalizedAgedFemales
+  for (let i = 0; stillUnagedFemales > 0; i = (i + 1) % normalizedAges.length) {
+    normalizedAges[i].female++
+    stillUnagedFemales--
+  }
+
+  let stillUnagedMales = totalMales - normalizedAgedMales
+  for (let i = 0; stillUnagedMales > 0; i = (i + 1) % normalizedAges.length) {
+    normalizedAges[i].male++
+    stillUnagedMales--
+  }
 
   log('', { timeEnd: true, timeLabel: 'NORMALIZATION' })
 

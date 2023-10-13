@@ -24,10 +24,10 @@ import {
   assignSex,
   normalizeAge,
   normalizeResidentsPerHouse,
-  assignHouse
+  assignHouse,
+  assignAge
 } from './parameter'
 import { Individual, Workstation } from './individual'
-import { log } from './utilities'
 
 let individuals: Individual[] = []
 
@@ -50,72 +50,13 @@ for (let i = 0; i < totalPopulation; i++) {
 
 individuals = assignSex(individuals, malePercentage)
 
-const normalizedAges = normalizeAge(ages, totalPopulation, malePercentage)
-// todo: properly set ages
-const setAge = (sex: 'male' | 'female') => {
-  const ageDistribution = Math.random()
-  let selectedAgeRange: {
-    interval: number[]
-    female: number
-    male: number
-  } = {} as any
+individuals = assignAge(individuals, normalizeAge(ages, totalPopulation, malePercentage))
 
-  if (sex === 'male') {
-    const malePercentage =
-      normalizedAges.reduce((total, age) => total + age.male, 0) / individuals.length
-    const adjustedDistribution = ageDistribution * malePercentage
-
-    let cumulativePercentage = 0
-    for (const ageRange of normalizedAges) {
-      cumulativePercentage += ageRange.male * malePercentage
-      if (adjustedDistribution <= cumulativePercentage) {
-        selectedAgeRange = ageRange
-        break
-      }
-    }
-  } else if (sex === 'female') {
-    const femalePercentage =
-      normalizedAges.reduce((total, age) => total + age.female, 0) / individuals.length
-    const adjustedDistribution = ageDistribution * femalePercentage
-
-    let cumulativePercentage = 0
-    for (const ageRange of normalizedAges) {
-      cumulativePercentage += ageRange.female * femalePercentage
-      if (adjustedDistribution <= cumulativePercentage) {
-        selectedAgeRange = ageRange
-        break
-      }
-    }
-  }
-
-  return selectedAgeRange.interval
-}
-
-const agedFemales = ages.reduce((total, age) => total + age.female, 0)
-const agedMales = ages.reduce((total, age) => total + age.male, 0)
-log(`Aged females '${agedFemales}' - Aged males '${agedMales}'`)
-
-const normalizedAgedFemales = normalizedAges.reduce((total, age) => total + age.female, 0)
-const normalizedAgedMales = normalizedAges.reduce((total, age) => total + age.male, 0)
-log(
-  `Normalized aged females '${normalizedAgedFemales}' - Normalized aged males '${normalizedAgedMales}'`
+individuals = assignHouse(
+  individuals,
+  normalizeResidentsPerHouse(residentsPerHouse, totalPopulation),
+  regionsPopulation
 )
-
-log(
-  `Total individuals '${individuals.length}' - Aged individuals ${
-    agedFemales + agedMales
-  } - Normalized aged individuals '${normalizedAgedFemales + normalizedAgedMales}'`
-)
-
-log('Setting individuals `age`', { time: true, timeLabel: 'SETTING' })
-individuals.forEach((individual) => {
-  individual.age = setAge(individual.sex)
-})
-log('', { timeEnd: true, timeLabel: 'SETTING' })
-////////////////////////////////////////////////
-
-const normalizedResidentsPerHouse = normalizeResidentsPerHouse(residentsPerHouse, totalPopulation)
-individuals = assignHouse(individuals, normalizedResidentsPerHouse, regionsPopulation)
 
 // todo: properly set number of students, income among individuals
 // considerations: individuals under 10 years do not work
@@ -161,13 +102,5 @@ const commerceAndServicesWorkstations = createWorkstations(
 
 // todo: improve calculation (currently returns 1502524)
 const allWorkstations = [...industryWorkstations, ...commerceAndServicesWorkstations]
-
-// log(allWorkstations.sort((a, b) => (a.size > b.size ? -1 : 1))[0])
-
-let i = ''
-individuals.forEach((individual) => {
-  if (individual.house.residents == 3) i = individual.house.id
-})
-log(individuals.filter((individual) => individual.house.id === i))
 
 // todo: define risk profile
