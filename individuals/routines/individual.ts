@@ -6,7 +6,8 @@ export class Individual {
   public age: number[] // done
   public isWearingMask: boolean // done
   public studyLevel: string
-  public currentActivity?: Activity
+  public currentActivity: Activity
+  public routine: Activity[]
   public house: House // done
   public income: boolean
   public vehicle: string
