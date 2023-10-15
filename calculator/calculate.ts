@@ -246,7 +246,7 @@ export const calculateLocationPersonAverage = (data: CalculatorData): number | n
     // Points for "random person from X location"
     const personRisk = prevalence * underreportingFactor * delayFactor
 
-    return personRisk * ONE_MILLION
+    return personRisk * ONE_MILLIONA
   } catch (e) {
     return null
   }
@@ -272,7 +272,7 @@ export const calculatePersonRiskEach = (data: CalculatorData): number | null => 
 
     const isHousemate = data.interaction === 'partner' || data.interaction === 'repeated'
     const unadjustedRisk =
-      averagePersonRisk *
+      averagePersonRisk * /// isso é a prevalências
       personRiskMultiplier({
         riskProfile: RiskProfile[data.riskProfile],
         isHousemate,
