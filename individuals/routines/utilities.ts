@@ -1,9 +1,9 @@
 import moment from 'moment'
 
-export function fisherYatesShuffle(array: any[]) {
+export function fisherYatesShuffle<T>(array: T[]) {
   let i = array.length,
     j: number,
-    k: any
+    k: T
 
   while (i) {
     j = Math.floor(Math.random() * i--)
@@ -16,7 +16,7 @@ export function fisherYatesShuffle(array: any[]) {
 }
 
 export function log(
-  message: any,
+  message: string | string[] | number | number[] | object | object[],
   options?: Partial<{
     time: boolean
     timeEnd: boolean

@@ -15,7 +15,7 @@ import {
   Activity,
   residentsPerHouse,
   salaries,
-  ages
+  ages,
 } from './data'
 import {
   Parameter,
@@ -55,7 +55,7 @@ individuals = assignAge(individuals, normalizeAge(ages, totalPopulation, malePer
 individuals = assignHouse(
   individuals,
   normalizeResidentsPerHouse(residentsPerHouse, individuals.length),
-  normalize('region', regionsPopulation, individuals.length)
+  regionsPopulation,
 )
 
 // todo: properly set number of students, income among individuals
