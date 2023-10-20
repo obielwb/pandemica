@@ -1,4 +1,4 @@
-import { Activity } from './data'
+import { IndividualActivity } from './data'
 
 export class Individual {
   public id: string // done
@@ -6,7 +6,12 @@ export class Individual {
   public age: number[] // done
   public isWearingMask: boolean // done
   public studyLevel: string
-  public currentActivity?: Activity
+  public currentActivity?: IndividualActivity
+  // todo: routines should change
+  // - social distancing stage
+  // - quarantine stage
+  // - lockdown stage
+  public routine: IndividualActivity['type'][]
   public house: House // done
   public income: boolean
   public vehicle: string

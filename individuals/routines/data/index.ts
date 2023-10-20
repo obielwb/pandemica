@@ -3,6 +3,8 @@
  *    - search in microCovid to see if what they've done
  */
 
+import { Individual } from "../individual"
+
 // ibge 2010
 export const totalPopulation = 1080113
 
@@ -286,8 +288,8 @@ export const residentsPerHouse = [
 export type Interaction = {
   label: 'oneTime' | 'workplace' | 'partner' | 'repeated'
 }
+
 export type Activity = {
-  id?: string
   type: string
 
   setting: string
@@ -295,85 +297,160 @@ export type Activity = {
   duration?: number // minutes
   voice: string
   interaction?: Interaction
-
-  timeStarted: number
-  timeEnded: number
 }
 
-// export const activities: { [key: string]: Activity } = {
-//   shopping: {
-//     name: 'shopping',
-//     setting: 'indoor',
-//     distance: 'sixFt',
-//     duration: 60,
-//     voice: 'silent'
-//   }
-// restaurantOutdoors: {
-//   setting: 'outdoor',
-//   distance: 'sixFt',
-//   duration: 90,
-//   voice: 'normal'
-// },
-// restaurantIndoors: {
-//   setting: 'outdoor',
-//   distance: 'sixFt',
-//   duration: 90,
-//   voice: 'normal'
-// },
-// bar: {
-//   setting: 'indoor',
-//   distance: 'sixFt',
-//   duration: 120,
-//   voice: 'loud'
-// },
-// outdoorParty: {
-//   setting: 'outdoor',
-//   distance: 'normal',
-//   duration: 180,
-//   voice: 'loud'
-// },
-// indoorParty: {
-//   setting: 'indoor',
-//   distance: 'normal',
-//   duration: 180,
-//   voice: 'normal'
-// },
-// house: {
-//   setting: 'indoor',
-//   distance: 'intimate',
-//   duration: 600,
-//   voice: 'normal'
-// },
-// school: {
-//   setting: 'indoor',
-//   distance: 'normal',
-//   duration: 480, // 8 hours
-//   voice: 'normal'
-// },
-// hospital: {
-//   setting: 'indoor',
-//   distance: 'sixFt',
-//   voice: 'normal'
-// },
-// publicTransportStation: {
-//   setting: 'outdoor',
-//   distance: 'normal',
-//   voice: 'normal',
-//   duration: 60
-// },
-// publicTransportStationCrowded: {
-//   setting: 'outdoor',
-//   distance: 'close',
-//   voice: 'normal',
-//   duration: 60
-// },
-// parks: {
-//   setting: 'outdoor',
-//   distance: 'tenFt',
-//   voice: 'silent',
-//   duration: 90
-// }
-// }
+export type IndividualActivity = Activity & {
+  id: string
+
+  activityStartedAt?: Date
+  activityEndedAt?: Date
+  engagedAt?: Date
+
+  individualsEngaged: Individual[]
+}
+
+export const grocery: Activity = {
+  type: 'grocery',
+  setting: 'indoor',
+  distance: 'sixFt',
+  duration: 60,
+  voice: 'silent',
+};
+
+export const restaurantOutdoors: Activity = {
+  type: 'restaurant.outdoor',
+  setting: 'outdoor',
+  distance: 'sixFt',
+  duration: 1.5 * 60,
+  voice: 'normal',
+};
+
+export const restaurantIndoors: Activity = {
+  type: 'restaurant.indoor',
+  setting: 'outdoor',
+  distance: 'sixFt',
+  duration: 1.5 * 60,
+  voice: 'normal',
+};
+
+export const bar: Activity = {
+  type: 'bar',
+  setting: 'indoor',
+  distance: 'sixFt',
+  duration: 2 * 60,
+  voice: 'loud',
+};
+
+export const outdoorParty: Activity = {
+  type: 'party.outdoor',
+  setting: 'outdoor',
+  distance: 'normal',
+  duration: 3 * 60,
+  voice: 'loud',
+};
+
+export const indoorParty: Activity = {
+  type: 'party.indoor',
+  setting: 'indoor',
+  distance: 'normal',
+  duration: 3 * 60,
+  voice: 'normal',
+};
+
+export const house: Activity = {
+  type: 'house',
+  setting: 'indoor',
+  distance: 'intimate',
+  duration: 10 * 60,
+  voice: 'normal',
+};
+
+export const school: Activity = {
+  type: 'school',
+  setting: 'indoor',
+  distance: 'normal',
+  duration: 8 * 60, // 8 hours
+  voice: 'normal',
+};
+
+export const hospital: Activity = {
+  type: 'hospital',
+  setting: 'indoor',
+  distance: 'sixFt',
+  voice: 'normal',
+  duration: 3 * 60,
+};
+
+export const publicTransportStation: Activity = {
+  type: 'transportation.public.station',
+  setting: 'outdoor',
+  distance: 'normal',
+  voice: 'normal',
+  duration: 20,
+};
+
+export const publicTransportStationCrowded: Activity = {
+  type: 'transportation.public.crowded_station',
+  setting: 'outdoor',
+  distance: 'close',
+  voice: 'normal',
+  duration: 60,
+};
+
+export const parks: Activity = {
+  type: 'park',
+  setting: 'outdoor',
+  distance: 'tenFt',
+  voice: 'silent',
+  duration: 90,
+};
+
+export const activities: { [activity: string]: Activity } = {
+  grocery,
+  restaurantOutdoors,
+  restaurantIndoors,
+  bar,
+  outdoorParty,
+  indoorParty,
+  house,
+  school,
+  hospital,
+  publicTransportStation,
+  publicTransportStationCrowded,
+  parks,
+}
+
+export const activitiesList = [
+  grocery,
+  restaurantOutdoors,
+  restaurantIndoors,
+  bar,
+  outdoorParty,
+  indoorParty,
+  house,
+  school,
+  hospital,
+  publicTransportStation,
+  publicTransportStationCrowded,
+  parks,
+]
+
+export enum ActivityType {
+  Grocery = 'grocery',
+  RestaurantOutdoors = 'restaurantOutdoors',
+  RestaurantIndoors = 'restaurantIndoors',
+  Bar = 'bar',
+  OutdoorParty = 'outdoorParty',
+  IndoorParty = 'indoorParty',
+  House = 'house',
+  School = 'school',
+  Hospital = 'hospital',
+  PublicTransportStation = 'publicTransportStation',
+  PublicTransportStationCrowded = 'publicTransportStationCrowded',
+  Parks = 'parks',
+}
+
+export const pastActivities: IndividualActivity[] = []
 
 // ibge 2018
 export const microIndustries = {
