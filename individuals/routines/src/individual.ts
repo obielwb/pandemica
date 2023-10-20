@@ -36,7 +36,7 @@ export type House = {
   id: string
   region: string
   size: number
-  housemates: Individual[]
+  housemates: Partial<Individual>[]
 }
 
 export type RiskProfile = {

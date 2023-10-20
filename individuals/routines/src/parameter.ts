@@ -112,7 +112,7 @@ export function assignHouse(
         id: nanoid(),
         region: '',
         size: house.label as number,
-        housemates: [],
+        housemates: []
       })
   })
 
@@ -120,8 +120,7 @@ export function assignHouse(
 
   let index = 0
   houseRegions.forEach((region) => {
-    for (let i = 0; i < region.value; i++)
-      houses[index++].region = region.label as string
+    for (let i = 0; i < region.value; i++) houses[index++].region = region.label as string
   })
 
   houses = fisherYatesShuffle(houses)
@@ -134,27 +133,38 @@ export function assignHouse(
   let underageIndividualsIndex = 0
 
   houses.forEach((house) => {
+    // house.housemates.push({
+    //   ...individualsOfAge[individualsOfAgeIndex],
+    //   house: undefined
+    // })
     house.housemates.push(individualsOfAge[individualsOfAgeIndex])
     individualsOfAge[individualsOfAgeIndex++].house = house
 
-    let remainingSpace = house.size - 1;
+    let remainingSpace = house.size - 1
 
     while (remainingSpace > 0) {
       if (
         underageIndividualsIndex < underageIndividuals.length &&
-        Math.random() < underageIndividuals.length / individuals.length
+        Math.random() <= underageIndividuals.length / individuals.length
       ) {
-        house.housemates.push(underageIndividuals[underageIndividualsIndex]);
-        underageIndividuals[underageIndividualsIndex++].house = house;
+        // house.housemates.push({
+        //   ...underageIndividuals[underageIndividualsIndex],
+        //   house: undefined
+        // })
+        house.housemates.push(underageIndividuals[underageIndividualsIndex])
+        underageIndividuals[underageIndividualsIndex++].house = house
       } else if (individualsOfAgeIndex < individualsOfAge.length) {
-        house.housemates.push(individualsOfAge[individualsOfAgeIndex]);
-        if (individualsOfAgeIndex > individuals.length - 10)
-          console.log(individualsOfAge[individualsOfAgeIndex], individualsOfAgeIndex)
+        // house.housemates.push({
+        //   ...individualsOfAge[individualsOfAgeIndex],
+        //   house: undefined
+        // })
+        house.housemates.push(individualsOfAge[individualsOfAgeIndex])
+        individualsOfAge[individualsOfAgeIndex++].house = house
 
-        // individualsOfAge[individualsOfAgeIndex++].house = house;
+        if (individualsOfAgeIndex > individualsOfAge.length - 10) console.log(house)
       }
 
-      remainingSpace--;
+      remainingSpace--
     }
   })
 

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
 
-import { assignSex, normalize, normalizeAge, normalizeResidentsPerHouse } from '../parameter'
+import { assignSex, normalize, normalizeAge, normalizeResidentsPerHouse } from '../src/parameter'
 import {
   totalPopulation,
   regionsPopulation,
@@ -8,9 +8,9 @@ import {
   ages,
   malePercentage
 } from '../data'
-import { House, Individual } from '../individual'
+import { House, Individual } from '../src/individual'
 import { nanoid } from 'nanoid'
-import { fisherYatesShuffle } from '../utilities'
+import { fisherYatesShuffle } from '../src/utilities'
 
 let individuals = Array.from({ length: totalPopulation }, () => new Individual())
 
@@ -82,7 +82,8 @@ describe('Parameter', () => {
         const house = {
           id: nanoid(),
           region: '',
-          residents: normalizedResidentsPerHouse[i].label as number
+          size: normalizedResidentsPerHouse[i].label as number,
+          housemates: []
         }
 
         for (let k = 0; k < (normalizedResidentsPerHouse[i].label as number); k++)
@@ -104,7 +105,7 @@ describe('Parameter', () => {
     expect(houses.every((h) => regionLabels.includes(h.region))).toBe(true)
 
     const residentLabels = normalizedResidentsPerHouse.map((entry) => entry.label as number)
-    expect(houses.every((h) => residentLabels.includes(h.residents))).toBe(true)
+    expect(houses.every((h) => residentLabels.includes(h.size))).toBe(true)
   })
 
   test('Age should be the same as total male and female', () => {
