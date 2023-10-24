@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid'
 
-import { type Age } from './data'
+import { type Age } from '../data'
 import { type House, type Individual } from './individual'
 import { fisherYatesShuffle, log } from './utilities'
 
@@ -132,41 +132,36 @@ export function assignHouse(
   let individualsOfAgeIndex = 0
   let underageIndividualsIndex = 0
 
-  houses.forEach((house) => {
-    // house.housemates.push({
-    //   ...individualsOfAge[individualsOfAgeIndex],
-    //   house: undefined
-    // })
-    house.housemates.push(individualsOfAge[individualsOfAgeIndex])
-    individualsOfAge[individualsOfAgeIndex++].house = house
+  // houses.forEach((house) => {
+  //   house.housemates.push({
+  //     ...individualsOfAge[individualsOfAgeIndex],
+  //     house: undefined
+  //   })
+  //   individualsOfAge[individualsOfAgeIndex++].house = house
 
-    let remainingSpace = house.size - 1
+  //   let remainingSpace = house.size - 1
 
-    while (remainingSpace > 0) {
-      if (
-        underageIndividualsIndex < underageIndividuals.length &&
-        Math.random() <= underageIndividuals.length / individuals.length
-      ) {
-        // house.housemates.push({
-        //   ...underageIndividuals[underageIndividualsIndex],
-        //   house: undefined
-        // })
-        house.housemates.push(underageIndividuals[underageIndividualsIndex])
-        underageIndividuals[underageIndividualsIndex++].house = house
-      } else if (individualsOfAgeIndex < individualsOfAge.length) {
-        // house.housemates.push({
-        //   ...individualsOfAge[individualsOfAgeIndex],
-        //   house: undefined
-        // })
-        house.housemates.push(individualsOfAge[individualsOfAgeIndex])
-        individualsOfAge[individualsOfAgeIndex++].house = house
+  //   while (remainingSpace > 0) {
+  //     if (
+  //       underageIndividualsIndex < underageIndividuals.length &&
+  //       Math.random() < underageIndividuals.length / individuals.length
+  //     ) {
+  //       house.housemates.push({
+  //         ...underageIndividuals[underageIndividualsIndex],
+  //         house: undefined
+  //       })
+  //       underageIndividuals[underageIndividualsIndex++].house = house
+  //     } else if (individualsOfAgeIndex < individualsOfAge.length) {
+  //       house.housemates.push({
+  //         ...individualsOfAge[individualsOfAgeIndex],
+  //         house: undefined
+  //       })
+  //       individualsOfAge[individualsOfAgeIndex++].house = house
+  //     }
 
-        if (individualsOfAgeIndex > individualsOfAge.length - 10) console.log(house)
-      }
-
-      remainingSpace--
-    }
-  })
+  //     remainingSpace--
+  //   }
+  // })
 
   individuals = fisherYatesShuffle([...underageIndividuals, ...individualsOfAge])
 

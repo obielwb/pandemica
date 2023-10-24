@@ -121,8 +121,6 @@ describe('Parameter', () => {
     const normalizedAgedFemales = normalizedAges.reduce((acc, age) => acc + age.female, 0)
     const normalizedAgedMales = normalizedAges.reduce((acc, age) => acc + age.male, 0)
 
-    console.log(normalizedAgedFemales, femaleIndividuals, normalizedAgedMales, maleIndividuals)
-
     expect(normalizedAgedFemales).toBe(femaleIndividuals)
     expect(normalizedAgedMales).toBe(maleIndividuals)
   })

@@ -16,7 +16,7 @@ import {
   salaries,
   ages,
   activitiesList
-} from './data'
+} from '../data'
 import {
   Parameter,
   assign,

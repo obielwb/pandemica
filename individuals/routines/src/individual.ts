@@ -1,4 +1,4 @@
-import { IndividualActivity } from './data'
+import { IndividualActivity } from '../data'
 
 export class Individual {
   public id: string // done
