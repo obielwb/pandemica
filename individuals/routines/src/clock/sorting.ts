@@ -1,4 +1,4 @@
-import { Activity } from '../../data'
+import { Activity } from '../activities'
 
 export function radixSort(currentActivities: Activity[]) {
   const maxDuration = Math.max(...currentActivities.map((activity) => activity!.duration!))
@@ -17,37 +17,54 @@ export function radixSort(currentActivities: Activity[]) {
   return currentActivities
 }
 
-// https://github.com/AvraamMavridis/Algorithms-Data-Structures-in-Typescript/blob/master/algorithms/quickSort.md
-export function quickSort(currentActivities: Activity[], begin: number, end: number): Activity[] {
-  if (currentActivities.length <= 1) {
-    return currentActivities
-  }
+export function quickSort(
+  currentActivities: Activity[],
+  left: number = 0,
+  right: number = currentActivities.length - 1
+) {
+  let index: number
 
-  if (begin < end) {
-    const partitionIndex = partition(currentActivities, begin, end)
+  if (currentActivities.length > 1) {
+    index = partition(currentActivities, left, right)
 
-    quickSort(currentActivities, begin, partitionIndex - 1)
-    quickSort(currentActivities, partitionIndex + 1, end)
+    if (left < index - 1) {
+      quickSort(currentActivities, left, index - 1)
+    }
+
+    if (index < right) {
+      quickSort(currentActivities, index, right)
+    }
   }
 
   return currentActivities
 }
 
-function partition(currentActivities: Activity[], begin: number, end: number): number {
-  const pivot = currentActivities[end]
-  let i = begin - 1
+function partition(
+  currentActivities: Activity[],
+  left: number = 0,
+  right: number = currentActivities.length - 1
+) {
+  const pivot = currentActivities[Math.floor((right + left) / 2)]!.duration!
+  let i = left
+  let j = right
 
-  for (let j = begin; j < end; j++) {
-    if (currentActivities[j]!.duration! <= pivot!.duration!) {
+  while (i <= j) {
+    while (currentActivities[i]!.duration! < pivot) {
       i++
+    }
 
-      const swap = currentActivities[j]
-      currentActivities[i] = currentActivities[j]
-      currentActivities[j] = swap
+    while (currentActivities[j]!.duration! > pivot) {
+      j--
+    }
+
+    if (i <= j) {
+      ;[currentActivities[i], currentActivities[j]] = [currentActivities[j], currentActivities[i]]
+      i++
+      j--
     }
   }
 
-  return i + 1
+  return i
 }
 
 export function mergeSort(currentActivities: Activity[]) {

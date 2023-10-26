@@ -1,7 +1,5 @@
 import { test, describe } from 'bun:test'
 
-import { instantiateIndividuals } from '../src/individuals'
-import { Individual } from '../src/individual'
 import {
   radixSort,
   quickSort,
@@ -10,8 +8,23 @@ import {
   bubbleSort,
   vanillaSort
 } from '../src/clock/sorting'
+import { Activity } from '../src/activities'
 
-const individuals = instantiateIndividuals()
+const currentActivities: Activity[] = []
+
+const exampleActivity: Activity = {
+  category: 'leisure',
+  label: '',
+  setting: 'indoor',
+  distance: 'intimate',
+  voice: 'normal',
+  maximumIndvidualsEngaged: 0
+}
+for (let i = 0; i < 10000; i++) {
+  exampleActivity.duration = Math.floor(5 + Math.random() * (750 - 5 + 1))
+
+  currentActivities.push(exampleActivity)
+}
 
 describe('Sorting', () => {
   test('Should test and export algorithms data', async () => {
@@ -21,8 +34,8 @@ describe('Sorting', () => {
     }
 
     async function testSortingAlgorithm(
-      sortFunction: (individuals: Individual[]) => Individual[],
-      individuals: Individual[],
+      sortFunction: (currentActivities: Activity[]) => Activity[],
+      currentActivities: Activity[],
       sortFunctionName: string,
       iterations: number
     ) {
@@ -30,7 +43,7 @@ describe('Sorting', () => {
 
       for (let i = 0; i < iterations; i++) {
         const startTime = Date.now()
-        sortFunction(individuals)
+        sortFunction(currentActivities)
         const endTime = Date.now()
 
         const elapsedTime = (endTime - startTime) / 1000
@@ -52,9 +65,9 @@ describe('Sorting', () => {
     }
 
     const ITERATIONS = 20
-    const algorithms: [(individuals: Individual[]) => Individual[], string][] = [
-      // [radixSort, 'radix'],
-      // [quickSort, 'quick'],
+    const algorithms: [(currentActivities: Activity[]) => Activity[], string][] = [
+      [radixSort, 'radix'],
+      [quickSort, 'quick'],
       [mergeSort, 'merge'],
       [insertionSort, 'insertion'],
       [bubbleSort, 'bubble'],
@@ -62,8 +75,8 @@ describe('Sorting', () => {
     ]
 
     for (const algorithm of algorithms) {
-      const individualsCopy = individuals.slice()
-      await testSortingAlgorithm(algorithm[0], individualsCopy, algorithm[1], ITERATIONS)
+      const currentActivitiesCopy = currentActivities.slice()
+      await testSortingAlgorithm(algorithm[0], currentActivitiesCopy, algorithm[1], ITERATIONS)
     }
   })
 })
