@@ -1,30 +1,28 @@
-import { Individual } from '../individual'
+import { Activity } from '../../data'
 
-export function radixSort(individuals: Individual[]) {
-  const maxDuration = Math.max(
-    ...individuals.map((individual) => individual.currentActivity!.duration!)
-  )
+export function radixSort(currentActivities: Activity[]) {
+  const maxDuration = Math.max(...currentActivities.map((activity) => activity!.duration!))
 
   for (let digit = 1; maxDuration / digit >= 1; digit *= 10) {
-    const buckets = Array.from({ length: 10 }, () => [] as Individual[])
+    const buckets = Array.from({ length: 10 }, () => [] as Activity[])
 
-    for (const individual of individuals) {
-      const bucketIndex = Math.floor((individual.currentActivity!.duration! / digit) % 10)
-      buckets[bucketIndex].push(individual)
+    for (const activity of currentActivities) {
+      const bucketIndex = Math.floor((activity!.duration! / digit) % 10)
+      buckets[bucketIndex].push(activity)
     }
 
-    individuals = buckets.flat()
+    currentActivities = buckets.flat()
   }
 
-  return individuals
+  return currentActivities
 }
 
-export function quickSort(individuals: Individual[]): Individual[] {
-  if (individuals.length <= 1) {
-    return individuals
+export function quickSort(currentActivities: Activity[]): Activity[] {
+  if (currentActivities.length <= 1) {
+    return currentActivities
   }
 
-  const stack: Individual[][] = [[...individuals]]
+  const stack: Activity[][] = [[...currentActivities]]
 
   while (stack.length) {
     const subarray = stack.pop()!
@@ -36,11 +34,11 @@ export function quickSort(individuals: Individual[]): Individual[] {
     const pivotIndex = Math.floor(subarray.length / 2)
     const pivot = subarray[pivotIndex]
 
-    const less: Individual[] = []
-    const greater: Individual[] = []
+    const less: Activity[] = []
+    const greater: Activity[] = []
 
-    for (const individual of subarray) {
-      if (individual.currentActivity!.duration! < pivot.currentActivity!.duration!) {
+    for (const activity of subarray) {
+      if (activity!.duration! < pivot!.duration!) {
         less.push(individual)
       } else {
         greater.push(individual)
@@ -54,26 +52,26 @@ export function quickSort(individuals: Individual[]): Individual[] {
   return individuals
 }
 
-export function mergeSort(individuals: Individual[]) {
-  if (individuals.length <= 1) {
-    return individuals
+export function mergeSort(currentActivities: Activity[]) {
+  if (currentActivities.length <= 1) {
+    return currentActivities
   }
 
-  const middleIndex = Math.floor(individuals.length / 2)
-  const left = mergeSort(individuals.slice(0, middleIndex))
-  const right = mergeSort(individuals.slice(middleIndex))
+  const middleIndex = Math.floor(currentActivities.length / 2)
+  const left = mergeSort(currentActivities.slice(0, middleIndex))
+  const right = mergeSort(currentActivities.slice(middleIndex))
 
   return merge(left, right)
 }
 
-function merge(left: Individual[], right: Individual[]): Individual[] {
-  const result: Individual[] = []
+function merge(left: Activity[], right: Activity[]): Activity[] {
+  const result: Activity[] = []
 
   let leftIndex = 0
   let rightIndex = 0
 
   while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex].currentActivity!.duration! < right[rightIndex].currentActivity!.duration!) {
+    if (left[leftIndex]!.duration! < right[rightIndex]!.duration!) {
       result.push(left[leftIndex])
       leftIndex++
     } else {
@@ -85,41 +83,36 @@ function merge(left: Individual[], right: Individual[]): Individual[] {
   return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex))
 }
 
-export function insertionSort(individuals: Individual[]) {
-  for (let i = 1; i < individuals.length; i++) {
-    const currentIndividual = individuals[i]
+export function insertionSort(currentActivities: Activity[]) {
+  for (let i = 1; i < currentActivities.length; i++) {
+    const activity = currentActivities[i]
     let j = i - 1
 
-    while (
-      j >= 0 &&
-      individuals[j].currentActivity!.duration! > currentIndividual.currentActivity!.duration!
-    ) {
-      individuals[j + 1] = individuals[j]
+    while (j >= 0 && currentActivities[j]!.duration! > activity!.duration!) {
+      currentActivities[j + 1] = currentActivities[j]
       j--
     }
 
-    individuals[j + 1] = currentIndividual
+    currentActivities[j + 1] = activity
   }
 
-  return individuals
+  return currentActivities
 }
 
-export function bubbleSort(individuals: Individual[]) {
-  for (let i = 0; i < individuals.length - 1; i++) {
-    for (let j = 0; j < individuals.length - i - 1; j++) {
-      if (
-        individuals[j].currentActivity!.duration! > individuals[j + 1].currentActivity!.duration!
-      ) {
-        const temp = individuals[j]
-        individuals[j] = individuals[j + 1]
-        individuals[j + 1] = temp
+export function bubbleSort(currentActivities: Activity[]) {
+  for (let i = 0; i < currentActivities.length - 1; i++) {
+    for (let j = 0; j < currentActivities.length - i - 1; j++) {
+      if (currentActivities[j]!.duration! > currentActivities[j + 1]!.duration!) {
+        const temp = currentActivities[j]
+        currentActivities[j] = currentActivities[j + 1]
+        currentActivities[j + 1] = temp
       }
     }
   }
 
-  return individuals
+  return currentActivities
 }
 
-export function vanillaSort(individuals: Individual[]) {
-  return individuals.sort((a, b) => a.currentActivity!.duration! - b.currentActivity!.duration!)
+export function vanillaSort(currentActivities: Activity[]) {
+  return currentActivities.sort((a, b) => a!.duration! - b!.duration!)
 }
