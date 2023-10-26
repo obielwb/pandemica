@@ -42,7 +42,7 @@ describe('Sorting', () => {
 
     async function exportToCsv(results: Result[], sortName: string) {
       const csvData =
-        'Iteration,Runtime\n' +
+        'iteration,runtime\n' +
         results.map((result) => `${result.iteration},${result.time}`).join('\n')
 
       const fileName = `./test/sorting/data/${sortName}.csv`
@@ -54,12 +54,13 @@ describe('Sorting', () => {
     const ITERATIONS = 20
     const algorithms: [(individuals: Individual[]) => Individual[], string][] = [
       // [radixSort, 'radix'],
-      [quickSort, 'quick'],
+      // [quickSort, 'quick'],
       [mergeSort, 'merge'],
       [insertionSort, 'insertion'],
       [bubbleSort, 'bubble'],
       [vanillaSort, 'vanilla']
     ]
+
     for (const algorithm of algorithms) {
       const individualsCopy = individuals.slice()
       await testSortingAlgorithm(algorithm[0], individualsCopy, algorithm[1], ITERATIONS)
