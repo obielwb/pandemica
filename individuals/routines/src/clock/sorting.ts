@@ -17,39 +17,34 @@ export function radixSort(currentActivities: Activity[]) {
   return currentActivities
 }
 
-export function quickSort(currentActivities: Activity[]): Activity[] {
+export function quickSort(currentActivities: Activity[], begin: number, end: number) {
   if (currentActivities.length <= 1) {
     return currentActivities
   }
 
-  const stack: Activity[][] = [[...currentActivities]]
+  if (begin < end) {
+    const partitionIndex = partition(currentActivities, begin, end)
 
-  while (stack.length) {
-    const subarray = stack.pop()!
+    quickSort(currentActivities, begin, partitionIndex - 1)
+    quickSort(currentActivities, partitionIndex + 1, end)
+  }
+}
 
-    if (subarray.length <= 1) {
-      continue
+function partition(currentActivities: Activity[], begin: number, end: number): number {
+  const pivot = currentActivities[end]
+  let i = begin - 1
+
+  for (let j = begin; j < end; j++) {
+    if (currentActivities[j]!.duration! <= pivot!.duration!) {
+      i++
+
+      const swap = currentActivities[j]
+      currentActivities[i] = currentActivities[j]
+      currentActivities[j] = swap
     }
-
-    const pivotIndex = Math.floor(subarray.length / 2)
-    const pivot = subarray[pivotIndex]
-
-    const less: Activity[] = []
-    const greater: Activity[] = []
-
-    for (const activity of subarray) {
-      if (activity!.duration! < pivot!.duration!) {
-        less.push(individual)
-      } else {
-        greater.push(individual)
-      }
-    }
-
-    stack.push(greater)
-    stack.push(less)
   }
 
-  return individuals
+  return i + 1
 }
 
 export function mergeSort(currentActivities: Activity[]) {
