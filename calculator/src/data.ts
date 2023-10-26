@@ -1,0 +1,346 @@
+import { formatPercent } from './utilities'
+import {
+  type Distance as ActivityDistance,
+  type Setting as ActivitySetting,
+  type Voice as ActivityVoice
+} from '../../individuals/routines/src/activities'
+import type { Mask as IndividuaMask } from '../../individuals/routines/src/individual'
+
+export interface CheckBoxFormValue extends FormValue {
+  description?: string
+  sublabel?: string
+}
+
+export interface BaseFormValue {
+  label: string
+  shortLabel?: string
+  multiplier?: number
+}
+
+export interface FormValue extends BaseFormValue {
+  multiplier: number
+  housemateMultiplier?: number // housemate = pessoa que mora junto
+}
+
+export interface PersonRiskValue extends BaseFormValue {
+  label: string
+  personalMultiplier: number
+  numHousemates: number
+}
+
+const formValue = function (label: string, multiplier: number): FormValue {
+  return { label, multiplier }
+}
+
+const segmentedFormValue = function (
+  label: string,
+  description: string,
+  multiplier: number
+): CheckBoxFormValue {
+  return { label, multiplier, description }
+}
+
+export const oneTimeMult = 0.14 // encontrou uma vez
+export const housemateMult = 0.4
+export const partnerMult = 0.6 // partner = dorme na mesma cama
+
+// oneTime multiplier parece valer por 1 hora
+export const Interaction: { [key: string]: FormValue } = {
+  oneTime: {
+    label: formatPercent(oneTimeMult, { decimalPointsToShow: 2 }),
+    multiplier: oneTimeMult
+  },
+  workplace: {
+    label: formatPercent(oneTimeMult),
+    multiplier: oneTimeMult
+  },
+  partner: {
+    label: formatPercent(partnerMult),
+    multiplier: partnerMult
+  },
+  repeated: {
+    label: formatPercent(housemateMult),
+    multiplier: housemateMult
+  }
+}
+
+/**
+ * transit = transporte público
+ * filtered = ?
+ */
+export const Setting: { [key in ActivitySetting]: FormValue } = {
+  indoor: { label: 'data.indoor', multiplier: 1 },
+  outdoor: { label: 'data.outdoor', multiplier: 0.05 },
+  filtered: { label: 'data.filtered', multiplier: 0.25 },
+  transit: { label: 'data.transit', multiplier: 0.25 },
+  plane: { label: 'data.plane', multiplier: 1 / 6 },
+  carWindowsDown: { label: 'data.car_windows_down', multiplier: 0.25 },
+  partiallyEnclosed: {
+    label: 'data.partially_enclosed',
+    multiplier: 0.25
+  }
+}
+
+export const intimateDurationFloor = 20 // duração de atividades íntimas, como beijo
+
+export const Distance: { [key in ActivityDistance]: FormValue } = {
+  intimate: formValue('data.intimate_distance', 5),
+  close: formValue('data.close_distance', 2),
+  normal: formValue('data.normal_distance', 1),
+  sixFt: formValue('data.sixft_distance', 0.5),
+  tenFt: formValue('data.tenft_distance', 0.25)
+}
+
+const noneLabel = 'data.no_mask_short'
+const thinLabel = 'data.thin_mask_short'
+const basicLabel = 'data.basic_mask_short'
+const surgicalLabel = 'data.surgical_mask_short'
+const filteredLabel = 'data.filtered_mask_short'
+const n95Label = 'data.n95_mask_short'
+const n95SealedLabel = 'data.n95_sealed_mask_short'
+const p100Label = 'data.p100_mask_short'
+
+const noneDesc = 'data.no_mask'
+const thinDesc = 'data.thin_mask'
+const basicDesc = 'data.basic_mask'
+const surgicalDesc = 'data.surgical_mask'
+const filteredDesc = 'data.filtered_mask'
+const n95Desc = 'data.n95_mask'
+const n95SealedDesc = 'data.n95_sealed_mask'
+const p100DescTheirs = 'data.p100_mask_theirs'
+const p100DescYours = 'data.p100_mask_yours'
+
+export const TheirMask: { [key: string]: CheckBoxFormValue } = {
+  none: segmentedFormValue(noneLabel, noneDesc, 1.0),
+  thin: segmentedFormValue(thinLabel, thinDesc, 1 / 2),
+  basic: segmentedFormValue(basicLabel, basicDesc, 1 / 3),
+  surgical: segmentedFormValue(surgicalLabel, surgicalDesc, 1 / 4),
+  filtered: segmentedFormValue(filteredLabel, filteredDesc, 1 / 4),
+  n95: segmentedFormValue(n95Label, n95Desc, 1 / 6),
+  n95Sealed: segmentedFormValue(n95SealedLabel, n95SealedDesc, 1 / 16),
+  p100: segmentedFormValue(p100Label, p100DescTheirs, 1 / 3)
+}
+
+export const YourMask: { [key in IndividuaMask]: CheckBoxFormValue } = {
+  none: segmentedFormValue(noneLabel, noneDesc, 1.0),
+  thin: segmentedFormValue(thinLabel, thinDesc, 1.0),
+  basic: segmentedFormValue(basicLabel, basicDesc, 2 / 3),
+  surgical: segmentedFormValue(surgicalLabel, surgicalDesc, 1 / 2),
+  filtered: segmentedFormValue(filteredLabel, filteredDesc, 1 / 2),
+  n95: segmentedFormValue(n95Label, n95Desc, 1 / 3),
+  n95Sealed: segmentedFormValue(n95SealedLabel, n95SealedDesc, 1 / 8),
+  p100: segmentedFormValue(p100Label, p100DescYours, 1 / 20)
+}
+
+export const Voice: { [key in ActivityVoice]: FormValue } = {
+  silent: {
+    label: 'data.silent_voice',
+    shortLabel: 'data.silent_voice_short',
+    multiplier: 0.2
+  },
+  normal: {
+    label: 'data.normal_voice',
+    shortLabel: 'data.normal_voice_short',
+    multiplier: 1
+  },
+  loud: {
+    label: 'data.loud_voice',
+    shortLabel: 'data.loud_voice_short',
+    multiplier: 5
+  }
+}
+
+/*
+ * Exposed to ten (silent distanced masked) average people indoors,
+ * while wearing a surgical mask, one-time, for one hour per week.
+ */
+export const livingAloneMult =
+  10 *
+  Voice.silent.multiplier *
+  Distance.sixFt.multiplier *
+  TheirMask.basic.multiplier *
+  YourMask.surgical.multiplier *
+  Interaction.oneTime.multiplier *
+  Setting.indoor.multiplier
+
+const HEALTHCARE_MULT = 2.0
+const SYMPTOM_FREE_LAST_SEEN_TODAY_MULT = 0.5
+const SYMPTOM_FREE_LAST_SEEN_MORE_THAN_THREE_DAYS_AGO = 1 / 7
+
+export const personRiskMultiplier: (arg: {
+  riskProfile: PersonRiskValue
+  isHousemate: boolean
+  symptomsChecked: string
+}) => number = ({ riskProfile, isHousemate, symptomsChecked }) => {
+  const symptomFreeMult = symptomsChecked !== 'no' ? SYMPTOM_FREE_LAST_SEEN_TODAY_MULT : 1
+  const housemateSymptomFreeMult = symptomFreeMult
+
+  const housematesNotIncludingUser = Math.max(0, riskProfile.numHousemates - (isHousemate ? 1 : 0))
+
+  const housematesRisk =
+    housemateSymptomFreeMult * housematesNotIncludingUser * riskProfile.contactsMultiplier
+
+  const riskFromAllContacts = housematesRisk * housemateMult
+
+  return (riskProfile.personalMultiplier + riskFromAllContacts) * symptomFreeMult
+}
+
+// Shorthand for filling in RiskProfiles with no contacts
+const noContacts = {
+  numHousemates: 0,
+  numOtherTraceableContacts: 0,
+  contactsMultiplier: 0
+}
+
+// TODO: analisar para ver se o multiplicador será realmente livingAlone para todos
+export const RiskProfile: { [key: string]: PersonRiskValue } = {
+  average: {
+    label: 'data.person.average',
+    personalMultiplier: 1.0,
+    ...noContacts
+  },
+  livingAlone: {
+    label: 'data.person.livingAlone',
+    personalMultiplier: livingAloneMult,
+    ...noContacts
+  },
+  livingWithPartner: {
+    label: 'data.person.livingWithPartner',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 1
+  },
+  closedPod3: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 2
+  },
+  closedPod4: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 3
+  },
+  closedPod5: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 4
+  },
+  closedPod6: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 5
+  },
+  closedPod7: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 6
+  },
+  closedPod8: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 7
+  },
+  closedPod9: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 10
+  },
+  closedPod10: {
+    label: 'data.person.closedPod4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 9
+  },
+
+  closedPod11: {
+    label: 'data.person.closedPod10',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 10
+  },
+
+  contactWorks: {
+    label: 'data.person.contactWorks',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 0
+  }
+}
+
+// This is an explicit list of risk profiles for which "their vaccine" modifiers
+// do not apply.
+export const RiskProfilesUnaffectedByVaccines: {
+  [key: string]: keyof typeof RiskProfile
+} = {
+  ONE_PERCENT: 'onePercent',
+  DECI_PERCENT: 'deciPercent',
+  HAS_COVID: 'hasCovid'
+}
+
+RiskProfile[RiskProfilesUnaffectedByVaccines.ONE_PERCENT] = {
+  label: 'data.person.microcovid_budget_one_percent',
+  personalMultiplier: NaN,
+  numHousemates: NaN,
+  numOtherTraceableContacts: NaN,
+  contactsMultiplier: NaN
+}
+
+RiskProfile[RiskProfilesUnaffectedByVaccines.DECI_PERCENT] = {
+  label: 'data.person.microcovid_budget_deci_percent',
+  personalMultiplier: NaN,
+  numHousemates: NaN,
+  numOtherTraceableContacts: NaN,
+  contactsMultiplier: NaN
+}
+
+RiskProfile[RiskProfilesUnaffectedByVaccines.HAS_COVID] = {
+  label: 'data.person.hasCovid',
+  personalMultiplier: NaN,
+  numHousemates: NaN
+}
+
+export interface VaccineValue {
+  label: string
+  multiplierPerDose: number[] // muliplierPerDose[n] is the multiplier for having |n| doses of vaccine.
+}
+
+export const Vaccines: { [key: string]: VaccineValue } = {
+  pfizer: {
+    label: 'data.vaccine.pfizer',
+    multiplierPerDose: [1, 1, 0.8, 0.25]
+  },
+  moderna: {
+    label: 'data.vaccine.moderna',
+    multiplierPerDose: [1, 1, 0.8, 0.25]
+  },
+  astraZeneca: {
+    label: 'data.vaccine.astra_zeneca',
+    multiplierPerDose: [1, 1, 1, 0.3]
+  },
+  johnson: {
+    label: 'data.vaccine.johnson_johnson',
+    multiplierPerDose: [1, 1, 0.95]
+  },
+  sputnik: {
+    label: 'data.vaccine.sputnik',
+    multiplierPerDose: [1, 1, 0.8, 0.25]
+  },
+  unknown: {
+    label: 'data.vaccine.unknown',
+    multiplierPerDose: [1, 1, 1, 0.3]
+  }
+}
+
+export const TheirVaccine: { [key: string]: CheckBoxFormValue } = {
+  vaccinated: {
+    label: 'data.their_vaccine.yes',
+    description: 'data.their_vaccine.yes_description',
+    multiplier: 0
+  },
+  unvaccinated: {
+    label: 'data.their_vaccine.no',
+    description: 'data.their_vaccine.no_description',
+    multiplier: 0
+  },
+  undefined: {
+    label: 'data.their_vaccine.unknown',
+    description: 'data.their_vaccine.unknown_description',
+    multiplier: 0
+  }
+}

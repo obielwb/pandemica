@@ -1,19 +1,19 @@
-import { IndividualActivity } from '../data'
+import type { Activity } from './activities'
 
 export class Individual {
   public id: string // done
   public sex: 'male' | 'female' // done
   public age: number[] // done
-  public isWearingMask: boolean // done
+  public mask?: Mask // done
   public studyLevel: string
-  public currentActivity?: IndividualActivity
+  public currentActivity?: Activity
   // todo: routines should change
   // - social distancing stage
   // - quarantine stage
   // - lockdown stage
-  public routine: IndividualActivity['type'][]
+  public routine: Activity[]
   public house: House // done
-  public income: boolean
+  public income: string
   public vehicle: string
   public occupationType: ['study'?, 'work'?]
   public occupations?: [Occupation?, Occupation?]
@@ -29,6 +29,16 @@ export type Occupation = {
   size: number // number of people related to this occupation
 }
 
+export type Mask =
+  | 'none'
+  | 'thin'
+  | 'basic'
+  | 'surgical'
+  | 'filtered'
+  | 'n95'
+  | 'n95Sealed'
+  | 'p100'
+
 export type Workstation = Occupation
 export type Study = Occupation
 
@@ -41,7 +51,7 @@ export type House = {
 
 export type RiskProfile = {
   label: string
-  label_short?: string
+  shortLabel?: string
   multiplier?: number
   personalMultiplier: number
   housemates: number
