@@ -17,7 +17,8 @@ export function radixSort(currentActivities: Activity[]) {
   return currentActivities
 }
 
-export function quickSort(currentActivities: Activity[], begin: number, end: number) {
+// https://github.com/AvraamMavridis/Algorithms-Data-Structures-in-Typescript/blob/master/algorithms/quickSort.md
+export function quickSort(currentActivities: Activity[], begin: number, end: number): Activity[] {
   if (currentActivities.length <= 1) {
     return currentActivities
   }
@@ -28,6 +29,8 @@ export function quickSort(currentActivities: Activity[], begin: number, end: num
     quickSort(currentActivities, begin, partitionIndex - 1)
     quickSort(currentActivities, partitionIndex + 1, end)
   }
+
+  return currentActivities
 }
 
 function partition(currentActivities: Activity[], begin: number, end: number): number {
