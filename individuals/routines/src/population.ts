@@ -14,7 +14,7 @@ import {
   malePercentage,
   residentsPerHouse,
   salaries,
-  ages,
+  ages
 } from '../data'
 import {
   Parameter,
@@ -37,10 +37,11 @@ export function createPopulation() {
 
     individual.id = nanoid()
 
+    // random assignment for now
     individual.currentActivity = {
       id: nanoid(),
-      individualsEngaged: [],
-      ...activitiesList[i % activitiesList.length]
+      ...activitiesList[i % activitiesList.length],
+      individualsEngaged: []
     }
 
     // defaults true by default for now
@@ -68,7 +69,10 @@ export function createPopulation() {
   // todo: properly set number of students, income among individuals
   // considerations: individuals under 10 years do not work
   // income depends on age
-  individuals = assign(individuals, 'income', normalize('salaries', salaries, totalPopulation))
+  // individuals = assignIncome(individuals, salaries)
+  individuals = assign(individuals, 'income', normalize('salaries', salaries, individuals.length))
+
+  console.log(individuals[0], individuals[500000], individuals[individuals.length - 1])
 
   // todo: review this number
   const students =

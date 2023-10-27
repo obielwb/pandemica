@@ -1,4 +1,4 @@
-import type { Activity } from './activities'
+import type { Activity, IndividualActivity } from './activities'
 
 export class Individual {
   public id: string // done
@@ -6,7 +6,7 @@ export class Individual {
   public age: number[] // done
   public mask: Mask // done
   public studyLevel: string
-  public currentActivity?: Activity
+  public currentActivity?: IndividualActivity
   // todo: routines should change
   // - social distancing stage
   // - quarantine stage
@@ -38,9 +38,6 @@ export type Mask =
   | 'n95'
   | 'n95Sealed'
   | 'p100'
-
-export type Workstation = Occupation
-export type Study = Occupation
 
 export type House = {
   id: string

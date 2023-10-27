@@ -1,10 +1,10 @@
-import { createPopulation } from './individuals'
+import { createPopulation } from './population'
 import { Clock } from './clock'
-import { vanillaSort } from './clock/sorting'
+import { quickSort } from './clock/sorting'
 
 const individuals = createPopulation()
-const clock = new Clock(individuals, vanillaSort)
+const clock = new Clock(individuals, quickSort)
 
-console.log(clock.individuals.slice(5))
+// console.log(clock.individuals.slice(5))
 clock.sortIndividuals()
-console.log(clock.individuals.slice(5))
+// console.log(clock.individuals.slice(5))

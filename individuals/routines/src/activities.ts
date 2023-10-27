@@ -62,6 +62,7 @@ export const pharmacyShopping: Activity = {
 }
 
 export const restaurantOutdoors: Activity = {
+  category: 'leisure', // todo: change to proper category
   label: 'restaurant.outdoor',
   setting: 'outdoor',
   distance: 'sixFt',
@@ -71,60 +72,72 @@ export const restaurantOutdoors: Activity = {
 }
 
 export const restaurantIndoors: Activity = {
+  category: 'leisure', // todo: change to proper category
   label: 'restaurant.indoor',
-  setting: 'outdoor',
-  distance: 'sixFt',
-  duration: 1.5 * 60,
-  voice: 'normal'
+  setting: 'indoor',
+  distance: 'close',
+  duration: 1 * 60, // an hour
+  voice: 'normal',
+  maximumIndvidualsEngaged: 40
 }
 
 export const bar: Activity = {
+  category: 'leisure',
   label: 'bar',
   setting: 'indoor',
-  distance: 'sixFt',
-  duration: 2 * 60,
-  voice: 'loud'
+  distance: 'normal',
+  duration: 2 * 60, // 2 hours
+  voice: 'loud',
+  maximumIndvidualsEngaged: 30
 }
 
 export const outdoorParty: Activity = {
+  category: 'leisure',
   label: 'party.outdoor',
   setting: 'outdoor',
   distance: 'normal',
-  duration: 3 * 60,
-  voice: 'loud'
+  duration: 3 * 60, // 3 hours
+  voice: 'loud',
+  maximumIndvidualsEngaged: 50
 }
 
 export const indoorParty: Activity = {
+  category: 'leisure',
   label: 'party.indoor',
   setting: 'indoor',
-  distance: 'normal',
-  duration: 3 * 60,
-  voice: 'normal'
+  distance: 'close',
+  duration: 3 * 60, // 3 hours
+  voice: 'normal',
+  maximumIndvidualsEngaged: 30
 }
 
 export const house: Activity = {
+  category: 'home',
   label: 'house',
   setting: 'indoor',
   distance: 'close',
   duration: 10 * 60, // 10 hours
-  voice: 'normal'
+  voice: 'normal',
+  maximumIndvidualsEngaged: 11 // maximum number of residents per house
 }
 
-export const school: Activity = {
-  label: 'school',
+export const schoolClassroom: Activity = {
+  category: 'study',
+  label: 'school.classroom',
   setting: 'indoor',
   distance: 'normal',
   duration: 6 * 60, // 6 hours
-  voice: 'normal'
+  voice: 'normal',
+  maximumIndvidualsEngaged: 30
 }
 
-export const hospital: Activity = {
-  label: 'hospital',
-  setting: 'indoor',
-  distance: 'sixFt',
-  voice: 'normal',
-  duration: 3 * 60
-}
+// export const hospital: Activity = {
+//   label: 'hospital',
+//   setting: 'indoor',
+//   distance: 'sixFt',
+//   voice: 'normal',
+//   duration: 3 * 60
+// }
 
 export const publicTransportStation: Activity = {
   category: 'transportation',
@@ -146,40 +159,44 @@ export const publicTransportationRide: Activity = {
   maximumIndvidualsEngaged: 50
 }
 
-export const parks: Activity = {
+export const park: Activity = {
+  category: 'leisure',
   label: 'park',
   setting: 'outdoor',
   distance: 'tenFt',
   voice: 'silent',
-  duration: 90
+  duration: 1.5 * 60, // a half hour
+  maximumIndvidualsEngaged: 50
 }
 
 export const activities: { [activity: string]: Activity } = {
-  grocery,
+  groceryShopping,
+  pharmacyShopping,
   restaurantOutdoors,
   restaurantIndoors,
   bar,
   outdoorParty,
   indoorParty,
   house,
-  school,
-  hospital,
+  schoolClassroom,
+  // hospital,
   publicTransportStation,
-  parks
+  park
 }
 
 export const activitiesList = [
-  grocery,
+  groceryShopping,
+  pharmacyShopping,
   restaurantOutdoors,
   restaurantIndoors,
   bar,
   outdoorParty,
   indoorParty,
   house,
-  school,
-  hospital,
+  schoolClassroom,
+  // hospital,
   publicTransportStation,
-  parks
+  park
 ]
 
 export enum ActivityType {
