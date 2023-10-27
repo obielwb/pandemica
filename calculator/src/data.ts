@@ -26,8 +26,9 @@ export interface PersonRiskValue extends BaseFormValue {
   label: string
   personalMultiplier: number
   numHousemates: number
+  numOtherTraceableContacts: number // Not including housemates
+  contactsMultiplier: number
 }
-
 const formValue = function (label: string, multiplier: number): FormValue {
   return { label, multiplier }
 }
@@ -174,13 +175,19 @@ export const personRiskMultiplier: (arg: {
 }) => number = ({ riskProfile, isHousemate, symptomsChecked }) => {
   const symptomFreeMult = symptomsChecked !== 'no' ? SYMPTOM_FREE_LAST_SEEN_TODAY_MULT : 1
   const housemateSymptomFreeMult = symptomFreeMult
+  const contactSymptomFreeMult =
+    symptomsChecked === 'yesThreeDays'
+      ? SYMPTOM_FREE_LAST_SEEN_MORE_THAN_THREE_DAYS_AGO
+      : symptomFreeMult
 
+  // Remove the person doing the calculation from the number of contacts if applicable.
   const housematesNotIncludingUser = Math.max(0, riskProfile.numHousemates - (isHousemate ? 1 : 0))
-
   const housematesRisk =
     housemateSymptomFreeMult * housematesNotIncludingUser * riskProfile.contactsMultiplier
+  const otherContactsRisk =
+    contactSymptomFreeMult * riskProfile.numOtherTraceableContacts * riskProfile.contactsMultiplier
 
-  const riskFromAllContacts = housematesRisk * housemateMult
+  const riskFromAllContacts = (housematesRisk + otherContactsRisk) * housemateMult
 
   return (riskProfile.personalMultiplier + riskFromAllContacts) * symptomFreeMult
 }
@@ -191,8 +198,6 @@ const noContacts = {
   numOtherTraceableContacts: 0,
   contactsMultiplier: 0
 }
-
-// TODO: analisar para ver se o multiplicador será realmente livingAlone para todos
 export const RiskProfile: { [key: string]: PersonRiskValue } = {
   average: {
     label: 'data.person.average',
@@ -204,62 +209,82 @@ export const RiskProfile: { [key: string]: PersonRiskValue } = {
     personalMultiplier: livingAloneMult,
     ...noContacts
   },
+
   livingWithPartner: {
     label: 'data.person.livingWithPartner',
     personalMultiplier: livingAloneMult,
-    numHousemates: 1
+    numHousemates: 1,
+    numOtherTraceableContacts: 0,
+    contactsMultiplier: livingAloneMult
   },
-  closedPod3: {
-    label: 'data.person.closedPod4',
-    personalMultiplier: livingAloneMult,
-    numHousemates: 2
-  },
+
   closedPod4: {
     label: 'data.person.closedPod4',
     personalMultiplier: livingAloneMult,
-    numHousemates: 3
-  },
-  closedPod5: {
-    label: 'data.person.closedPod4',
-    personalMultiplier: livingAloneMult,
-    numHousemates: 4
-  },
-  closedPod6: {
-    label: 'data.person.closedPod4',
-    personalMultiplier: livingAloneMult,
-    numHousemates: 5
-  },
-  closedPod7: {
-    label: 'data.person.closedPod4',
-    personalMultiplier: livingAloneMult,
-    numHousemates: 6
-  },
-  closedPod8: {
-    label: 'data.person.closedPod4',
-    personalMultiplier: livingAloneMult,
-    numHousemates: 7
-  },
-  closedPod9: {
-    label: 'data.person.closedPod4',
-    personalMultiplier: livingAloneMult,
-    numHousemates: 10
-  },
-  closedPod10: {
-    label: 'data.person.closedPod4',
-    personalMultiplier: livingAloneMult,
-    numHousemates: 9
+    numHousemates: 3,
+    numOtherTraceableContacts: 0,
+    contactsMultiplier: livingAloneMult
   },
 
-  closedPod11: {
+  closedPod10: {
     label: 'data.person.closedPod10',
     personalMultiplier: livingAloneMult,
-    numHousemates: 10
+    numHousemates: 9,
+    numOtherTraceableContacts: 0,
+    contactsMultiplier: livingAloneMult
+  },
+
+  closedPod20: {
+    label: 'data.person.closedPod20',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 19,
+    numOtherTraceableContacts: 0,
+    contactsMultiplier: livingAloneMult
+  },
+
+  contact1: {
+    label: 'data.person.contact1',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 0,
+    numOtherTraceableContacts: 1,
+    contactsMultiplier: 1
+  },
+
+  contact4: {
+    label: 'data.person.contact4',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 0,
+    numOtherTraceableContacts: 3,
+    contactsMultiplier: 1
+  },
+
+  contact10: {
+    label: 'data.person.contact10',
+    personalMultiplier: livingAloneMult,
+    numHousemates: 0,
+    numOtherTraceableContacts: 9,
+    contactsMultiplier: 1
   },
 
   contactWorks: {
     label: 'data.person.contactWorks',
     personalMultiplier: livingAloneMult,
-    numHousemates: 0
+    numHousemates: 0,
+    numOtherTraceableContacts: 1,
+    contactsMultiplier: HEALTHCARE_MULT
+  },
+
+  bars: {
+    label: 'data.person.bars',
+    /*
+     * Six hours of indoor exposure to a dozen people (2 near you, 10 six feet away)
+     * who are not wearing masks and are talking loudly.
+     */
+    personalMultiplier:
+      6 *
+      Interaction.oneTime.multiplier *
+      (2 + 10 * Distance.sixFt.multiplier * Voice.loud.multiplier),
+    ...noContacts
   }
 }
 

@@ -1,4 +1,4 @@
-import { CalculatorData } from './calculate'
+import { CalculatorData } from './calculateByMicrocovidMethod'
 
 export type PartialData = Omit<
   CalculatorData,
