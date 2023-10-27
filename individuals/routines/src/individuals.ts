@@ -15,7 +15,6 @@ import {
   residentsPerHouse,
   salaries,
   ages,
-  activitiesList
 } from '../data'
 import {
   Parameter,
@@ -27,9 +26,10 @@ import {
   assignHouse,
   assignAge
 } from './parameter'
-import { Individual, Workstation } from './individual'
+import { activitiesList } from './activities'
+import { Individual, type Workstation } from './individual'
 
-export function instantiateIndividuals() {
+export function createPopulation() {
   let individuals: Individual[] = []
 
   for (let i = 0; i < totalPopulation; i++) {
@@ -47,8 +47,10 @@ export function instantiateIndividuals() {
     // if age is invalid or for some other reason, reassign it
     individual.isValid = true
 
+    individual.mask = 'none'
+
     // false by default
-    individual.isWearingMask = individual.isDead = individual.isHospitalized = false
+    individual.isDead = individual.isHospitalized = false
 
     individuals.push(individual)
   }

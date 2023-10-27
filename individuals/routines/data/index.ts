@@ -1,10 +1,3 @@
-/*
- * generate activities:
- *    - search in microCovid to see if what they've done
- */
-
-import { Individual } from '../src/individual'
-
 // ibge 2010
 export const totalPopulation = 1080113
 

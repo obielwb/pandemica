@@ -1,3 +1,4 @@
+import { Activity } from '../activities'
 import { Individual } from '../individual'
 
 export class Clock {
@@ -16,7 +17,7 @@ export class Clock {
 
   constructor(
     public individuals: Individual[],
-    private sortFunction: (individuals: Individual[]) => Individual[]
+    private sortFunction: (activities: Activity[]) => Activity[]
   ) {
     this.minutes = 0
     this.totalMinutes = 0
@@ -73,6 +74,6 @@ export class Clock {
   }
 
   public sortIndividuals() {
-    this.individuals = this.sortFunction(this.individuals)
+
   }
 }

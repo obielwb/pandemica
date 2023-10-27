@@ -4,13 +4,15 @@ import {
   radixSort,
   quickSort,
   mergeSort,
-  insertionSort,
-  bubbleSort,
-  vanillaSort
+  // insertionSort, // -> bottle necks
+  // bubbleSort, // -> bottle necks
+  vanillaSort,
+  countingSort,
+  heapSort,
+  timSort
 } from '../src/clock/sorting'
-import { Activity } from '../src/activities'
-
-const currentActivities: Activity[] = []
+import type { Activity } from '../src/activities'
+import { totalPopulation } from '../data'
 
 const exampleActivity: Activity = {
   category: 'leisure',
@@ -20,11 +22,10 @@ const exampleActivity: Activity = {
   voice: 'normal',
   maximumIndvidualsEngaged: 0
 }
-for (let i = 0; i < 10000; i++) {
-  exampleActivity.duration = Math.floor(5 + Math.random() * (750 - 5 + 1))
 
-  currentActivities.push(exampleActivity)
-}
+const currentActivities: Activity[] = Array.from({ length: totalPopulation }, () => {
+  return { ...exampleActivity, duration: Math.floor(5 + Math.random() * (750 - 5 + 1)) }
+})
 
 describe('Sorting', () => {
   test('Should test and export algorithms data', async () => {
@@ -69,9 +70,12 @@ describe('Sorting', () => {
       [radixSort, 'radix'],
       [quickSort, 'quick'],
       [mergeSort, 'merge'],
-      [insertionSort, 'insertion'],
-      [bubbleSort, 'bubble'],
-      [vanillaSort, 'vanilla']
+      // [insertionSort, 'insertion'], // -> bottle neck
+      // [bubbleSort, 'bubble'], // -> bottle neck
+      [vanillaSort, 'vanilla'],
+      [countingSort, 'counting'],
+      [heapSort, 'heap'],
+      [timSort, 'tim']
     ]
 
     for (const algorithm of algorithms) {

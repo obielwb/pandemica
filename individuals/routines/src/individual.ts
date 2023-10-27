@@ -4,7 +4,7 @@ export class Individual {
   public id: string // done
   public sex: 'male' | 'female' // done
   public age: number[] // done
-  public mask?: Mask // done
+  public mask: Mask // done
   public studyLevel: string
   public currentActivity?: Activity
   // todo: routines should change

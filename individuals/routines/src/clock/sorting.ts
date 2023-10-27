@@ -1,9 +1,16 @@
 import { Activity } from '../activities'
 
-export function radixSort(currentActivities: Activity[]) {
-  const maxDuration = Math.max(...currentActivities.map((activity) => activity!.duration!))
+function minimumMaximum(array: number[]): number[] {
+  return array.reduce(([minimum, maximum], value) => [Math.min(minimum, value), Math.max(maximum, value)], [
+    Number.POSITIVE_INFINITY,
+    Number.NEGATIVE_INFINITY,
+  ])
+}
 
-  for (let digit = 1; maxDuration / digit >= 1; digit *= 10) {
+export function radixSort(currentActivities: Activity[]) {
+  const maximumDuration = minimumMaximum(currentActivities.map((activity) => activity!.duration!))[1]
+
+  for (let digit = 1; maximumDuration / digit >= 1; digit *= 10) {
     const buckets = Array.from({ length: 10 }, () => [] as Activity[])
 
     for (const activity of currentActivities) {
@@ -67,6 +74,139 @@ function partition(
   return i
 }
 
+export function countingSort(currentActivities: Activity[]): Activity[] {
+  const [minDuration, maxDuration] = minimumMaximum(currentActivities.map((activity) => activity.duration || 0));
+
+  const range = maxDuration - minDuration + 1;
+  const countArray = Array.from({ length: range }, () => 0);
+
+  for (const activity of currentActivities) {
+    countArray[activity.duration! - minDuration]++;
+  }
+
+  let sortedActivities: Activity[] = [];
+
+  for (let i = 0; i < range; i++) {
+    while (countArray[i] > 0) {
+      sortedActivities.push(currentActivities.find(activity => activity.duration === i + minDuration)!);
+      countArray[i]--;
+    }
+  }
+
+  return sortedActivities;
+}
+
+export function timSort(currentActivities: Activity[]): Activity[] {
+  const minRun = 32;
+
+  function insertionSort(arr: Activity[], start: number, end: number): void {
+    for (let i = start + 1; i <= end; i++) {
+      const key = arr[i];
+      let j = i - 1;
+
+      while (j >= start && arr[j].duration && key.duration && arr[j].duration! > key.duration) {
+        arr[j + 1] = arr[j];
+        j--;
+      }
+      arr[j + 1] = key;
+    }
+  }
+
+  function merge(arr: Activity[], l: number, m: number, r: number): void {
+    const len1 = m - l + 1;
+    const len2 = r - m;
+
+    const left = new Array(len1);
+    const right = new Array(len2);
+
+    for (let i = 0; i < len1; i++) {
+      left[i] = arr[l + i];
+    }
+
+    for (let i = 0; i < len2; i++) {
+      right[i] = arr[m + i + 1];
+    }
+
+    let i = 0, j = 0, k = l;
+
+    while (i < len1 && j < len2) {
+      if (left[i].duration && right[j].duration && left[i].duration <= right[j].duration) {
+        arr[k] = left[i];
+        i++;
+      } else {
+        arr[k] = right[j];
+        j++;
+      }
+      k++;
+    }
+
+    while (i < len1) {
+      arr[k] = left[i];
+      i++;
+      k++;
+    }
+
+    while (j < len2) {
+      arr[k] = right[j];
+      j++;
+      k++;
+    }
+  }
+
+  const n = currentActivities.length;
+
+  for (let i = 0; i < n; i += minRun) {
+    insertionSort(currentActivities, i, Math.min(i + minRun - 1, n - 1));
+  }
+
+  for (let size = minRun; size < n; size = 2 * size) {
+    for (let left = 0; left < n; left += 2 * size) {
+      const mid = Math.min(left + size - 1, n - 1);
+      const right = Math.min(left + 2 * size - 1, n - 1);
+
+      if (left < mid && mid < right) {
+        merge(currentActivities, left, mid, right);
+      }
+    }
+  }
+
+  return currentActivities;
+}
+
+export function heapSort(currentActivities: Activity[]): Activity[] {
+  function heapify(arr: Activity[], n: number, i: number): void {
+    let largest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+
+    if (left < n && arr[left].duration && arr[i].duration && arr[left].duration! > arr[i].duration!) {
+      largest = left;
+    }
+
+    if (right < n && arr[right].duration && arr[largest].duration && arr[right].duration! > arr[largest].duration!) {
+      largest = right;
+    }
+
+    if (largest !== i) {
+      [arr[i], arr[largest]] = [arr[largest], arr[i]];
+      heapify(arr, n, largest);
+    }
+  }
+
+  const n = currentActivities.length;
+
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(currentActivities, n, i);
+  }
+
+  for (let i = n - 1; i > 0; i--) {
+    [currentActivities[0], currentActivities[i]] = [currentActivities[i], currentActivities[0]];
+    heapify(currentActivities, i, 0);
+  }
+
+  return currentActivities;
+}
+
 export function mergeSort(currentActivities: Activity[]) {
   if (currentActivities.length <= 1) {
     return currentActivities
@@ -123,6 +263,8 @@ export function bubbleSort(currentActivities: Activity[]) {
         currentActivities[j + 1] = temp
       }
     }
+
+    console.log(i)
   }
 
   return currentActivities
