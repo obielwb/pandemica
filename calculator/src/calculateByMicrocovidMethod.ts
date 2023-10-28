@@ -185,7 +185,6 @@ export const migrateDataToCurrent = (incomingData: Record<string, unknown>): Cal
 }
 
 export const ONE_MILLION = 1e6 // 100% of chance of being contaminated with covid
-
 export const MAX_ACTIVITY_RISK = partnerMult
 export const MAX_POINTS = 100000
 
