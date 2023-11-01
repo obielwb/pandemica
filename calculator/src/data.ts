@@ -327,27 +327,19 @@ export interface VaccineValue {
 
 export const Vaccines: { [key: string]: VaccineValue } = {
   pfizer: {
-    label: 'data.vaccine.pfizer',
-    multiplierPerDose: [1, 1, 0.8, 0.25]
-  },
-  moderna: {
-    label: 'data.vaccine.moderna',
+    label: 'pfizer',
     multiplierPerDose: [1, 1, 0.8, 0.25]
   },
   astraZeneca: {
-    label: 'data.vaccine.astra_zeneca',
+    label: 'astra_zeneca',
     multiplierPerDose: [1, 1, 1, 0.3]
   },
-  johnson: {
-    label: 'data.vaccine.johnson_johnson',
+  janssen: {
+    label: 'janssen',
     multiplierPerDose: [1, 1, 0.95]
   },
-  sputnik: {
-    label: 'data.vaccine.sputnik',
-    multiplierPerDose: [1, 1, 0.8, 0.25]
-  },
   unknown: {
-    label: 'data.vaccine.unknown',
+    label: 'unknown',
     multiplierPerDose: [1, 1, 1, 0.3]
   }
 }
