@@ -21,6 +21,7 @@ export class Individual {
   public riskNumber: number
   public isHospitalized: boolean // done
   public isDead: boolean // done
+  public vaccine: Vaccine
 }
 
 export type Occupation = {
@@ -54,4 +55,9 @@ export type RiskProfile = {
   housemates: number
   otherTraceableContacts: number
   contactsMultiplier: number
+}
+
+export type Vaccine = {
+  type: 'pfizer' | 'moderna' | 'astra_zeneca' | 'johnson_johnson' | ''
+  doses: number
 }
