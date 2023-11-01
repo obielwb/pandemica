@@ -5,7 +5,7 @@ import { type House, type Individual } from './individual'
 import { fisherYatesShuffle, log } from './utilities'
 
 export type Parameter = {
-  label: string | number
+  label: string | number | string[] | number[]
   value: number
 }
 
@@ -176,6 +176,34 @@ export function assignHouse(
   individuals = fisherYatesShuffle([...underageIndividuals, ...individualsOfAge])
 
   log('', { timeEnd: true, timeLabel: 'ASSIGNMENT' })
+
+  return individuals
+}
+
+export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
+  const totalPopulation = individuals.length;
+
+  let cumulativePercentage = 0;
+  const incomeLevels = incomes.map((income) => {
+    cumulativePercentage += (income.value / totalPopulation) * 100;
+    return {
+      label: income.label,
+      cumulativePercentage,
+    };
+  });
+
+  individuals = individuals.map((individual) => {
+    const randomPercentage = Math.random() * 100;
+
+    for (const incomeLevel of incomeLevels) {
+      if (randomPercentage <= incomeLevel.cumulativePercentage) {
+        individual.income = incomeLevel.label as string;
+        break;
+      }
+    }
+
+    return individual;
+  });
 
   return individuals
 }

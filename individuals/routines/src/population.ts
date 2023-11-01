@@ -24,10 +24,11 @@ import {
   normalizeAge,
   normalizeResidentsPerHouse,
   assignHouse,
-  assignAge
+  assignAge,
+  assignIncome
 } from './parameter'
 import { activitiesList } from './activities'
-import { Individual, type Workstation } from './individual'
+import { Individual, type Occupation } from './individual'
 
 export function createPopulation() {
   let individuals: Individual[] = []
@@ -66,11 +67,7 @@ export function createPopulation() {
     regionsPopulation
   )
 
-  // todo: properly set number of students, income among individuals
-  // considerations: individuals under 10 years do not work
-  // income depends on age
-  // individuals = assignIncome(individuals, salaries)
-  individuals = assign(individuals, 'income', normalize('salaries', salaries, individuals.length))
+  individuals = assignIncome(individuals, salaries)
 
   // todo: review this number
   const students =
@@ -79,8 +76,8 @@ export function createPopulation() {
   const createWorkstations = (
     categories: Parameter[],
     employeesRanges: number[][]
-  ): Workstation[] => {
-    const workstations: Workstation[] = []
+  ): Occupation[] => {
+    const workstations: Occupation[] = []
 
     categories.forEach((category, index) => {
       const [minEmployees, maxEmployees] = employeesRanges[index]

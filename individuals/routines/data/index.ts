@@ -150,45 +150,45 @@ export const ages = [
 
 // 2010 ibge - habitants by income - 950.400 - desconsidera pessoas abaixo de 10 anos
 export const zeroToHalfMinimumSalaries = {
-  label: 'zero_to_half_minimum_salaries',
-  value: 10400
-}
+  label: [0, 0.5],
+  value: 10400,
+};
 export const halfToOneMinimumSalaries = {
-  label: 'half_to_one_minimum_salaries',
-  value: 98800
-}
+  label: [0.5, 1.0],
+  value: 98800,
+};
 export const oneToTwoMinimumSalaries = {
-  label: 'one_to_two_minimum_salaries',
-  value: 225500
-}
+  label: [1.0, 2.0],
+  value: 225500,
+};
 export const twoToThreeMinimumSalaries = {
-  label: 'two_to_three_minimum_salaries',
-  value: 98600
-}
+  label: [2.0, 3.0],
+  value: 98600,
+};
 export const threeToFiveMinimumSalaries = {
-  label: 'three_to_five_minimum_salaries',
-  value: 89300
-}
+  label: [3.0, 5.0],
+  value: 89300,
+};
 export const fiveToTenMinimumSalaries = {
-  label: 'five_to_ten_minimum_salaries',
-  value: 72300
-}
+  label: [5.0, 10.0],
+  value: 72300,
+};
 export const tenToFifteenMinimumSalaries = {
-  label: 'ten_to_fifteen_minimum_salaries',
-  value: 15700
-}
+  label: [10.0, 15.0],
+  value: 15700,
+};
 export const fifteenToTwentyMinimumSalaries = {
-  label: 'fifteen_to_twenty_minimum_salaries',
-  value: 13400
-}
+  label: [15.0, 20.0],
+  value: 13400,
+};
 export const twentyOrMoreMinimumSalaries = {
-  label: 'twenty_or_more_minimum_salaries',
-  value: 10400
-}
+  label: [20.0, Infinity],
+  value: 10400,
+};
 export const withoutSalary = {
-  label: 'none',
-  value: 316000
-}
+  label: [0, 0],
+  value: 316000 + zeroToFourYears.female + zeroToFourYears.male + fiveToNineYears.male + fiveToNineYears.female,
+};
 export const salaries = [
   zeroToHalfMinimumSalaries,
   halfToOneMinimumSalaries,
