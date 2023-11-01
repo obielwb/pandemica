@@ -72,8 +72,6 @@ export function createPopulation() {
   // individuals = assignIncome(individuals, salaries)
   individuals = assign(individuals, 'income', normalize('salaries', salaries, individuals.length))
 
-  console.log(individuals[0], individuals[500000], individuals[individuals.length - 1])
-
   // todo: review this number
   const students =
     ageFifteenToSeventeen + ageEighteenToNineteen + ageTwentyToTwentyFour + ageTwentyfiveOrMore

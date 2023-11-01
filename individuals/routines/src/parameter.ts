@@ -123,45 +123,55 @@ export function assignHouse(
     for (let i = 0; i < region.value; i++) houses[index++].region = region.label as string
   })
 
-  houses = fisherYatesShuffle(houses)
-
   individuals = fisherYatesShuffle(individuals)
+
   const underageIndividuals = individuals.filter((individual) => individual.age[1] <= 19)
   const individualsOfAge = individuals.filter((individual) => individual.age[0] >= 20)
 
+  houses = fisherYatesShuffle(houses)
+
   let individualsOfAgeIndex = 0
+
+  houses.forEach((house) => {
+    house.housemates.push({
+      ...individualsOfAge[individualsOfAgeIndex],
+      house: undefined
+    })
+    // circular, might overflow
+    // house.housemates.push(individualsOfAge[individualsOfAgeIndex])
+    individualsOfAge[individualsOfAgeIndex++].house = house
+  })
+
   let underageIndividualsIndex = 0
 
-  // houses.forEach((house) => {
-  //   house.housemates.push({
-  //     ...individualsOfAge[individualsOfAgeIndex],
-  //     house: undefined
-  //   })
-  //   individualsOfAge[individualsOfAgeIndex++].house = house
+  houses.forEach((house) => {
+    let remainingSpace = house.size - 1
 
-  //   let remainingSpace = house.size - 1
+    while (remainingSpace > 0) {
+      if (
+        underageIndividualsIndex < underageIndividuals.length &&
+        Math.random() < underageIndividuals.length / individuals.length
+      ) {
+        house.housemates.push({
+          ...underageIndividuals[underageIndividualsIndex],
+          house: undefined
+        })
+        // circular, might overflow
+        // house.housemates.push(underageIndividuals[underageIndividualsIndex])
+        underageIndividuals[underageIndividualsIndex++].house = house
+      } else if (individualsOfAgeIndex < individualsOfAge.length) {
+        house.housemates.push({
+          ...individualsOfAge[individualsOfAgeIndex],
+          house: undefined
+        })
+        // circular, might overflow
+        // house.housemates.push(individualsOfAge[individualsOfAgeIndex])
+        individualsOfAge[individualsOfAgeIndex++].house = house
+      }
 
-  //   while (remainingSpace > 0) {
-  //     if (
-  //       underageIndividualsIndex < underageIndividuals.length &&
-  //       Math.random() < underageIndividuals.length / individuals.length
-  //     ) {
-  //       house.housemates.push({
-  //         ...underageIndividuals[underageIndividualsIndex],
-  //         house: undefined
-  //       })
-  //       underageIndividuals[underageIndividualsIndex++].house = house
-  //     } else if (individualsOfAgeIndex < individualsOfAge.length) {
-  //       house.housemates.push({
-  //         ...individualsOfAge[individualsOfAgeIndex],
-  //         house: undefined
-  //       })
-  //       individualsOfAge[individualsOfAgeIndex++].house = house
-  //     }
-
-  //     remainingSpace--
-  //   }
-  // })
+      remainingSpace--
+    }
+  })
 
   individuals = fisherYatesShuffle([...underageIndividuals, ...individualsOfAge])
 
@@ -169,6 +179,7 @@ export function assignHouse(
 
   return individuals
 }
+
 
 export function assignTransportationVehicle(
   individuals: Individual[],
