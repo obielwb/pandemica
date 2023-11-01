@@ -18,7 +18,7 @@ export class Individual {
   public occupationType: ['study'?, 'work'?]
   public occupations?: [Occupation?, Occupation?]
   public isValid?: boolean // done
-  public riskProfile: RiskProfile
+  public riskNumber: number
   public isHospitalized: boolean // done
   public isDead: boolean // done
 }
