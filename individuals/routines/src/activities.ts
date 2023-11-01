@@ -28,7 +28,7 @@ export type Activity = {
 
   maximumIndvidualsEngaged: number
 
-  interaction?: Interaction
+  interaction: Interaction
 }
 
 export type IndividualActivity = Activity & {
@@ -46,9 +46,12 @@ export const groceryShopping: Activity = {
   label: 'shopping.grocery',
   setting: 'indoor',
   distance: 'sixFt',
-  duration: 1 * 60, // an hour
+  duration: 1 * 60,
   voice: 'silent',
-  maximumIndvidualsEngaged: 80
+  maximumIndvidualsEngaged: 80,
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 export const pharmacyShopping: Activity = {
@@ -56,29 +59,38 @@ export const pharmacyShopping: Activity = {
   label: 'shopping.pharmacy',
   setting: 'indoor',
   distance: 'sixFt',
-  duration: 1 * 60, // an hour
+  duration: 1 * 60,
   voice: 'silent',
-  maximumIndvidualsEngaged: 20
+  maximumIndvidualsEngaged: 20,
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 export const restaurantOutdoors: Activity = {
-  category: 'leisure', // todo: change to proper category
+  category: 'leisure',
   label: 'restaurant.outdoor',
   setting: 'outdoor',
   distance: 'sixFt',
-  duration: 1 * 60, // an hour
+  duration: 1 * 60,
   voice: 'normal',
-  maximumIndvidualsEngaged: 50
+  maximumIndvidualsEngaged: 50,
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 export const restaurantIndoors: Activity = {
-  category: 'leisure', // todo: change to proper category
+  category: 'leisure',
   label: 'restaurant.indoor',
   setting: 'indoor',
   distance: 'close',
-  duration: 1 * 60, // an hour
+  duration: 1 * 60,
   voice: 'normal',
-  maximumIndvidualsEngaged: 40
+  maximumIndvidualsEngaged: 40,
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 export const bar: Activity = {
@@ -86,9 +98,12 @@ export const bar: Activity = {
   label: 'bar',
   setting: 'indoor',
   distance: 'normal',
-  duration: 2 * 60, // 2 hours
+  duration: 2 * 60,
   voice: 'loud',
-  maximumIndvidualsEngaged: 30
+  maximumIndvidualsEngaged: 30,
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 export const outdoorParty: Activity = {
@@ -96,9 +111,12 @@ export const outdoorParty: Activity = {
   label: 'party.outdoor',
   setting: 'outdoor',
   distance: 'normal',
-  duration: 3 * 60, // 3 hours
+  duration: 3 * 60,
   voice: 'loud',
-  maximumIndvidualsEngaged: 50
+  maximumIndvidualsEngaged: 50,
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 export const indoorParty: Activity = {
@@ -106,9 +124,12 @@ export const indoorParty: Activity = {
   label: 'party.indoor',
   setting: 'indoor',
   distance: 'close',
-  duration: 3 * 60, // 3 hours
+  duration: 3 * 60,
   voice: 'normal',
-  maximumIndvidualsEngaged: 30
+  maximumIndvidualsEngaged: 30,
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 export const house: Activity = {
@@ -116,9 +137,12 @@ export const house: Activity = {
   label: 'house',
   setting: 'indoor',
   distance: 'close',
-  duration: 10 * 60, // 10 hours
+  duration: 10 * 60,
   voice: 'normal',
-  maximumIndvidualsEngaged: 11 // maximum number of residents per house
+  maximumIndvidualsEngaged: 11, // maximum number of residents per house
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 export const schoolClassroom: Activity = {
@@ -126,9 +150,12 @@ export const schoolClassroom: Activity = {
   label: 'school.classroom',
   setting: 'indoor',
   distance: 'normal',
-  duration: 6 * 60, // 6 hours
+  duration: 6 * 60,
   voice: 'normal',
-  maximumIndvidualsEngaged: 30
+  maximumIndvidualsEngaged: 30,
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 // export const hospital: Activity = {
@@ -145,8 +172,11 @@ export const publicTransportStation: Activity = {
   setting: 'outdoor',
   distance: 'normal',
   voice: 'normal',
-  duration: 20, // minutes
-  maximumIndvidualsEngaged: 10
+  duration: 20,
+  maximumIndvidualsEngaged: 10,
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 export const publicTransportationRide: Activity = {
@@ -155,8 +185,11 @@ export const publicTransportationRide: Activity = {
   setting: 'indoor',
   distance: 'normal',
   voice: 'normal',
-  duration: 20, // minutes
-  maximumIndvidualsEngaged: 50
+  duration: 20,
+  maximumIndvidualsEngaged: 50,
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 export const park: Activity = {
@@ -165,8 +198,11 @@ export const park: Activity = {
   setting: 'outdoor',
   distance: 'tenFt',
   voice: 'silent',
-  duration: 1.5 * 60, // a half hour
-  maximumIndvidualsEngaged: 50
+  duration: 1.5 * 60,
+  maximumIndvidualsEngaged: 50,
+  interaction: {
+    label: 'oneTime'
+  }
 }
 
 export const activities: { [activity: string]: Activity } = {
