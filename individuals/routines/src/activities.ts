@@ -23,7 +23,7 @@ export type Activity = {
 
   setting: Setting
   distance: Distance
-  duration?: number // minutes
+  duration: number // minutes
   voice: Voice
 
   maximumIndvidualsEngaged: number

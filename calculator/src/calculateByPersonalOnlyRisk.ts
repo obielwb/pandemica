@@ -1,3 +1,5 @@
+import { Activity } from '../../individuals/routines/src/activities'
+import { Individual, Vaccine } from '../../individuals/routines/src/individual'
 import {
   Distance,
   FormValue,
@@ -15,7 +17,6 @@ import {
   partnerMult,
   personRiskMultiplier
 } from './data'
-import { PartialData, prepopulated } from './prepopulated'
 
 export interface CalculatorData {
   persistedAt?: number
@@ -142,39 +143,42 @@ export const calculatePersonRiskEach = (data: CalculatorData): number => {
   }
 }
 
-const getVaccineMultiplier = (data: CalculatorData): number => {
-  if (data.yourVaccineType === '') {
+const getVaccineMultiplier = (vaccine: Vaccine): number => {
+  if (vaccine.type === '') {
     return 1
   }
-  const vaccineMultiplierPerDose = Vaccines[data.yourVaccineType].multiplierPerDose
+  const vaccineMultiplierPerDose = Vaccines[vaccine.type].multiplierPerDose
 
-  return vaccineMultiplierPerDose[data.yourVaccineDoses]
+  return vaccineMultiplierPerDose[vaccine.doses]
 }
 
-export const calculateActivityRisk = (data: CalculatorData): number => {
-  const vaccineMultiplier = getVaccineMultiplier(data)
+export const calculateActivityRisk = (
+  activity: Activity,
+  individualsPair: Individual[]
+): number => {
+  const vaccineMultiplier = getVaccineMultiplier(individualsPair[0].vaccine)
 
-  if (data.interaction === 'partner' || data.interaction === 'repeated') {
-    return Interaction[data.interaction].multiplier * vaccineMultiplier
+  if (activity.interaction.label === 'partner' || activity.interaction.label === 'repeated') {
+    return Interaction[activity.interaction.label].multiplier * vaccineMultiplier
   }
 
-  let multiplier = Interaction[data.interaction].multiplier
+  let multiplier = Interaction[activity.interaction.label].multiplier
 
   const mulFor = (table: { [key: string]: FormValue }, given: string): number =>
     given === '' ? 1 : table[given].multiplier
 
-  let effectiveDuration = data.duration
-  multiplier *= mulFor(Distance, data.distance)
-  if (data.distance === 'intimate') {
+  let effectiveDuration = activity.duration
+  multiplier *= mulFor(Distance, activity.distance)
+  if (activity.distance === 'intimate') {
     effectiveDuration = Math.max(effectiveDuration, intimateDurationFloor)
   } else {
-    if (data.distance !== 'close') {
-      multiplier *= mulFor(Setting, data.setting)
+    if (activity.distance !== 'close') {
+      multiplier *= mulFor(Setting, activity.setting)
     }
-    multiplier *= mulFor(Voice, data.voice)
+    multiplier *= mulFor(Voice, activity.voice)
 
-    multiplier *= mulFor(TheirMask, data.theirMask)
-    multiplier *= mulFor(YourMask, data.yourMask)
+    multiplier *= mulFor(YourMask, individualsPair[0].mask)
+    multiplier *= mulFor(TheirMask, individualsPair[1].mask)
   }
 
   multiplier *= effectiveDuration / 60.0
@@ -185,10 +189,17 @@ export const calculateActivityRisk = (data: CalculatorData): number => {
   return multiplier * vaccineMultiplier
 }
 
-export const calculate = (data: CalculatorData): number => {
+export const calculate = (activity: Activity, individuals: Individual[]): number => {
   const personRiskEach = calculatePersonRiskEach(data)
 
-  const activityRisk = calculateActivityRisk(data)
+  let activityRisk: number = 1
+  // See if this work
+  for (let i = 0; i < individuals.length; i++) {
+    for (let j = i + 1; j < individuals.length; j++) {
+      const individualsPair = [individuals[i], individuals[j]]
+      activityRisk = calculateActivityRisk(activity, individualsPair)
+    }
+  }
 
   const pointsNaive = personRiskEach * activityRisk
   if (pointsNaive < MAX_POINTS) {
