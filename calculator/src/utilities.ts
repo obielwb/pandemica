@@ -1,8 +1,3 @@
-/**
- * Format points for display - fixed point with a set precision.
- * By default, show 2 sigfigs for numbers greater than 1 and 1 sigfig for
- * numbers less than 1.
- */
 export function fixedPointPrecision(
   valOrNull: number | null,
   options: Partial<{
@@ -58,10 +53,6 @@ export function fixedPointPrecision(
   })
 }
 
-/**
- * Converts |val| to a percentage (including '%').
- * @param val
- */
 export function formatPercent(
   val: number | null,
   options: Partial<{

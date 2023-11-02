@@ -4,48 +4,15 @@ import {
   Distance,
   FormValue,
   Interaction,
-  PersonRiskValue,
-  RiskProfile,
-  RiskProfilesUnaffectedByVaccines,
   Setting,
   TheirMask,
-  VaccineValue,
   Vaccines,
   Voice,
   YourMask,
   intimateDurationFloor,
-  partnerMult,
-  personRiskMultiplier
+  partnerMult
 } from './data'
-
-export interface CalculatorData {
-  persistedAt?: number
-
-  population: number
-  casesPastWeek: number
-  casesIncreasingPercentage: number
-  positiveCasePercentage: number
-  prevalanceDataDate: Date
-  percentFullyVaccinated: number
-  unvaccinatedPrevalenceRatio: number
-  averageFullyVaccinatedMultiplier: number
-
-  interaction: string
-  personCount: number
-  symptomsChecked: string
-
-  setting: string
-  distance: string
-  duration: number
-  theirMask: string
-  yourMask: string
-  voice: string
-
-  yourVaccineType: string
-  yourVaccineDoses: number
-
-  theirVaccine: string
-}
+import { Prevalence } from './prevalence'
 
 const MAX_DELAY_FACTOR = 2
 
@@ -67,7 +34,7 @@ export const ONE_MILLION = 1e6 // 100% of chance of being contaminated with covi
 export const MAX_ACTIVITY_RISK = partnerMult
 export const MAX_POINTS = 100000
 
-export const calculateLocationReportedPrevalence = (data: CalculatorData): number => {
+export const calculateLocationReportedPrevalence = (data: Prevalence): number => {
   const population = data.population
   const lastWeek = data.casesPastWeek
 
@@ -76,7 +43,7 @@ export const calculateLocationReportedPrevalence = (data: CalculatorData): numbe
   return prevalence
 }
 
-export const calculateLocationPersonAverage = (data: CalculatorData): number => {
+export const calculateLocationPersonAverage = (data: Prevalence): number => {
   const prevalence = calculateLocationReportedPrevalence(data)
 
   const underreportingFactor = prevalenceRatio(data.positiveCasePercentage, data.prevalanceDataDate)
@@ -92,55 +59,14 @@ export const calculateLocationPersonAverage = (data: CalculatorData): number => 
   return personRisk * ONE_MILLION
 }
 
-export const calculatePersonRiskEach = (data: CalculatorData): number => {
-  const averagePersonRisk = calculateLocationPersonAverage(data)
+export const calculatePersonRiskEach = (individual: Individual, prevalence: Prevalence): number => {
+  const averagePersonRisk = calculateLocationPersonAverage(prevalence)
 
-  if (data.riskProfile === RiskProfilesUnaffectedByVaccines.HAS_COVID) {
-    return ONE_MILLION
-  }
+  if (individual.hasCovid) return individual.riskNumber
 
   const unadjustedRisk = averagePersonRisk * individual.riskNumber
 
-  if (data.percentFullyVaccinated === null || data.averageFullyVaccinatedMultiplier === null) {
-    return unadjustedRisk
-  }
-  const fractionFullyVaccinated = data.percentFullyVaccinated / 100
-  const unvaccinatedPrevalenceRatio =
-    data.unvaccinatedPrevalenceRatio ??
-    1 /
-      (data.averageFullyVaccinatedMultiplier * fractionFullyVaccinated +
-        (1 - fractionFullyVaccinated))
-
-  switch (data.theirVaccine) {
-    case 'vaccinated':
-      return unadjustedRisk * unvaccinatedPrevalenceRatio * data.averageFullyVaccinatedMultiplier
-    case 'unvaccinated':
-      return unadjustedRisk * unvaccinatedPrevalenceRatio
-    case 'undefined':
-      return unadjustedRisk
-    default:
-      console.error(`Unrecognized vaccination state: ${data.theirVaccine}`)
-      return null
-  }
-
-  // these are risk profiles that were set up for unvaccinated people.
-  switch (data.theirVaccine) {
-    case 'vaccinated':
-      return unadjustedRisk * data.averageFullyVaccinatedMultiplier
-    case 'unvaccinated':
-      return unadjustedRisk
-    case 'undefined':
-      // data.unvaccinatedPrevalenceRatio is the average vaccine modifier
-      // applied across the entire population, including unvaccinated
-      // and partially vaccinated individuals
-      //
-      // see the comment above unvaccinated_relative_prevalence() in
-      // update_prevalence.py for more details on how it is calculated
-      return unadjustedRisk / unvaccinatedPrevalenceRatio
-    default:
-      console.error(`Unrecognized vaccination state: ${data.theirVaccine}`)
-      return null
-  }
+  return unadjustedRisk
 }
 
 const getVaccineMultiplier = (vaccine: Vaccine): number => {
@@ -189,15 +115,21 @@ export const calculateActivityRisk = (
   return multiplier * vaccineMultiplier
 }
 
-export const calculate = (activity: Activity, individuals: Individual[]): number => {
-  const personRiskEach = calculatePersonRiskEach(data)
+export const calculate = (
+  activity: Activity,
+  individuals: Individual[],
+  prevalence: Prevalence
+): number => {
+  const personRiskEach = calculatePersonRiskEach(prevalence)
 
-  let activityRisk: number = 1
-  // See if this work
+  let totalPersonRiskCombine = 0
   for (let i = 0; i < individuals.length; i++) {
     for (let j = i + 1; j < individuals.length; j++) {
-      const individualsPair = [individuals[i], individuals[j]]
-      activityRisk = calculateActivityRisk(activity, individualsPair)
+      let individualsPair = [individuals[i], individuals[j]]
+      totalPersonRiskCombine += calculateActivityRisk(activity, individualsPair)
+
+      individualsPair = [individuals[j], individuals[i]]
+      totalPersonRiskCombine += calculateActivityRisk(activity, individualsPair)
     }
   }
 
