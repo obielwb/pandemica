@@ -4,7 +4,7 @@ export type Interaction = {
   label: 'oneTime' | 'workplace' | 'partner' | 'repeated'
 }
 
-export type Distance = 'intimate' | 'close' | 'normal' | 'sixFt' | 'tenFt'
+export type Distance = 'normal' | 'sixFt' | 'tenFt'
 
 export type Setting =
   | 'indoor'

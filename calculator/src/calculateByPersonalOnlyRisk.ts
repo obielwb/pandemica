@@ -20,12 +20,10 @@ export const DAY_0 = new Date(2020, 1, 12)
 const MS_PER_DAY = 1000 * 60 * 60 * 24
 
 // From https://covid19-projections.com/estimating-true-infections-revisited/
+// TODO: change the way treat time
 const prevalenceRatio = (positivityPercent: number, date: Date) => {
   const day_i = (date.getTime() - DAY_0.getTime()) / MS_PER_DAY
-  if (positivityPercent === null || positivityPercent > 100) {
-    // No positivity data, assume the worst.
-    positivityPercent = 100
-  }
+
   const positivityRate = positivityPercent / 100
   return (1000 / (day_i + 10)) * positivityRate ** 0.5 + 2
 }
@@ -59,6 +57,15 @@ export const calculateLocationPersonAverage = (data: Prevalence): number => {
   return personRisk * ONE_MILLION
 }
 
+const getVaccineMultiplier = (vaccine: Vaccine): number => {
+  if (vaccine.type === '') {
+    return 1
+  }
+  const vaccineMultiplierPerDose = Vaccines[vaccine.type].multiplierPerDose
+
+  return vaccineMultiplierPerDose[vaccine.doses]
+}
+
 export const calculatePersonRiskEach = (individual: Individual, prevalence: Prevalence): number => {
   const averagePersonRisk = calculateLocationPersonAverage(prevalence)
 
@@ -69,24 +76,17 @@ export const calculatePersonRiskEach = (individual: Individual, prevalence: Prev
   return unadjustedRisk
 }
 
-const getVaccineMultiplier = (vaccine: Vaccine): number => {
-  if (vaccine.type === '') {
-    return 1
-  }
-  const vaccineMultiplierPerDose = Vaccines[vaccine.type].multiplierPerDose
+/*
 
-  return vaccineMultiplierPerDose[vaccine.doses]
-}
+Interaction * Duration * Setting * Voice * mask * VaccineMultiplier *
+(lastweek + 1 / population) * underreportingFactor * delayFactor) * riskNumber
 
-export const calculateActivityRisk = (
-  activity: Activity,
-  individualsPair: Individual[]
-): number => {
-  const vaccineMultiplier = getVaccineMultiplier(individualsPair[0].vaccine)
 
-  if (activity.interaction.label === 'partner' || activity.interaction.label === 'repeated') {
-    return Interaction[activity.interaction.label].multiplier * vaccineMultiplier
-  }
+*/
+
+export const calculateActivityRisk = (activity: Activity): number => {
+  // const vaccineMultiplier = getVaccineMultiplier(individualsPair[0].vaccine)
+  // multiplier *= mulFor(YourMask, individualsPair[0].mask)
 
   let multiplier = Interaction[activity.interaction.label].multiplier
 
@@ -94,25 +94,17 @@ export const calculateActivityRisk = (
     given === '' ? 1 : table[given].multiplier
 
   let effectiveDuration = activity.duration
-  multiplier *= mulFor(Distance, activity.distance)
-  if (activity.distance === 'intimate') {
-    effectiveDuration = Math.max(effectiveDuration, intimateDurationFloor)
-  } else {
-    if (activity.distance !== 'close') {
-      multiplier *= mulFor(Setting, activity.setting)
-    }
-    multiplier *= mulFor(Voice, activity.voice)
 
-    multiplier *= mulFor(YourMask, individualsPair[0].mask)
-    multiplier *= mulFor(TheirMask, individualsPair[1].mask)
-  }
+  multiplier *= mulFor(Distance, activity.distance)
+  multiplier *= mulFor(Setting, activity.setting)
+  multiplier *= mulFor(Voice, activity.voice)
 
   multiplier *= effectiveDuration / 60.0
   if (multiplier > MAX_ACTIVITY_RISK) {
     multiplier = MAX_ACTIVITY_RISK
   }
 
-  return multiplier * vaccineMultiplier
+  return multiplier
 }
 
 export const calculate = (
@@ -122,11 +114,11 @@ export const calculate = (
 ): number => {
   const personRiskEach = calculatePersonRiskEach(prevalence)
 
+  const activityRisk = calculateActivityRisk(activity)
   let totalPersonRiskCombine = 0
   for (let i = 0; i < individuals.length; i++) {
     for (let j = i + 1; j < individuals.length; j++) {
       let individualsPair = [individuals[i], individuals[j]]
-      totalPersonRiskCombine += calculateActivityRisk(activity, individualsPair)
 
       individualsPair = [individuals[j], individuals[i]]
       totalPersonRiskCombine += calculateActivityRisk(activity, individualsPair)

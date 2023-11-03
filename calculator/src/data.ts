@@ -85,8 +85,6 @@ export const Setting: { [key in ActivitySetting]: FormValue } = {
 export const intimateDurationFloor = 20 // duração de atividades íntimas, como beijo
 
 export const Distance: { [key in ActivityDistance]: FormValue } = {
-  intimate: formValue('data.intimate_distance', 5),
-  close: formValue('data.close_distance', 2),
   normal: formValue('data.normal_distance', 1),
   sixFt: formValue('data.sixft_distance', 0.5),
   tenFt: formValue('data.tenft_distance', 0.25)
