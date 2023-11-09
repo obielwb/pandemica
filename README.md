@@ -11,6 +11,11 @@ Create an effective pandemic simulation model that is capable of minimizing the 
 future pandemics by creating different scenarios that act as awareness raisers for competent entities
 and for the population to act preventively in the midst of a potential pandemic.
 ```
+
+To achieve the objective, the project was divided into three large parts: the simulation of individuals, the city and the spread of the virus. Below is a diagram simplifying the execution of the program, for more information on technical and methodological details see the [Article](https://github.com/obielwb/pandemica/files/13313578/article.pdf). <br/> <br/>
+![Diagram](https://github.com/obielwb/pandemica/assets/69120228/f5290b41-871e-4dc1-965c-b1f8bbc1945f)
+
+
 ---- 
 
 The project was developed with _Typescript_ to create simulation logic and _Python_ for data analysis. To decide the main language, several performance tests were carried out using the following languages: <br/> <br/>
