@@ -6,14 +6,7 @@ export type Interaction = {
 
 export type Distance = 'normal' | 'sixFt' | 'tenFt'
 
-export type Setting =
-  | 'indoor'
-  | 'outdoor'
-  | 'filtered'
-  | 'transit'
-  | 'plane'
-  | 'carWindowsDown'
-  | 'partiallyEnclosed'
+export type Setting = 'indoor' | 'outdoor'
 
 export type Voice = 'silent' | 'normal' | 'loud'
 
@@ -84,8 +77,8 @@ export const restaurantIndoors: Activity = {
   category: 'leisure',
   label: 'restaurant.indoor',
   setting: 'indoor',
-  distance: 'close',
   duration: 1 * 60,
+  distance: 'normal',
   voice: 'normal',
   maximumIndvidualsEngaged: 40,
   interaction: {
@@ -123,7 +116,7 @@ export const indoorParty: Activity = {
   category: 'leisure',
   label: 'party.indoor',
   setting: 'indoor',
-  distance: 'close',
+  distance: 'normal',
   duration: 3 * 60,
   voice: 'normal',
   maximumIndvidualsEngaged: 30,
@@ -136,7 +129,7 @@ export const house: Activity = {
   category: 'home',
   label: 'house',
   setting: 'indoor',
-  distance: 'close',
+  distance: 'normal',
   duration: 10 * 60,
   voice: 'normal',
   maximumIndvidualsEngaged: 11, // maximum number of residents per house
