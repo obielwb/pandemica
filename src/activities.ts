@@ -12,6 +12,8 @@ export type Activity = {
 
   setting: Setting
   duration: number // minutes
+  distance: Distance
+  voice: Voice
 
   maximumIndvidualsEngaged: number
   individualsWithCovid: Individual[]
@@ -28,6 +30,7 @@ export type IndividualActivity = Activity & {
   individualsEngaged: Individual[]
 }
 
+// todo: consertar voz e distância para fazer sentido
 export const groceryShopping: Activity = {
   category: 'shopping',
   label: 'shopping.grocery',
@@ -36,7 +39,9 @@ export const groceryShopping: Activity = {
   duration: 1 * 60,
   maximumIndvidualsEngaged: 80,
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const pharmacyShopping: Activity = {
@@ -47,7 +52,9 @@ export const pharmacyShopping: Activity = {
   duration: 1 * 60,
   maximumIndvidualsEngaged: 20,
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const restaurantOutdoors: Activity = {
@@ -59,7 +66,9 @@ export const restaurantOutdoors: Activity = {
 
   maximumIndvidualsEngaged: 50,
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const restaurantIndoors: Activity = {
@@ -70,7 +79,9 @@ export const restaurantIndoors: Activity = {
 
   maximumIndvidualsEngaged: 40,
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const bar: Activity = {
@@ -82,7 +93,9 @@ export const bar: Activity = {
 
   maximumIndvidualsEngaged: 30,
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const outdoorParty: Activity = {
@@ -94,7 +107,9 @@ export const outdoorParty: Activity = {
 
   maximumIndvidualsEngaged: 50,
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const indoorParty: Activity = {
@@ -106,7 +121,9 @@ export const indoorParty: Activity = {
 
   maximumIndvidualsEngaged: 30,
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const house: Activity = {
@@ -118,7 +135,9 @@ export const house: Activity = {
 
   maximumIndvidualsEngaged: 11, // maximum number of residents per house
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const schoolClassroom: Activity = {
@@ -130,7 +149,9 @@ export const schoolClassroom: Activity = {
 
   maximumIndvidualsEngaged: 30,
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const publicTransportStation: Activity = {
@@ -141,7 +162,9 @@ export const publicTransportStation: Activity = {
   duration: 20,
   maximumIndvidualsEngaged: 10,
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const publicTransportationRide: Activity = {
@@ -152,7 +175,9 @@ export const publicTransportationRide: Activity = {
   duration: 20,
   maximumIndvidualsEngaged: 50,
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const park: Activity = {
@@ -163,7 +188,9 @@ export const park: Activity = {
   duration: 1.5 * 60,
   maximumIndvidualsEngaged: 50,
   individualsWithCovid: [],
-  individualsWithoutCovid: []
+  individualsWithoutCovid: [],
+  distance: 'normal',
+  voice: 'normal'
 }
 
 export const activities: { [activity: string]: Activity } = {

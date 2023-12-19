@@ -24,8 +24,6 @@ export class Individual {
 
   public vaccine: Vaccine
   public mask: Mask // done
-  public distance?: Distance
-  public voice?: Voice
 }
 
 export type Occupation = {
