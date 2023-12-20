@@ -1,5 +1,6 @@
 import { Activity, IndividualActivity } from './activities'
 import {
+  AgeMultipler,
   DistanceMultiplier,
   MaskMultiplier,
   SettingMultiplier,
@@ -31,6 +32,8 @@ export function calculate(
     VaccinesRiskReduction[individualInFocus.vaccine.type].multiplierPerDose[
       individualInFocus.vaccine.doses
     ]
+
+  const ageMultipler = AgeMultipler[0]
 
   let individualMultiplier = MaskMultiplier[individualInFocus.mask] * vaccineMultiplier
   if (individualInFocus.hadCovid) individualMultiplier * 0.08
