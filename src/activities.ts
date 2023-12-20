@@ -16,8 +16,6 @@ export type Activity = {
   voice: Voice
 
   maximumIndvidualsEngaged: number
-  individualsWithCovid: Individual[]
-  individualsWithoutCovid: Individual[]
 }
 
 export type IndividualActivity = Activity & {
@@ -38,8 +36,6 @@ export const groceryShopping: Activity = {
 
   duration: 1 * 60,
   maximumIndvidualsEngaged: 80,
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }
@@ -51,8 +47,6 @@ export const pharmacyShopping: Activity = {
 
   duration: 1 * 60,
   maximumIndvidualsEngaged: 20,
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }
@@ -65,8 +59,6 @@ export const restaurantOutdoors: Activity = {
   duration: 1 * 60,
 
   maximumIndvidualsEngaged: 50,
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }
@@ -78,8 +70,6 @@ export const restaurantIndoors: Activity = {
   duration: 1 * 60,
 
   maximumIndvidualsEngaged: 40,
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }
@@ -92,8 +82,6 @@ export const bar: Activity = {
   duration: 2 * 60,
 
   maximumIndvidualsEngaged: 30,
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }
@@ -106,8 +94,6 @@ export const outdoorParty: Activity = {
   duration: 3 * 60,
 
   maximumIndvidualsEngaged: 50,
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }
@@ -120,8 +106,6 @@ export const indoorParty: Activity = {
   duration: 3 * 60,
 
   maximumIndvidualsEngaged: 30,
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }
@@ -134,8 +118,6 @@ export const house: Activity = {
   duration: 10 * 60,
 
   maximumIndvidualsEngaged: 11, // maximum number of residents per house
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }
@@ -148,8 +130,6 @@ export const schoolClassroom: Activity = {
   duration: 6 * 60,
 
   maximumIndvidualsEngaged: 30,
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }
@@ -161,8 +141,6 @@ export const publicTransportStation: Activity = {
 
   duration: 20,
   maximumIndvidualsEngaged: 10,
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }
@@ -174,8 +152,6 @@ export const publicTransportationRide: Activity = {
 
   duration: 20,
   maximumIndvidualsEngaged: 50,
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }
@@ -187,8 +163,6 @@ export const park: Activity = {
 
   duration: 1.5 * 60,
   maximumIndvidualsEngaged: 50,
-  individualsWithCovid: [],
-  individualsWithoutCovid: [],
   distance: 'normal',
   voice: 'normal'
 }

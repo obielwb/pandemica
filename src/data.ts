@@ -4,12 +4,12 @@ import {
   type Voice as ActivityVoice
 } from './activities'
 
-export const Setting: { [key in ActivitySetting]: number } = {
+export const SettingMultiplier: { [key in ActivitySetting]: number } = {
   indoor: 1,
   outdoor: 0.05
 }
 
-export const Distance: { [key in ActivityDistance]: number } = {
+export const DistanceMultiplier: { [key in ActivityDistance]: number } = {
   normal: 1,
   sixFt: 0.5,
   tenFt: 0.25
@@ -26,32 +26,56 @@ export const MaskMultiplier: { [key: string]: number } = {
   p100: 1 / 3
 }
 
-export const Voice: { [key in ActivityVoice]: number } = {
+export const VoiceMultiplier: { [key in ActivityVoice]: number } = {
   silent: 0.2,
   normal: 1,
   loud: 5
 }
 
 export interface VaccineValue {
-  label: string
   multiplierPerDose: number[] // muliplierPerDose[n] is the multiplier for having |n| doses of vaccine.
 }
 
-export const Vaccines: { [key: string]: VaccineValue } = {
+export const VaccinesRiskReduction: { [key: string]: VaccineValue } = {
   pfizer: {
-    label: 'pfizer',
-    multiplierPerDose: [1, 1, 0.8, 0.25]
+    multiplierPerDose: [0.91, 0.95]
   },
   astraZeneca: {
-    label: 'astra_zeneca',
-    multiplierPerDose: [1, 1, 1, 0.3]
+    multiplierPerDose: [0.67, 0.85]
   },
   janssen: {
-    label: 'janssen',
-    multiplierPerDose: [1, 1, 0.95]
+    multiplierPerDose: [0.77, 1, 0.95]
   },
-  unknown: {
-    label: 'unknown',
-    multiplierPerDose: [1, 1, 1, 0.3]
+  noVaccine: {
+    multiplierPerDose: [0, 0, 0, 0]
+  }
+}
+
+export interface AgeValue {
+  interval: number[]
+  hospitalizationRate: number // %
+  deathRate: number // %
+}
+
+export const AgeMultipler: { [key: string]: AgeValue } = {
+  zeroToNineteenYears: {
+    interval: [0, 19],
+    hospitalizationRate: 0.008,
+    deathRate: 0.000015
+  },
+  twentyToFourtynineYears: {
+    interval: [20, 49],
+    hospitalizationRate: 0.025,
+    deathRate: 0.0007
+  },
+  fiftyToSixtyfourYears: {
+    interval: [50, 64],
+    hospitalizationRate: 0.079,
+    deathRate: 0.007
+  },
+  sixtyFivePlusYears: {
+    interval: [65, 84],
+    hospitalizationRate: 0.23,
+    deathRate: 0.06
   }
 }

@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid'
 
-import { type Age } from '../data'
+import { type Age } from '../data/census'
 import { type House, type Individual } from './individual'
 import { fisherYatesShuffle, log } from './utilities'
 
@@ -181,33 +181,32 @@ export function assignHouse(
 }
 
 export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
-  const totalPopulation = individuals.length;
+  const totalPopulation = individuals.length
 
-  let cumulativePercentage = 0;
+  let cumulativePercentage = 0
   const incomeLevels = incomes.map((income) => {
-    cumulativePercentage += (income.value / totalPopulation) * 100;
+    cumulativePercentage += (income.value / totalPopulation) * 100
     return {
       label: income.label,
-      cumulativePercentage,
-    };
-  });
+      cumulativePercentage
+    }
+  })
 
   individuals = individuals.map((individual) => {
-    const randomPercentage = Math.random() * 100;
+    const randomPercentage = Math.random() * 100
 
     for (const incomeLevel of incomeLevels) {
       if (randomPercentage <= incomeLevel.cumulativePercentage) {
-        individual.income = incomeLevel.label as string;
-        break;
+        individual.income = incomeLevel.label as string
+        break
       }
     }
 
-    return individual;
-  });
+    return individual
+  })
 
   return individuals
 }
-
 
 export function assignTransportationVehicle(
   individuals: Individual[],

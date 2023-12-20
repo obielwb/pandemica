@@ -21,6 +21,7 @@ export class Individual {
   public isHospitalized: boolean // done
   public isDead: boolean // done
   public hasCovid: boolean
+  public hadCovid: boolean
 
   public vaccine: Vaccine
   public mask: Mask // done
