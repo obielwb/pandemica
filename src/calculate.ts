@@ -8,12 +8,13 @@ import {
   VoiceMultiplier
 } from './data'
 import { Individual } from './individual'
+import { log } from './utilities'
 
 export function calculate(
   activity: IndividualActivity,
   individualsWithCovid: Individual[],
   individualInFocus: Individual
-): number {
+): boolean {
   const setting = SettingMultiplier[activity.setting]
   const distance = DistanceMultiplier[activity.distance]
   const environment = setting * distance * activity.duration
@@ -46,5 +47,8 @@ export function calculate(
   let individualMultiplier = MaskMultiplier[individualInFocus.mask] * vaccineMultiplier
   if (individualInFocus.hadCovid) individualMultiplier * 0.08
 
-  return environment * withCovidMultiplier * individualMultiplier
+  const contractionProbability = environment * withCovidMultiplier * individualMultiplier
+  log('Probabilidade de disseminação: ' + contractionProbability)
+
+  return false
 }

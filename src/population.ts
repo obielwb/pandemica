@@ -15,7 +15,7 @@ import {
   residentsPerHouse,
   salaries,
   ages
-} from '../data'
+} from '../data/census'
 import {
   Parameter,
   assign,
