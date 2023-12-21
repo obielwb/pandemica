@@ -33,7 +33,15 @@ export function calculate(
       individualInFocus.vaccine.doses
     ]
 
-  const ageMultipler = AgeMultipler[0]
+  // values used in death and hospitalization calculation
+  let deathRate = 0
+  let hospitalizationRate = 0
+  for (const age in AgeMultipler) {
+    if (individualInFocus.age[1] <= AgeMultipler[age].interval[1]) {
+      deathRate = AgeMultipler[age].deathRate
+      hospitalizationRate = AgeMultipler[age].hospitalizationRate
+    }
+  }
 
   let individualMultiplier = MaskMultiplier[individualInFocus.mask] * vaccineMultiplier
   if (individualInFocus.hadCovid) individualMultiplier * 0.08
