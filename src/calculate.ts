@@ -10,37 +10,50 @@ import {
 import { Individual } from './individual'
 import { log } from './utilities'
 
+const contractionProbabilityThreshold = 0.3
+
 export function calculate(
   activity: IndividualActivity,
   individualsWithCovid: Individual[],
-  individualInFocus: Individual
-): boolean {
+  individualInFocus: Individual,
+  threshold: number = contractionProbabilityThreshold
+) {
   const setting = SettingMultiplier[activity.setting]
   const distance = DistanceMultiplier[activity.distance]
-  const environment = setting * distance * activity.duration
+  const environment = setting * distance * (activity.duration / 60)
 
   let withCovidMultiplier = 0
   individualsWithCovid.forEach((individual) => {
-    const vaccineMultiplier =
-      1 - VaccinesRiskReduction[individual.vaccine.type].multiplierPerDose[individual.vaccine.doses]
+    let vaccineMultiplier = 1
+    if (individual.vaccine.type !== 'none') {
+      vaccineMultiplier =
+        1 -
+        VaccinesRiskReduction[individual.vaccine.type].multiplierPerDose[
+          individual.vaccine.doses - 1
+        ]
+    }
 
     withCovidMultiplier +=
       MaskMultiplier[individual.mask] * VoiceMultiplier[activity.voice] * vaccineMultiplier * 1
   })
 
-  const vaccineMultiplier =
-    1 -
-    VaccinesRiskReduction[individualInFocus.vaccine.type].multiplierPerDose[
-      individualInFocus.vaccine.doses
-    ]
+  let vaccineMultiplier = 1
+  if (individualInFocus.vaccine.type !== 'none') {
+    vaccineMultiplier =
+      1 -
+      VaccinesRiskReduction[individualInFocus.vaccine.type].multiplierPerDose[
+        individualInFocus.vaccine.doses - 1
+      ]
+  }
 
   // values used in death and hospitalization calculation
-  let deathRate = 0
-  let hospitalizationRate = 0
+  let deathProbability = 0
+  let hospitalizationProbability = 0
   for (const age in AgeMultipler) {
     if (individualInFocus.age[1] <= AgeMultipler[age].interval[1]) {
-      deathRate = AgeMultipler[age].deathRate
-      hospitalizationRate = AgeMultipler[age].hospitalizationRate
+      deathProbability = AgeMultipler[age].deathRate
+      hospitalizationProbability = AgeMultipler[age].hospitalizationRate
+      break
     }
   }
 
@@ -48,7 +61,14 @@ export function calculate(
   if (individualInFocus.hadCovid) individualMultiplier * 0.08
 
   const contractionProbability = environment * withCovidMultiplier * individualMultiplier
-  log('Probabilidade de disseminação: ' + contractionProbability)
+  log('Contraction Probability: ' + contractionProbability)
 
-  return false
+  let acquiredCovid = false
+  if (contractionProbability >= threshold) acquiredCovid = true
+
+  return {
+    deathProbability,
+    hospitalizationProbability,
+    acquiredCovid
+  }
 }

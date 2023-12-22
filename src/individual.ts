@@ -61,6 +61,6 @@ export type RiskProfile = {
 }
 
 export type Vaccine = {
-  type: 'pfizer' | 'moderna' | 'astra_zeneca' | 'johnson_johnson' | ''
+  type: 'pfizer' | 'moderna' | 'astra_zeneca' | 'johnson_johnson' | 'none'
   doses: number
 }

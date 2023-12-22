@@ -46,7 +46,7 @@ export const VaccinesRiskReduction: { [key: string]: VaccineValue } = {
   janssen: {
     multiplierPerDose: [0.77, 1, 0.95]
   },
-  noVaccine: {
+  none: {
     multiplierPerDose: [0, 0, 0, 0]
   }
 }
