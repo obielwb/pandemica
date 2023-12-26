@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "moment": "^2.29.4",
-    "nanoid": "^5.0.1",
     "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5"
   }
 }

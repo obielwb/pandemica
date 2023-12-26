@@ -1,36 +1,132 @@
-import type { Activity, Distance, IndividualActivity, Voice } from './activities'
+import { Activity, IndividualActivity } from './activities'
 
 // todo: routines should change
 // - social distancing stage
 // - quarantine stage
 // - lockdown stage
 export class Individual {
-  public id: string // done
-  public sex: 'male' | 'female' // done
-  public age: number[] // done
-  public studyLevel: string
+  public id: number
+  public sex: 'male' | 'female'
+  public age: number[]
+  public educationStatus: string
   public currentActivity?: IndividualActivity
   public routine: Activity[]
-  public house: House // done
-  public income: string
-  public vehicle: string
+  public house: House
+  public income: number[]
+  public transportationMean: 'private' | 'public'
   public occupationType: ['study'?, 'work'?]
-  public occupations?: [Occupation?, Occupation?]
-  public isValid?: boolean // done
+  public occupations: [Occupation?, Occupation?]
+  public isValid?: boolean
 
-  public isHospitalized: boolean // done
-  public isDead: boolean // done
+  public isHospitalized: boolean
+  public isDead: boolean
   public hasCovid: boolean
   public hadCovid: boolean
 
   public vaccine: Vaccine
-  public mask: Mask // done
+  public mask: Mask
+
+  public serialize(): string {
+    const educationStatusMap = {
+      preschool: 'ps',
+      middle_school: 'ms',
+      high_school: 'hs',
+      undergraduate: 'ug',
+      graduate: 'gr',
+      unschooled: 'us',
+      educated: 'ed'
+    }
+
+    const serializedIndividual = {
+      i: this.id,
+      s: this.sex === 'male' ? 0 : 1,
+      a: this.age,
+      es: educationStatusMap[this.educationStatus],
+      ca: this.currentActivity ? this.currentActivity.serialize() : null,
+      r: this.routine.map((activity) => activity.serialize()),
+      h: this.house.serialize(),
+      inc: this.income,
+      tm: this.transportationMean === 'private' ? 0 : 1,
+      ot: this.occupationType.map((o) => (o ? 1 : 0)),
+      oc: this.occupations ? this.occupations.map((o) => (o ? o.id : null)) : [],
+      iv: this.isValid ? 1 : 0,
+      ih: this.isHospitalized ? 1 : 0,
+      id: this.isDead ? 1 : 0,
+      hc: this.hasCovid ? 1 : 0,
+      hdc: this.hadCovid ? 1 : 0,
+      v: this.vaccine.type !== 'none' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
+      m: this.mask !== 'none' ? this.mask : null
+    }
+
+    return JSON.stringify(serializedIndividual)
+  }
+
+  public static deserialize(serialized: string): Individual {
+    const deserializedIndividual = JSON.parse(serialized)
+
+    const individual = new Individual()
+    individual.id = deserializedIndividual.i
+    individual.sex = deserializedIndividual.s === 0 ? 'male' : 'female'
+    individual.age = deserializedIndividual.a
+    individual.educationStatus = deserializedIndividual.es || 'defaultEducationStatus'
+    individual.currentActivity = IndividualActivity.deserialize(deserializedIndividual.ca)
+    individual.routine = deserializedIndividual.r.map((activity: string) =>
+      Activity.deserialize(activity)
+    )
+    individual.house = House.deserialize(deserializedIndividual.h)
+    individual.income = deserializedIndividual.inc || []
+    individual.transportationMean = deserializedIndividual.tm === 0 ? 'private' : 'public'
+    individual.occupationType = deserializedIndividual.ot
+      ? deserializedIndividual.ot.map((o: number) => (o ? 'study' : 'work'))
+      : []
+    individual.occupations = deserializedIndividual.oc
+      ? deserializedIndividual.oc.map((o) => (o ? Occupation.deserialize(o) : null))
+      : []
+    individual.isValid = !!deserializedIndividual.iv
+    individual.isHospitalized = !!deserializedIndividual.ih
+    individual.isDead = !!deserializedIndividual.id
+    individual.hasCovid = !!deserializedIndividual.hc
+    individual.hadCovid = !!deserializedIndividual.hdc
+    individual.vaccine = deserializedIndividual.v
+      ? { type: deserializedIndividual.v.t, doses: deserializedIndividual.v.d }
+      : { type: 'none', doses: 0 }
+    individual.mask = deserializedIndividual.m || 'none'
+
+    return individual
+  }
 }
 
-export type Occupation = {
-  id: string
-  label: string // occupation name, can be a industry, company or school
-  size: number // number of people related to this occupation
+export class Occupation {
+  constructor(
+    public id: number,
+    public type: 'study' | 'work',
+    public label: string,
+    public size: number,
+    public intervalSize?: [number, number]
+  ) {}
+
+  public serialize(): string {
+    const serializedOccupation = {
+      i: this.id,
+      t: this.type[0],
+      l: this.label,
+      s: this.size,
+      is: this.intervalSize ? this.intervalSize : null
+    }
+
+    return JSON.stringify(serializedOccupation)
+  }
+
+  public static deserialize(serialized: string): Occupation {
+    const deserializedOccupation = JSON.parse(serialized)
+    return new Occupation(
+      deserializedOccupation.i,
+      deserializedOccupation.t === 's' ? 'study' : 'work',
+      deserializedOccupation.l,
+      deserializedOccupation.s,
+      deserializedOccupation.is ? deserializedOccupation.is : null
+    )
+  }
 }
 
 export type Mask =
@@ -43,21 +139,34 @@ export type Mask =
   | 'n95Sealed'
   | 'p100'
 
-export type House = {
-  id: string
-  region: string
-  size: number
-  housemates: Partial<Individual>[]
-}
+export class House {
+  constructor(
+    public id: number,
+    public region: string,
+    public size: number,
+    public housemates: number[]
+  ) {}
 
-export type RiskProfile = {
-  label: string
-  shortLabel?: string
-  multiplier?: number
-  personalMultiplier: number
-  housemates: number
-  otherTraceableContacts: number
-  contactsMultiplier: number
+  public serialize(): string {
+    const serializedHouse = {
+      i: this.id,
+      r: this.region,
+      s: this.size,
+      h: this.housemates
+    }
+    return JSON.stringify(serializedHouse)
+  }
+
+  public static deserialize(serialized: string): House {
+    const deserializedHouse = JSON.parse(serialized)
+    const house = new House(
+      deserializedHouse.i,
+      deserializedHouse.r,
+      deserializedHouse.s,
+      deserializedHouse.h
+    )
+    return house
+  }
 }
 
 export type Vaccine = {

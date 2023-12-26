@@ -2,78 +2,106 @@ import { Activity } from '../activities'
 import { Individual } from '../individual'
 
 export class Clock {
-  private minutes: number
+  private minute: number
   private totalMinutes: number
-  private hours: number
+  private hour: number
   private totalHours: number
-  private days: number
+  private day: number
   private totalDays: number
   private weeks: number
   private totalWeeks: number
-  private months: number
+  private month: number
   private totalMonths: number
-  private years: number
+  private year: number
   private totalYears: number
 
   constructor(
     public individuals: Individual[],
-    private sortFunction: (activities: Activity[]) => Activity[]
+    private sortFunction: (activities: Activity[]) => Activity[],
+    startYear: number = 0,
+    startMonth: number = 0,
+    startDay: number = 0,
+    startHour: number = 0,
+    startMinute: number = 0
   ) {
-    this.minutes = 0
+    this.minute = startMinute
     this.totalMinutes = 0
-    this.hours = 0
+    this.hour = startHour
     this.totalHours = 0
-    this.days = 0
+    this.day = startDay
     this.totalDays = 0
-    this.weeks = 0
+    this.weeks = Math.round((startMonth * 30) / 7)
     this.totalWeeks = 0
-    this.months = 0
+    this.month = startMonth
     this.totalMonths = 0
-    this.years = 0
+    this.year = startYear
     this.totalYears = 0
   }
 
+  public sortIndividuals() {}
+
+  public toDate() {
+    return new Date(this.year, this.month, this.day, this.hour, this.minute)
+  }
+
   public tick(minutes: number) {
-    this.minutes += minutes
+    this.minute += minutes
     this.totalMinutes += minutes
 
-    if (minutes >= 60) {
-      this.minutes -= 60
-
-      this.hours += 1
+    while (this.minute === 60) {
+      this.minute -= 60
+      this.hour += 1
       this.totalHours += 1
     }
 
-    if (this.hours >= 24) {
-      this.hours -= 24
-
-      this.days += 1
+    while (this.hour === 24) {
+      this.hour -= 24
+      this.day += 1
       this.totalDays += 1
+      this.updateWeeks()
+      this.updateMonthsAndYears()
     }
+  }
 
-    if (this.days >= 7) {
-      this.days -= 7
-
+  private updateWeeks() {
+    if (this.day === 6) {
+      this.day -= 6
       this.weeks += 1
       this.totalWeeks += 1
     }
+  }
 
-    if (this.weeks >= 4) {
-      this.weeks -= 4
+  private updateMonthsAndYears() {
+    const daysInMonth = this.getDaysInMonth(this.month, this.year)
 
-      this.months += 1
+    if (this.day >= daysInMonth) {
+      this.day -= daysInMonth
+
+      this.month += 1
       this.totalMonths += 1
     }
 
-    if (this.months >= 12) {
-      this.months -= 12
-
-      this.years += 1
+    if (this.month === 11) {
+      this.month -= 11
+      this.year += 1
       this.totalYears += 1
     }
   }
 
-  public sortIndividuals() {
+  private getDaysInMonth(month: number, year: number): number {
+    // february
+    if (month === 1) {
+      return this.isLeapYear(year) ? 29 : 28
+    }
+    // april, june, september, november
+    else if ([3, 5, 8, 10].includes(month)) {
+      return 30
+    }
 
+    return 31
+  }
+
+  private isLeapYear(year: number): boolean {
+    return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)
   }
 }

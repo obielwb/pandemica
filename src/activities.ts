@@ -1,171 +1,234 @@
 import { Individual } from './individual'
 
+export type Category = 'leisure' | 'work' | 'home' | 'transportation' | 'shopping' | 'study'
 export type Distance = 'normal' | 'sixFt' | 'tenFt'
-
 export type Setting = 'indoor' | 'outdoor'
-
 export type Voice = 'silent' | 'normal' | 'loud'
 
-export type Activity = {
-  category: 'leisure' | 'work' | 'home' | 'transportation' | 'shopping' | 'study'
-  label: string
+export class Activity {
+  constructor(
+    public category: Category,
+    public label: string,
+    public setting: Setting,
+    public duration: number,
+    public distance: Distance,
+    public voice: Voice,
+    public maximumIndividualsEngaged: number
+  ) {}
 
-  setting: Setting
-  duration: number // minutes
-  distance: Distance
-  voice: Voice
+  public serialize(): string {
+    const serializedActivity = {
+      c: this.category[0],
+      l: this.label,
+      s: this.setting[0],
+      d: this.duration,
+      dst: this.distance,
+      v: this.voice[0],
+      m: this.maximumIndividualsEngaged
+    }
+    return JSON.stringify(serializedActivity)
+  }
 
-  maximumIndvidualsEngaged: number
+  public static deserialize(serialized: string): Activity {
+    const deserializedActivity = JSON.parse(serialized)
+    const activity = new Activity(
+      Activity.categoryFromShortString(deserializedActivity.c),
+      deserializedActivity.l,
+      Activity.settingFromShortString(deserializedActivity.s),
+      deserializedActivity.d,
+      deserializedActivity.dst as Distance,
+      Activity.voiceFromShortString(deserializedActivity.v),
+      deserializedActivity.m
+    )
+
+    return activity
+  }
+
+  private static categoryFromShortString(
+    shortString: string
+  ): 'leisure' | 'work' | 'home' | 'transportation' | 'shopping' | 'study' {
+    const map = {
+      l: 'leisure',
+      w: 'work',
+      h: 'home',
+      t: 'transportation',
+      s: 'shopping',
+      y: 'study'
+    }
+    return map[shortString] || 'leisure'
+  }
+
+  private static settingFromShortString(shortString: string): Setting {
+    return shortString === 'i' ? 'indoor' : 'outdoor'
+  }
+
+  private static voiceFromShortString(shortString: string): Voice {
+    const map = {
+      s: 'silent',
+      n: 'normal',
+      l: 'loud'
+    }
+    return map[shortString] || 'normal'
+  }
 }
 
-export type IndividualActivity = Activity & {
-  id: string
+export class IndividualActivity extends Activity {
+  constructor(
+    public id: number,
+    category: Category,
+    label: string,
+    setting: Setting,
+    duration: number,
+    distance: Distance,
+    voice: Voice,
+    maximumIndividualsEngaged: number,
+    public individualsEngaged: number[],
+    public activityStartedAt?: Date,
+    public activityEndedAt?: Date,
+    public engagedAt?: Date
+  ) {
+    super(category, label, setting, duration, distance, voice, maximumIndividualsEngaged)
+  }
 
-  activityStartedAt?: Date
-  activityEndedAt?: Date
-  engagedAt?: Date
+  public serialize(): string {
+    const serializedData = {
+      ...JSON.parse(super.serialize()),
+      id: this.id,
+      ie: this.individualsEngaged,
+      sa: this.activityStartedAt?.toISOString(),
+      aea: this.activityEndedAt?.toISOString(),
+      ea: this.engagedAt?.toISOString()
+    }
+    return JSON.stringify(serializedData)
+  }
 
-  individualsEngaged: Individual[]
+  public static deserialize(serialized: string): IndividualActivity {
+    const deserializedData = JSON.parse(serialized)
+    const activity = super.deserialize(JSON.stringify(deserializedData))
+
+    const individualActivity = new IndividualActivity(
+      deserializedData.id,
+      activity.category,
+      activity.label,
+      activity.setting,
+      activity.duration,
+      activity.distance,
+      activity.voice,
+      activity.maximumIndividualsEngaged,
+      deserializedData.ie,
+      deserializedData.sa ? new Date(deserializedData.sa) : undefined,
+      deserializedData.aea ? new Date(deserializedData.aea) : undefined,
+      deserializedData.ea ? new Date(deserializedData.ea) : undefined
+    )
+
+    return individualActivity
+  }
 }
 
 // todo: consertar voz e distância para fazer sentido
-export const groceryShopping: Activity = {
-  category: 'shopping',
-  label: 'shopping.grocery',
-  setting: 'indoor',
+export const groceryShopping = new Activity(
+  'shopping',
+  'shopping.grocery',
+  'indoor',
+  1 * 60,
+  'normal',
+  'normal',
+  80
+)
 
-  duration: 1 * 60,
-  maximumIndvidualsEngaged: 80,
-  distance: 'normal',
-  voice: 'normal'
-}
+export const pharmacyShopping = new Activity(
+  'shopping',
+  'shopping.pharmacy',
+  'indoor',
+  1 * 60,
+  'normal',
+  'normal',
+  20
+)
 
-export const pharmacyShopping: Activity = {
-  category: 'shopping',
-  label: 'shopping.pharmacy',
-  setting: 'indoor',
+export const restaurantOutdoors = new Activity(
+  'leisure',
+  'restaurant.outdoor',
+  'outdoor',
+  1 * 60,
+  'normal',
+  'normal',
+  50
+)
 
-  duration: 1 * 60,
-  maximumIndvidualsEngaged: 20,
-  distance: 'normal',
-  voice: 'normal'
-}
+export const restaurantIndoors = new Activity(
+  'leisure',
+  'restaurant.indoor',
+  'indoor',
+  1 * 60,
+  'normal',
+  'normal',
+  40
+)
 
-export const restaurantOutdoors: Activity = {
-  category: 'leisure',
-  label: 'restaurant.outdoor',
-  setting: 'outdoor',
+export const bar = new Activity('leisure', 'bar', 'indoor', 2 * 60, 'normal', 'normal', 30)
 
-  duration: 1 * 60,
+export const outdoorParty = new Activity(
+  'leisure',
+  'party.outdoor',
+  'outdoor',
+  3 * 60,
+  'normal',
+  'normal',
+  50
+)
 
-  maximumIndvidualsEngaged: 50,
-  distance: 'normal',
-  voice: 'normal'
-}
+export const indoorParty = new Activity(
+  'leisure',
+  'party.indoor',
+  'indoor',
+  3 * 60,
+  'normal',
+  'normal',
+  30
+)
 
-export const restaurantIndoors: Activity = {
-  category: 'leisure',
-  label: 'restaurant.indoor',
-  setting: 'indoor',
-  duration: 1 * 60,
+export const house = new Activity(
+  'home',
+  'house',
+  'indoor',
+  10 * 60,
+  'normal',
+  'normal',
+  11 // maximum number of residents per house
+)
 
-  maximumIndvidualsEngaged: 40,
-  distance: 'normal',
-  voice: 'normal'
-}
+export const schoolClassroom = new Activity(
+  'study',
+  'school.classroom',
+  'indoor',
+  6 * 60,
+  'normal',
+  'normal',
+  30
+)
 
-export const bar: Activity = {
-  category: 'leisure',
-  label: 'bar',
-  setting: 'indoor',
+export const publicTransportStation = new Activity(
+  'transportation',
+  'transportation.public.station',
+  'outdoor',
+  20,
+  'normal',
+  'normal',
+  10
+)
 
-  duration: 2 * 60,
+export const publicTransportationRide = new Activity(
+  'transportation',
+  'transportation.public.ride',
+  'indoor',
+  20,
+  'normal',
+  'normal',
+  50
+)
 
-  maximumIndvidualsEngaged: 30,
-  distance: 'normal',
-  voice: 'normal'
-}
-
-export const outdoorParty: Activity = {
-  category: 'leisure',
-  label: 'party.outdoor',
-  setting: 'outdoor',
-
-  duration: 3 * 60,
-
-  maximumIndvidualsEngaged: 50,
-  distance: 'normal',
-  voice: 'normal'
-}
-
-export const indoorParty: Activity = {
-  category: 'leisure',
-  label: 'party.indoor',
-  setting: 'indoor',
-
-  duration: 3 * 60,
-
-  maximumIndvidualsEngaged: 30,
-  distance: 'normal',
-  voice: 'normal'
-}
-
-export const house: Activity = {
-  category: 'home',
-  label: 'house',
-  setting: 'indoor',
-
-  duration: 10 * 60,
-
-  maximumIndvidualsEngaged: 11, // maximum number of residents per house
-  distance: 'normal',
-  voice: 'normal'
-}
-
-export const schoolClassroom: Activity = {
-  category: 'study',
-  label: 'school.classroom',
-  setting: 'indoor',
-
-  duration: 6 * 60,
-
-  maximumIndvidualsEngaged: 30,
-  distance: 'normal',
-  voice: 'normal'
-}
-
-export const publicTransportStation: Activity = {
-  category: 'transportation',
-  label: 'transportation.public.station',
-  setting: 'outdoor',
-
-  duration: 20,
-  maximumIndvidualsEngaged: 10,
-  distance: 'normal',
-  voice: 'normal'
-}
-
-export const publicTransportationRide: Activity = {
-  category: 'transportation',
-  label: 'transportation.public.ride',
-  setting: 'indoor',
-
-  duration: 20,
-  maximumIndvidualsEngaged: 50,
-  distance: 'normal',
-  voice: 'normal'
-}
-
-export const park: Activity = {
-  category: 'leisure',
-  label: 'park',
-  setting: 'outdoor',
-
-  duration: 1.5 * 60,
-  maximumIndvidualsEngaged: 50,
-  distance: 'normal',
-  voice: 'normal'
-}
+export const park = new Activity('leisure', 'park', 'outdoor', 1.5 * 60, 'normal', 'normal', 50)
 
 export const activities: { [activity: string]: Activity } = {
   groceryShopping,

@@ -1,10 +1,4 @@
-import { nanoid } from 'nanoid'
-
 import {
-  ageEighteenToNineteen,
-  ageFifteenToSeventeen,
-  ageTwentyfiveOrMore,
-  ageTwentyToTwentyFour,
   commerceAndServices,
   commerceAndServicesEmployees,
   industries,
@@ -13,46 +7,129 @@ import {
   regionsPopulation,
   malePercentage,
   residentsPerHouse,
-  salaries,
-  ages
+  incomes,
+  ages,
+  middleSchoolers,
+  preschoolers,
+  highSchoolers,
+  undergradStudents,
+  gradStudents,
+  alreadyAttended,
+  neverAttended,
+  housesWithVehicles,
+  preschools,
+  colleges,
+  middleSchools,
+  highSchools
 } from '../data/census'
 import {
-  Parameter,
-  assign,
   normalize,
   assignSex,
   normalizeAge,
   normalizeResidentsPerHouse,
   assignHouse,
   assignAge,
-  assignIncome
+  assignIncome,
+  assignEducationStatus,
+  assignTransportationMean,
+  assignStudyOccupations,
+  assignWorkOccupations
 } from './parameter'
-import { activitiesList } from './activities'
-import { Individual, type Occupation } from './individual'
+import { Individual } from './individual'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { fisherYatesShuffle, log } from './utilities'
 
-export function createPopulation() {
+export function getPopulation(options = { cache: false, saveToDisk: false }): Individual[] {
+  const { cache, saveToDisk } = options
+
+  if (cache) {
+    return readPopulationFromDisk()!
+  }
+
+  log('Instantiating new population', { time: true, timeLabel: 'POPULATION' })
+
+  const population = instantiatePopulation()
+
+  if (saveToDisk) {
+    savePopulationToDisk(population)
+  }
+
+  log('', { timeEnd: true, timeLabel: 'POPULATION' })
+
+  return population
+}
+
+export function readPopulationFromDisk() {
+  const filePath = join(__dirname, '..', 'data', 'simulation', 'population.json')
+  if (existsSync(filePath)) {
+    log('Loading population from disk', { time: true, timeLabel: 'POPULATION' })
+
+    const serialized = readFileSync(filePath)
+
+    const population = deserializePopulation(serialized)
+
+    log('', { timeEnd: true, timeLabel: 'POPULATION' })
+
+    return population
+  }
+}
+
+export function savePopulationToDisk(population: Individual[]) {
+  const filePath = join(__dirname, '..', 'data', 'simulation', 'population.json')
+  const serialized = serializePopulation(population)
+  writeFileSync(filePath, serialized)
+}
+
+function serializePopulation(population: Individual[]) {
+  log('Serializing population')
+
+  const serializedPopulation = population.map((individual) => individual.serialize())
+
+  const jsonString = JSON.stringify(serializedPopulation)
+
+  return Buffer.from(jsonString)
+}
+
+function deserializePopulation(serialized: Buffer): Individual[] {
+  log('Deserializing population')
+
+  const jsonString = serialized.toString()
+
+  const serializedIndividuals = JSON.parse(jsonString) as string[]
+
+  return serializedIndividuals.map((serializedIndividual) =>
+    Individual.deserialize(serializedIndividual)
+  )
+}
+
+function instantiatePopulation() {
   let individuals: Individual[] = []
 
   for (let i = 0; i < totalPopulation; i++) {
     const individual = new Individual()
 
-    individual.id = nanoid()
-
-    // random assignment for now
-    individual.currentActivity = {
-      id: nanoid(),
-      ...activitiesList[i % activitiesList.length],
-      individualsEngaged: []
-    }
+    individual.id = i
 
     // defaults true by default for now
     // if age is invalid or for some other reason, reassign it
     individual.isValid = true
 
+    // initial settings
     individual.mask = 'none'
+    individual.vaccine = {
+      doses: 0,
+      type: 'none'
+    }
+
+    individual.occupations = []
 
     // false by default
-    individual.isDead = individual.isHospitalized = false
+    individual.isDead =
+      individual.isHospitalized =
+      individual.hasCovid =
+      individual.hadCovid =
+        false
 
     individuals.push(individual)
   }
@@ -67,48 +144,37 @@ export function createPopulation() {
     regionsPopulation
   )
 
-  individuals = assignIncome(individuals, salaries)
+  individuals = assignIncome(individuals, normalize('incomes', incomes, totalPopulation))
 
-  // todo: review this number
-  const students =
-    ageFifteenToSeventeen + ageEighteenToNineteen + ageTwentyToTwentyFour + ageTwentyfiveOrMore
+  individuals = assignEducationStatus(
+    individuals,
+    preschoolers,
+    middleSchoolers,
+    highSchoolers,
+    undergradStudents,
+    gradStudents,
+    alreadyAttended,
+    neverAttended
+  )
 
-  const createWorkstations = (
-    categories: Parameter[],
-    employeesRanges: number[][]
-  ): Occupation[] => {
-    const workstations: Occupation[] = []
+  individuals = assignTransportationMean(individuals, housesWithVehicles)
 
-    categories.forEach((category, index) => {
-      const [minEmployees, maxEmployees] = employeesRanges[index]
-      for (let i = 0; i < category.value; i++) {
-        const employeesCount =
-          Math.floor(Math.random() * (maxEmployees - minEmployees + 1)) + minEmployees
+  const { individuals: individualsWithStudyOccupation, lastOccupationId } = assignStudyOccupations(
+    individuals,
+    preschools,
+    middleSchools,
+    highSchools,
+    colleges
+  )
 
-        const workstation = {
-          id: nanoid(),
-          label: category.label as string,
-          size: employeesCount
-        }
-
-        workstations.push(workstation)
-      }
-    })
-
-    return workstations
-  }
-
-  const industryWorkstations = createWorkstations(industries, industriesEmployees)
-
-  const commerceAndServicesWorkstations = createWorkstations(
+  individuals = assignWorkOccupations(
+    individualsWithStudyOccupation,
+    lastOccupationId,
+    industries,
+    industriesEmployees,
     commerceAndServices,
     commerceAndServicesEmployees
   )
 
-  // todo: improve calculation (currently returns 1502524)
-  const allWorkstations = [...industryWorkstations, ...commerceAndServicesWorkstations]
-
-  // todo: define risk profile
-
-  return individuals
+  return fisherYatesShuffle(individuals)
 }

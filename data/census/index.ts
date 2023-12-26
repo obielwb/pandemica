@@ -34,8 +34,6 @@ export const regionsPopulation = [
 export const malePercentage = (520865 / 1080113) * 100
 export const femalePercentage = (559248 / 1080113) * 100
 
-export const car = 226053
-
 export type Age = {
   interval: [number, number]
   female: number
@@ -151,45 +149,51 @@ export const ages = [
 // 2010 ibge - habitants by income - 950.400 - desconsidera pessoas abaixo de 10 anos
 export const zeroToHalfMinimumSalaries = {
   label: [0, 0.5],
-  value: 10400,
-};
+  value: 10400
+}
 export const halfToOneMinimumSalaries = {
   label: [0.5, 1.0],
-  value: 98800,
-};
+  value: 98800
+}
 export const oneToTwoMinimumSalaries = {
   label: [1.0, 2.0],
-  value: 225500,
-};
+  value: 225500
+}
 export const twoToThreeMinimumSalaries = {
   label: [2.0, 3.0],
-  value: 98600,
-};
+  value: 98600
+}
 export const threeToFiveMinimumSalaries = {
   label: [3.0, 5.0],
-  value: 89300,
-};
+  value: 89300
+}
 export const fiveToTenMinimumSalaries = {
   label: [5.0, 10.0],
-  value: 72300,
-};
+  value: 72300
+}
 export const tenToFifteenMinimumSalaries = {
   label: [10.0, 15.0],
-  value: 15700,
-};
+  value: 15700
+}
 export const fifteenToTwentyMinimumSalaries = {
   label: [15.0, 20.0],
-  value: 13400,
-};
+  value: 13400
+}
 export const twentyOrMoreMinimumSalaries = {
   label: [20.0, Infinity],
-  value: 10400,
-};
+  value: 10400
+}
 export const withoutSalary = {
   label: [0, 0],
-  value: 316000 + zeroToFourYears.female + zeroToFourYears.male + fiveToNineYears.male + fiveToNineYears.female,
-};
-export const salaries = [
+  value:
+    316000 +
+    zeroToFourYears.female +
+    zeroToFourYears.male +
+    fiveToNineYears.male +
+    fiveToNineYears.female
+}
+export const incomes = [
+  withoutSalary,
   zeroToHalfMinimumSalaries,
   halfToOneMinimumSalaries,
   oneToTwoMinimumSalaries,
@@ -198,26 +202,52 @@ export const salaries = [
   fiveToTenMinimumSalaries,
   tenToFifteenMinimumSalaries,
   fifteenToTwentyMinimumSalaries,
-  twentyOrMoreMinimumSalaries,
-  withoutSalary
+  twentyOrMoreMinimumSalaries
 ]
-
-// todo: fix relation between withoutSalary and ages bellow ageSevenToFourteen
 
 // 2010 ibge - preschool and school attendants
 export const attendSchools = 324646
-export const ageZeroToThree = 21685
+export const ageZeroToThree = 21684
 export const ageFourToFive = 21201
 export const ageSix = 12535
+// adapted categories to fit age intervals
+export const preschoolers = {
+  label: [0, 4],
+  value: ageZeroToThree + ageFourToFive + ageSix
+}
 export const ageSevenToFourteen = 113766
+export const middleSchoolers = {
+  label: [5, 14],
+  value: ageSevenToFourteen
+}
 export const ageFifteenToSeventeen = 41497
 export const ageEighteenToNineteen = 15200
+export const highSchoolers = {
+  label: [15, 19],
+  value: ageFifteenToSeventeen + ageEighteenToNineteen
+}
 export const ageTwentyToTwentyFour = 29289
+export const undergradStudents = {
+  label: [20, 24],
+  value: ageTwentyToTwentyFour
+}
 export const ageTwentyfiveOrMore = 69474
+export const gradStudents = {
+  label: [25, Infinity],
+  value: ageTwentyfiveOrMore
+}
 export const alreadyAttended = 687104
 export const neverAttended = 68363
 
-export const houses = 348268
+// igbe 2010
+export const preschools = 308 + 291
+export const middleSchools = 230 + 200
+export const highSchools = 148
+// city hall
+export const colleges = 23
+
+// igbe 2010
+export const housesWithVehicles = 229315
 
 // Número de moradores nas residências - 1.068.980 moradores
 export const oneResident = {
