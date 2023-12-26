@@ -8,4 +8,4 @@
 node_modules
 .venv
 
-data/population.json
+data/simulation/population.json
