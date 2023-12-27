@@ -1,6 +1,4 @@
-import { Individual } from './individual'
-
-export type Category = 'leisure' | 'work' | 'home' | 'transportation' | 'shopping' | 'study'
+export type Category = 'leisure' | 'errands' | 'work' | 'home' | 'transport' | 'shopping' | 'study'
 export type Distance = 'normal' | 'sixFt' | 'tenFt'
 export type Setting = 'indoor' | 'outdoor'
 export type Voice = 'silent' | 'normal' | 'loud'
@@ -44,14 +42,13 @@ export class Activity {
     return activity
   }
 
-  private static categoryFromShortString(
-    shortString: string
-  ): 'leisure' | 'work' | 'home' | 'transportation' | 'shopping' | 'study' {
+  private static categoryFromShortString(shortString: string): Category {
     const map = {
       l: 'leisure',
+      e: 'errands',
       w: 'work',
       h: 'home',
-      t: 'transportation',
+      t: 'transport',
       s: 'shopping',
       y: 'study'
     }
@@ -125,7 +122,6 @@ export class IndividualActivity extends Activity {
   }
 }
 
-// todo: consertar voz e distância para fazer sentido
 export const groceryShopping = new Activity(
   'shopping',
   'shopping.grocery',
@@ -146,8 +142,18 @@ export const pharmacyShopping = new Activity(
   20
 )
 
+export const bakeryShopping = new Activity(
+  'shopping',
+  'shopping.bakery',
+  'indoor',
+  15,
+  'normal',
+  'normal',
+  10
+)
+
 export const restaurantOutdoors = new Activity(
-  'leisure',
+  'errands',
   'restaurant.outdoor',
   'outdoor',
   1 * 60,
@@ -157,7 +163,7 @@ export const restaurantOutdoors = new Activity(
 )
 
 export const restaurantIndoors = new Activity(
-  'leisure',
+  'errands',
   'restaurant.indoor',
   'indoor',
   1 * 60,
@@ -188,9 +194,13 @@ export const indoorParty = new Activity(
   30
 )
 
-export const house = new Activity(
+export const park = new Activity('leisure', 'park', 'outdoor', 1.5 * 60, 'normal', 'normal', 50)
+export const gym = new Activity('leisure', 'gym', 'indoor', 1 * 60, 'normal', 'normal', 30)
+export const church = new Activity('leisure', 'church', 'indoor', 1 * 60, 'normal', 'normal', 50)
+
+export const stayAtHome = new Activity(
   'home',
-  'house',
+  'home',
   'indoor',
   10 * 60,
   'normal',
@@ -198,80 +208,224 @@ export const house = new Activity(
   11 // maximum number of residents per house
 )
 
-export const schoolClassroom = new Activity(
-  'study',
-  'school.classroom',
-  'indoor',
-  6 * 60,
-  'normal',
-  'normal',
-  30
-)
-
 export const publicTransportStation = new Activity(
-  'transportation',
-  'transportation.public.station',
+  'transport',
+  'transport.public.station',
   'outdoor',
-  20,
+  15,
   'normal',
   'normal',
   10
 )
 
-export const publicTransportationRide = new Activity(
-  'transportation',
-  'transportation.public.ride',
+export const publicTransportRide = new Activity(
+  'transport',
+  'transport.public.ride',
   'indoor',
-  20,
+  45,
   'normal',
   'normal',
   50
 )
 
-export const park = new Activity('leisure', 'park', 'outdoor', 1.5 * 60, 'normal', 'normal', 50)
+export const privateTransportRide = new Activity(
+  'transport',
+  'transport.public.ride',
+  'indoor',
+  30,
+  'normal',
+  'normal',
+  5
+)
+
+export const workInPerson = new Activity(
+  'work',
+  'work.in_person',
+  'indoor',
+  8 * 60,
+  'normal',
+  'normal',
+  50
+)
+
+export const workFromHome = new Activity(
+  'work',
+  'work.from_home',
+  'outdoor',
+  8 * 60,
+  'normal',
+  'normal',
+  11 // maximum number of residents per house
+)
+
+export const preschoolStudy = new Activity(
+  'study',
+  'study.preschool',
+  'indoor',
+  5 * 60,
+  'normal',
+  'normal',
+  30
+)
+
+export const middleSchoolStudy = new Activity(
+  'study',
+  'study.middle_school',
+  'indoor',
+  6 * 60,
+  'normal',
+  'normal',
+  45
+)
+
+export const highSchoolStudy = new Activity(
+  'study',
+  'study.high_school',
+  'indoor',
+  7 * 60,
+  'normal',
+  'normal',
+  60
+)
+
+export const collegeStudy = new Activity(
+  'study',
+  'study.college',
+  'indoor',
+  8 * 60,
+  'normal',
+  'normal',
+  75
+)
+
+export const eightHoursSleep = new Activity(
+  'home',
+  'sleep.eight_hours',
+  'indoor',
+  8 * 60,
+  'normal',
+  'normal',
+  2
+)
+
+export const sevenHoursSleep = new Activity(
+  'home',
+  'sleep.seven_hours',
+  'indoor',
+  7 * 60,
+  'normal',
+  'normal',
+  2
+)
+
+export const sixHoursSleep = new Activity(
+  'home',
+  'sleep.six_hours',
+  'indoor',
+  6 * 60,
+  'normal',
+  'normal',
+  2
+)
 
 export const activities: { [activity: string]: Activity } = {
   groceryShopping,
   pharmacyShopping,
+  bakeryShopping,
+
   restaurantOutdoors,
   restaurantIndoors,
+
   bar,
   outdoorParty,
   indoorParty,
-  house,
-  schoolClassroom,
+  park,
+  gym,
+  church,
+
+  stayAtHome,
+
   publicTransportStation,
-  park
+  publicTransportRide,
+  privateTransportRide,
+
+  workInPerson,
+  workFromHome,
+
+  preschoolStudy,
+  middleSchoolStudy,
+  highSchoolStudy,
+  collegeStudy,
+
+  sixHoursSleep,
+  sevenHoursSleep,
+  eightHoursSleep
 }
 
 export const activitiesList = [
   groceryShopping,
   pharmacyShopping,
+  bakeryShopping,
+
   restaurantOutdoors,
   restaurantIndoors,
+
   bar,
   outdoorParty,
   indoorParty,
-  house,
-  schoolClassroom,
-  // hospital,
+  park,
+  gym,
+  church,
+
+  stayAtHome,
+
   publicTransportStation,
-  park
+  publicTransportRide,
+  privateTransportRide,
+
+  workInPerson,
+  workFromHome,
+
+  preschoolStudy,
+  middleSchoolStudy,
+  highSchoolStudy,
+  collegeStudy,
+
+  sixHoursSleep,
+  sevenHoursSleep,
+  eightHoursSleep
 ]
 
 export enum ActivityType {
-  Grocery = 'grocery',
+  GroceryShopping = 'groceryShopping',
+  PharmacyShopping = 'pharmacyShopping',
+  BakeryShopping = 'bakeryShopping',
+
   RestaurantOutdoors = 'restaurantOutdoors',
   RestaurantIndoors = 'restaurantIndoors',
+
   Bar = 'bar',
   OutdoorParty = 'outdoorParty',
   IndoorParty = 'indoorParty',
-  House = 'house',
-  School = 'school',
-  Hospital = 'hospital',
-  PublicTransportStation = 'publicTransportStation',
-  PublicTransportStationCrowded = 'publicTransportStationCrowded',
-  Parks = 'parks'
-}
+  Park = 'park',
+  Gym = 'gym',
+  Church = 'church',
 
-export const pastActivities: IndividualActivity[] = []
+  StayAtHome = 'stayAtHome',
+
+  PublicTransportStation = 'publicTransportStation',
+  PublicTransportRide = 'publicTransportRide',
+  PrivateTransportRide = 'privateTransportRide',
+
+  WorkInPerson = 'workInPerson',
+  WorkFromHome = 'workFromHome',
+
+  PreschoolStudy = 'preschoolStudy',
+  MiddleSchoolStudy = 'middleSchoolStudy',
+  HighSchoolStudy = 'highSchoolStudy',
+  CollegeStudy = 'collegeStudy',
+
+  SixHoursSleep = 'sixHoursSleep',
+  SevenHoursSleep = 'sevenHoursSleep',
+  EightHoursSleep = 'eightHoursSleep'
+}
