@@ -44,7 +44,11 @@ export function getPopulation(options = { cache: false, saveToDisk: false }): In
   const { cache, saveToDisk } = options
 
   if (cache) {
-    return readPopulationFromDisk()!
+    const population = readPopulationFromDisk()!
+
+    if (population) {
+      return population
+    }
   }
 
   log('Instantiating new population', { time: true, timeLabel: 'POPULATION' })
@@ -130,6 +134,9 @@ function instantiatePopulation() {
       individual.hasCovid =
       individual.hadCovid =
         false
+
+    // empty for now
+    individual.routine = []
 
     individuals.push(individual)
   }

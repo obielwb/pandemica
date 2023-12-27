@@ -14,7 +14,7 @@ export class Individual {
   public house: House
   public income: number[]
   public transportationMean: 'private' | 'public'
-  public occupationType: ['study'?, 'work'?]
+  public occupationType?: ['study'?, 'work'?]
   public occupations: [Occupation?, Occupation?]
   public isValid?: boolean
 
@@ -47,7 +47,7 @@ export class Individual {
       h: this.house.serialize(),
       inc: this.income,
       tm: this.transportationMean === 'private' ? 0 : 1,
-      ot: this.occupationType.map((o) => (o ? 1 : 0)),
+      ot: this.occupationType ? this.occupationType.map((o) => (o ? 1 : 0)) : [],
       oc: this.occupations ? this.occupations.map((o) => (o ? o.id : null)) : [],
       iv: this.isValid ? 1 : 0,
       ih: this.isHospitalized ? 1 : 0,
@@ -68,8 +68,10 @@ export class Individual {
     individual.id = deserializedIndividual.i
     individual.sex = deserializedIndividual.s === 0 ? 'male' : 'female'
     individual.age = deserializedIndividual.a
-    individual.educationStatus = deserializedIndividual.es || 'defaultEducationStatus'
-    individual.currentActivity = IndividualActivity.deserialize(deserializedIndividual.ca)
+    individual.educationStatus = deserializedIndividual.es
+    individual.currentActivity = deserializedIndividual.ca
+      ? IndividualActivity.deserialize(deserializedIndividual.ca)
+      : undefined
     individual.routine = deserializedIndividual.r.map((activity: string) =>
       Activity.deserialize(activity)
     )
