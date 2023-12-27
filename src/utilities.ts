@@ -30,10 +30,10 @@ export function log(
 
   if (message)
     if (typeof message === 'object') {
-      console.log(`[LOG] ${moment().local().format('DD/MM/YYYY hh:mm:ss')}:`)
+      console.log(`[LOG] ${moment().local().format('DD/MM/YYYY HH:mm:ss')}:`)
       console.log(message)
     } else {
-      console.log(`[LOG] ${moment().format('DD/MM/YYYY hh:mm:ss')}: ${message}`)
+      console.log(`[LOG] ${moment().format('DD/MM/YYYY HH:mm:ss')}: ${message}`)
     }
 
   if (options?.timeEnd) console.timeEnd(options.timeLabel && `[${options.timeLabel}]`)
