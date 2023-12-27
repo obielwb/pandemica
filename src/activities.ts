@@ -298,6 +298,16 @@ export const collegeStudy = new Activity(
   75
 )
 
+export const nineHoursSleep = new Activity(
+  'home',
+  'sleep.six_hours',
+  'indoor',
+  9 * 60,
+  'normal',
+  'normal',
+  2
+)
+
 export const eightHoursSleep = new Activity(
   'home',
   'sleep.eight_hours',
@@ -323,6 +333,16 @@ export const sixHoursSleep = new Activity(
   'sleep.six_hours',
   'indoor',
   6 * 60,
+  'normal',
+  'normal',
+  2
+)
+
+export const fiveHoursSleep = new Activity(
+  'home',
+  'sleep.six_hours',
+  'indoor',
+  5 * 60,
   'normal',
   'normal',
   2
@@ -357,9 +377,11 @@ export const activities: { [activity: string]: Activity } = {
   highSchoolStudy,
   collegeStudy,
 
+  fiveHoursSleep,
   sixHoursSleep,
   sevenHoursSleep,
-  eightHoursSleep
+  eightHoursSleep,
+  nineHoursSleep
 }
 
 export const activitiesList = [
@@ -391,9 +413,11 @@ export const activitiesList = [
   highSchoolStudy,
   collegeStudy,
 
+  fiveHoursSleep,
   sixHoursSleep,
   sevenHoursSleep,
-  eightHoursSleep
+  eightHoursSleep,
+  nineHoursSleep
 ]
 
 export enum ActivityType {
@@ -425,7 +449,9 @@ export enum ActivityType {
   HighSchoolStudy = 'highSchoolStudy',
   CollegeStudy = 'collegeStudy',
 
+  FiveHoursSleep = 'fiveHoursSleep',
   SixHoursSleep = 'sixHoursSleep',
   SevenHoursSleep = 'sevenHoursSleep',
-  EightHoursSleep = 'eightHoursSleep'
+  EightHoursSleep = 'eightHoursSleep',
+  NineHoursSleep = 'nineHoursSleep'
 }

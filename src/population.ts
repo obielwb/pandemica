@@ -39,6 +39,7 @@ import { Individual } from './individual'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fisherYatesShuffle, log } from './utilities'
+import { createRoutines } from './routines'
 
 export function getPopulation(options = { cache: false, saveToDisk: false }): Individual[] {
   const { cache, saveToDisk } = options
@@ -135,9 +136,6 @@ function instantiatePopulation() {
       individual.hadCovid =
         false
 
-    // empty for now
-    individual.routine = []
-
     individuals.push(individual)
   }
 
@@ -182,6 +180,8 @@ function instantiatePopulation() {
     commerceAndServices,
     commerceAndServicesEmployees
   )
+
+  individuals = createRoutines(individuals)
 
   return fisherYatesShuffle(individuals)
 }

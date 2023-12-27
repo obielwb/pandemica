@@ -10,7 +10,7 @@ export class Individual {
   public age: number[]
   public educationStatus: string
   public currentActivity?: IndividualActivity
-  public routine: Activity[]
+  public routine: Activity[][]
   public house: House
   public income: number[]
   public transportationMean: 'private' | 'public'
@@ -43,7 +43,7 @@ export class Individual {
       a: this.age,
       es: educationStatusMap[this.educationStatus],
       ca: this.currentActivity ? this.currentActivity.serialize() : null,
-      r: this.routine.map((activity) => activity.serialize()),
+      r: this.routine.map((row) => row.map((activity) => activity.serialize())),
       h: this.house.serialize(),
       inc: this.income,
       tm: this.transportationMean === 'private' ? 0 : 1,
@@ -72,8 +72,8 @@ export class Individual {
     individual.currentActivity = deserializedIndividual.ca
       ? IndividualActivity.deserialize(deserializedIndividual.ca)
       : undefined
-    individual.routine = deserializedIndividual.r.map((activity: string) =>
-      Activity.deserialize(activity)
+    individual.routine = deserializedIndividual.r.map((row: string[]) =>
+      row.map((activitySerialized) => Activity.deserialize(activitySerialized))
     )
     individual.house = House.deserialize(deserializedIndividual.h)
     individual.income = deserializedIndividual.inc || []
