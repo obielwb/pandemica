@@ -9,3 +9,5 @@ node_modules
 .venv
 
 data/simulation/population.json
+
+.vscode
