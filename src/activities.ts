@@ -1,4 +1,12 @@
-export type Category = 'leisure' | 'errands' | 'work' | 'home' | 'transport' | 'shopping' | 'study'
+export type Category =
+  | 'leisure'
+  | 'errands'
+  | 'work'
+  | 'home'
+  | 'transport'
+  | 'shopping'
+  | 'study'
+  | 'sleep'
 export type Distance = 'normal' | 'sixFt' | 'tenFt'
 export type Setting = 'indoor' | 'outdoor'
 export type Voice = 'silent' | 'normal' | 'loud'
