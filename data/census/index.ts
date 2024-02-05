@@ -367,6 +367,9 @@ export const selfEmployeds = 92989
 export const employers = 14474
 export const totalEmployees = employees + selfEmployeds + employers
 
+export const femaleEmployees = 295337
+export const maleEmployees = 238459
+
 export const microCommerceAndServicesEmployees = [1, 9]
 export const smallCommerceAndServicesEmployees = [10, 49]
 export const mediumCommerceAndServicesEmployees = [50, 99]
