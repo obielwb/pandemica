@@ -2,18 +2,18 @@ import { Activity } from '../activities'
 import { Individual } from '../individual'
 
 export class Clock {
-  private minute: number
-  private totalMinutes: number
-  private hour: number
-  private totalHours: number
-  private day: number
-  private totalDays: number
-  private weeks: number
-  private totalWeeks: number
-  private month: number
-  private totalMonths: number
-  private year: number
-  private totalYears: number
+  private currentMinute: number
+  private elapsedMinutes: number
+  private currentHour: number
+  private elapsedHours: number
+  private currentDay: number
+  private elapsedDays: number
+  private currentWeek: number
+  private elapsedWeeks: number
+  private currentMonth: number
+  private elapsedMonths: number
+  private currentYear: number
+  private elapsedYears: number
 
   constructor(
     public individuals: Individual[],
@@ -24,84 +24,90 @@ export class Clock {
     startHour: number = 0,
     startMinute: number = 0
   ) {
-    this.minute = startMinute
-    this.totalMinutes = 0
-    this.hour = startHour
-    this.totalHours = 0
-    this.day = startDay
-    this.totalDays = 0
-    this.weeks = Math.round((startMonth * 30) / 7)
-    this.totalWeeks = 0
-    this.month = startMonth
-    this.totalMonths = 0
-    this.year = startYear
-    this.totalYears = 0
+    this.currentMinute = startMinute
+    this.elapsedMinutes = 0
+    this.currentHour = startHour
+    this.elapsedHours = 0
+    this.currentDay = startDay
+    this.elapsedDays = 0
+    this.currentWeek = Math.round((startMonth * 30) / 7)
+    this.elapsedWeeks = 0
+    this.currentMonth = startMonth
+    this.elapsedMonths = 0
+    this.currentYear = startYear
+    this.elapsedYears = 0
   }
 
   public sortIndividuals() {}
 
   public toDate() {
-    return new Date(this.year, this.month, this.day, this.hour, this.minute)
+    return new Date(
+      this.currentYear,
+      this.currentMonth,
+      this.currentDay,
+      this.currentHour,
+      this.currentMinute
+    )
   }
 
   public tick(minutes: number) {
-    this.minute += minutes
-    this.totalMinutes += minutes
+    this.currentMinute += minutes
+    this.elapsedMinutes += minutes
 
-    while (this.minute === 60) {
-      this.minute -= 60
-      this.hour += 1
-      this.totalHours += 1
+    while (this.currentMinute === 60) {
+      this.currentMinute -= 60
+      this.currentHour += 1
+      this.elapsedHours += 1
     }
 
-    while (this.hour === 24) {
-      this.hour -= 24
-      this.day += 1
-      this.totalDays += 1
+    while (this.currentHour === 24) {
+      this.currentHour -= 24
+      this.currentDay += 1
+      this.elapsedDays += 1
       this.updateWeeks()
       this.updateMonthsAndYears()
     }
   }
 
   private updateWeeks() {
-    if (this.day === 6) {
-      this.day -= 6
-      this.weeks += 1
-      this.totalWeeks += 1
+    if (this.currentDay === 6) {
+      this.currentDay -= 6
+      this.currentWeek += 1
+      this.elapsedWeeks += 1
     }
   }
 
   private updateMonthsAndYears() {
-    const daysInMonth = this.getDaysInMonth(this.month, this.year)
+    const daysInMonth = this.getDaysInMonth(this.currentMonth, this.currentYear)
 
-    if (this.day >= daysInMonth) {
-      this.day -= daysInMonth
+    if (this.currentDay >= daysInMonth) {
+      this.currentDay -= daysInMonth
 
-      this.month += 1
-      this.totalMonths += 1
+      this.currentMonth += 1
+      this.elapsedMonths += 1
     }
 
-    if (this.month === 11) {
-      this.month -= 11
-      this.year += 1
-      this.totalYears += 1
+    if (this.currentMonth === 11) {
+      this.currentMonth -= 11
+      this.currentYear += 1
+      this.elapsedYears += 1
     }
   }
 
-  private getDaysInMonth(month: number, year: number): number {
+  private getDaysInMonth(currentMonth: number, currentYear: number): number {
     // february
-    if (month === 1) {
-      return this.isLeapYear(year) ? 29 : 28
+    if (currentMonth === 1) {
+      return this.isLeapYear(currentYear) ? 29 : 28
     }
     // april, june, september, november
-    else if ([3, 5, 8, 10].includes(month)) {
+    else if ([3, 5, 8, 10].includes(currentMonth)) {
       return 30
     }
 
     return 31
   }
 
-  private isLeapYear(year: number): boolean {
-    return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)
+  private isLeapYear(currentYear: number): boolean {
+    return currentYear % 4 === 0 && (currentYear % 100 !== 0 || currentYear % 400 === 0)
   }
 }

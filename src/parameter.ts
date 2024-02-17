@@ -347,6 +347,7 @@ export function assignIncomeByGaussianDistribution(
   return fisherYatesShuffle([...underageIndividuals, ...ofAgeIndividuals])
 }
 
+// todo: add verification to avoid 'slaves'
 // simplistic approach, age does not affect income
 export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
   log('Assigning `income` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })

@@ -16,17 +16,14 @@ export class Individual {
   public transportationMean: 'private' | 'public'
   public occupationType?: ['study'?, 'work'?]
   public occupations: [Occupation?, Occupation?]
-  public isValid?: boolean
 
-  public isHospitalized: boolean
-  public isDead: boolean
-  public hasCovid: boolean
+  public state: 'susceptible' | 'exposed' | 'infectious' | 'recovered' | 'dead'
   public hadCovid: boolean
 
   public vaccine: Vaccine
   public mask: Mask
 
-  public serialize(): string {
+  public serialize?(): string {
     const educationStatusMap = {
       preschool: 'ps',
       middle_school: 'ms',
@@ -44,15 +41,12 @@ export class Individual {
       es: educationStatusMap[this.educationStatus],
       ca: this.currentActivity ? this.currentActivity.serialize() : null,
       r: this.routine.map((row) => row.map((activity) => activity.serialize())),
-      h: this.house.serialize(),
+      h: this.house.serialize!!(),
       inc: this.income,
       tm: this.transportationMean === 'private' ? 0 : 1,
       ot: this.occupationType ? this.occupationType.map((o) => (o ? 1 : 0)) : [],
       oc: this.occupations ? this.occupations.map((o) => (o ? o.id : null)) : [],
-      iv: this.isValid ? 1 : 0,
-      ih: this.isHospitalized ? 1 : 0,
-      id: this.isDead ? 1 : 0,
-      hc: this.hasCovid ? 1 : 0,
+      st: this.state,
       hdc: this.hadCovid ? 1 : 0,
       v: this.vaccine.type !== 'none' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
       m: this.mask !== 'none' ? this.mask : null
@@ -84,11 +78,7 @@ export class Individual {
     individual.occupations = deserializedIndividual.oc
       ? deserializedIndividual.oc.map((o) => (o ? Occupation.deserialize(o) : null))
       : []
-    individual.isValid = !!deserializedIndividual.iv
-    individual.isHospitalized = !!deserializedIndividual.ih
-    individual.isDead = !!deserializedIndividual.id
-    individual.hasCovid = !!deserializedIndividual.hc
-    individual.hadCovid = !!deserializedIndividual.hdc
+    individual.state = deserializedIndividual.st
     individual.vaccine = deserializedIndividual.v
       ? { type: deserializedIndividual.v.t, doses: deserializedIndividual.v.d }
       : { type: 'none', doses: 0 }
@@ -107,7 +97,7 @@ export class Occupation {
     public intervalSize?: [number, number]
   ) {}
 
-  public serialize(): string {
+  public serialize?(): string {
     const serializedOccupation = {
       i: this.id,
       t: this.type[0],
@@ -149,7 +139,7 @@ export class House {
     public housemates: number[]
   ) {}
 
-  public serialize(): string {
+  public serialize?(): string {
     const serializedHouse = {
       i: this.id,
       r: this.region,

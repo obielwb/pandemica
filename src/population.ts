@@ -89,13 +89,14 @@ export function savePopulationToDisk(population: Individual[]) {
 function serializePopulation(population: Individual[]) {
   log('Serializing population')
 
-  const serializedPopulation = population.map((individual) => individual.serialize())
+  const serializedPopulation = population.map((individual) => individual.serialize!())
 
   const jsonString = JSON.stringify(serializedPopulation)
 
   return Buffer.from(jsonString)
 }
 
+// todo: fix nested fields deserializatrion (occupation, house)
 function deserializePopulation(serialized: Buffer): Individual[] {
   log('Deserializing population')
 
@@ -116,10 +117,6 @@ function instantiatePopulation() {
 
     individual.id = i
 
-    // defaults true by default for now
-    // if age is invalid or for some other reason, reassign it
-    individual.isValid = true
-
     // initial settings
     individual.mask = 'none'
     individual.vaccine = {
@@ -129,12 +126,8 @@ function instantiatePopulation() {
 
     individual.occupations = []
 
-    // false by default
-    individual.isDead =
-      individual.isHospitalized =
-      individual.hasCovid =
-      individual.hadCovid =
-        false
+    individual.state = 'susceptible'
+    individual.hadCovid = false
 
     individuals.push(individual)
   }
@@ -149,8 +142,6 @@ function instantiatePopulation() {
     regionsPopulation
   )
 
-  individuals = assignIncome(individuals, normalize('incomes', incomes, totalPopulation))
-
   individuals = assignEducationStatus(
     individuals,
     preschoolers,
@@ -161,8 +152,6 @@ function instantiatePopulation() {
     alreadyAttended,
     neverAttended
   )
-
-  individuals = assignTransportationMean(individuals, housesWithVehicles)
 
   const { individuals: individualsWithStudyOccupation, lastOccupationId } = assignStudyOccupations(
     individuals,
@@ -180,6 +169,10 @@ function instantiatePopulation() {
     commerceAndServices,
     commerceAndServicesEmployees
   )
+
+  individuals = assignIncome(individuals, normalize('incomes', incomes, totalPopulation))
+
+  individuals = assignTransportationMean(individuals, housesWithVehicles)
 
   individuals = createRoutines(individuals)
 
