@@ -12,6 +12,7 @@ import { log } from './utilities'
 
 const contractionProbabilityThreshold = 0.3
 
+// todo: verify if calculate function should be called when the individual is asleep
 export function calculate(
   activity: IndividualActivity,
   individualsWithCovid: Individual[],
