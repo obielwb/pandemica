@@ -246,24 +246,84 @@ export const privateTransportRide = new Activity(
   5
 )
 
-export const workInPerson = new Activity(
+export const microIndustryWorkInPerson = new Activity(
   'work',
-  'work.in_person',
+  'work.industry.micro',
+  'indoor',
+  8 * 60, // can vary to 12x36
+  'normal',
+  'normal',
+  10
+)
+
+export const smallIndustryWorkInPerson = new Activity(
+  'work',
+  'work.industry.small',
+  'indoor',
+  8 * 60, // can vary to 12x36
+  'normal',
+  'normal',
+  60
+)
+
+export const mediumIndustryWorkInPerson = new Activity(
+  'work',
+  'work.industry.medium',
+  'indoor',
+  12 * 60,
+  'normal',
+  'normal',
+  300
+)
+
+export const largeIndustryWorkInPerson = new Activity(
+  'work',
+  'work.industry.large',
+  'indoor',
+  12 * 60,
+  'normal',
+  'normal',
+  500
+)
+
+export const microCommerceAndServicesWorkInPerson = new Activity(
+  'work',
+  'work.commerce_services.micro',
   'indoor',
   8 * 60,
   'normal',
   'normal',
-  50
+  5
 )
 
-export const workFromHome = new Activity(
+export const smallCommerceAndServicesWorkInPerson = new Activity(
   'work',
-  'work.from_home',
-  'outdoor',
+  'work.commerce_services.small',
+  'indoor',
   8 * 60,
   'normal',
   'normal',
-  -1 // set to the number of residents in the house
+  30
+)
+
+export const mediumCommerceAndServicesWorkInPerson = new Activity(
+  'work',
+  'work.commerce_services.medium',
+  'indoor',
+  8 * 60,
+  'normal',
+  'normal',
+  75
+)
+
+export const largeCommerceAndServicesWorkInPerson = new Activity(
+  'work',
+  'work.commerce_services.medium',
+  'indoor',
+  8 * 60,
+  'normal',
+  'normal',
+  200
 )
 
 export const preschoolStudy = new Activity(
@@ -417,8 +477,15 @@ export const activities: { [activity: string]: Activity } = {
   publicTransportRide,
   privateTransportRide,
 
-  workInPerson,
-  workFromHome,
+  microIndustryWorkInPerson,
+  smallIndustryWorkInPerson,
+  mediumIndustryWorkInPerson,
+  largeIndustryWorkInPerson,
+
+  microCommerceAndServicesWorkInPerson,
+  smallCommerceAndServicesWorkInPerson,
+  mediumCommerceAndServicesWorkInPerson,
+  largeCommerceAndServicesWorkInPerson,
 
   preschoolStudy,
   middleSchoolStudy,
@@ -453,8 +520,15 @@ export const activitiesList = [
   publicTransportRide,
   privateTransportRide,
 
-  workInPerson,
-  workFromHome,
+  microIndustryWorkInPerson,
+  smallIndustryWorkInPerson,
+  mediumIndustryWorkInPerson,
+  largeIndustryWorkInPerson,
+
+  microCommerceAndServicesWorkInPerson,
+  smallCommerceAndServicesWorkInPerson,
+  mediumCommerceAndServicesWorkInPerson,
+  largeCommerceAndServicesWorkInPerson,
 
   preschoolStudy,
   middleSchoolStudy,
@@ -489,8 +563,15 @@ export enum ActivityType {
   PublicTransportRide = 'publicTransportRide',
   PrivateTransportRide = 'privateTransportRide',
 
-  WorkInPerson = 'workInPerson',
-  WorkFromHome = 'workFromHome',
+  MicroIndustryWorkInPerson = 'work.industry.micro',
+  SmallIndustryWorkInPerson = 'work.industry.small',
+  MediumIndustryWorkInPerson = 'work.industry.medium',
+  LargeIndustryWorkInPerson = 'work.industry.large',
+
+  MicroCommerceAndServicesWorkInPerson = 'work.commerce_services.micro',
+  SmallCommerceAndServicesWorkInPerson = 'work.commerce_services.small',
+  MediumCommerceAndServicesWorkInPerson = 'work.commerce_services.medium',
+  LargeCommerceAndServicesWorkInPerson = 'work.commerce_services.large',
 
   PreschoolStudy = 'preschoolStudy',
   MiddleSchoolStudy = 'middleSchoolStudy',
@@ -502,4 +583,14 @@ export enum ActivityType {
   SevenHoursSleep = 'sevenHoursSleep',
   EightHoursSleep = 'eightHoursSleep',
   NineHoursSleep = 'nineHoursSleep'
+}
+
+// convert activitiesList to a map for easy access
+export const activitiesMap = activitiesList.reduce((acc, activity) => {
+  acc[activity.label] = activity
+  return acc
+}, {})
+
+export function getWorkActivity(label: string): Activity | undefined {
+  return activitiesMap[label]
 }

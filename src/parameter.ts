@@ -629,7 +629,7 @@ export function assignWorkOccupations(
       const [minEmployees, maxEmployees] = employeesRanges[index]
 
       for (let i = 0; i < category.value; i++) {
-        const workstation = new Occupation(siteIds++, 'work', category.label as string, 0, [
+        const workstation = new Occupation(siteIds++, 'work', 'work.' + category.label, 0, [
           minEmployees,
           maxEmployees
         ])
