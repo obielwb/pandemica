@@ -263,7 +263,7 @@ export const workFromHome = new Activity(
   8 * 60,
   'normal',
   'normal',
-  11 // maximum number of residents per house
+  -1 // set to the number of residents in the house
 )
 
 export const preschoolStudy = new Activity(
@@ -276,6 +276,16 @@ export const preschoolStudy = new Activity(
   30
 )
 
+export const preschoolStudyFromHome = new Activity(
+  'study',
+  'study.preschool_from_home',
+  'indoor',
+  5 * 60,
+  'normal',
+  'normal',
+  -1 // set to the number of residents in the house
+)
+
 export const middleSchoolStudy = new Activity(
   'study',
   'study.middle_school',
@@ -284,6 +294,16 @@ export const middleSchoolStudy = new Activity(
   'normal',
   'normal',
   45
+)
+
+export const middleSchoolStudyFromHome = new Activity(
+  'study',
+  'study.middle_school_from_home',
+  'indoor',
+  6 * 60,
+  'normal',
+  'normal',
+  -1 // set to the number of residents in the house
 )
 
 export const highSchoolStudy = new Activity(
@@ -296,6 +316,16 @@ export const highSchoolStudy = new Activity(
   60
 )
 
+export const highSchoolStudyFromHome = new Activity(
+  'study',
+  'study.high_school_from_home',
+  'indoor',
+  7 * 60,
+  'normal',
+  'normal',
+  -1 // set to the number of residents in the house
+)
+
 export const collegeStudy = new Activity(
   'study',
   'study.college',
@@ -304,6 +334,16 @@ export const collegeStudy = new Activity(
   'normal',
   'normal',
   75
+)
+
+export const collegeStudyFromHome = new Activity(
+  'study',
+  'study.high_school_from_home',
+  'indoor',
+  8 * 60,
+  'normal',
+  'normal',
+  -1 // set to the number of residents in the house
 )
 
 export const nineHoursSleep = new Activity(

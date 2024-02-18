@@ -1,3 +1,10 @@
+import { ages, fiveToNineYears, sixtyToSixtyfourYears, zeroToFourYears } from '../data/census'
+import {
+  collegeStudyFromHome,
+  highSchoolStudyFromHome,
+  middleSchoolStudyFromHome,
+  preschoolStudyFromHome
+} from './activities'
 import { Individual, Mask, Vaccine } from './individual'
 
 /*
@@ -24,6 +31,31 @@ function selectRandomPercentage<T>(arr: T[], percentage: number) {
 
 export function implementLockdown(totalPopulation: Individual[], percentage: number = 1) {
   const targetPopulation = selectRandomPercentage(totalPopulation, percentage)
+
+  for (const individual of targetPopulation) {
+    if (individual.occupationType?.includes('study')) {
+      for (let i = 0; i < individual.routine.length; i++) {
+        for (let j = 0; j < individual.routine[i].length; j++) {
+          if (individual.routine[i][j].category === 'study') {
+            switch (individual.routine[i][j].label) {
+              case 'study.preschool':
+                individual.routine[i][j] = preschoolStudyFromHome
+                break
+              case 'study.middle_school':
+                individual.routine[i][j] = middleSchoolStudyFromHome
+                break
+              case 'study.high_school':
+                individual.routine[i][j] = highSchoolStudyFromHome
+                break
+              case 'study.college':
+                individual.routine[i][j] = collegeStudyFromHome
+                break
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 export function takeVaccines(
