@@ -55,6 +55,9 @@ export function implementLockdown(totalPopulation: Individual[], percentage: num
         }
       }
     }
+
+    if (individual.occupationType?.includes('work')) {
+    }
   }
 }
 
