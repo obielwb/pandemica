@@ -29,10 +29,8 @@ function selectRandomPercentage<T>(arr: T[], percentage: number) {
   return selected
 }
 
-export function implementLockdown(totalPopulation: Individual[], percentage: number = 1) {
-  const targetPopulation = selectRandomPercentage(totalPopulation, percentage)
-
-  for (const individual of targetPopulation) {
+export function implementLockdown(totalPopulation: Individual[]) {
+  for (const individual of totalPopulation) {
     if (individual.occupationType?.includes('study')) {
       for (let i = 0; i < individual.routine.length; i++) {
         for (let j = 0; j < individual.routine[i].length; j++) {
@@ -55,6 +53,9 @@ export function implementLockdown(totalPopulation: Individual[], percentage: num
         }
       }
     }
+
+    if (individual.occupationType?.includes('work')) {
+    }
   }
 }
 
@@ -63,6 +64,8 @@ export function takeVaccines(
   percentage: number = 1,
   type: Vaccine,
   age: number[]
-) {}
+) {
+  const targetPopulation = selectRandomPercentage(totalPopulation, percentage)
+}
 
 export function implementMask(type: Mask) {}
