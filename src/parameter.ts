@@ -347,7 +347,6 @@ export function assignIncomeByGaussianDistribution(
   return fisherYatesShuffle([...underageIndividuals, ...ofAgeIndividuals])
 }
 
-// todo: add verification to avoid 'slaves'
 // simplistic approach, age does not affect income
 export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
   log('Assigning `income` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
@@ -380,10 +379,16 @@ export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
   ofAgeIndividuals.forEach((individual) => {
     let selectedIncome
 
+    const individualWorks = individual.occupationTypes.includes('work')
+
     while (!selectedIncome) {
-      selectedIncome = weightedIncomes.find(
-        (income) => Math.random() <= income.probability && income.value > 0
-      )
+      selectedIncome = weightedIncomes.find((income) => {
+        if (individualWorks) {
+          return Math.random() <= income.probability && income.value > 0 && income.label[0] > 0
+        }
+
+        return Math.random() <= income.probability && income.value > 0
+      })
     }
 
     if (selectedIncome) {
@@ -421,7 +426,7 @@ export function assignEducationStatus(
         ageRangeParameter.value > 0
       ) {
         individual.educationStatus = studyLevelLabel
-        individual.occupationType = ['study']
+        individual.occupationTypes = ['study']
         ageRangeParameter.value--
       }
       return individual
@@ -552,9 +557,8 @@ export function assignStudyOccupations(
     }
   ].forEach((educationalLevel) => {
     for (let i = 0; i < educationalLevel.totalSites; i++) {
-      sites.push(
-        new Occupation(siteIds++, 'study', educationalLevel.label, educationalLevel.studentsPerSite)
-      )
+      const size = educationalLevel.studentsPerSite
+      sites.push(new Occupation(siteIds++, 'study', educationalLevel.label, [size, size], size))
     }
   })
 
@@ -580,7 +584,7 @@ export function assignStudyOccupations(
   sites.forEach((site) => {
     let { index, students } = siteData[site.label]
 
-    for (let i = 0; i < site.size; i++)
+    for (let i = 0; i < site.actualSize; i++)
       if (index < students.length) students[index++].occupations = [site]
 
     siteData[site.label] = {
@@ -603,8 +607,6 @@ export function assignStudyOccupations(
   }
 }
 
-// todo: prioritize assigning more remaining workers to small companies rather than
-// evenly
 export function assignWorkOccupations(
   individuals: Individual[],
   lastOccupationId: number,
@@ -629,10 +631,13 @@ export function assignWorkOccupations(
       const [minEmployees, maxEmployees] = employeesRanges[index]
 
       for (let i = 0; i < category.value; i++) {
-        const workstation = new Occupation(siteIds++, 'work', 'work.' + category.label, 0, [
-          minEmployees,
-          maxEmployees
-        ])
+        const workstation = new Occupation(
+          siteIds++,
+          'work',
+          'work.' + category.label,
+          [minEmployees, maxEmployees],
+          0
+        )
 
         workstations.push(workstation)
       }
@@ -650,20 +655,37 @@ export function assignWorkOccupations(
 
   const workstations = [...industryWorkstations, ...commerceAndServicesWorkstations]
 
+  const sizePriority = (size: string) => {
+    const workstationPriorities = {
+      micro: 4,
+      small: 3,
+      medium: 2,
+      large: 1
+    }
+
+    return workstationPriorities[size]
+  }
+
   let index = 0
   workstations.forEach((workstation) => {
     for (let i = 0; i < workstation.intervalSize![0]; i++) {
+      workers[index].occupationTypes.push('work')
       workers[index++].occupations.push(workstation)
-      workstation.size++
+      workstation.actualSize++
     }
   })
 
-  workstations.sort((a, b) => a.intervalSize![0] - b.intervalSize![1])
+  workstations.sort((a, b) => {
+    const sizeA = sizePriority(a.label.split('.')[2])
+    const sizeB = sizePriority(b.label.split('.')[2])
+    return sizeB - sizeA
+  })
   let workstationIndex = 0
 
   workers.forEach((worker) => {
     if (!worker.occupations.find((occupation) => occupation?.type === 'work')) {
-      workstations[workstationIndex].size++
+      workstations[workstationIndex].actualSize++
+      worker.occupationTypes.push('work')
       worker.occupations.push(workstations[workstationIndex])
       workstationIndex = (workstationIndex + 1) % workstations.length
     }
