@@ -361,7 +361,6 @@ export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
   })
 
   const ofAgeIndividuals = individuals.filter((individual) => individual.age[0] >= 20)
-  ofAgeIndividuals.sort((a, b) => a.age[0] - b.age[0])
 
   const weightedIncomes = incomes.map((income) => {
     return {
@@ -376,7 +375,23 @@ export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
     weightedIncomes[i].probability += weightedIncomes[i - 1].probability
   }
 
-  ofAgeIndividuals.forEach((individual) => {
+  ofAgeIndividuals.sort((a, b) => {
+    const aHasWork = a.occupationTypes.some((occupationType) => occupationType === 'work')
+    const bHasWork = b.occupationTypes.some((occupationType) => occupationType === 'work')
+
+    if (aHasWork === bHasWork) {
+      const educationRank = { graduate: 3, undergraduate: 2, educated: 1 }
+
+      const aEducationRank = educationRank[a.educationStatus] || 0
+      const bEducationRank = educationRank[b.educationStatus] || 0
+
+      return bEducationRank - aEducationRank
+    }
+
+    return aHasWork ? -1 : 1
+  })
+
+  ofAgeIndividuals.forEach((individual, i) => {
     let selectedIncome
 
     const individualWorks = individual.occupationTypes.includes('work')
@@ -617,11 +632,13 @@ export function assignWorkOccupations(
 ) {
   log('Assigning `workOccupations` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
 
+  const RETIRED_AGE = 64
+
   const workers = fisherYatesShuffle(
-    individuals.filter((individual) => individual.age[0] > 19 && individual.age[1] <= 74)
+    individuals.filter((individual) => individual.age[0] > 19 && individual.age[1] <= RETIRED_AGE)
   )
   const nonWorkers = individuals.filter(
-    (individual) => individual.age[1] <= 19 || individual.age[0] > 74
+    (individual) => individual.age[1] <= 19 || individual.age[0] > RETIRED_AGE
   )
 
   let siteIds = lastOccupationId
