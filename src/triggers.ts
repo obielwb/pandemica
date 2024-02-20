@@ -6,6 +6,7 @@ import {
   preschoolStudyFromHome
 } from './activities'
 import { Individual, Mask, Vaccine } from './individual'
+import { shuffle } from './utilities'
 
 /*
 - Escolas ficam online
@@ -23,7 +24,7 @@ Não há embasamento para essa porcentagem, definir arbitrariamente
 
 function selectRandomPercentage<T>(arr: T[], percentage: number) {
   const quantity = Math.round(percentage * arr.length)
-  const shuffled = arr.slice().sort(() => Math.random() - 0.5)
+  const shuffled = shuffle(arr)
   const selected = shuffled.slice(0, quantity)
 
   return selected
