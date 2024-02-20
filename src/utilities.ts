@@ -38,3 +38,7 @@ export function log(
 
   if (options?.timeEnd) console.timeEnd(options.timeLabel && `[${options.timeLabel}]`)
 }
+
+export function shuffle<T>(array: T[]): T[] {
+  return array.slice().sort(() => Math.random() - 0.5)
+}

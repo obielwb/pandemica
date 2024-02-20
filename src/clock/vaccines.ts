@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { parse } from 'csv-parse'
 import { Individual } from '../individual'
-import { log } from '../utilities'
+import { log, shuffle } from '../utilities'
 import { VaccineType } from '../individual'
 
 /*
@@ -100,7 +100,7 @@ export async function implementVaccines(
           (individual.vaccine.type === register.vaccine || individual.vaccine.type === 'none')
       )
 
-      const shuffledIndividuals = matchCharacteristics.slice().sort(() => Math.random() - 0.5)
+      const shuffledIndividuals = shuffle(matchCharacteristics)
       const selectedIndividuals = shuffledIndividuals.slice(0, register.count)
 
       for (const individual of selectedIndividuals) {
