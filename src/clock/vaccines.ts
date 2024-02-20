@@ -3,7 +3,12 @@ import * as path from 'path'
 import { parse } from 'csv-parse'
 import { Individual } from '../individual'
 import { log } from '../utilities'
-import { time } from 'console'
+import { VaccineType } from '../individual'
+
+/*
+  Note: this code is used for validation purpose only. To implement vaccination in a new pandemic
+  see triggers.ts
+*/
 
 type VaccineRegister = {
   date: string
@@ -53,6 +58,9 @@ export async function readVaccineData() {
                 return parseInt(columnValue)
               }
 
+              if (context.column == 'sex' && columnValue == 'F') return 'female'
+              if (context.column == 'sex' && columnValue == 'M') return 'male'
+
               return columnValue
             }
           },
@@ -79,7 +87,26 @@ export async function implementVaccines(
 ) {
   const vaccineRegisters = await readVaccineData()
   if (vaccineRegisters !== null) {
-    for (const register of vaccineRegisters) {
+    const registersOfTheDay = vaccineRegisters.filter(
+      (data) => data.date === `${year}-${month}-${day}`
+    )
+
+    for (const register of registersOfTheDay) {
+      const matchCharacteristics = population.filter(
+        (individual) =>
+          register.age.includes(individual.age[0].toString()) &&
+          individual.sex === register.sex &&
+          individual.vaccine.doses === register.dose - 1 && // only people with first dose takes the second dose vaccine
+          (individual.vaccine.type === register.vaccine || individual.vaccine.type === 'none')
+      )
+
+      const shuffledIndividuals = matchCharacteristics.slice().sort(() => Math.random() - 0.5)
+      const selectedIndividuals = shuffledIndividuals.slice(0, register.count)
+
+      for (const individual of selectedIndividuals) {
+        individual.vaccine.type = register.vaccine as VaccineType
+        individual.vaccine.doses = register.dose
+      }
     }
   }
 }
