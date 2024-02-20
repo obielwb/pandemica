@@ -124,6 +124,7 @@ function instantiatePopulation() {
       type: 'none'
     }
 
+    individual.occupationTypes = []
     individual.occupations = []
 
     individual.state = 'susceptible'

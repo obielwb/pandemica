@@ -14,7 +14,7 @@ export class Individual {
   public house: House
   public income: number[]
   public transportationMean: 'private' | 'public'
-  public occupationType?: ['study'?, 'work'?]
+  public occupationTypes: [OccupationType?, OccupationType?]
   public occupations: [Occupation?, Occupation?]
 
   public state: 'susceptible' | 'exposed' | 'infectious' | 'recovered' | 'dead'
@@ -44,8 +44,8 @@ export class Individual {
       h: this.house.serialize!!(),
       inc: this.income,
       tm: this.transportationMean === 'private' ? 0 : 1,
-      ot: this.occupationType ? this.occupationType.map((o) => (o ? 1 : 0)) : [],
-      oc: this.occupations ? this.occupations.map((o) => (o ? o.id : null)) : [],
+      ot: this.occupationTypes.map((o) => (o ? 1 : 0)),
+      oc: this.occupations.map((o) => (o ? o.id : null)),
       st: this.state,
       hdc: this.hadCovid ? 1 : 0,
       v: this.vaccine.type !== 'none' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
@@ -72,12 +72,12 @@ export class Individual {
     individual.house = House.deserialize(deserializedIndividual.h)
     individual.income = deserializedIndividual.inc || []
     individual.transportationMean = deserializedIndividual.tm === 0 ? 'private' : 'public'
-    individual.occupationType = deserializedIndividual.ot
-      ? deserializedIndividual.ot.map((o: number) => (o ? 'study' : 'work'))
-      : []
-    individual.occupations = deserializedIndividual.oc
-      ? deserializedIndividual.oc.map((o) => (o ? Occupation.deserialize(o) : null))
-      : []
+    individual.occupationTypes = deserializedIndividual.ot.map((o: number) =>
+      o ? 'study' : 'work'
+    )
+    individual.occupations = deserializedIndividual.oc.map((o) =>
+      o ? Occupation.deserialize(o) : null
+    )
     individual.state = deserializedIndividual.st
     individual.vaccine = deserializedIndividual.v
       ? { type: deserializedIndividual.v.t, doses: deserializedIndividual.v.d }
@@ -88,13 +88,15 @@ export class Individual {
   }
 }
 
+type OccupationType = 'study' | 'work'
+
 export class Occupation {
   constructor(
     public id: number,
-    public type: 'study' | 'work',
+    public type: OccupationType,
     public label: string,
-    public size: number,
-    public intervalSize?: [number, number]
+    public intervalSize: [number, number],
+    public actualSize: number
   ) {}
 
   public serialize?(): string {
@@ -102,8 +104,8 @@ export class Occupation {
       i: this.id,
       t: this.type[0],
       l: this.label,
-      s: this.size,
-      is: this.intervalSize ? this.intervalSize : null
+      is: this.intervalSize,
+      as: this.actualSize
     }
 
     return JSON.stringify(serializedOccupation)
@@ -115,8 +117,8 @@ export class Occupation {
       deserializedOccupation.i,
       deserializedOccupation.t === 's' ? 'study' : 'work',
       deserializedOccupation.l,
-      deserializedOccupation.s,
-      deserializedOccupation.is ? deserializedOccupation.is : null
+      deserializedOccupation.is,
+      deserializedOccupation.as
     )
   }
 }
