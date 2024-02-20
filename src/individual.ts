@@ -17,7 +17,7 @@ export class Individual {
   public occupationTypes: [OccupationType?, OccupationType?]
   public occupations: [Occupation?, Occupation?]
 
-  public state: 'susceptible' | 'exposed' | 'infectious' | 'recovered' | 'dead'
+  public state: 'susceptible' | 'exposed' | 'infectious' | 'recovered' | 'hospitalized' | 'dead'
   public hadCovid: boolean
 
   public vaccine: Vaccine
@@ -45,7 +45,7 @@ export class Individual {
       inc: this.income,
       tm: this.transportationMean === 'private' ? 0 : 1,
       ot: this.occupationTypes.map((o) => (o ? 1 : 0)),
-      oc: this.occupations.map((o) => (o ? o.id : null)),
+      oc: this.occupations.map((o) => (o ? o.serialize!!() : null)),
       st: this.state,
       hdc: this.hadCovid ? 1 : 0,
       v: this.vaccine.type !== 'none' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
