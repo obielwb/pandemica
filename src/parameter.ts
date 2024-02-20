@@ -7,7 +7,9 @@ export type Parameter = {
   value: number
 }
 
-// generic assign and normalize functions
+// base generic conception of assign and normalize functions
+// the specific and parameter-customized implementations bellow
+// follow the same ideas of these basic implementations
 export function assign(individuals: Individual[], label: string, parameter: Parameter[]) {
   log('Assigning `' + label + '` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
 
@@ -394,11 +396,11 @@ export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
   ofAgeIndividuals.forEach((individual, i) => {
     let selectedIncome
 
-    const individualWorks = individual.occupationTypes.includes('work')
+    const hasWork = individual.occupationTypes.includes('work')
 
     while (!selectedIncome) {
       selectedIncome = weightedIncomes.find((income) => {
-        if (individualWorks) {
+        if (hasWork) {
           return Math.random() <= income.probability && income.value > 0 && income.label[0] > 0
         }
 
@@ -829,4 +831,53 @@ export function normalizeResidentsPerHouse(
   log('', { timeEnd: true, timeLabel: 'NORMALIZATION' })
 
   return normalizedLabels
+}
+
+export function normalizeIncomes(incomes: Parameter[], individuals: Individual[]) {
+  log('Normalizing `incomes`', { time: true, timeLabel: 'NORMALIZATION' })
+
+  const workers = individuals.reduce(
+    (acc, individual) => acc + (individual.occupationTypes.includes('work') ? 1 : 0),
+    0
+  )
+
+  const nonZeroIncomes = incomes.filter((income) => income.label[0] !== 0)
+  const nonZeroIncomesCount = nonZeroIncomes.reduce((acc, income) => acc + income.value, 0)
+  let nonZeroIncomesPercentages = nonZeroIncomes.map((income) => income.value / nonZeroIncomesCount)
+
+  const unlabeledNonZeroIncomes = workers - nonZeroIncomesCount
+
+  const normalizedNonZeroIncomes = nonZeroIncomes.map((income, i) => {
+    const labelPercentage = nonZeroIncomesPercentages[i]
+    return {
+      label: income.label,
+      value: Math.round(income.value + unlabeledNonZeroIncomes * labelPercentage)
+    }
+  })
+
+  const normalizedNonZeroIncomesCount = normalizedNonZeroIncomes.reduce(
+    (acc, normalizedNonZeroIncome) => acc + normalizedNonZeroIncome.value,
+    0
+  )
+
+  let stillNonZeroIncomes = workers - normalizedNonZeroIncomesCount
+  while (stillNonZeroIncomes > 0) {
+    for (
+      let i = 0;
+      i < stillNonZeroIncomes / nonZeroIncomes.length;
+      i = (i + 1) % normalizedNonZeroIncomes.length
+    ) {
+      normalizedNonZeroIncomes[i].value++
+      stillNonZeroIncomes--
+    }
+  }
+
+  const zeroIncomes = incomes.filter((income) => income.label[0] === 0)
+
+  log('', { timeEnd: true, timeLabel: 'NORMALIZATION' })
+
+  return [
+    ...normalize('zero incomes', zeroIncomes, individuals.length - workers),
+    ...normalizedNonZeroIncomes
+  ]
 }

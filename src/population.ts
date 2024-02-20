@@ -33,7 +33,8 @@ import {
   assignEducationStatus,
   assignTransportationMean,
   assignStudyOccupations,
-  assignWorkOccupations
+  assignWorkOccupations,
+  normalizeIncomes
 } from './parameter'
 import { Individual } from './individual'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
@@ -41,6 +42,10 @@ import { join } from 'node:path'
 import { fisherYatesShuffle, log } from './utilities'
 import { createRoutines } from './routines'
 
+// todo: add automatic gzip compression to serialization in order to
+// be able to upload a gzip file to github and maintain
+// a single population for test purposes
+// todo: improve parameter options implementation and document it using jsdoc
 export function getPopulation(options = { cache: false, saveToDisk: false }): Individual[] {
   const { cache, saveToDisk } = options
 
@@ -96,7 +101,6 @@ function serializePopulation(population: Individual[]) {
   return Buffer.from(jsonString)
 }
 
-// todo: fix nested fields deserializatrion (occupation, house)
 function deserializePopulation(serialized: Buffer): Individual[] {
   log('Deserializing population')
 
@@ -171,7 +175,7 @@ function instantiatePopulation() {
     commerceAndServicesEmployees
   )
 
-  individuals = assignIncome(individuals, normalize('incomes', incomes, totalPopulation))
+  individuals = assignIncome(individuals, normalizeIncomes(incomes, individuals))
 
   individuals = assignTransportationMean(individuals, housesWithVehicles)
 
