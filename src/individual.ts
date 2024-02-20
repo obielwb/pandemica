@@ -163,7 +163,9 @@ export class House {
   }
 }
 
+export type VaccineType = 'pfizer' | 'moderna' | 'astra_zeneca' | 'johnson_johnson' | 'none'
+
 export type Vaccine = {
-  type: 'pfizer' | 'moderna' | 'astra_zeneca' | 'johnson_johnson' | 'none'
+  type: VaccineType
   doses: number
 }
