@@ -94,6 +94,7 @@ export function savePopulationToDisk(population: Individual[]) {
 function serializePopulation(population: Individual[]) {
   log('Serializing population')
 
+  population.sort((a, b) => a.id - b.id)
   const serializedPopulation = population.map((individual) => individual.serialize!())
 
   const jsonString = JSON.stringify(serializedPopulation)
