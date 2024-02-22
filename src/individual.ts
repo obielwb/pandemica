@@ -17,7 +17,7 @@ export class Individual {
   public occupationTypes: [OccupationType?, OccupationType?]
   public occupations: [Occupation?, Occupation?]
 
-  public state: 'susceptible' | 'exposed' | 'infectious' | 'recovered' | 'dead'
+  public state: 'susceptible' | 'exposed' | 'infectious' | 'recovered' | 'hospitalized' | 'dead'
   public hadCovid: boolean
 
   public vaccine: Vaccine
@@ -45,7 +45,7 @@ export class Individual {
       inc: this.income,
       tm: this.transportationMean === 'private' ? 0 : 1,
       ot: this.occupationTypes.map((o) => (o ? 1 : 0)),
-      oc: this.occupations.map((o) => (o ? o.id : null)),
+      oc: this.occupations.map((o) => (o ? o.serialize!!() : null)),
       st: this.state,
       hdc: this.hadCovid ? 1 : 0,
       v: this.vaccine.type !== 'none' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
@@ -58,11 +58,21 @@ export class Individual {
   public static deserialize(serialized: string): Individual {
     const deserializedIndividual = JSON.parse(serialized)
 
+    const educationStatusReverseMap = {
+      ps: 'preschool',
+      ms: 'middle_school',
+      hs: 'high_school',
+      ug: 'undergraduate',
+      gr: 'graduate',
+      us: 'unschooled',
+      ed: 'educated'
+    }
+
     const individual = new Individual()
     individual.id = deserializedIndividual.i
     individual.sex = deserializedIndividual.s === 0 ? 'male' : 'female'
     individual.age = deserializedIndividual.a
-    individual.educationStatus = deserializedIndividual.es
+    individual.educationStatus = educationStatusReverseMap[deserializedIndividual.es]
     individual.currentActivity = deserializedIndividual.ca
       ? IndividualActivity.deserialize(deserializedIndividual.ca)
       : undefined
@@ -79,6 +89,7 @@ export class Individual {
       o ? Occupation.deserialize(o) : null
     )
     individual.state = deserializedIndividual.st
+    individual.hadCovid = deserializedIndividual.hdc === 1
     individual.vaccine = deserializedIndividual.v
       ? { type: deserializedIndividual.v.t, doses: deserializedIndividual.v.d }
       : { type: 'none', doses: 0 }
