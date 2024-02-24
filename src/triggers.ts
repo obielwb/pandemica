@@ -31,7 +31,7 @@ function selectRandomPercentage<T>(arr: T[], percentage: number) {
 
 export function implementLockdown(totalPopulation: Individual[]) {
   for (const individual of totalPopulation) {
-    if (individual.occupationType?.includes('study')) {
+    if (individual.occupationTypes.includes('study')) {
       for (let i = 0; i < individual.routine.length; i++) {
         for (let j = 0; j < individual.routine[i].length; j++) {
           if (individual.routine[i][j].category === 'study') {
@@ -54,7 +54,7 @@ export function implementLockdown(totalPopulation: Individual[]) {
       }
     }
 
-    if (individual.occupationType?.includes('work')) {
+    if (individual.occupationTypes.includes('work')) {
     }
   }
 }
