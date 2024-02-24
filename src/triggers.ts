@@ -68,4 +68,4 @@ export function takeVaccines(
   const targetPopulation = selectRandomPercentage(totalPopulation, percentage)
 }
 
-export function implementMask(type: Mask) { }
+export function implementMask(type: Mask) {}

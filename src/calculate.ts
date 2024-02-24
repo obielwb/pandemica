@@ -1,4 +1,4 @@
-import { Activity, IndividualActivity } from './activities'
+import { IndividualActivity } from './activities'
 import {
   AgeMultipler,
   DistanceMultiplier,

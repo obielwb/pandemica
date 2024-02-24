@@ -8,9 +8,7 @@ import { log } from './utilities'
 import { nanoid } from 'nanoid'
 
 // todo: these individuals are outdated
-const individuals: Individual[] = [
-
-]
+const individuals: Individual[] = []
 
 const currentActivity: IndividualActivity = {
   id: 0,
@@ -43,7 +41,7 @@ export function run(
 
   const population = getPopulation({
     cache: true,
-    saveToDisk: true,
+    saveToDisk: true
   })
   const clock = new Clock(startDate, individuals, quickSort)
 

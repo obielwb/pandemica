@@ -117,7 +117,7 @@ export class Occupation {
     public label: string,
     public intervalSize: [number, number],
     public actualSize: number
-  ) { }
+  ) {}
 
   public serialize?(): string {
     const serializedOccupation = {
@@ -159,13 +159,12 @@ export class House {
     public region: string,
     public size: number,
     public housemates: number[]
-  ) { }
+  ) {}
 
   public serialize?(): string {
     const regionMap = (region: string) => {
       let serializedRegion = region[0]
-      if (region.endsWith('west'))
-        serializedRegion += 'w'
+      if (region.endsWith('west')) serializedRegion += 'w'
       return serializedRegion
     }
 

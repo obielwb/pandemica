@@ -105,7 +105,10 @@ async function readPopulationFromDisk(isCompressed: boolean) {
 async function readPopulationFragmentFromFile(filePath: string, isCompressed: boolean) {
   const fragmentNumber = filePath.split('-')[1].split('.')[0]
 
-  log(`Loading population fragment from file ${fragmentNumber}`, { time: true, timeLabel: 'POPULATION' })
+  log(`Loading population fragment from file ${fragmentNumber}`, {
+    time: true,
+    timeLabel: 'POPULATION'
+  })
 
   const populationFile = Bun.file(filePath)
   const serializedPopulation = await populationFile.text()
@@ -164,7 +167,7 @@ function savePopulationToDisk(population: Individual[], isCompressed: boolean) {
 
     const filePath = join(populationDir, `fragment-${i}.json${isCompressed ? '.gz' : ''}`)
 
-    const jsonString = `[${fragmentIndividuals.join(",")}]`
+    const jsonString = `[${fragmentIndividuals.join(',')}]`
 
     if (isCompressed) {
       const buffer = Buffer.from(jsonString)
@@ -187,32 +190,36 @@ function deserializePopulationFragment(
   serialized: string | Uint8Array,
   isCompressed: boolean
 ): Individual[] {
-  let decompressedData: Uint8Array;
+  let decompressedData: Uint8Array
 
   if (isCompressed) {
     try {
       // Assume serialized is always a Uint8Array for compressed data.
-      decompressedData = Bun.gunzipSync(serialized instanceof Uint8Array ? serialized : new Uint8Array(Buffer.from(serialized)));
+      decompressedData = Bun.gunzipSync(
+        serialized instanceof Uint8Array ? serialized : new Uint8Array(Buffer.from(serialized))
+      )
     } catch (error) {
-      log('Error during decompression', { error });
-      throw error;
+      log('Error during decompression', { error })
+      throw error
     }
   } else {
     // If not compressed, convert to Uint8Array if necessary.
-    decompressedData = serialized instanceof Uint8Array ? serialized : new Uint8Array(Buffer.from(serialized.toString()));
+    decompressedData =
+      serialized instanceof Uint8Array
+        ? serialized
+        : new Uint8Array(Buffer.from(serialized.toString()))
   }
 
   // Convert Uint8Array to string for JSON parsing.
   // Assuming UTF-8 encoding for the decompressed data.
-  const serializedIndividualsString = new TextDecoder().decode(decompressedData);
-  const serializedIndividuals = JSON.parse(serializedIndividualsString) as string[];
+  const serializedIndividualsString = new TextDecoder().decode(decompressedData)
+  const serializedIndividuals = JSON.parse(serializedIndividualsString) as string[]
   const individuals = serializedIndividuals.map((serializedIndividual) =>
     Individual.deserialize(serializedIndividual)
-  );
+  )
 
-  return individuals;
+  return individuals
 }
-
 
 function instantiatePopulation() {
   let individuals: Individual[] = []
