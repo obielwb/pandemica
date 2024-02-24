@@ -6,7 +6,8 @@ export function createRoutines(individuals: Individual[]) {
     return {
       ...individual,
       serialize: individual.serialize,
-      routine: generateWeeklyRoutine(individual)
+      // routine: generateWeeklyRoutine(individual)
+      routine: []
     }
   })
 
@@ -17,9 +18,11 @@ export function createRoutines(individuals: Individual[]) {
 // both study and work
 function generateWeeklyRoutine(individual: Individual): Activity[][] {
   const workRoutine = getIndividualWorkRoutine(individual)
-  const isWorkNightShift = isNightShift(individual.sex)
+  let isWorkNightShift = false
+  if (workRoutine === '12x36') {
+    isWorkNightShift = is12x36NightShift(individual.sex)
+  }
   const sleepActivity = selectSleepActivity()
-
   const weeklyRoutine: Activity[][] = []
 
   for (let i = 0; i < 7; i++) {
@@ -27,6 +30,7 @@ function generateWeeklyRoutine(individual: Individual): Activity[][] {
       generateDailyRoutine(i, individual, workRoutine, isWorkNightShift, sleepActivity)
     )
   }
+
   return weeklyRoutine
 }
 
@@ -45,7 +49,7 @@ function generateDailyRoutine(
   if (
     workRoutine === 'none' ||
     workRoutine === 'business_hours' ||
-    (workRoutine === '12x36' && !isNightShift)
+    (workRoutine === '12x36' && !isWorkNightShift)
   ) {
     dailyRoutine.push(sleepActivity)
   }
@@ -90,7 +94,7 @@ function generateDailyRoutine(
 type WorkRoutine = 'none' | 'business_hours' | '12x36'
 
 function getIndividualWorkRoutine(individual: Individual): WorkRoutine {
-  if (individual.occupationType?.includes('work')) {
+  if (individual.occupationTypes.includes('work')) {
     const work = individual.occupations.find((o) => o!.type === 'work')!
 
     if (work.label.includes('commerce_services')) {
@@ -104,7 +108,7 @@ function getIndividualWorkRoutine(individual: Individual): WorkRoutine {
 }
 
 // based on https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-022-13830-5
-function isNightShift(sex: 'male' | 'female') {
+function is12x36NightShift(sex: 'male' | 'female') {
   if (sex === 'male') {
     return Math.random() <= 0.224
   }
@@ -137,9 +141,6 @@ function selectActivityBasedOnAttributes(
 }
 
 // for test purposes
-// todo: assign income after assign occupations, makes way more
-// sense and avoids scenaries like the one bellow with [0, 0] salaries
-// income, but working - slavery?
 const individual: Individual = {
   id: 199582,
   sex: 'male',
@@ -155,13 +156,13 @@ const individual: Individual = {
   },
   income: [0, 0],
   transportationMean: 'public',
-  occupationType: undefined,
+  occupationTypes: ['work'],
   occupations: [
     {
       id: 119466,
       type: 'work',
       label: 'commerce_services.micro',
-      size: 4,
+      actualSize: 4,
       intervalSize: [1, 9]
     }
   ],
