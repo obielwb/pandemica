@@ -1,99 +1,38 @@
-import { createPopulation } from './population'
-import { Clock } from './clock'
-import { quickSort } from './clock/sorting'
-import { IndividualActivity } from './activities'
-import { calculate } from './calculate'
-import { Individual } from './individual'
-import { log } from './utilities'
+import { run } from "./runner";
 
-// const individuals = createPopulation()
-// const clock = new Clock(individuals, quickSort)
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const params = {
+    step: 30,
+    ignoreStep: false,
+    startDate: new Date('2020-01-01'),
+    endDate: new Date('2023-01-01')
+  };
 
-// console.log(clock.individuals.slice(5))
-// clock.sortIndividuals()
-// console.log(clock.individuals.slice(5))
+  args.forEach((arg) => {
+    const [key, value] = arg.split('=');
+    switch (key) {
+      case '--step':
+        params.step = parseInt(value, 10);
+        break;
+      case '--ignoreStep':
+        params.ignoreStep = value === 'true';
+        break;
+      case '--startDate':
+        params.startDate = new Date(value);
+        break;
+      case '--endDate':
+        params.endDate = new Date(value);
+        break;
+    }
+  });
 
-const individuals: Individual[] = [
-  {
-    id: '',
-    sex: 'male',
-    age: [60, 64],
-    hadCovid: false,
-    isDead: false,
-    hasCovid: false,
-    mask: 'n95Sealed',
-    studyLevel: '',
-    routine: [],
-    income: '',
-    vaccine: {
-      doses: 0,
-      type: 'none'
-    },
-    house: {
-      housemates: [],
-      id: '',
-      region: '',
-      size: 2
-    },
-
-    isHospitalized: false,
-    occupationType: [],
-    vehicle: ''
-  },
-  {
-    id: '',
-    sex: 'male',
-    age: [15, 19],
-    hadCovid: false,
-    isDead: false,
-    hasCovid: true,
-    mask: 'none',
-    studyLevel: '',
-    routine: [],
-    income: '',
-    vaccine: {
-      doses: 0,
-      type: 'none'
-    },
-    house: {
-      housemates: [],
-      id: '',
-      region: '',
-      size: 2
-    },
-
-    isHospitalized: false,
-    occupationType: [],
-    vehicle: ''
-  }
-]
-
-const currentActivity: IndividualActivity = {
-  category: 'transportation',
-  distance: 'normal',
-  duration: 10,
-  id: 'id',
-  individualsEngaged: [...individuals],
-  label: 'transportation.public.ride',
-  setting: 'indoor',
-  maximumIndvidualsEngaged: 40,
-  voice: 'loud'
+  return params;
 }
 
-const individualsWithCovid = currentActivity.individualsEngaged.filter(
-  (individual) => individual.hasCovid
-)
-const individualsWithoutCovid = currentActivity.individualsEngaged.filter(
-  (individual) => !individual.hasCovid
-)
+function main() {
+  const { step, ignoreStep, startDate, endDate } = parseArgs();
+  run(step, ignoreStep, startDate, endDate);
+}
 
-individualsWithoutCovid.forEach((individual) => {
-  const { acquiredCovid, deathProbability, hospitalizationProbability } = calculate(
-    currentActivity,
-    individualsWithCovid,
-    individual
-  )
-  log('Hospitalization Probability: ' + hospitalizationProbability)
-  log('Death Probability: ' + deathProbability)
-  if (acquiredCovid) individual.hasCovid = true
-})
+main();

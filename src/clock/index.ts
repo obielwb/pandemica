@@ -3,44 +3,33 @@ import { Individual } from '../individual'
 
 export class Clock {
   private currentMinute: number
-  private elapsedMinutes: number
+  private elapsedMinutes: number = 0
   private currentHour: number
-  private elapsedHours: number
+  private elapsedHours: number = 0
   private currentDay: number
-  private elapsedDays: number
+  private elapsedDays: number = 0
   private currentWeek: number
-  private elapsedWeeks: number
+  private elapsedWeeks: number = 0
   private currentMonth: number
-  private elapsedMonths: number
+  private elapsedMonths: number = 0
   private currentYear: number
-  private elapsedYears: number
+  private elapsedYears: number = 0
 
   constructor(
+    startDate: Date,
     public individuals: Individual[],
     private sortFunction: (activities: Activity[]) => Activity[],
-    startYear: number = 0,
-    startMonth: number = 0,
-    startDay: number = 0,
-    startHour: number = 0,
-    startMinute: number = 0
   ) {
-    this.currentMinute = startMinute
-    this.elapsedMinutes = 0
-    this.currentHour = startHour
-    this.elapsedHours = 0
-    this.currentDay = startDay
-    this.elapsedDays = 0
-    this.currentWeek = Math.round((startMonth * 30) / 7)
-    this.elapsedWeeks = 0
-    this.currentMonth = startMonth
-    this.elapsedMonths = 0
-    this.currentYear = startYear
-    this.elapsedYears = 0
+    this.currentYear = startDate.getFullYear()
+    this.currentMonth = startDate.getMonth()
+    this.currentDay = startDate.getDate()
+    this.currentHour = startDate.getHours()
+    this.currentMinute = startDate.getMinutes()
   }
 
-  public sortIndividuals() {}
+  public sortIndividuals() { }
 
-  public toDate() {
+  public currentDate() {
     return new Date(
       this.currentYear,
       this.currentMonth,
@@ -54,13 +43,13 @@ export class Clock {
     this.currentMinute += minutes
     this.elapsedMinutes += minutes
 
-    while (this.currentMinute === 60) {
+    while (this.currentMinute >= 60) {
       this.currentMinute -= 60
       this.currentHour += 1
       this.elapsedHours += 1
     }
 
-    while (this.currentHour === 24) {
+    while (this.currentHour >= 24) {
       this.currentHour -= 24
       this.currentDay += 1
       this.elapsedDays += 1
@@ -70,7 +59,7 @@ export class Clock {
   }
 
   private updateWeeks() {
-    if (this.currentDay === 6) {
+    if (this.currentDay >= 6) {
       this.currentDay -= 6
       this.currentWeek += 1
       this.elapsedWeeks += 1
