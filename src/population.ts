@@ -23,7 +23,6 @@ import {
   highSchools
 } from '../data/census'
 import {
-  normalize,
   assignSex,
   normalizeAge,
   normalizeResidentsPerHouse,
@@ -37,22 +36,31 @@ import {
   normalizeIncomes
 } from './parameter'
 import { Individual } from './individual'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { fisherYatesShuffle, log } from './utilities'
+import { log } from './utilities'
 import { createRoutines } from './routines'
 
-// todo: add automatic gzip compression to serialization in order to
-// be able to upload a gzip file to github and maintain
-// a single population for test purposes
-// todo: improve parameter options implementation and document it using jsdoc
-export function getPopulation(options = { cache: false, saveToDisk: false }): Individual[] {
+type GetPopulationParameters = { cache: boolean; saveToDisk: boolean }
+
+// todo: improve jsdoc usage
+/**
+ * @param cache {boolean} Defaults to false
+ * @param saveToDisk {boolean} Defaults to false
+ */
+export async function getPopulation(
+  options: GetPopulationParameters = { cache: false, saveToDisk: false }
+): Promise<Individual[]> {
   const { cache, saveToDisk } = options
 
-  if (cache) {
-    const population = readPopulationFromDisk()!
+  // warn: defaults to false for now as decompressing the compressed serialized
+  // data is being a pain in the ass. using plain decompressed json files
+  // is fine for now.
+  const compress = false
 
-    if (population) {
+  if (cache) {
+    const population = await readPopulationFromDisk(compress!)
+
+    if (population.length > 0) {
       return population
     }
   }
@@ -62,7 +70,7 @@ export function getPopulation(options = { cache: false, saveToDisk: false }): In
   const population = instantiatePopulation()
 
   if (saveToDisk) {
-    savePopulationToDisk(population)
+    savePopulationToDisk(population, compress!)
   }
 
   log('', { timeEnd: true, timeLabel: 'POPULATION' })
@@ -70,49 +78,141 @@ export function getPopulation(options = { cache: false, saveToDisk: false }): In
   return population
 }
 
-export function readPopulationFromDisk() {
-  const filePath = join(__dirname, '..', 'data', 'simulation', 'population.json')
-  if (existsSync(filePath)) {
-    log('Loading population from disk', { time: true, timeLabel: 'POPULATION' })
+async function readPopulationFromDisk(isCompressed: boolean) {
+  log('Deserializing population')
+  const populationDir = join(__dirname, '..', 'data', 'simulation', 'population')
 
-    const serialized = readFileSync(filePath)
+  const population: Individual[] = []
+  const glob = new Bun.Glob('*')
+  for (const file of glob.scanSync(populationDir)) {
+    if (file.endsWith('.json' + (isCompressed ? '.gz' : ''))) {
+      const individuals = await readPopulationFragmentFromFile(
+        join(populationDir, file),
+        isCompressed
+      )
 
-    const population = deserializePopulation(serialized)
+      individuals.forEach((individual) => {
+        population.push(individual)
+      })
+    }
+  }
 
-    log('', { timeEnd: true, timeLabel: 'POPULATION' })
+  population.sort((a, b) => a.id - b.id)
 
-    return population
+  return population
+}
+
+async function readPopulationFragmentFromFile(filePath: string, isCompressed: boolean) {
+  const fragmentNumber = filePath.split('-')[1].split('.')[0]
+
+  log(`Loading population fragment from file ${fragmentNumber}`, { time: true, timeLabel: 'POPULATION' })
+
+  const populationFile = Bun.file(filePath)
+  const serializedPopulation = await populationFile.text()
+  const population = deserializePopulationFragment(serializedPopulation, isCompressed)
+
+  log('', { timeEnd: true, timeLabel: 'POPULATION' })
+
+  return population
+}
+
+const FRAGMENT_FILE_SIZE = 42 * 1024 * 1024 // 42mb
+
+function savePopulationToDisk(population: Individual[], isCompressed: boolean) {
+  log('Serializing population')
+
+  let populationTotalSize = 0
+  if (isCompressed) {
+    const serializedPopulation = population.map((individual) => {
+      return individual.serialize!()
+    })
+
+    const jsonString = JSON.stringify(serializedPopulation)
+    const buffer = Buffer.from(jsonString)
+    const compressedPopulation = Bun.gzipSync(buffer)
+    populationTotalSize = Buffer.byteLength(compressedPopulation)
+  } else {
+    populationTotalSize = population.reduce((acc, individual) => {
+      const size = Buffer.byteLength(serializeIndividual(individual))
+
+      return acc + size
+    }, 0)
+  }
+
+  const fragments = Math.ceil(populationTotalSize / FRAGMENT_FILE_SIZE)
+  const fragmentIndividualCount = Math.ceil(population.length / fragments)
+
+  const populationDir = join(__dirname, '..', 'data', 'simulation', 'population')
+
+  for (let i = 0; i < fragments; i++) {
+    const fragmentIndividuals: Buffer[] = []
+    for (let j = 0; j < fragmentIndividualCount; j++) {
+      const individualIndex = i * fragmentIndividualCount + j
+
+      if (individualIndex >= population.length) {
+        break
+      }
+
+      const individual = population[individualIndex]
+      if (!individual) {
+        continue
+      }
+
+      const serializedIndividual = serializeIndividual(individual)
+      fragmentIndividuals.push(serializedIndividual)
+    }
+
+    const filePath = join(populationDir, `fragment-${i}.json${isCompressed ? '.gz' : ''}`)
+
+    const jsonString = `[${fragmentIndividuals.join(",")}]`
+
+    if (isCompressed) {
+      const buffer = Buffer.from(jsonString)
+      const compressedPopulation = Bun.gzipSync(buffer)
+      Bun.write(filePath, compressedPopulation)
+    } else {
+      Bun.write(filePath, jsonString)
+    }
   }
 }
 
-export function savePopulationToDisk(population: Individual[]) {
-  const filePath = join(__dirname, '..', 'data', 'simulation', 'population.json')
-  const serialized = serializePopulation(population)
-  writeFileSync(filePath, serialized)
+function serializeIndividual(individual: Individual) {
+  const serializedIndividual = individual.serialize!()
+  const jsonString = JSON.stringify(serializedIndividual)
+  const buffer = Buffer.from(jsonString)
+  return buffer
 }
 
-function serializePopulation(population: Individual[]) {
-  log('Serializing population')
+function deserializePopulationFragment(
+  serialized: string | Uint8Array,
+  isCompressed: boolean
+): Individual[] {
+  let decompressedData: Uint8Array;
 
-  population.sort((a, b) => a.id - b.id)
-  const serializedPopulation = population.map((individual) => individual.serialize!())
+  if (isCompressed) {
+    try {
+      // Assume serialized is always a Uint8Array for compressed data.
+      decompressedData = Bun.gunzipSync(serialized instanceof Uint8Array ? serialized : new Uint8Array(Buffer.from(serialized)));
+    } catch (error) {
+      log('Error during decompression', { error });
+      throw error;
+    }
+  } else {
+    // If not compressed, convert to Uint8Array if necessary.
+    decompressedData = serialized instanceof Uint8Array ? serialized : new Uint8Array(Buffer.from(serialized.toString()));
+  }
 
-  const jsonString = JSON.stringify(serializedPopulation)
-
-  return Buffer.from(jsonString)
-}
-
-function deserializePopulation(serialized: Buffer): Individual[] {
-  log('Deserializing population')
-
-  const jsonString = serialized.toString()
-
-  const serializedIndividuals = JSON.parse(jsonString) as string[]
-
-  return serializedIndividuals.map((serializedIndividual) =>
+  // Convert Uint8Array to string for JSON parsing.
+  // Assuming UTF-8 encoding for the decompressed data.
+  const serializedIndividualsString = new TextDecoder().decode(decompressedData);
+  const serializedIndividuals = JSON.parse(serializedIndividualsString) as string[];
+  const individuals = serializedIndividuals.map((serializedIndividual) =>
     Individual.deserialize(serializedIndividual)
-  )
+  );
+
+  return individuals;
 }
+
 
 function instantiatePopulation() {
   let individuals: Individual[] = []
@@ -182,5 +282,7 @@ function instantiatePopulation() {
 
   individuals = createRoutines(individuals)
 
-  return fisherYatesShuffle(individuals)
+  individuals.sort((a, b) => a.id - b.id)
+
+  return individuals
 }

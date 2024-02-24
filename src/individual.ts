@@ -46,7 +46,7 @@ export class Individual {
       tm: this.transportationMean === 'private' ? 0 : 1,
       ot: this.occupationTypes.map((o) => (o ? 1 : 0)),
       oc: this.occupations.map((o) => (o ? o.serialize!!() : null)),
-      st: this.state,
+      st: this.state[0],
       hdc: this.hadCovid ? 1 : 0,
       v: this.vaccine.type !== 'none' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
       m: this.mask !== 'none' ? this.mask : null
@@ -57,6 +57,15 @@ export class Individual {
 
   public static deserialize(serialized: string): Individual {
     const deserializedIndividual = JSON.parse(serialized)
+
+    const stateReverseMap = {
+      s: 'susceptible',
+      e: 'exposed',
+      i: 'infectious',
+      r: 'recovered',
+      h: 'hospitalized',
+      d: 'dead'
+    }
 
     const educationStatusReverseMap = {
       ps: 'preschool',
@@ -88,7 +97,7 @@ export class Individual {
     individual.occupations = deserializedIndividual.oc.map((o) =>
       o ? Occupation.deserialize(o) : null
     )
-    individual.state = deserializedIndividual.st
+    individual.state = stateReverseMap[deserializedIndividual.st]
     individual.hadCovid = deserializedIndividual.hdc === 1
     individual.vaccine = deserializedIndividual.v
       ? { type: deserializedIndividual.v.t, doses: deserializedIndividual.v.d }
@@ -108,7 +117,7 @@ export class Occupation {
     public label: string,
     public intervalSize: [number, number],
     public actualSize: number
-  ) {}
+  ) { }
 
   public serialize?(): string {
     const serializedOccupation = {
@@ -150,26 +159,44 @@ export class House {
     public region: string,
     public size: number,
     public housemates: number[]
-  ) {}
+  ) { }
 
   public serialize?(): string {
+    const regionMap = (region: string) => {
+      let serializedRegion = region[0]
+      if (region.endsWith('west'))
+        serializedRegion += 'w'
+      return serializedRegion
+    }
+
     const serializedHouse = {
       i: this.id,
-      r: this.region,
+      r: regionMap(this.region),
       s: this.size,
       h: this.housemates
     }
+
     return JSON.stringify(serializedHouse)
   }
 
   public static deserialize(serialized: string): House {
     const deserializedHouse = JSON.parse(serialized)
+
+    const regionReverseMap = {
+      s: 'south',
+      sw: 'southwest',
+      e: 'east',
+      n: 'north',
+      nw: 'northwest'
+    }
+
     const house = new House(
       deserializedHouse.i,
-      deserializedHouse.r,
+      regionReverseMap[deserializedHouse.r],
       deserializedHouse.s,
       deserializedHouse.h
     )
+
     return house
   }
 }

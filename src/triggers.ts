@@ -1,4 +1,3 @@
-import { ages, fiveToNineYears, sixtyToSixtyfourYears, zeroToFourYears } from '../data/census'
 import {
   collegeStudyFromHome,
   highSchoolStudyFromHome,
@@ -69,4 +68,4 @@ export function takeVaccines(
   const targetPopulation = selectRandomPercentage(totalPopulation, percentage)
 }
 
-export function implementMask(type: Mask) {}
+export function implementMask(type: Mask) { }

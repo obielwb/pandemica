@@ -21,6 +21,7 @@ export function log(
     time: boolean
     timeEnd: boolean
     timeLabel: string
+    error: Error
   }>
 ) {
   if (options?.time && options?.timeEnd)
@@ -37,6 +38,8 @@ export function log(
     }
 
   if (options?.timeEnd) console.timeEnd(options.timeLabel && `[${options.timeLabel}]`)
+
+  if (options?.error) console.error(options.error)
 }
 
 export function shuffle<T>(array: T[]): T[] {
