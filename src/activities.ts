@@ -256,6 +256,16 @@ export const microIndustryWorkInPerson = new Activity(
   10
 )
 
+export const microIndustryWorkFromHome = new Activity(
+  'work',
+  'work.industry.micro.from_home',
+  'indoor',
+  8 * 60, // can vary to 12x36
+  'normal',
+  'normal',
+  11
+)
+
 export const smallIndustryWorkInPerson = new Activity(
   'work',
   'work.industry.small',
@@ -264,6 +274,16 @@ export const smallIndustryWorkInPerson = new Activity(
   'normal',
   'normal',
   60
+)
+
+export const smallIndustryWorkFromHome = new Activity(
+  'work',
+  'work.industry.small.from_home',
+  'indoor',
+  8 * 60, // can vary to 12x36
+  'normal',
+  'normal',
+  11
 )
 
 export const mediumIndustryWorkInPerson = new Activity(
@@ -276,6 +296,16 @@ export const mediumIndustryWorkInPerson = new Activity(
   300
 )
 
+export const mediumIndustryWorkFromHome = new Activity(
+  'work',
+  'work.industry.medium.from_home',
+  'indoor',
+  12 * 60,
+  'normal',
+  'normal',
+  11
+)
+
 export const largeIndustryWorkInPerson = new Activity(
   'work',
   'work.industry.large',
@@ -284,6 +314,16 @@ export const largeIndustryWorkInPerson = new Activity(
   'normal',
   'normal',
   500
+)
+
+export const largeIndustryWorkFromHome = new Activity(
+  'work',
+  'work.industry.large.from_home',
+  'indoor',
+  12 * 60,
+  'normal',
+  'normal',
+  11
 )
 
 export const microCommerceAndServicesWorkInPerson = new Activity(
@@ -296,6 +336,16 @@ export const microCommerceAndServicesWorkInPerson = new Activity(
   5
 )
 
+export const microCommerceAndServicesWorkFromHome = new Activity(
+  'work',
+  'work.commerce_services.micro.from_home',
+  'indoor',
+  8 * 60,
+  'normal',
+  'normal',
+  11
+)
+
 export const smallCommerceAndServicesWorkInPerson = new Activity(
   'work',
   'work.commerce_services.small',
@@ -304,6 +354,16 @@ export const smallCommerceAndServicesWorkInPerson = new Activity(
   'normal',
   'normal',
   30
+)
+
+export const smallCommerceAndServicesWorkFromHome = new Activity(
+  'work',
+  'work.commerce_services.small.from_home',
+  'indoor',
+  8 * 60,
+  'normal',
+  'normal',
+  11
 )
 
 export const mediumCommerceAndServicesWorkInPerson = new Activity(
@@ -316,14 +376,34 @@ export const mediumCommerceAndServicesWorkInPerson = new Activity(
   75
 )
 
+export const mediumCommerceAndServicesWorkFromHome = new Activity(
+  'work',
+  'work.commerce_services.medium.from_home',
+  'indoor',
+  8 * 60,
+  'normal',
+  'normal',
+  11
+)
+
 export const largeCommerceAndServicesWorkInPerson = new Activity(
   'work',
-  'work.commerce_services.medium',
+  'work.commerce_services.large',
   'indoor',
   8 * 60,
   'normal',
   'normal',
   200
+)
+
+export const largeCommerceAndServicesWorkFromHome = new Activity(
+  'work',
+  'work.commerce_services.large.from_home',
+  'indoor',
+  8 * 60,
+  'normal',
+  'normal',
+  11
 )
 
 export const preschoolStudy = new Activity(
@@ -338,12 +418,12 @@ export const preschoolStudy = new Activity(
 
 export const preschoolStudyFromHome = new Activity(
   'study',
-  'study.preschool_from_home',
+  'study.preschool.from_home',
   'indoor',
   5 * 60,
   'normal',
   'normal',
-  -1 // set to the number of residents in the house
+  11 // max residents per house
 )
 
 export const middleSchoolStudy = new Activity(
@@ -358,12 +438,12 @@ export const middleSchoolStudy = new Activity(
 
 export const middleSchoolStudyFromHome = new Activity(
   'study',
-  'study.middle_school_from_home',
+  'study.middle_school.from_home',
   'indoor',
   6 * 60,
   'normal',
   'normal',
-  -1 // set to the number of residents in the house
+  11 // max residents per house
 )
 
 export const highSchoolStudy = new Activity(
@@ -378,12 +458,12 @@ export const highSchoolStudy = new Activity(
 
 export const highSchoolStudyFromHome = new Activity(
   'study',
-  'study.high_school_from_home',
+  'study.high_school.from_home',
   'indoor',
   7 * 60,
   'normal',
   'normal',
-  -1 // set to the number of residents in the house
+  11 // max residents per house
 )
 
 export const collegeStudy = new Activity(
@@ -398,12 +478,12 @@ export const collegeStudy = new Activity(
 
 export const collegeStudyFromHome = new Activity(
   'study',
-  'study.high_school_from_home',
+  'study.high_school.from_home',
   'indoor',
   8 * 60,
   'normal',
   'normal',
-  -1 // set to the number of residents in the house
+  11 // max residents per house
 )
 
 export const nineHoursSleep = new Activity(
@@ -482,10 +562,20 @@ export const activities: { [activity: string]: Activity } = {
   mediumIndustryWorkInPerson,
   largeIndustryWorkInPerson,
 
+  microIndustryWorkFromHome,
+  smallIndustryWorkFromHome,
+  mediumIndustryWorkFromHome,
+  largeIndustryWorkFromHome,
+
   microCommerceAndServicesWorkInPerson,
   smallCommerceAndServicesWorkInPerson,
   mediumCommerceAndServicesWorkInPerson,
   largeCommerceAndServicesWorkInPerson,
+
+  microCommerceAndServicesWorkFromHome,
+  smallCommerceAndServicesWorkFromHome,
+  mediumCommerceAndServicesWorkFromHome,
+  largeCommerceAndServicesWorkFromHome,
 
   preschoolStudy,
   middleSchoolStudy,
