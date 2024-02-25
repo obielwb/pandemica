@@ -6,8 +6,7 @@ import { log, shuffle } from '../utilities'
 import { VaccineType } from '../individual'
 
 /*
-  Note: this code is used for validation purpose only. To implement vaccination in a new pandemic
-  see triggers.ts
+  Note: this code is used for validation purpose only.
 */
 
 type VaccineRegister = {
@@ -79,7 +78,7 @@ export async function readVaccineData() {
   }
 }
 
-export async function implementVaccines(
+export async function assignVaccines(
   day: number,
   month: number,
   year: number,

@@ -45,3 +45,11 @@ export function log(
 export function shuffle<T>(array: T[]): T[] {
   return array.slice().sort(() => Math.random() - 0.5)
 }
+
+export function selectRandomPercentage<T>(arr: T[], percentage: number): T[] {
+  const quantity = Math.round(percentage * arr.length)
+  const shuffled = shuffle(arr)
+  const selected = shuffled.slice(0, quantity)
+
+  return selected
+}
