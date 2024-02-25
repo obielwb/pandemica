@@ -15,73 +15,81 @@ import {
 import { Individual } from '../individual'
 import { shuffle } from '../utilities'
 
-const LOCKDOWN_INIT_DATE = '01-03-2020'
-const INDIVIDUALS_WITHOUT_OCCUPATION_RECUPERATION_DATE = ''
+export class Lockdown {
+  private startDate: Date
 
-const LOCKDOWN_SCHOOL_INIT_PERCENTAGE = 1.0 // x% of all individuals who will be selected to study at home
-const LOCKDOWN_SCHOOL_RECUPERATION_RATE = 0.2 // x% of 100% studying from home individuals
-const schoolRecuperationsDates = [
-  '01-03-2021',
-  '01-04-2021',
-  '01-05-2021',
-  '01-06-2021',
-  '01-07-2021'
-]
+  private lockdownSchoolPercentage: number
+  private schoolRecuperationRate: number
+  private schoolRecuperationDates: { [key: string]: number }[]
 
-const LOCKDOWN_WORK_INIT_PERCENTAGE = 0.5 // x% of all individuals who will be selected to work at home
-const LOCKDOWN_WORK_RECUPERATION_RATE = 0.2 // x% of 100% working from home individuals
-const workRecuperationsDates = [
-  '01-03-2021',
-  '01-04-2021',
-  '01-05-2021',
-  '01-06-2021',
-  '01-07-2021'
-]
+  private lockdownWorkPercentage: number
+  private workRecuperationRate: number
+  private workRecuperationDates: { [key: string]: number }[]
 
-export function assignLockdown(day: string, month: number, year: number, population: Individual[]) {
-  const date = `${day}-${month}-${year}`
+  constructor(
+    public individuals: Individual[],
+    startDate: string,
+    lockdownSchoolPercentage: number,
+    schoolRecuperationRate: number,
+    schoolRecuperationDates: { [key: string]: number }[],
+    lockdownWorkPercentage: number,
+    workRecuperationRate: number,
+    workRecuperationDates: { [key: string]: number }[]
+  ) {
+    this.lockdownSchoolPercentage = lockdownSchoolPercentage
+    this.schoolRecuperationRate = schoolRecuperationRate
+    this.schoolRecuperationDates = schoolRecuperationDates
 
-  if (LOCKDOWN_INIT_DATE === date) start(population)
-
-  if (schoolRecuperationsDates.includes(date)) schoolRecuperation(population)
-  if (workRecuperationsDates.includes(date)) workRecuperation(population)
-
-  if (INDIVIDUALS_WITHOUT_OCCUPATION_RECUPERATION_DATE === date)
-    individualsWithoutOcuppationRecuperation(population)
-}
-
-function start(population: Individual[]) {
-  const shuffledPopulation = shuffle(population)
-
-  const workers = shuffledPopulation.filter((individual) =>
-    individual.occupationTypes.includes('work')
-  )
-  const students = shuffledPopulation.filter((individual) =>
-    individual.occupationTypes.includes('study')
-  )
-  const withouthOccupationIndividuals = shuffledPopulation.filter(
-    (individual) =>
-      individual.occupationTypes.includes('study') === false &&
-      individual.occupationTypes.includes('work') === false
-  )
-
-  const lockdownWorkers = workers.slice(
-    0,
-    Math.ceil(workers.length * LOCKDOWN_WORK_INIT_PERCENTAGE)
-  )
-  for (const individual of lockdownWorkers) {
-    implementWorkFromHome(individual)
+    this.lockdownWorkPercentage = lockdownWorkPercentage
+    this.workRecuperationRate = workRecuperationRate
+    this.workRecuperationDates = workRecuperationDates
   }
 
-  const lockdownStudents = students.slice(
-    0,
-    Math.ceil(students.length * LOCKDOWN_SCHOOL_INIT_PERCENTAGE)
-  )
-  for (const individual of lockdownStudents) {
-    implementSchoolFromHome(individual)
-  }
+  // public assign(currentDate: Date) {
+  //   if (this.startDate === currentDate) this.startLockdown()
 
-  //todo: decrease outside activities, like shopping and leisure
+  //   const stringDate = `${currentDate.getDay}-${currentDate.getMonth}-${currentDate.getFullYear}`
+
+  //   if (this.schoolRecuperationDates.some((obj) => obj)) schoolRecuperation(population)
+  //   if (workRecuperationsDates.includes(date)) workRecuperation(population)
+
+  //   if (INDIVIDUALS_WITHOUT_OCCUPATION_RECUPERATION_DATE === date)
+  //     individualsWithoutOcuppationRecuperation(population)
+  // }
+
+  private startLockdown() {
+    const shuffledPopulation = shuffle(this.individuals)
+
+    const workers = shuffledPopulation.filter((individual) =>
+      individual.occupationTypes.includes('work')
+    )
+    const students = shuffledPopulation.filter((individual) =>
+      individual.occupationTypes.includes('study')
+    )
+    const withouthOccupationIndividuals = shuffledPopulation.filter(
+      (individual) =>
+        individual.occupationTypes.includes('study') === false &&
+        individual.occupationTypes.includes('work') === false
+    )
+
+    const lockdownWorkers = workers.slice(
+      0,
+      Math.ceil(workers.length * this.lockdownWorkPercentage)
+    )
+    for (const individual of lockdownWorkers) {
+      implementWorkFromHome(individual)
+    }
+
+    const lockdownStudents = students.slice(
+      0,
+      Math.ceil(students.length * this.lockdownSchoolPercentage)
+    )
+    for (const individual of lockdownStudents) {
+      implementSchoolFromHome(individual)
+    }
+
+    //todo: decrease outside activities, like shopping and leisure
+  }
 }
 
 function implementSchoolFromHome(individual: Individual) {

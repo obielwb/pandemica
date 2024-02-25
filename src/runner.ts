@@ -6,6 +6,8 @@ import { calculate } from './calculate'
 import { Individual } from './individual'
 import { log } from './utilities'
 import { nanoid } from 'nanoid'
+import { readVaccineData } from './triggers/vaccines'
+import { Lockdown } from './triggers/lockdown'
 
 // todo: these individuals are outdated
 const individuals: Individual[] = []
@@ -31,7 +33,7 @@ const currentActivity: IndividualActivity = {
  * @param startDate {Date} Simulation start date, defaults to 2020-01-01
  * @param endDate {Date} Simulation end date, defaults to 2023-01-01
  */
-export function run(
+export async function run(
   step: number = 30,
   ignoreStep: boolean = false,
   startDate: Date = new Date('2020-01-01'),
@@ -43,7 +45,21 @@ export function run(
     cache: true,
     saveToDisk: true
   })
+
   const clock = new Clock(startDate, individuals, quickSort)
+
+  const vaccineRegisters = await readVaccineData()
+  const lockdown = new Lockdown(
+    individuals,
+    '00-00-0000',
+    1,
+    0.2,
+    [{ '00-00-0000': -1 }],
+    0.5,
+    0.2,
+    [{ '00-00-0000': -1 }]
+  )
+  // lockdown.assign(clock.currentDate())
 
   // while (clock.currentDate() <= endDate) {
   //   const individualsWithCovid = currentActivity.individualsEngaged.map(
