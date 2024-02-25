@@ -8,8 +8,8 @@ import { Individual } from '../individual'
 
 const LOCKDOWN_INIT_DATE = '01-03-2020'
 
-const LOCKDOWN_SCHOOL_INIT_PERCENTAGE = 100 // x% of all individuals who are going to study from home
-const LOCKDOWN_SCHOOL_RECUPERATION_RATE = 20 // x% of 100% studying from home individuals
+const LOCKDOWN_SCHOOL_INIT_PERCENTAGE = 1.0 // x% of all individuals who will be selected to study at home
+const LOCKDOWN_SCHOOL_RECUPERATION_RATE = 0.2 // x% of 100% studying from home individuals
 const schoolRecuperationsDates = [
   '01-03-2021',
   '01-04-2021',
@@ -18,8 +18,8 @@ const schoolRecuperationsDates = [
   '01-07-2021'
 ]
 
-const LOCKDOWN_WORK_INIT_PERCENTAGE = 50 // x% of all individuals who will be selected to work at home
-const LOCKDOWN_WORK_RECUPERATION_RATE = 20 // x% of 100% working from home individuals
+const LOCKDOWN_WORK_INIT_PERCENTAGE = 0.5 // x% of all individuals who will be selected to work at home
+const LOCKDOWN_WORK_RECUPERATION_RATE = 0.2 // x% of 100% working from home individuals
 const workRecuperationsDates = [
   '01-03-2021',
   '01-04-2021',
@@ -41,11 +41,11 @@ function start(population: Individual[]) {
   for (const individual of population) {
     if (individual.occupationTypes.includes('study')) implementSchoolFromHome(individual)
 
-    if (individual.occupationTypes.includes('work')) implementSchoolFromHome(individual)
+    if (individual.occupationTypes.includes('work')) implementWorkFromHome(individual)
   }
 }
 
-function implementWorkFromHome(individual: Individual) {
+function implementSchoolFromHome(individual: Individual) {
   for (let i = 0; i < individual.routine.length; i++) {
     for (let j = 0; j < individual.routine[i].length; j++) {
       if (individual.routine[i][j].category === 'study') {
@@ -68,7 +68,7 @@ function implementWorkFromHome(individual: Individual) {
   }
 }
 
-function implementSchoolFromHome(individual: Individual) {}
+function implementWorkFromHome(individual: Individual) {}
 
 function schoolRecuperation(population: Individual[]) {}
 

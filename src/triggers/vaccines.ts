@@ -82,9 +82,9 @@ export async function assignVaccines(
   day: number,
   month: number,
   year: number,
-  population: Individual[]
+  population: Individual[],
+  vaccineRegisters: VaccineRegister[]
 ) {
-  const vaccineRegisters = await readVaccineData()
   if (vaccineRegisters !== null) {
     const registersOfTheDay = vaccineRegisters.filter(
       (data) => data.date === `${year}-${month}-${day}`
