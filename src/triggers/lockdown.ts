@@ -33,11 +33,7 @@ export function assignLockdown(day: string, month: number, year: number, populat
 
   if (LOCKDOWN_INIT_DATE === date) start(population)
 
-  if (schoolRecuperationsDates.includes(date))
-    schoolRecuperation(
-      population,
-      schoolRecuperationsDates.indexOf(date) * LOCKDOWN_SCHOOL_RECUPERATION_RATE
-    )
+  if (schoolRecuperationsDates.includes(date)) schoolRecuperation(population)
   if (workRecuperationsDates.includes(date)) workRecuperation(population)
 }
 
@@ -74,6 +70,6 @@ function implementWorkFromHome(individual: Individual) {
 
 function implementSchoolFromHome(individual: Individual) {}
 
-function schoolRecuperation(population: Individual[], percentageRecuperate: number) {}
+function schoolRecuperation(population: Individual[]) {}
 
 function workRecuperation(population: Individual[]) {}
