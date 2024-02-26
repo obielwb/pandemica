@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { Inter, Newsreader, Space_Grotesk } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 
 import Providers from './providers'
 
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         )}
       >
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   )
