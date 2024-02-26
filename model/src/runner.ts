@@ -51,13 +51,11 @@ export async function run(
   const vaccineRegisters = await readVaccineData()
   const lockdown = new Lockdown(
     individuals,
-    '00-00-0000',
+    new Date('00-00-0000'),
     1,
-    0.2,
-    [{ '00-00-0000': -1 }],
+    ['00-00-0000', '00-00-0000'],
     0.5,
-    0.2,
-    [{ '00-00-0000': -1 }]
+    ['00-00-0000']
   )
   // lockdown.assign(clock.currentDate())
 
