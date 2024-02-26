@@ -7,6 +7,8 @@ import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { MovingBorderButton } from './moving-border-button'
+import { Spotlight } from './spotlight'
 
 const transition = {
   duration: 0,
@@ -25,11 +27,11 @@ export const GoogleGeminiEffect = ({
   className?: string
 }) => {
   return (
-    <div className={cn('md:top-70 sticky top-40', className)}>
-      <h1 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-center text-5xl font-bold tracking-tighter text-transparent xl:text-6xl/none">
+    <div className={cn('md:top-70 sticky top-40  ', className)}>
+      <h1 className="z-40 font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-center text-5xl font-bold tracking-tighter  xl:text-6xl/none">
         {title}
       </h1>
-      <p className="text-muted-foreground mx-auto mt-4 max-w-[600px] px-5 text-center text-sm sm:text-base md:text-lg">
+      <p className="z-40 text-muted-foreground mx-auto mt-4 max-w-[600px] px-5 text-center text-sm sm:text-base md:text-lg">
         {description}
       </p>
       <div className="absolute top-[-8.75rem] z-50 flex h-[890px] w-full items-center justify-center bg-transparent md:top-[-5.75rem]">

@@ -71,7 +71,12 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="relative h-[400vh] w-full overflow-clip rounded-md pt-40" ref={ref}>
+      <div
+        className="relative h-[400vh] w-full overflow-clip rounded-md pt-40 dark:bg-dot-white/[0.2] bg-dot-black/[0.2] bg-fixed "
+        ref={ref}
+      >
+        <div className="z-20 fixed h-screen  pointer-events-none inset-0 flex items-center justify-center dark:bg-background bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+
         <GoogleGeminiEffect
           title="Prever, Prevenir, Proteger."
           description="Diante de desafios globais inéditos, Pandemica surge como uma ferramenta
