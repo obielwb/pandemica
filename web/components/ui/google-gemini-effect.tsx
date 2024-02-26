@@ -39,7 +39,7 @@ export const GoogleGeminiEffect = ({
           </Button>
         </Link>
       </div>
-      <div className="absolute top-32 z-40 flex h-[890px] w-full items-center justify-center bg-transparent md:top-44">
+      <div className="top-24 absolute z-40 flex h-[890px] w-full items-center justify-center bg-transparent md:top-40">
         <p className="text-muted-foreground flex w-fit flex-row items-center gap-x-0.5 text-sm">
           Desça a página para mais detalhes.
         </p>

@@ -47,7 +47,7 @@ export default function Output({ configuration }: ModelOutputProps) {
       </TabsList>
       <TabsContent value="logs">
         <div className="bg-muted w-full rounded">
-          <Textarea value={'asdsad'} readOnly />
+          <Textarea value={'A ser feito.'} readOnly />
         </div>
       </TabsContent>
       <TabsContent value="city">Dados da cidade em questão.</TabsContent>
