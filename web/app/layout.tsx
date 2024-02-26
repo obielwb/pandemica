@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { Inter, Newsreader, Space_Grotesk } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
+import { Analytics } from '@vercel/analytics/react'
 
 import Providers from './providers'
 
