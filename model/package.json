@@ -1,5 +1,5 @@
 {
-  "name": "pandemica",
+  "name": "@pandemica/model",
   "private": "true",
   "license": "mit",
   "scripts": {

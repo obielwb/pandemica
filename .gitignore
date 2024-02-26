@@ -6,8 +6,7 @@
 .DS_Store
 
 node_modules
-.venv
 
-data/simulation/population.json
+.venv
 
 .vscode
