@@ -31,6 +31,15 @@ export default function Paper() {
             <div className="flex h-full w-full flex-col items-center justify-start gap-y-1 px-8 md:max-w-lg lg:max-w-2xl">
               <TracingBeam className="">
                 <article className="flex w-full flex-col items-center gap-y-4 pb-10 md:w-[40rem] lg:w-[50rem]">
+                  <div className="flex flex-col gap-y-2">
+                    <h2 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-2xl font-semibold tracking-tighter text-transparent sm:text-3xl xl:text-4xl/none">
+                      Simulação Virtual da Pandemia de COVID-19 em Campinas Utilizando Autômatos
+                      Celulares: Sistemas Multiagentes em Ambientes Espaço-Temporais
+                    </h2>
+                    <p className="text-muted-foreground text-sm tracking-tight md:text-base">
+                      Departamento de Processamento de Dados - Colégio Técnico de Campinas - Unicamp
+                    </p>
+                  </div>
                   {paper && <MarkdownContent html={paper.body.html} />}
                   <div className="flex w-full items-center justify-center">
                     <Link href="/references">
