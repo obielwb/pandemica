@@ -63,20 +63,19 @@ export default function Home() {
     offset: ['start start', 'end start']
   })
 
-  const pathLengthFirst = useTransform(scrollYProgress, [0, 0.8], [0.2, 1.2])
-  const pathLengthSecond = useTransform(scrollYProgress, [0, 0.8], [0.15, 1.2])
-  const pathLengthThird = useTransform(scrollYProgress, [0, 0.8], [0.1, 1.2])
-  const pathLengthFourth = useTransform(scrollYProgress, [0, 0.8], [0.05, 1.2])
-  const pathLengthFifth = useTransform(scrollYProgress, [0, 0.8], [0, 1.2])
+  const pathLengthFirst = useTransform(scrollYProgress, [0, 0.8], [0.2, 1.6])
+  const pathLengthSecond = useTransform(scrollYProgress, [0, 0.8], [0.15, 1.6])
+  const pathLengthThird = useTransform(scrollYProgress, [0, 0.8], [0.1, 1.6])
+  const pathLengthFourth = useTransform(scrollYProgress, [0, 0.8], [0.05, 1.6])
+  const pathLengthFifth = useTransform(scrollYProgress, [0, 0.8], [0, 1.6])
 
   return (
     <Layout>
       <div
-        className="relative h-[400vh] w-full overflow-clip rounded-md pt-40 dark:bg-dot-white/[0.2] bg-dot-black/[0.2] bg-fixed "
+        className="dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative h-[400vh] w-full overflow-clip rounded-md bg-fixed pt-40 "
         ref={ref}
       >
-        <div className="z-20 fixed h-screen  pointer-events-none inset-0 flex items-center justify-center dark:bg-background bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-
+        <div className="dark:bg-background pointer-events-none fixed  inset-0 z-20 flex h-screen items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
         <GoogleGeminiEffect
           title="Prever, Prevenir, Proteger."
           description="Diante de desafios globais inéditos, Pandemica surge como uma ferramenta
@@ -92,7 +91,7 @@ export default function Home() {
           ]}
         />
       </div>
-      <main>
+      <main className="z-40">
         <section className="w-full pb-12 pt-6 md:pb-24 md:pt-12 lg:pb-32 lg:pt-24 xl:pb-48 xl:pt-32">
           <div className="container px-4 md:px-6">
             <div className="grid items-center gap-6">
