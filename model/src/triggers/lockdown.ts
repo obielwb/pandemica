@@ -174,7 +174,9 @@ export class Lockdown {
   }
 
   private schoolRecuperation(recuperationNumber: number) {
-    const students = this.individuals.filter()
+    const students = this.individuals.filter(
+      (individual) => individual.isInLockdown && individual.occupationTypes.includes('study')
+    )
 
     const shuffledStudents = shuffle(students)
 
@@ -200,7 +202,9 @@ export class Lockdown {
   }
 
   private workRecuperation(recuperationNumber: number) {
-    const workers = this.individuals.filter()
+    const workers = this.individuals.filter(
+      (individual) => individual.isInLockdown && individual.occupationTypes.includes('work')
+    )
 
     const shuffledWorkers = shuffle(workers)
 

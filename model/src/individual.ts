@@ -23,6 +23,8 @@ export class Individual {
   public vaccine: Vaccine
   public mask: Mask
 
+  public isInLockdown: boolean
+
   public serialize?(): string {
     const educationStatusMap = {
       preschool: 'ps',
