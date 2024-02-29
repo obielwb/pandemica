@@ -25,10 +25,12 @@ export class MaskTrigger {
   }
 
   public assign(currentDate: Date) {
-    const matchMaskDate = this.maskDates.find((maskDate) => maskDate.date === currentDate)
+    const matchMasksRegisters = this.maskDates.filter((maskDate) => maskDate.date === currentDate)
 
-    if (matchMaskDate !== undefined) {
-      this.implementMaskDistribution(matchMaskDate)
+    if (matchMasksRegisters.length !== 0) {
+      for (const matchMaskRegister of matchMasksRegisters) {
+        this.implementMaskDistribution(matchMaskRegister)
+      }
     }
   }
 
