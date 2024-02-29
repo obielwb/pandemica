@@ -3,7 +3,7 @@ import * as path from 'path'
 import { parse } from 'csv-parse'
 import { Individual } from '../individual'
 import { log, shuffle } from '../utilities'
-import { VaccineType } from '../individual'
+import { VaccineType } from '../data'
 
 /*
   Note: this code is used for validation purpose only.
