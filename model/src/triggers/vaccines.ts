@@ -71,19 +71,22 @@ export async function readVaccineData() {
       })
 
     const result = await parseData()
-    return result
+    this.vaccineRegisters = result
   } catch (error) {
     log(error, { time: true, timeLabel: 'VACCINE IMPLEMENTATION ERROR' })
     return null
   }
 }
 
-export async function assignVaccines(
-  day: number,
-  month: number,
-  year: number,
-  population: Individual[],
-  vaccineRegisters: VaccineRegister[]
+export class VaccineTrigger {
+  private vaccineRegisters: VaccineRegister[]
+
+  constructor(
+    public population: Individual[]
+  ) {}
+
+public assign(
+  currentDate: Date
 ) {
   if (vaccineRegisters !== null) {
     const registersOfTheDay = vaccineRegisters.filter(
@@ -108,4 +111,5 @@ export async function assignVaccines(
       }
     }
   }
+}
 }

@@ -55,7 +55,7 @@ export class MaskTrigger {
           individual.occupations === maskImplementation.options.occupations)
     )
 
-    const numAffectedPeople = maskImplementation.populationPercentage * matchedIndividuals.length
+    const numAffectedPeople = Math.ceil(maskImplementation.populationPercentage * matchedIndividuals.length)
 
     matchedIndividuals.slice(0, numAffectedPeople).forEach((individual) => {
       individual.mask = maskImplementation.type

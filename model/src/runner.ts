@@ -49,7 +49,7 @@ export async function run(
   const clock = new Clock(startDate, individuals, quickSort)
 
   const vaccineRegisters = await readVaccineData()
-  const lockdown = new Lockdown(
+  const lockdown = new LockdownTrigger(
     individuals,
     new Date('00-00-0000'),
     1,
@@ -57,7 +57,14 @@ export async function run(
     0.5,
     ['00-00-0000']
   )
-  // lockdown.assign(clock.currentDate())
+
+  const vaccines = new VaccineTrigger()
+  const masks = new MaskTrigger()
+
+
+  lockdown.assign(clock.currentDate())
+  vaccines.assign(clock.currentDate())
+  masks.assign(clock.currentDate())
 
   // while (clock.currentDate() <= endDate) {
   //   const individualsWithCovid = currentActivity.individualsEngaged.map(
