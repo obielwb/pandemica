@@ -36,7 +36,8 @@ import {
   normalizeIncomes
 } from './parameter'
 import { Individual } from './individual'
-import { join } from 'node:path'
+import { join, extname } from 'node:path'
+import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { log } from './utilities'
 import { createRoutines } from './routines'
 
@@ -52,13 +53,8 @@ export async function getPopulation(
 ): Promise<Individual[]> {
   const { cache, saveToDisk } = options
 
-  // warn: defaults to false for now as decompressing the compressed serialized
-  // data is being a pain in the ass. using plain decompressed json files
-  // is fine for now.
-  const compress = false
-
   if (cache) {
-    const population = await readPopulationFromDisk(compress!)
+    const population = await readPopulationFromDisk()
 
     if (population.length > 0) {
       return population
@@ -70,7 +66,7 @@ export async function getPopulation(
   const population = instantiatePopulation()
 
   if (saveToDisk) {
-    savePopulationToDisk(population, compress!)
+    await savePopulationToDisk(population)
   }
 
   log('', { timeEnd: true, timeLabel: 'POPULATION' })
@@ -78,23 +74,24 @@ export async function getPopulation(
   return population
 }
 
-async function readPopulationFromDisk(isCompressed: boolean) {
+async function readPopulationFromDisk() {
   log('Deserializing population')
   const populationDir = join(__dirname, '..', 'data', 'simulation', 'population')
 
-  const population: Individual[] = []
-  const glob = new Bun.Glob('*')
-  for (const file of glob.scanSync(populationDir)) {
-    if (file.endsWith('.json' + (isCompressed ? '.gz' : ''))) {
-      const individuals = await readPopulationFragmentFromFile(
-        join(populationDir, file),
-        isCompressed
-      )
+  let population = []
 
-      individuals.forEach((individual) => {
-        population.push(individual)
-      })
+  try {
+    const files = await readdir(populationDir)
+    for (const file of files) {
+      if (extname(file) === '.json') {
+        const filePath = join(populationDir, file)
+        const individuals = await readPopulationFragmentFromFile(filePath)
+        population = population.concat(individuals)
+      }
     }
+  } catch (error) {
+    console.error('Error reading population from disk:', error)
+    throw error
   }
 
   population.sort((a, b) => a.id - b.id)
@@ -102,7 +99,7 @@ async function readPopulationFromDisk(isCompressed: boolean) {
   return population
 }
 
-async function readPopulationFragmentFromFile(filePath: string, isCompressed: boolean) {
+async function readPopulationFragmentFromFile(filePath: string): Promise<Individual[]> {
   const fragmentNumber = filePath.split('-')[1].split('.')[0]
 
   log(`Loading population fragment from file ${fragmentNumber}`, {
@@ -110,37 +107,30 @@ async function readPopulationFragmentFromFile(filePath: string, isCompressed: bo
     timeLabel: 'POPULATION'
   })
 
-  const populationFile = Bun.file(filePath)
-  const serializedPopulation = await populationFile.text()
-  const population = deserializePopulationFragment(serializedPopulation, isCompressed)
-
-  log('', { timeEnd: true, timeLabel: 'POPULATION' })
-
-  return population
+  try {
+    const serializedPopulation = await readFile(filePath, 'utf8')
+    const population = JSON.parse(serializedPopulation).map(Individual.deserialize)
+    log('', { timeEnd: true, timeLabel: 'POPULATION' })
+    return population
+  } catch (error) {
+    log('Error reading population fragment from file', {
+      error,
+      time: false,
+      timeLabel: 'POPULATION_ERROR'
+    })
+    throw error
+  }
 }
 
 const FRAGMENT_FILE_SIZE = 42 * 1024 * 1024 // 42mb
 
-function savePopulationToDisk(population: Individual[], isCompressed: boolean) {
+async function savePopulationToDisk(population: Individual[]) {
   log('Serializing population')
 
-  let populationTotalSize = 0
-  if (isCompressed) {
-    const serializedPopulation = population.map((individual) => {
-      return individual.serialize!()
-    })
-
-    const jsonString = JSON.stringify(serializedPopulation)
-    const buffer = Buffer.from(jsonString)
-    const compressedPopulation = Bun.gzipSync(buffer)
-    populationTotalSize = Buffer.byteLength(compressedPopulation)
-  } else {
-    populationTotalSize = population.reduce((acc, individual) => {
-      const size = Buffer.byteLength(serializeIndividual(individual))
-
-      return acc + size
-    }, 0)
-  }
+  const populationTotalSize = population.reduce((acc, individual) => {
+    const size = Buffer.byteLength(serializeIndividual(individual))
+    return acc + size
+  }, 0)
 
   const fragments = Math.ceil(populationTotalSize / FRAGMENT_FILE_SIZE)
   const fragmentIndividualCount = Math.ceil(population.length / fragments)
@@ -165,16 +155,15 @@ function savePopulationToDisk(population: Individual[], isCompressed: boolean) {
       fragmentIndividuals.push(serializedIndividual)
     }
 
-    const filePath = join(populationDir, `fragment-${i}.json${isCompressed ? '.gz' : ''}`)
+    const filePath = join(populationDir, `fragment-${i}.json`)
 
     const jsonString = `[${fragmentIndividuals.join(',')}]`
 
-    if (isCompressed) {
-      const buffer = Buffer.from(jsonString)
-      const compressedPopulation = Bun.gzipSync(buffer)
-      Bun.write(filePath, compressedPopulation)
-    } else {
-      Bun.write(filePath, jsonString)
+    try {
+      await writeFile(filePath, jsonString)
+      log(`Fragment ${i} saved to disk successfully`)
+    } catch (error) {
+      log(`Error saving fragment ${i} to disk`, { error })
     }
   }
 }
@@ -184,41 +173,6 @@ function serializeIndividual(individual: Individual) {
   const jsonString = JSON.stringify(serializedIndividual)
   const buffer = Buffer.from(jsonString)
   return buffer
-}
-
-function deserializePopulationFragment(
-  serialized: string | Uint8Array,
-  isCompressed: boolean
-): Individual[] {
-  let decompressedData: Uint8Array
-
-  if (isCompressed) {
-    try {
-      // Assume serialized is always a Uint8Array for compressed data.
-      decompressedData = Bun.gunzipSync(
-        serialized instanceof Uint8Array ? serialized : new Uint8Array(Buffer.from(serialized))
-      )
-    } catch (error) {
-      log('Error during decompression', { error })
-      throw error
-    }
-  } else {
-    // If not compressed, convert to Uint8Array if necessary.
-    decompressedData =
-      serialized instanceof Uint8Array
-        ? serialized
-        : new Uint8Array(Buffer.from(serialized.toString()))
-  }
-
-  // Convert Uint8Array to string for JSON parsing.
-  // Assuming UTF-8 encoding for the decompressed data.
-  const serializedIndividualsString = new TextDecoder().decode(decompressedData)
-  const serializedIndividuals = JSON.parse(serializedIndividualsString) as string[]
-  const individuals = serializedIndividuals.map((serializedIndividual) =>
-    Individual.deserialize(serializedIndividual)
-  )
-
-  return individuals
 }
 
 function instantiatePopulation() {

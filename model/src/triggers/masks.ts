@@ -18,11 +18,10 @@ export type MaskRegister = {
 
 // todo: assign another name for MaskRegister and maskDates
 export class MaskTrigger {
-  private maskDates: MaskRegister[]
-
-  constructor(public population: Individual[], maskDates: MaskRegister[]) {
-    this.maskDates = maskDates
-  }
+  constructor(
+    public population: Individual[],
+    private maskDates: MaskRegister[]
+  ) {}
 
   public assign(currentDate: string) {
     const matchMasksRegisters = this.maskDates.filter((maskDate) => maskDate.date === currentDate)

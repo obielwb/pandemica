@@ -42,7 +42,7 @@ export async function run(
 ) {
   const runId = nanoid() // for result file storage purposes
 
-  const population = getPopulation({
+  const population = await getPopulation({
     cache: true,
     saveToDisk: true
   })
@@ -64,6 +64,18 @@ export async function run(
   lockdown.assign(clock.currentDateString())
   vaccines.assign(clock.currentDateString())
   masks.assign(clock.currentDateString())
+
+  // wtf?
+  log(
+    population.find((individual) => {
+      return (
+        individual.occupationTypes.length === 1 &&
+        individual.occupationTypes[0] === 'study' &&
+        individual.occupations.length === 1 &&
+        individual.occupations[0].type === 'work'
+      )
+    })
+  )
 
   // while (clock.currentDate() <= endDate) {
   //   const individualsWithCovid = currentActivity.individualsEngaged.map(

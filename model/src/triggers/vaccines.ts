@@ -23,7 +23,7 @@ type VaccineRegister = {
 }
 
 export class VaccineTrigger {
-  private vaccineRegisters: VaccineRegister[]
+  private vaccineRegisters: VaccineRegister[] = []
 
   constructor(public population: Individual[]) {}
 

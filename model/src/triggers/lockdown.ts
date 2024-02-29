@@ -31,27 +31,23 @@ import { chunkIntoNParts, shuffle } from '../utilities'
 export class LockdownTrigger {
   private startDate: string
 
-  private lockdownSchoolPercentage: number
-  private schoolRecuperationDates: { date: string; quantity?: number }[]
+  private schoolRecuperationDates: { date: string; quantity?: number }[] = []
 
-  private lockdownWorkPercentage: number
-  private workRecuperationDates: { date: string; quantity?: number }[]
+  private workRecuperationDates: { date: string; quantity?: number }[] = []
 
   constructor(
     public individuals: Individual[],
     startDate: string,
-    lockdownSchoolPercentage: number,
+    private lockdownSchoolPercentage: number,
     schoolRecuperationDates: string[],
-    lockdownWorkPercentage: number,
+    private lockdownWorkPercentage: number,
     workRecuperationDates: string[]
   ) {
     this.startDate = startDate
 
-    this.lockdownSchoolPercentage = lockdownSchoolPercentage
     for (const recuperationDate of schoolRecuperationDates)
       this.schoolRecuperationDates.push({ date: recuperationDate })
 
-    this.lockdownWorkPercentage = lockdownWorkPercentage
     for (const recuperationDate of workRecuperationDates)
       this.workRecuperationDates.push({ date: recuperationDate })
   }
