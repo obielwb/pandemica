@@ -6,8 +6,9 @@ import { calculate } from './calculate'
 import { Individual } from './individual'
 import { log } from './utilities'
 import { nanoid } from 'nanoid'
-import { readVaccineData } from './triggers/vaccines'
-import { Lockdown } from './triggers/lockdown'
+import { VaccineTrigger } from './triggers/vaccines'
+import { LockdownTrigger } from './triggers/lockdown'
+import { MaskTrigger } from './triggers/masks'
 
 // todo: these individuals are outdated
 const individuals: Individual[] = []
@@ -48,23 +49,21 @@ export async function run(
 
   const clock = new Clock(startDate, individuals, quickSort)
 
-  const vaccineRegisters = await readVaccineData()
   const lockdown = new LockdownTrigger(
     individuals,
-    new Date('00-00-0000'),
+    '0000-00-00',
     1,
-    ['00-00-0000', '00-00-0000'],
+    ['0000-00-00', '0000-00-00'],
     0.5,
-    ['00-00-0000']
+    ['0000-00-00']
   )
 
-  const vaccines = new VaccineTrigger()
-  const masks = new MaskTrigger()
+  const vaccines = new VaccineTrigger(individuals)
+  const masks = new MaskTrigger(individuals, [])
 
-
-  lockdown.assign(clock.currentDate())
-  vaccines.assign(clock.currentDate())
-  masks.assign(clock.currentDate())
+  lockdown.assign(clock.currentDateString())
+  vaccines.assign(clock.currentDateString())
+  masks.assign(clock.currentDateString())
 
   // while (clock.currentDate() <= endDate) {
   //   const individualsWithCovid = currentActivity.individualsEngaged.map(

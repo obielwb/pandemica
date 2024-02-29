@@ -29,7 +29,7 @@ import { Individual } from '../individual'
 import { chunkIntoNParts, shuffle } from '../utilities'
 
 export class LockdownTrigger {
-  private startDate: Date
+  private startDate: string
 
   private lockdownSchoolPercentage: number
   private schoolRecuperationDates: { date: string; quantity?: number }[]
@@ -39,7 +39,7 @@ export class LockdownTrigger {
 
   constructor(
     public individuals: Individual[],
-    startDate: Date,
+    startDate: string,
     lockdownSchoolPercentage: number,
     schoolRecuperationDates: string[],
     lockdownWorkPercentage: number,
@@ -56,23 +56,23 @@ export class LockdownTrigger {
       this.workRecuperationDates.push({ date: recuperationDate })
   }
 
-  public assign(currentDate: Date) {
+  public assign(currentDate: string) {
     if (this.startDate === currentDate) this.startLockdown()
-
-    const stringDate = `${currentDate.getDay}-${currentDate.getMonth}-${currentDate.getFullYear}`
 
     if (this.startDate === currentDate) this.startLockdown()
 
     if (
-      this.schoolRecuperationDates.some((recuperationDate) => recuperationDate.date === stringDate)
+      this.schoolRecuperationDates.some((recuperationDate) => recuperationDate.date === currentDate)
     )
       this.schoolRecuperation(
-        this.schoolRecuperationDates.find((date) => date.date === stringDate).quantity
+        this.schoolRecuperationDates.find((date) => date.date === currentDate).quantity
       )
 
-    if (this.workRecuperationDates.some((recuperationDate) => recuperationDate.date === stringDate))
+    if (
+      this.workRecuperationDates.some((recuperationDate) => recuperationDate.date === currentDate)
+    )
       this.workRecuperation(
-        this.workRecuperationDates.find((date) => date.date === stringDate).quantity
+        this.workRecuperationDates.find((date) => date.date === currentDate).quantity
       )
   }
 

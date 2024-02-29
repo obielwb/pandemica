@@ -3,7 +3,7 @@ import { Individual, Occupation, OccupationType } from '../individual'
 import { shuffle } from '../utilities'
 
 export type MaskRegister = {
-  date: Date
+  date: string
   type: MaskType
   populationPercentage: number
   options?: Partial<{
@@ -24,7 +24,7 @@ export class MaskTrigger {
     this.maskDates = maskDates
   }
 
-  public assign(currentDate: Date) {
+  public assign(currentDate: string) {
     const matchMasksRegisters = this.maskDates.filter((maskDate) => maskDate.date === currentDate)
 
     if (matchMasksRegisters.length !== 0) {
@@ -55,7 +55,9 @@ export class MaskTrigger {
           individual.occupations === maskImplementation.options.occupations)
     )
 
-    const numAffectedPeople = Math.ceil(maskImplementation.populationPercentage * matchedIndividuals.length)
+    const numAffectedPeople = Math.ceil(
+      maskImplementation.populationPercentage * matchedIndividuals.length
+    )
 
     matchedIndividuals.slice(0, numAffectedPeople).forEach((individual) => {
       individual.mask = maskImplementation.type

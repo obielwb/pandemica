@@ -18,7 +18,7 @@ export class Clock {
   constructor(
     startDate: Date,
     public individuals: Individual[],
-    private sortFunction: (activities: Activity[]) => Activity[],
+    private sortFunction: (activities: Activity[]) => Activity[]
   ) {
     this.currentYear = startDate.getFullYear()
     this.currentMonth = startDate.getMonth()
@@ -27,7 +27,7 @@ export class Clock {
     this.currentMinute = startDate.getMinutes()
   }
 
-  public sortIndividuals() { }
+  public sortIndividuals() {}
 
   public currentDate() {
     return new Date(
@@ -37,6 +37,10 @@ export class Clock {
       this.currentHour,
       this.currentMinute
     )
+  }
+
+  public currentDateString() {
+    return `${this.currentYear}-${this.currentMonth}-${this.currentDay}`
   }
 
   public tick(minutes: number) {
