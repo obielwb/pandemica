@@ -6,7 +6,7 @@
     "start": "bun src/main.ts",
     "test": "bun test -t",
     "test:watch": "bun test --watch",
-    "test:benchmark": "npx ts-node --esm test/benchmark/main.ts"
+    "test:benchmark": "tsx test/benchmark/main.ts"
   },
   "dependencies": {
     "csv-parse": "^5.5.3",
@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.10.5",
-    "bun-types": "^1.0.28"
+    "bun-types": "^1.0.28",
+    "tsx": "^4.7.1"
   }
 }
