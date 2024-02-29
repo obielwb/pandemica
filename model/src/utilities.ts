@@ -1,20 +1,5 @@
 import moment from 'moment'
 
-export function fisherYatesShuffle<T>(array: T[]) {
-  let i = array.length,
-    j: number,
-    k: T
-
-  while (i) {
-    j = Math.floor(Math.random() * i--)
-    k = array[i]
-    array[i] = array[j]
-    array[j] = k
-  }
-
-  return array
-}
-
 export function log(
   message: string | string[] | number | number[] | object | object[],
   options?: Partial<{
@@ -46,6 +31,21 @@ export function shuffle<T>(array: T[]): T[] {
   return array.slice().sort(() => Math.random() - 0.5)
 }
 
+export function fisherYatesShuffle<T>(array: T[]) {
+  let i = array.length,
+    j: number,
+    k: T
+
+  while (i) {
+    j = Math.floor(Math.random() * i--)
+    k = array[i]
+    array[i] = array[j]
+    array[j] = k
+  }
+
+  return array
+}
+
 export function selectRandomPercentage<T>(arr: T[], percentage: number): T[] {
   const quantity = Math.round(percentage * arr.length)
   const shuffled = shuffle(arr)
@@ -64,7 +64,7 @@ export function chunkIntoNParts<T>(arr: T[], n: number): T[][] {
  a custom high-performance filter using low-level techniques
  */
 // todo: test if this filter function will actually makes a differency
-function fasterFilter<T>(array: T[], predicate: (value: T) => boolean): T[] {
+export function fasterFilter<T>(array: T[], predicate: (value: T) => boolean): T[] {
   const result: T[] = []
   for (let i = 0; i < array.length; i++) {
     if (predicate(array[i])) {

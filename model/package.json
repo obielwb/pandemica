@@ -5,12 +5,14 @@
   "scripts": {
     "start": "bun src/main.ts",
     "test": "bun test -t",
-    "test:watch": "bun test --watch"
+    "test:watch": "bun test --watch",
+    "test:benchmark": "npx ts-node --esm test/benchmark/main.ts"
   },
   "dependencies": {
     "csv-parse": "^5.5.3",
     "moment": "^2.29.4",
     "nanoid": "^5.0.6",
+    "ts-node": "^10.9.2",
     "typescript": "^5.2.2"
   },
   "devDependencies": {
