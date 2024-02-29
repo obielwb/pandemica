@@ -1,4 +1,5 @@
 import { Activity, IndividualActivity } from './activities'
+import { MaskType, Vaccine } from './data'
 
 // todo: routines should change
 // - social distancing stage
@@ -21,7 +22,7 @@ export class Individual {
   public hadCovid: boolean
 
   public vaccine: Vaccine
-  public mask: Mask
+  public mask: MaskType
 
   public isInLockdown: boolean
 
@@ -110,7 +111,7 @@ export class Individual {
   }
 }
 
-type OccupationType = 'study' | 'work'
+export type OccupationType = 'study' | 'work'
 
 export class Occupation {
   constructor(
@@ -144,16 +145,6 @@ export class Occupation {
     )
   }
 }
-
-export type Mask =
-  | 'none'
-  | 'thin'
-  | 'basic'
-  | 'surgical'
-  | 'filtered'
-  | 'n95'
-  | 'n95Sealed'
-  | 'p100'
 
 export class House {
   constructor(
@@ -200,11 +191,4 @@ export class House {
 
     return house
   }
-}
-
-export type VaccineType = 'pfizer' | 'moderna' | 'astra_zeneca' | 'johnson_johnson' | 'none'
-
-export type Vaccine = {
-  type: VaccineType
-  doses: number
 }

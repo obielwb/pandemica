@@ -15,6 +15,16 @@ export const DistanceMultiplier: { [key in ActivityDistance]: number } = {
   tenFt: 0.25
 }
 
+export type MaskType =
+  | 'none'
+  | 'thin'
+  | 'basic'
+  | 'surgical'
+  | 'filtered'
+  | 'n95'
+  | 'n95Sealed'
+  | 'p100'
+
 export const MaskMultiplier: { [key: string]: number } = {
   none: 1.0,
   thin: 1 / 2,
@@ -49,6 +59,13 @@ export const VaccinesRiskReduction: { [key: string]: VaccineValue } = {
   none: {
     multiplierPerDose: [0, 0, 0, 0]
   }
+}
+
+export type VaccineType = 'pfizer' | 'moderna' | 'astra_zeneca' | 'johnson_johnson' | 'none'
+
+export type Vaccine = {
+  type: VaccineType
+  doses: number
 }
 
 export interface AgeValue {

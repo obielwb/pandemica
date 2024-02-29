@@ -28,7 +28,7 @@ import {
 import { Individual } from '../individual'
 import { chunkIntoNParts, shuffle } from '../utilities'
 
-export class Lockdown {
+export class LockdownTrigger {
   private startDate: Date
 
   private lockdownSchoolPercentage: number
