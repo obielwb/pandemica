@@ -54,7 +54,17 @@ export async function getPopulation(
   const { cache, saveToDisk } = options
 
   if (cache) {
+    log('Trying to read existing population', {
+      time: true,
+      timeLabel: 'POPULATION'
+    })
+
     const population = await readPopulationFromDisk()
+
+    log('', {
+      timeEnd: true,
+      timeLabel: 'POPULATION'
+    })
 
     if (population.length > 0) {
       return population
@@ -75,7 +85,10 @@ export async function getPopulation(
 }
 
 async function readPopulationFromDisk() {
-  log('Deserializing population')
+  log('Deserializing population', {
+    time: true,
+    timeLabel: 'DESERIALIZATION'
+  })
   const populationDir = join(__dirname, '..', 'data', 'simulation', 'population')
 
   let population = []
@@ -89,12 +102,16 @@ async function readPopulationFromDisk() {
         population = population.concat(individuals)
       }
     }
+    population.sort((a, b) => a.id - b.id)
   } catch (error) {
-    console.error('Error reading population from disk:', error)
+    log('Error reading population from disk', { error })
     throw error
   }
 
-  population.sort((a, b) => a.id - b.id)
+  log('', {
+    timeEnd: true,
+    timeLabel: 'DESERIALIZATION'
+  })
 
   return population
 }
@@ -102,21 +119,21 @@ async function readPopulationFromDisk() {
 async function readPopulationFragmentFromFile(filePath: string): Promise<Individual[]> {
   const fragmentNumber = filePath.split('-')[1].split('.')[0]
 
-  log(`Loading population fragment from file ${fragmentNumber}`, {
+  log(`Loading population fragment ${fragmentNumber}`, {
     time: true,
-    timeLabel: 'POPULATION'
+    timeLabel: 'FRAGMENT'
   })
 
   try {
     const serializedPopulation = await readFile(filePath, 'utf8')
     const population = JSON.parse(serializedPopulation).map(Individual.deserialize)
-    log('', { timeEnd: true, timeLabel: 'POPULATION' })
+
+    log('', { timeEnd: true, timeLabel: 'FRAGMENT' })
+
     return population
   } catch (error) {
     log('Error reading population fragment from file', {
-      error,
-      time: false,
-      timeLabel: 'POPULATION_ERROR'
+      error
     })
     throw error
   }
@@ -125,7 +142,10 @@ async function readPopulationFragmentFromFile(filePath: string): Promise<Individ
 const FRAGMENT_FILE_SIZE = 42 * 1024 * 1024 // 42mb
 
 async function savePopulationToDisk(population: Individual[]) {
-  log('Serializing population')
+  log('Serializing population', {
+    time: true,
+    timeLabel: 'SERIALIZATION'
+  })
 
   const populationTotalSize = population.reduce((acc, individual) => {
     const size = Buffer.byteLength(serializeIndividual(individual))
@@ -138,6 +158,11 @@ async function savePopulationToDisk(population: Individual[]) {
   const populationDir = join(__dirname, '..', 'data', 'simulation', 'population')
 
   for (let i = 0; i < fragments; i++) {
+    log(`Saving fragment ${i} to disk`, {
+      time: true,
+      timeLabel: 'FRAGMENT'
+    })
+
     const fragmentIndividuals: Buffer[] = []
     for (let j = 0; j < fragmentIndividualCount; j++) {
       const individualIndex = i * fragmentIndividualCount + j
@@ -161,11 +186,20 @@ async function savePopulationToDisk(population: Individual[]) {
 
     try {
       await writeFile(filePath, jsonString)
-      log(`Fragment ${i} saved to disk successfully`)
+      log('', {
+        timeEnd: true,
+        timeLabel: 'FRAGMENT'
+      })
     } catch (error) {
       log(`Error saving fragment ${i} to disk`, { error })
+      throw error
     }
   }
+
+  log('', {
+    timeEnd: true,
+    timeLabel: 'SERIALIZATION'
+  })
 }
 
 function serializeIndividual(individual: Individual) {
