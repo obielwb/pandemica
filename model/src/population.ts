@@ -54,7 +54,17 @@ export async function getPopulation(
   const { cache, saveToDisk } = options
 
   if (cache) {
+    log('Trying to read existing population', {
+      time: true,
+      timeLabel: 'POPULATION'
+    })
+
     const population = await readPopulationFromDisk()
+
+    log('', {
+      timeEnd: true,
+      timeLabel: 'POPULATION'
+    })
 
     if (population.length > 0) {
       return population
@@ -111,21 +121,19 @@ async function readPopulationFragmentFromFile(filePath: string): Promise<Individ
 
   log(`Loading population fragment ${fragmentNumber}`, {
     time: true,
-    timeLabel: 'POPULATION'
+    timeLabel: 'FRAGMENT'
   })
 
   try {
     const serializedPopulation = await readFile(filePath, 'utf8')
     const population = JSON.parse(serializedPopulation).map(Individual.deserialize)
 
-    log('', { timeEnd: true, timeLabel: 'POPULATION' })
+    log('', { timeEnd: true, timeLabel: 'FRAGMENT' })
 
     return population
   } catch (error) {
     log('Error reading population fragment from file', {
-      error,
-      time: false,
-      timeLabel: 'POPULATION_ERROR'
+      error
     })
     throw error
   }
