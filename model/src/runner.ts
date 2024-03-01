@@ -65,18 +65,6 @@ export async function run(
   vaccines.assign(clock.currentDateString())
   masks.assign(clock.currentDateString())
 
-  // wtf?
-  log(
-    population.find((individual) => {
-      return (
-        individual.occupationTypes.length === 1 &&
-        individual.occupationTypes[0] === 'study' &&
-        individual.occupations.length === 1 &&
-        individual.occupations[0].type === 'work'
-      )
-    })
-  )
-
   // while (clock.currentDate() <= endDate) {
   //   const individualsWithCovid = currentActivity.individualsEngaged.map(
   //     (i) => {
