@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { parse } from 'csv-parse'
 import { Individual } from '../individual'
-import { log, shuffle } from '../utilities'
+import { fasterFilter, fisherYatesShuffle, log, shuffle } from '../utilities'
 import { VaccineType } from '../data'
 
 /*
@@ -29,10 +29,14 @@ export class VaccineTrigger {
 
   public assign(currentDate: string) {
     if (this.vaccineRegisters !== null) {
-      const registersOfTheDay = this.vaccineRegisters.filter((data) => data.date === currentDate)
+      const registersOfTheDay = fasterFilter(
+        this.vaccineRegisters,
+        (data) => data.date === currentDate
+      )
 
       for (const register of registersOfTheDay) {
-        const matchCharacteristics = this.population.filter(
+        const matchCharacteristics = fasterFilter(
+          this.population,
           (individual) =>
             register.age.includes(individual.age[0].toString()) &&
             individual.sex === register.sex &&
@@ -40,7 +44,7 @@ export class VaccineTrigger {
             (individual.vaccine.type === register.vaccine || individual.vaccine.type === 'none')
         )
 
-        const shuffledIndividuals = shuffle(matchCharacteristics)
+        const shuffledIndividuals = fisherYatesShuffle(matchCharacteristics)
         const selectedIndividuals = shuffledIndividuals.slice(0, register.count)
 
         for (const individual of selectedIndividuals) {

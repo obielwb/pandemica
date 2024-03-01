@@ -26,7 +26,7 @@ import {
   smallIndustryWorkInPerson
 } from '../activities'
 import { Individual } from '../individual'
-import { chunkIntoNParts, shuffle } from '../utilities'
+import { chunkIntoNParts, fasterFilter, fisherYatesShuffle } from '../utilities'
 
 export class LockdownTrigger {
   private startDate: string
@@ -73,15 +73,16 @@ export class LockdownTrigger {
   }
 
   private startLockdown() {
-    const shuffledPopulation = shuffle(this.individuals)
+    const shuffledPopulation = fisherYatesShuffle(this.individuals)
 
-    const workers = shuffledPopulation.filter((individual) =>
+    const workers = fasterFilter(shuffledPopulation, (individual) =>
       individual.occupationTypes.includes('work')
     )
-    const students = shuffledPopulation.filter((individual) =>
+    const students = fasterFilter(shuffledPopulation, (individual) =>
       individual.occupationTypes.includes('study')
     )
-    const withouthOccupationIndividuals = shuffledPopulation.filter(
+    const withouthOccupationIndividuals = fasterFilter(
+      shuffledPopulation,
       (individual) =>
         individual.occupationTypes.includes('study') === false &&
         individual.occupationTypes.includes('work') === false
@@ -170,11 +171,12 @@ export class LockdownTrigger {
   }
 
   private schoolRecuperation(recuperationNumber: number) {
-    const students = this.individuals.filter(
+    const students = fasterFilter(
+      this.individuals,
       (individual) => individual.isInLockdown && individual.occupationTypes.includes('study')
     )
 
-    const shuffledStudents = shuffle(students)
+    const shuffledStudents = fisherYatesShuffle(students)
 
     const labelToStudyRoutineMap = new Map<string, Activity>([
       ['study.preschool.from_home', preschoolStudy],
@@ -198,11 +200,12 @@ export class LockdownTrigger {
   }
 
   private workRecuperation(recuperationNumber: number) {
-    const workers = this.individuals.filter(
+    const workers = fasterFilter(
+      this.individuals,
       (individual) => individual.isInLockdown && individual.occupationTypes.includes('work')
     )
 
-    const shuffledWorkers = shuffle(workers)
+    const shuffledWorkers = fisherYatesShuffle(workers)
 
     const labelToWorkRoutineMap = new Map<string, Activity>([
       ['work.industry.micro.from_home', microIndustryWorkInPerson],

@@ -48,7 +48,7 @@ export function fisherYatesShuffle<T>(array: T[]) {
 
 export function selectRandomPercentage<T>(arr: T[], percentage: number): T[] {
   const quantity = Math.round(percentage * arr.length)
-  const shuffled = shuffle(arr)
+  const shuffled = fisherYatesShuffle(arr)
   const selected = shuffled.slice(0, quantity)
 
   return selected
@@ -63,7 +63,6 @@ export function chunkIntoNParts<T>(arr: T[], n: number): T[][] {
 @func util
  a custom high-performance filter using low-level techniques
  */
-// todo: test if this filter function will actually makes a differency
 export function fasterFilter<T>(array: T[], predicate: (value: T) => boolean): T[] {
   const result: T[] = []
   for (let i = 0; i < array.length; i++) {

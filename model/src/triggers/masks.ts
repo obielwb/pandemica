@@ -1,6 +1,6 @@
 import { MaskType } from '../data'
 import { Individual, Occupation, OccupationType } from '../individual'
-import { shuffle } from '../utilities'
+import { fasterFilter, fisherYatesShuffle, shuffle } from '../utilities'
 
 export type MaskRegister = {
   date: string
@@ -16,15 +16,14 @@ export type MaskRegister = {
   }>
 }
 
-// todo: assign another name for MaskRegister and maskDates
 export class MaskTrigger {
-  constructor(
-    public population: Individual[],
-    private maskDates: MaskRegister[]
-  ) {}
+  constructor(public population: Individual[], private maskDates: MaskRegister[]) {}
 
   public assign(currentDate: string) {
-    const matchMasksRegisters = this.maskDates.filter((maskDate) => maskDate.date === currentDate)
+    const matchMasksRegisters = fasterFilter(
+      this.maskDates,
+      (maskDate) => maskDate.date === currentDate
+    )
 
     if (matchMasksRegisters.length !== 0) {
       for (const matchMaskRegister of matchMasksRegisters) {
@@ -36,9 +35,10 @@ export class MaskTrigger {
   private implementMaskDistribution(maskImplementation: MaskRegister) {
     this.cleanCurrentMasks()
 
-    const shuffledPopulation = shuffle(this.population)
+    const shuffledPopulation = fisherYatesShuffle(this.population)
     // verify if individual is according option. If option is defined and not found in current individual, they dont go into matchedIndividuals
-    let matchedIndividuals = shuffledPopulation.filter(
+    let matchedIndividuals = fasterFilter(
+      shuffledPopulation,
       (individual) =>
         (maskImplementation.options.age === undefined ||
           individual.age === maskImplementation.options.age) &&
