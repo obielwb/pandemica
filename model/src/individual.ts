@@ -47,7 +47,7 @@ export class Individual {
       h: this.house.serialize!!(),
       inc: this.income,
       tm: this.transportationMean === 'private' ? 0 : 1,
-      ot: this.occupationTypes.map((o) => (o ? 1 : 0)),
+      ot: this.occupationTypes.map((o) => (o === 'study' ? 1 : 0)),
       oc: this.occupations.map((o) => (o ? o.serialize!!() : null)),
       st: this.state[0],
       hdc: this.hadCovid ? 1 : 0,
@@ -95,7 +95,7 @@ export class Individual {
     individual.income = deserializedIndividual.inc || []
     individual.transportationMean = deserializedIndividual.tm === 0 ? 'private' : 'public'
     individual.occupationTypes = deserializedIndividual.ot.map((o: number) =>
-      o ? 'study' : 'work'
+      o === 1 ? 'study' : 'work'
     )
     individual.occupations = deserializedIndividual.oc.map((o) =>
       o ? Occupation.deserialize(o) : null
