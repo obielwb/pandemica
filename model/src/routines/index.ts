@@ -10,7 +10,6 @@ export function assignRoutine(individuals: Individual[]) {
       ...individual,
       serialize: individual.serialize,
       routine: generateWeeklyRoutine(individual)
-      // routine: []
     }
   })
 
