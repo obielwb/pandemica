@@ -2,7 +2,7 @@ import {
   type Distance as ActivityDistance,
   type Setting as ActivitySetting,
   type Voice as ActivityVoice
-} from './activities'
+} from '../population/activities'
 
 export const SettingMultiplier: { [key in ActivitySetting]: number } = {
   indoor: 1,

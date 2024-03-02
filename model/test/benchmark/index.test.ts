@@ -1,4 +1,4 @@
-import { Individual } from '../../src/individual'
+import { Individual } from '../../src/population/individual'
 import { getPopulation } from '../../src/population'
 import { fasterFilter, fisherYatesShuffle, log, shuffle } from '../../src/utilities'
 

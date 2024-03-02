@@ -1,5 +1,5 @@
-import { Activity } from '../activities'
-import { Individual } from '../individual'
+import { Activity } from '../population/activities'
+import { Individual } from '../population/individual'
 
 export class Clock {
   private currentMinute: number

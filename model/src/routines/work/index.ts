@@ -1,4 +1,4 @@
-import { Individual } from '../../individual'
+import { Individual } from '../../population/individual'
 
 export type WorkRoutine = 'none' | 'business_hours' | '12x36' | 'part_time'
 

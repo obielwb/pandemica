@@ -1,5 +1,5 @@
 import { assignRoutine } from '..'
-import { Individual } from '../../individual'
+import { Individual } from '../../population/individual'
 
 function test() {
   let population: Individual[] = [baby, child, collegeStudentAndWorker, regularWorker, retired]

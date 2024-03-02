@@ -1,5 +1,6 @@
-import { Activity, Activities, getActivity } from '../activities'
-import { Individual, Occupation } from '../individual'
+import { Activity, Activities, getActivity } from '../population/activities'
+import { Individual, Occupation } from '../population/individual'
+import { selectStudyActivity } from './study'
 import { WorkRoutine } from './work'
 
 export function selectActivitiesBasedOnAttributes(
@@ -14,23 +15,16 @@ export function selectActivitiesBasedOnAttributes(
 ): Activity[] {
   const newActivities: Activity[] = []
 
-  if (studyOccupation && !workOccupation) {
-    const stayAtHomeActivity = getActivity(Activities.StayAtHome)
-    stayAtHomeActivity.duration = 30
-    stayAtHomeActivity.maximumIndividualsEngaged = individual.house.size
-    newActivities.push(stayAtHomeActivity)
-
-    const transportationActivities = selectTransportation(individual.transportationMean)
-    newActivities.push(...transportationActivities)
-
-    const schoolActivity = getActivity(studyOccupation.label)
-    newActivities.push(schoolActivity)
+  if (studyOccupation && !workOccupation && day >= 1 && day <= 5) {
+    newActivities.push(...selectStudyActivity(individual, studyOccupation))
   }
 
   return newActivities
 }
 
-function selectTransportation(transportationMean: Individual['transportationMean']): Activity[] {
+export function selectTransportation(
+  transportationMean: Individual['transportationMean']
+): Activity[] {
   const transportationActivities: Activity[] = []
 
   if (transportationMean === 'private') {

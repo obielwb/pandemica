@@ -1,4 +1,4 @@
-import { Activity } from '../activities'
+import { Activity } from '../population/activities'
 
 function minimumMaximum(array: number[]): number[] {
   return array.reduce(

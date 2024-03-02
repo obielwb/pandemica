@@ -1,6 +1,6 @@
-import { type Age } from '../data/census'
+import { type Age } from '../../data/census'
 import { House, Occupation, type Individual } from './individual'
-import { fisherYatesShuffle, log } from './utilities'
+import { fisherYatesShuffle, log } from '../utilities'
 
 export type Parameter = {
   label: string | number | string[] | number[]

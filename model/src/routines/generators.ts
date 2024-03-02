@@ -1,5 +1,5 @@
-import { Activity } from '../activities'
-import { Individual, Occupation } from '../individual'
+import { Activity } from '../population/activities'
+import { Individual, Occupation } from '../population/individual'
 import { selectActivitiesBasedOnAttributes, selectSleepActivity } from './selectors'
 import { getIndividualWorkRoutine, getWorkDays, WorkRoutine } from './work'
 import { getWorkSize, isNightShift, worksOrStudiesToday } from './work/helpers'

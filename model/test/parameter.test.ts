@@ -12,7 +12,7 @@ import {
   residentsPerHouse,
   ages,
   malePercentage
-} from '../src/data'
+} from '../src/calculus/data'
 import { House, Individual } from '../individuals/routines/src/individual'
 import { nanoid } from 'nanoid'
 import { fisherYatesShuffle } from '../individuals/routines/src/utilities'

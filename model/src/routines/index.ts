@@ -1,4 +1,4 @@
-import { Individual } from '../individual'
+import { Individual } from '../population/individual'
 import { log } from '../utilities'
 import { generateWeeklyRoutine } from './generators'
 

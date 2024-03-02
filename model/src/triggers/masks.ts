@@ -1,5 +1,5 @@
-import { MaskType } from '../data'
-import { Individual, Occupation, OccupationType } from '../individual'
+import { MaskType } from '../calculus/data'
+import { Individual, Occupation, OccupationType } from '../population/individual'
 import { fasterFilter, fisherYatesShuffle, shuffle } from '../utilities'
 
 export type MaskRegister = {

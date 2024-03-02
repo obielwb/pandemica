@@ -24,8 +24,8 @@ import {
   smallCommerceAndServicesWorkInPerson,
   smallIndustryWorkFromHome,
   smallIndustryWorkInPerson
-} from '../activities'
-import { Individual } from '../individual'
+} from '../population/activities'
+import { Individual } from '../population/individual'
 import { chunkIntoNParts, fasterFilter, fisherYatesShuffle } from '../utilities'
 
 export class LockdownTrigger {

@@ -59,10 +59,6 @@ export function chunkIntoNParts<T>(arr: T[], n: number): T[][] {
   return Array.from({ length: n }, (_, i) => arr.slice(i * size, i * size + size)) as T[][]
 }
 
-/**
-@func util
- a custom high-performance filter using low-level techniques
- */
 export function fasterFilter<T>(array: T[], predicate: (value: T) => boolean): T[] {
   const result: T[] = []
   for (let i = 0; i < array.length; i++) {

@@ -1,4 +1,4 @@
-import { IndividualActivity } from './activities'
+import { IndividualActivity } from '../population/activities'
 import {
   AgeMultipler,
   DistanceMultiplier,
@@ -7,8 +7,8 @@ import {
   VaccinesRiskReduction,
   VoiceMultiplier
 } from './data'
-import { Individual } from './individual'
-import { log } from './utilities'
+import { Individual } from '../population/individual'
+import { log } from '../utilities'
 
 const contractionProbabilityThreshold = 0.3
 
