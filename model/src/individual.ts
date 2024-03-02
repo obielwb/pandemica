@@ -52,7 +52,8 @@ export class Individual {
       st: this.state[0],
       hdc: this.hadCovid ? 1 : 0,
       v: this.vaccine.type !== 'none' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
-      m: this.mask !== 'none' ? this.mask : null
+      m: this.mask !== 'none' ? this.mask : null,
+      l: this.isInLockdown ? 1 : 0
     }
 
     return JSON.stringify(serializedIndividual)
@@ -106,6 +107,7 @@ export class Individual {
       ? { type: deserializedIndividual.v.t, doses: deserializedIndividual.v.d }
       : { type: 'none', doses: 0 }
     individual.mask = deserializedIndividual.m || 'none'
+    individual.isInLockdown = deserializedIndividual.l === 1
 
     return individual
   }
