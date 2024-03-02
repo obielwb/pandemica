@@ -208,7 +208,7 @@ export const church = new Activity('leisure', 'church', 'indoor', 1 * 60, 'norma
 
 export const stayAtHome = new Activity(
   'home',
-  'home',
+  'stay_at_home',
   'indoor',
   10 * 60,
   'normal',
@@ -238,7 +238,7 @@ export const publicTransportRide = new Activity(
 
 export const privateTransportRide = new Activity(
   'transport',
-  'transport.public.ride',
+  'transport.private.ride',
   'indoor',
   30,
   'normal',
@@ -488,7 +488,7 @@ export const collegeStudyFromHome = new Activity(
 
 export const nineHoursSleep = new Activity(
   'home',
-  'sleep.six_hours',
+  'sleep.nine_hours',
   'indoor',
   9 * 60,
   'normal',
@@ -632,26 +632,26 @@ export const activitiesList = [
   nineHoursSleep
 ]
 
-export enum ActivityType {
-  GroceryShopping = 'groceryShopping',
-  PharmacyShopping = 'pharmacyShopping',
-  BakeryShopping = 'bakeryShopping',
+export enum Activities {
+  GroceryShopping = 'shopping.grocery',
+  PharmacyShopping = 'shopping.pharmacy',
+  BakeryShopping = 'shopping.bakery',
 
-  RestaurantOutdoors = 'restaurantOutdoors',
-  RestaurantIndoors = 'restaurantIndoors',
+  RestaurantOutdoors = 'restaurant.outdoor',
+  RestaurantIndoors = 'restaurant.indoor',
 
   Bar = 'bar',
-  OutdoorParty = 'outdoorParty',
-  IndoorParty = 'indoorParty',
+  OutdoorParty = 'party.outdoor',
+  IndoorParty = 'party.indoor',
   Park = 'park',
   Gym = 'gym',
   Church = 'church',
 
-  StayAtHome = 'stayAtHome',
+  StayAtHome = 'stay_at_home',
 
-  PublicTransportStation = 'publicTransportStation',
-  PublicTransportRide = 'publicTransportRide',
-  PrivateTransportRide = 'privateTransportRide',
+  PublicTransportStation = 'transport.public.station',
+  PublicTransportRide = 'transport.public.ride',
+  PrivateTransportRide = 'transport.private.ride',
 
   MicroIndustryWorkInPerson = 'work.industry.micro',
   SmallIndustryWorkInPerson = 'work.industry.small',
@@ -663,16 +663,16 @@ export enum ActivityType {
   MediumCommerceAndServicesWorkInPerson = 'work.commerce_services.medium',
   LargeCommerceAndServicesWorkInPerson = 'work.commerce_services.large',
 
-  PreschoolStudy = 'preschoolStudy',
-  MiddleSchoolStudy = 'middleSchoolStudy',
-  HighSchoolStudy = 'highSchoolStudy',
-  CollegeStudy = 'collegeStudy',
+  PreschoolStudyInPerson = 'study.preschool',
+  MiddleSchoolStudyInPeron = 'study.middle_school',
+  HighSchoolStudyInPerson = 'study.high_school',
+  CollegeStudyInPerson = 'study.college',
 
-  FiveHoursSleep = 'fiveHoursSleep',
-  SixHoursSleep = 'sixHoursSleep',
-  SevenHoursSleep = 'sevenHoursSleep',
-  EightHoursSleep = 'eightHoursSleep',
-  NineHoursSleep = 'nineHoursSleep'
+  FiveHoursSleep = 'sleep.five_hours',
+  SixHoursSleep = 'sleep.six_hours',
+  SevenHoursSleep = 'sleep.seven_hours',
+  EightHoursSleep = 'sleep.eight_hours',
+  NineHoursSleep = 'sleep.nine_hours'
 }
 
 // convert activitiesList to a map for easy access
@@ -681,6 +681,6 @@ export const activitiesMap = activitiesList.reduce((acc, activity) => {
   return acc
 }, {})
 
-export function getWorkActivity(label: string): Activity | undefined {
+export function getActivity(label: Activities | string): Activity {
   return activitiesMap[label]
 }

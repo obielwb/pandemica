@@ -44,7 +44,7 @@ export async function run(
 
   const population = await getPopulation({
     cache: true,
-    saveToDisk: true
+    saveToDisk: false
   })
 
   const clock = new Clock(startDate, individuals, quickSort)
@@ -56,6 +56,26 @@ export async function run(
     ['0000-00-00', '0000-00-00'],
     0.5,
     ['0000-00-00']
+  )
+
+  console.log(
+    population.find(
+      (individual) => individual.age[1] <= 19 && individual.occupationTypes.length === 0
+    )
+  )
+
+  console.log(
+    population.find(
+      (individual) => individual.age[1] <= 19 && individual.occupationTypes.includes('study')
+    )
+  )
+
+  console.log(population.find((individual) => individual.occupationTypes.length === 2))
+
+  console.log(
+    population.find(
+      (individual) => individual.age[1] > 19 && individual.occupationTypes.length === 0
+    )
   )
 
   const vaccines = new VaccineTrigger(individuals)

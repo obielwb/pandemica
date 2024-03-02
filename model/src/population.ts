@@ -39,7 +39,7 @@ import { Individual } from './individual'
 import { join, extname } from 'node:path'
 import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { log } from './utilities'
-import { createRoutines } from './routines'
+import { assignRoutine } from './routines'
 
 type GetPopulationParameters = { cache: boolean; saveToDisk: boolean }
 
@@ -275,7 +275,7 @@ function instantiatePopulation() {
 
   individuals = assignTransportationMean(individuals, housesWithVehicles)
 
-  individuals = createRoutines(individuals)
+  individuals = assignRoutine(individuals)
 
   individuals.sort((a, b) => a.id - b.id)
 
