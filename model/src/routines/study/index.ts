@@ -16,5 +16,11 @@ export function selectStudyActivity(individual: Individual, studyOccupation: Occ
   const schoolActivity = getActivity(studyOccupation.label)
   newActivities.push(schoolActivity)
 
+  const restaurantActivity = getActivity(Activities.RestaurantIndoors)
+  restaurantActivity.maximumIndividualsEngaged = Math.round(studyOccupation.actualSize / 2)
+  newActivities.push(restaurantActivity)
+
+  newActivities.push(...transportationActivities)
+
   return newActivities
 }
