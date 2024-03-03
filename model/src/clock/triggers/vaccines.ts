@@ -1,9 +1,9 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { parse } from 'csv-parse'
-import { Individual } from '../population/individual'
-import { fasterFilter, fisherYatesShuffle, log, shuffle } from '../utilities'
-import { VaccineType } from '../calculus/data'
+import { Individual } from '../../population/individual'
+import { fasterFilter, fisherYatesShuffle, log, shuffle } from '../../utilities'
+import { VaccineType } from '../../calculus/data'
 
 /*
   Note: this code is used for validation purpose only.

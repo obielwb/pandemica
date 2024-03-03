@@ -6,9 +6,9 @@ import { calculate } from './calculus'
 import { Individual } from './population/individual'
 import { log } from './utilities'
 import { nanoid } from 'nanoid'
-import { VaccineTrigger } from './triggers/vaccines'
-import { LockdownTrigger } from './triggers/lockdown'
-import { MaskTrigger } from './triggers/masks'
+import { VaccineTrigger } from './clock/triggers/vaccines'
+import { LockdownTrigger } from './clock/triggers/lockdown'
+import { MaskTrigger } from './clock/triggers/masks'
 
 // todo: these individuals are outdated
 const individuals: Individual[] = []

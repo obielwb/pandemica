@@ -24,9 +24,9 @@ import {
   smallCommerceAndServicesWorkInPerson,
   smallIndustryWorkFromHome,
   smallIndustryWorkInPerson
-} from '../population/activities'
-import { Individual } from '../population/individual'
-import { chunkIntoNParts, fasterFilter, fisherYatesShuffle } from '../utilities'
+} from '../../population/activities'
+import { Individual } from '../../population/individual'
+import { chunkIntoNParts, fasterFilter, fisherYatesShuffle } from '../../utilities'
 
 export class LockdownTrigger {
   private startDate: string
