@@ -630,17 +630,18 @@ export function assignWorkOccupations(
   industries: Parameter[],
   industriesEmployees: number[][],
   commerceAndServices: Parameter[],
-  commerceAndServicesEmployees: number[][]
+  commerceAndServicesEmployees: number[][],
+  RETIREMENT_AGE: number
 ) {
   log('Assigning `workOccupations` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
 
-  const RETIRED_AGE = 64
-
   const workers = fisherYatesShuffle(
-    individuals.filter((individual) => individual.age[0] > 19 && individual.age[1] <= RETIRED_AGE)
+    individuals.filter(
+      (individual) => individual.age[0] > 19 && individual.age[1] <= RETIREMENT_AGE
+    )
   )
   const nonWorkers = individuals.filter(
-    (individual) => individual.age[1] <= 19 || individual.age[0] > RETIRED_AGE
+    (individual) => individual.age[1] <= 19 || individual.age[0] > RETIREMENT_AGE
   )
 
   let siteIds = lastOccupationId

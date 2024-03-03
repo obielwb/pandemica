@@ -20,7 +20,8 @@ import {
   preschools,
   colleges,
   middleSchools,
-  highSchools
+  highSchools,
+  RETIREMENT_AGE
 } from '../../data/census'
 import {
   assignSex,
@@ -268,7 +269,8 @@ function instantiatePopulation() {
     industries,
     industriesEmployees,
     commerceAndServices,
-    commerceAndServicesEmployees
+    commerceAndServicesEmployees,
+    RETIREMENT_AGE
   )
 
   individuals = assignIncome(individuals, normalizeIncomes(incomes, individuals))

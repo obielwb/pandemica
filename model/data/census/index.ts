@@ -40,6 +40,8 @@ export type Age = {
   male: number
 }
 
+export const RETIREMENT_AGE = 64
+
 // 2010 ibge
 export const zeroToFourYears: Age = {
   interval: [0, 4],
