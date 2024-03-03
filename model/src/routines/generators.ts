@@ -6,8 +6,6 @@ import { selectSleepActivity } from './selectors/general'
 import { getIndividualWorkRoutine, getWorkDays, WorkRoutine } from './selectors/work/getters'
 import { getWorkSize, isNightShift, worksOrStudiesToday } from './selectors/work/helpers'
 
-// todo: also take into consideration individuals that study, individuals that
-// study and work, and individuals that do nothing (unemployed and retired)
 export function generateWeeklyRoutine(
   individual: Individual,
   individualsRoutinesMap: IndividualsRoutinesMap
