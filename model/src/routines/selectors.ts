@@ -18,7 +18,7 @@ export function selectActivitiesBasedOnAttributes(
   if (studyOccupation || workOccupation) {
     let hasEaten = false
     if (studyOccupation && !dailyRoutine.find((activity) => activity.category === 'study')) {
-      if (!workOccupation && day >= 1 && day <= 5) {
+      if (day >= 1 && day <= 5) {
         newActivities.push(...selectStudyActivity(individual, studyOccupation))
         hasEaten = true
       }
