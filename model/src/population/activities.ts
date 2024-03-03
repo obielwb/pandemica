@@ -157,7 +157,17 @@ export const bakeryShopping = new Activity(
   15,
   'normal',
   'normal',
-  10
+  15
+)
+
+export const mallShopping = new Activity(
+  'shopping',
+  'shopping.mall',
+  'indoor',
+  90,
+  'normal',
+  'loud',
+  100
 )
 
 export const restaurantOutdoors = new Activity(
@@ -673,6 +683,25 @@ export enum Activities {
   SevenHoursSleep = 'sleep.seven_hours',
   EightHoursSleep = 'sleep.eight_hours',
   NineHoursSleep = 'sleep.nine_hours'
+}
+
+export enum DailyActivities {
+  GroceryShopping = 'shopping.grocery',
+  PharmacyShopping = 'shopping.pharmacy',
+  BakeryShopping = 'shopping.bakery',
+  MallShopping = 'shopping.mall',
+
+  RestaurantOutdoors = 'restaurant.outdoor',
+  RestaurantIndoors = 'restaurant.indoor',
+
+  Bar = 'bar',
+  OutdoorParty = 'party.outdoor',
+  IndoorParty = 'party.indoor',
+  Park = 'park',
+  Gym = 'gym',
+  Church = 'church',
+
+  StayAtHome = 'stay_at_home'
 }
 
 // convert activitiesList to a map for easy access

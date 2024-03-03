@@ -1,4 +1,4 @@
-import { Individual } from '../../population/individual'
+import { Individual } from '../../../population/individual'
 
 export const worksOrStudiesToday = (individual: Individual, day: number, workDays: number[]) =>
   (individual.occupationTypes.includes('study') && day >= 1 && day <= 5) || workDays.includes(day)

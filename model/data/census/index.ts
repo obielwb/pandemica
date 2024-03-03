@@ -41,6 +41,7 @@ export type Age = {
 }
 
 export const RETIREMENT_AGE = 64
+export const CHILD_AGE = 14
 
 // 2010 ibge
 export const zeroToFourYears: Age = {

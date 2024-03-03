@@ -1,12 +1,17 @@
-import { Activity } from '../population/activities'
+import { IndividualsRoutinesMap } from '.'
+import { Activities, Activity, getActivity } from '../population/activities'
 import { Individual, Occupation } from '../population/individual'
-import { selectActivitiesBasedOnAttributes, selectSleepActivity } from './selectors'
-import { getIndividualWorkRoutine, getWorkDays, WorkRoutine } from './work'
-import { getWorkSize, isNightShift, worksOrStudiesToday } from './work/helpers'
+import { selectActivitiesBasedOnAttributes } from './selectors'
+import { selectSleepActivity } from './selectors/general'
+import { getIndividualWorkRoutine, getWorkDays, WorkRoutine } from './selectors/work/getters'
+import { getWorkSize, isNightShift, worksOrStudiesToday } from './selectors/work/helpers'
 
 // todo: also take into consideration individuals that study, individuals that
 // study and work, and individuals that do nothing (unemployed and retired)
-export function generateWeeklyRoutine(individual: Individual): Activity[][] {
+export function generateWeeklyRoutine(
+  individual: Individual,
+  individualsRoutinesMap: IndividualsRoutinesMap
+): Activity[][] {
   const workRoutine = getIndividualWorkRoutine(individual)
   let workDays = []
   let isWorkNightShift = false
@@ -31,7 +36,8 @@ export function generateWeeklyRoutine(individual: Individual): Activity[][] {
         workOccupation,
         workRoutine,
         isWorkNightShift,
-        workDays
+        workDays,
+        individualsRoutinesMap
       )
     )
   }
@@ -46,19 +52,25 @@ export function generateDailyRoutine(
   workOccupation: Occupation | undefined,
   workRoutine: WorkRoutine,
   isWorkNightShift: boolean,
-  workDays: number[]
+  workDays: number[],
+  individualsRoutinesMap: IndividualsRoutinesMap
 ): Activity[] {
   let dailyRoutine: Activity[] = []
   let totalTime = 0
 
   const sleepActivity = selectSleepActivity(worksOrStudiesToday(individual, day, workDays))
-
-  const reverseRoutine = isWorkNightShift && workDays.includes(day)
-
   dailyRoutine.push(sleepActivity) // day starts or ends with sleep
   totalTime += sleepActivity.duration
 
-  while (totalTime < 24 * 60) {
+  const stayAtHomeActivity = getActivity(Activities.StayAtHome)
+  stayAtHomeActivity.duration = 30
+  stayAtHomeActivity.maximumIndividualsEngaged = individual.house.size
+  dailyRoutine.push(stayAtHomeActivity)
+  totalTime += sleepActivity.duration
+
+  const reverseRoutine = isWorkNightShift && workDays.includes(day)
+
+  while (totalTime < 23.5 * 60) {
     const newActivities = selectActivitiesBasedOnAttributes(
       day,
       individual,
@@ -67,16 +79,20 @@ export function generateDailyRoutine(
       workRoutine,
       workDays,
       dailyRoutine,
-      totalTime
+      totalTime,
+      individualsRoutinesMap
     )
     dailyRoutine.push(...newActivities)
     newActivities.forEach((newActivity) => (totalTime += newActivity.duration))
 
-    if (totalTime > 24 * 60) {
-      let overflow = totalTime - 24 * 60
+    if (totalTime > 23.5 * 60) {
+      let overflow = totalTime - 23.5 * 60
       dailyRoutine[dailyRoutine.length - 1].duration -= overflow
     }
   }
+
+  dailyRoutine.push(stayAtHomeActivity)
+  totalTime += sleepActivity.duration
 
   if (reverseRoutine) {
     return dailyRoutine.reverse()

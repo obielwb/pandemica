@@ -1,38 +1,5 @@
-import { Activity, Activities, getActivity } from '../population/activities'
-import { Individual, Occupation } from '../population/individual'
-import { selectStudyActivity } from './study'
-import { WorkRoutine, selectWorkActivity } from './work'
-
-export function selectActivitiesBasedOnAttributes(
-  day: number,
-  individual: Individual,
-  studyOccupation: Occupation | undefined,
-  workOccupation: Occupation | undefined,
-  workRoutine: WorkRoutine,
-  workDays: number[],
-  dailyRoutine: Activity[],
-  totalTime: number
-): Activity[] {
-  const newActivities: Activity[] = []
-
-  if (studyOccupation || workOccupation) {
-    let hasEaten = false
-    if (studyOccupation && !dailyRoutine.find((activity) => activity.category === 'study')) {
-      if (day >= 1 && day <= 5) {
-        newActivities.push(...selectStudyActivity(individual, studyOccupation))
-        hasEaten = true
-      }
-    }
-
-    if (workOccupation && !dailyRoutine.find((activity) => activity.category === 'work')) {
-      if (workDays.includes(day)) {
-        newActivities.push(...selectWorkActivity(individual, workOccupation, workRoutine, hasEaten))
-      }
-    }
-  }
-
-  return newActivities
-}
+import { Activity, Activities, getActivity } from '../../population/activities'
+import { Individual } from '../../population/individual'
 
 export function selectTransportation(
   transportationMean: Individual['transportationMean']
