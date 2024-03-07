@@ -38,7 +38,8 @@ export async function run(
   step: number = 30,
   ignoreStep: boolean = false,
   startDate: Date = new Date('2020-01-01'),
-  endDate: Date = new Date('2023-01-01')
+  endDate: Date = new Date('2023-01-01'),
+  initialScenario: PandemicRegister[]
 ) {
   const runId = nanoid() // for result file storage purposes
 
@@ -61,7 +62,7 @@ export async function run(
   console.log(
     population.find(
       (individual) => individual.age[1] <= 19 && individual.occupationTypes.length === 0
-    )
+    ):
   )
 
   console.log(
