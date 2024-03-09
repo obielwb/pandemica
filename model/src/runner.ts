@@ -1,3 +1,5 @@
+import * as fs from 'fs'
+
 import { getPopulation } from './population'
 import { Clock } from './clock'
 import { quickSort } from './clock/sorting'
@@ -10,6 +12,7 @@ import { VaccineTrigger } from './clock/triggers/vaccines'
 import { LockdownTrigger } from './clock/triggers/lockdown'
 import { MaskTrigger } from './clock/triggers/masks'
 import { PandemicRegister } from '../data/covid19'
+import { join } from 'path'
 
 // todo: these individuals are outdated
 const individuals: Individual[] = []
@@ -125,4 +128,17 @@ export async function run(
 function saveSimulatedPandemicRegistersToDisk(
   simulationId: string,
   pandemicRegisters: PandemicRegister[]
-) {}
+) {
+  log('Serializing siumation pandemic registers', {
+    time: true,
+    timeLabel: 'SERIALIZATION'
+  })
+
+  const headers = Object.keys(pandemicRegisters[0]).join(',')
+  const rows = pandemicRegisters.map((entry) => Object.values(entry).join(','))
+
+  const resultDir = join(__dirname, '..', 'data', 'simulation', 'results')
+  const filePath = join(resultDir, `simulation_${simulationId}.csv`)
+
+  fs.writeFileSync(filePath, `${headers}\n${rows.join('\n')}`)
+}
