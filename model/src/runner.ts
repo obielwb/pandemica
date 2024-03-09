@@ -83,6 +83,8 @@ export async function run(
   const vaccines = new VaccineTrigger(individuals)
   const masks = new MaskTrigger(individuals, [])
 
+  setInitialScenario(initialScenario, population)
+
   // lockdown.assign(clock.currentDateString())
   // vaccines.assign(clock.currentDateString())
   // masks.assign(clock.currentDateString())
@@ -118,6 +120,11 @@ export async function run(
   // }
 
   saveSimulatedPandemicRegistersToDisk(runId, simulatedPandemicRegisters)
+}
+
+function setInitialScenario(pandemicRegisters: PandemicRegister[], population: Individual[]) {
+  for (const pandemicRegister of pandemicRegisters) {
+  }
 }
 
 function saveSimulatedPandemicRegistersToDisk(
