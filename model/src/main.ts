@@ -1,4 +1,6 @@
+import { readPandemicData } from '../data/covid19'
 import { run } from './runner'
+import { calculateModelAccuracy } from './validation'
 
 function parseArgs() {
   const args = process.argv.slice(2)
@@ -6,7 +8,8 @@ function parseArgs() {
     step: 30,
     ignoreStep: false,
     startDate: new Date('2020-01-01'),
-    endDate: new Date('2023-01-01')
+    endDate: new Date('2023-01-01'),
+    showAccuracy: false
   }
 
   args.forEach((arg) => {
@@ -24,15 +27,32 @@ function parseArgs() {
       case '--endDate':
         params.endDate = new Date(value)
         break
+      case '--showAccuracy':
+        params.showAccuracy = value === 'true'
     }
   })
 
   return params
 }
 
+/**
+ * Todo
+ * definir pandemic register
+ * definir método que lê os primeiros 20% dos casos reais da pandemia e passar para o runner
+ * criar o método que vai validar e retornar a acurácia do modelo
+ */
+
 function main() {
-  const { step, ignoreStep, startDate, endDate } = parseArgs()
-  run(step, ignoreStep, startDate, endDate)
+  const { step, ignoreStep, startDate, endDate, showAccuracy } = parseArgs()
+
+  const pandemicRegisters = readPandemicData()
+
+  // this only accounts for the validation scneario, where we get the 20% according to Hold-Out Validation
+  const initalScenario = pandemicRegisters.slice(0, pandemicRegisters.length * 0.2)
+
+  const simulatedPandmicRegisters = run(step, ignoreStep, startDate, endDate, initalScenario)
+
+  if (showAccuracy) calculateModelAccuracy(pandemicRegisters, simulatedPandmicRegisters)
 }
 
 main()
