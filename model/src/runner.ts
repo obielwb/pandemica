@@ -9,6 +9,7 @@ import { nanoid } from 'nanoid'
 import { VaccineTrigger } from './clock/triggers/vaccines'
 import { LockdownTrigger } from './clock/triggers/lockdown'
 import { MaskTrigger } from './clock/triggers/masks'
+import { PandemicRegister } from '../data/covid19'
 
 // todo: these individuals are outdated
 const individuals: Individual[] = []
@@ -33,6 +34,7 @@ const currentActivity: IndividualActivity = {
  * @param ignoreStep {boolean} Whether to ignore step parameter, saving results only at the end, defaults to false
  * @param startDate {Date} Simulation start date, defaults to 2020-01-01
  * @param endDate {Date} Simulation end date, defaults to 2023-01-01
+ * @param initialScenario {PandemicRegister[]} First real pandemic cases to set up our model
  */
 export async function run(
   step: number = 30,
@@ -40,7 +42,7 @@ export async function run(
   startDate: Date = new Date('2020-01-01'),
   endDate: Date = new Date('2023-01-01'),
   initialScenario: PandemicRegister[]
-) {
+): Promise<PandemicRegister[]> {
   const runId = nanoid() // for result file storage purposes
 
   const population = await getPopulation({
@@ -62,7 +64,7 @@ export async function run(
   console.log(
     population.find(
       (individual) => individual.age[1] <= 19 && individual.occupationTypes.length === 0
-    ):
+    )
   )
 
   console.log(
