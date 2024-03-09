@@ -37,22 +37,21 @@ function parseArgs() {
 
 /**
  * Todo
- * definir pandemic register
  * definir método que lê os primeiros 20% dos casos reais da pandemia e passar para o runner
  * criar o método que vai validar e retornar a acurácia do modelo
  */
 
-function main() {
+async function main() {
   const { step, ignoreStep, startDate, endDate, showAccuracy } = parseArgs()
 
-  const pandemicRegisters = readPandemicData()
+  const pandemicRegisters = readPandemicData([2020, 2021])
 
   // this only accounts for the validation scneario, where we get the 20% according to Hold-Out Validation
-  const initalScenario = pandemicRegisters.slice(0, pandemicRegisters.length * 0.2)
+  const initalScenario = pandemicRegisters.slice(0, Math.ceil(pandemicRegisters.length * 0.2))
 
-  const simulatedPandmicRegisters = run(step, ignoreStep, startDate, endDate, initalScenario)
+  const simulatedPandemicRegisters = await run(step, ignoreStep, startDate, endDate, initalScenario)
 
-  if (showAccuracy) calculateModelAccuracy(pandemicRegisters, simulatedPandmicRegisters)
+  if (showAccuracy) calculateModelAccuracy(pandemicRegisters, simulatedPandemicRegisters)
 }
 
 main()

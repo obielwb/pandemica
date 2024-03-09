@@ -120,4 +120,5 @@ export async function run(
   //     if (acquiredCovid) individuals[i].state = 'exposed'
   //   })
   // }
+  return null
 }

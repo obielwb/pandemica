@@ -14,7 +14,7 @@ export type PandemicRegister = {
   deathsByTotalCases: number
 }
 
-export function readPandemicData(): PandemicRegister[] {
+export function readPandemicData(years: number[] = [2020, 2021, 2022]): PandemicRegister[] {
   try {
     log('Reading pandemic registers', { time: true, timeLabel: 'INITIALIZATION' })
 
@@ -49,7 +49,7 @@ export function readPandemicData(): PandemicRegister[] {
         deathsByTotalCases: parseFloat(deaths_by_totalCases)
       }
 
-      pandemicRegisters.push(register)
+      if (years.some((year) => date.includes(year.toString()))) pandemicRegisters.push(register)
     })
   } catch (error) {
     log('Error when reading pandemic registers', {
