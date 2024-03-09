@@ -33,7 +33,6 @@ const currentActivity: IndividualActivity = {
 
 // todo: implement run function
 /**
- * @param startDate {Date} Simulation start date, defaults to 2020-01-01
  * @param endDate {Date} Simulation end date, defaults to 2023-01-01
  * @param initialScenario {PandemicRegister[]} First real pandemic cases to set up our model
  */
@@ -84,39 +83,39 @@ export async function run(
   const vaccines = new VaccineTrigger(individuals)
   const masks = new MaskTrigger(individuals, [])
 
-  lockdown.assign(clock.currentDateString())
-  vaccines.assign(clock.currentDateString())
-  masks.assign(clock.currentDateString())
+  // lockdown.assign(clock.currentDateString())
+  // vaccines.assign(clock.currentDateString())
+  // masks.assign(clock.currentDateString())
 
-  while (clock.currentDate() <= endDate) {
-    const individualsWithCovid = currentActivity.individualsEngaged.map((i) => {
-      let individual = individuals[i]
-      if (individual.state === 'exposed' || individual.state === 'infectious') return individual
-    })
+  // while (clock.currentDate() <= endDate) {
+  //   const individualsWithCovid = currentActivity.individualsEngaged.map((i) => {
+  //     let individual = individuals[i]
+  //     if (individual.state === 'exposed' || individual.state === 'infectious') return individual
+  //   })
 
-    const individualsWithoutCovid = currentActivity.individualsEngaged.filter((i) => {
-      const individual = individuals[i]
+  //   const individualsWithoutCovid = currentActivity.individualsEngaged.filter((i) => {
+  //     const individual = individuals[i]
 
-      return (
-        individual.state !== 'exposed' &&
-        individual.state !== 'infectious' &&
-        individual.state !== 'recovered' &&
-        individual.state !== 'dead' &&
-        individual.state !== 'hospitalized'
-      )
-    })
+  //     return (
+  //       individual.state !== 'exposed' &&
+  //       individual.state !== 'infectious' &&
+  //       individual.state !== 'recovered' &&
+  //       individual.state !== 'dead' &&
+  //       individual.state !== 'hospitalized'
+  //     )
+  //   })
 
-    individualsWithoutCovid.forEach((i) => {
-      const { acquiredCovid, deathProbability, hospitalizationProbability } = calculate(
-        currentActivity,
-        individualsWithCovid,
-        individuals[i]
-      )
-      log('Hospitalization probability: ' + hospitalizationProbability)
-      log('Death probability: ' + deathProbability)
-      if (acquiredCovid) individuals[i].state = 'exposed'
-    })
-  }
+  //   individualsWithoutCovid.forEach((i) => {
+  //     const { acquiredCovid, deathProbability, hospitalizationProbability } = calculate(
+  //       currentActivity,
+  //       individualsWithCovid,
+  //       individuals[i]
+  //     )
+  //     log('Hospitalization probability: ' + hospitalizationProbability)
+  //     log('Death probability: ' + deathProbability)
+  //     if (acquiredCovid) individuals[i].state = 'exposed'
+  //   })
+  // }
 
   saveSimulatedPandemicRegistersToDisk(runId, simulatedPandemicRegisters)
 }
