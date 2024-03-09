@@ -38,7 +38,6 @@ const currentActivity: IndividualActivity = {
  * @param initialScenario {PandemicRegister[]} First real pandemic cases to set up our model
  */
 export async function run(
-  startDate: Date = new Date('2020-01-01'),
   endDate: Date = new Date('2023-01-01'),
   initialScenario: PandemicRegister[]
 ) {
@@ -51,7 +50,28 @@ export async function run(
     saveToDisk: false
   })
 
-  const clock = new Clock(startDate, individuals, quickSort)
+  const clock = new Clock(new Date(initialScenario[0].date), individuals, quickSort)
+
+  // nao sabia se queria isso aqui dnv, acabei nao apagando
+  // console.log(
+  //   population.find(
+  //     (individual) => individual.age[1] <= 19 && individual.occupationTypes.length === 0
+  //   )
+  // )
+
+  // console.log(
+  //   population.find(
+  //     (individual) => individual.age[1] <= 19 && individual.occupationTypes.includes('study')
+  //   )
+  // )
+
+  // console.log(population.find((individual) => individual.occupationTypes.length === 2))
+
+  // console.log(
+  //   population.find(
+  //     (individual) => individual.age[1] > 19 && individual.occupationTypes.length === 0
+  //   )
+  // )
 
   const lockdown = new LockdownTrigger(
     individuals,
@@ -61,27 +81,6 @@ export async function run(
     0.5,
     ['0000-00-00']
   )
-
-  console.log(
-    population.find(
-      (individual) => individual.age[1] <= 19 && individual.occupationTypes.length === 0
-    )
-  )
-
-  console.log(
-    population.find(
-      (individual) => individual.age[1] <= 19 && individual.occupationTypes.includes('study')
-    )
-  )
-
-  console.log(population.find((individual) => individual.occupationTypes.length === 2))
-
-  console.log(
-    population.find(
-      (individual) => individual.age[1] > 19 && individual.occupationTypes.length === 0
-    )
-  )
-
   const vaccines = new VaccineTrigger(individuals)
   const masks = new MaskTrigger(individuals, [])
 
@@ -89,38 +88,35 @@ export async function run(
   vaccines.assign(clock.currentDateString())
   masks.assign(clock.currentDateString())
 
-  // while (clock.currentDate() <= endDate) {
-  //   const individualsWithCovid = currentActivity.individualsEngaged.map(
-  //     (i) => {
-  //       let individual = individuals[i]
-  //       if (individual.state === 'exposed' || individual.state === 'infectious')
-  //         return individual
-  //     }
-  //   )
+  while (clock.currentDate() <= endDate) {
+    const individualsWithCovid = currentActivity.individualsEngaged.map((i) => {
+      let individual = individuals[i]
+      if (individual.state === 'exposed' || individual.state === 'infectious') return individual
+    })
 
-  //   const individualsWithoutCovid = currentActivity.individualsEngaged.filter(
-  //     (i) => {
-  //       const individual = individuals[i]
+    const individualsWithoutCovid = currentActivity.individualsEngaged.filter((i) => {
+      const individual = individuals[i]
 
-  //       return individual.state !== 'exposed' &&
-  //         individual.state !== 'infectious' &&
-  //         individual.state !== 'recovered' &&
-  //         individual.state !== 'dead' &&
-  //         individual.state !== 'hospitalized'
-  //     }
-  //   )
+      return (
+        individual.state !== 'exposed' &&
+        individual.state !== 'infectious' &&
+        individual.state !== 'recovered' &&
+        individual.state !== 'dead' &&
+        individual.state !== 'hospitalized'
+      )
+    })
 
-  //   individualsWithoutCovid.forEach((i) => {
-  //     const { acquiredCovid, deathProbability, hospitalizationProbability } = calculate(
-  //       currentActivity,
-  //       individualsWithCovid,
-  //       individuals[i]
-  //     )
-  //     log('Hospitalization probability: ' + hospitalizationProbability)
-  //     log('Death probability: ' + deathProbability)
-  //     if (acquiredCovid) individuals[i].state = 'exposed'
-  //   })
-  // }
+    individualsWithoutCovid.forEach((i) => {
+      const { acquiredCovid, deathProbability, hospitalizationProbability } = calculate(
+        currentActivity,
+        individualsWithCovid,
+        individuals[i]
+      )
+      log('Hospitalization probability: ' + hospitalizationProbability)
+      log('Death probability: ' + deathProbability)
+      if (acquiredCovid) individuals[i].state = 'exposed'
+    })
+  }
 
   saveSimulatedPandemicRegistersToDisk(runId, simulatedPandemicRegisters)
 }
