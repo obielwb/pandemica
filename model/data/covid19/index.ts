@@ -51,6 +51,8 @@ export function readPandemicData(years: number[] = [2020, 2021, 2022]): Pandemic
 
       if (years.some((year) => date.includes(year.toString()))) pandemicRegisters.push(register)
     })
+
+    return pandemicRegisters
   } catch (error) {
     log('Error when reading pandemic registers', {
       time: true,
