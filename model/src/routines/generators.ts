@@ -1,8 +1,9 @@
+import { exit } from 'process'
 import { IndividualsRoutinesMap } from '.'
 import { Activities, Activity, getActivity } from '../population/activities'
 import { Individual, Occupation } from '../population/individual'
 import { selectActivitiesBasedOnAttributes } from './selectors'
-import { selectSleepActivity } from './selectors/general'
+import { selectSleepActivity, selectTransportation } from './selectors/general'
 import { getIndividualWorkRoutine, getWorkDays, WorkRoutine } from './selectors/work/getters'
 import { getWorkSize, isNightShift, worksOrStudiesToday } from './selectors/work/helpers'
 
@@ -20,8 +21,13 @@ export function generateWeeklyRoutine(
     workDays = getWorkDays(workRoutine, workSize)
   }
 
-  const studyOccupation = individual.occupations.find((o) => o.type === 'study')
   const workOccupation = individual.occupations.find((o) => o.type === 'work')
+  const couldGoOnFootToWork = workOccupation && Math.random() <= 0.05 // todo: replace with actual value
+
+  const studyOccupation = individual.occupations.find((o) => o.type === 'study')
+  const couldGoOnFootToSchool = studyOccupation && Math.random() <= 0.05 // todo: replace with actual value
+
+  const transportationActivities = selectTransportation(individual.transportationMean)
 
   const weeklyRoutine: Activity[][] = []
 
@@ -35,13 +41,21 @@ export function generateWeeklyRoutine(
         workRoutine,
         isWorkNightShift,
         workDays,
-        individualsRoutinesMap
+        weeklyRoutine,
+        individualsRoutinesMap,
+        transportationActivities,
+        couldGoOnFootToWork,
+        couldGoOnFootToSchool
       )
     )
   }
 
   return weeklyRoutine
 }
+
+const MINIMUM_HOME_TIME = 15
+const INITIAl_HOME_TIME = 1.5 * 60
+export const ACTIVE_TIME = 24 * 60 - INITIAl_HOME_TIME
 
 export function generateDailyRoutine(
   day: number,
@@ -51,24 +65,27 @@ export function generateDailyRoutine(
   workRoutine: WorkRoutine,
   isWorkNightShift: boolean,
   workDays: number[],
-  individualsRoutinesMap: IndividualsRoutinesMap
+  weeklyRoutine: Activity[][],
+  individualsRoutinesMap: IndividualsRoutinesMap,
+  transportationActivities: Activity[],
+  couldGoOnFootToWork: boolean,
+  couldGoOnFootToSchool: boolean
 ): Activity[] {
   let dailyRoutine: Activity[] = []
   let totalTime = 0
+  let homeTime = INITIAl_HOME_TIME
 
   const sleepActivity = selectSleepActivity(worksOrStudiesToday(individual, day, workDays))
   dailyRoutine.push(sleepActivity) // day starts or ends with sleep
   totalTime += sleepActivity.duration
 
   const stayAtHomeActivity = getActivity(Activities.StayAtHome)
-  stayAtHomeActivity.duration = 30
+  stayAtHomeActivity.duration = 1 * 60
   stayAtHomeActivity.maximumIndividualsEngaged = individual.house.size
   dailyRoutine.push(stayAtHomeActivity)
-  totalTime += sleepActivity.duration
+  totalTime += stayAtHomeActivity.duration
 
-  const reverseRoutine = isWorkNightShift && workDays.includes(day)
-
-  while (totalTime < 23.5 * 60) {
+  while (totalTime < ACTIVE_TIME) {
     const newActivities = selectActivitiesBasedOnAttributes(
       day,
       individual,
@@ -76,25 +93,81 @@ export function generateDailyRoutine(
       workOccupation,
       workRoutine,
       workDays,
+      weeklyRoutine,
       dailyRoutine,
       totalTime,
-      individualsRoutinesMap
+      individualsRoutinesMap,
+      transportationActivities,
+      couldGoOnFootToWork,
+      couldGoOnFootToSchool
     )
     dailyRoutine.push(...newActivities)
-    newActivities.forEach((newActivity) => (totalTime += newActivity.duration))
+    totalTime += newActivities.reduce((acc, newActivity) => acc + newActivity.duration, 0)
+  }
 
-    if (totalTime > 23.5 * 60) {
-      let overflow = totalTime - 23.5 * 60
-      dailyRoutine[dailyRoutine.length - 1].duration -= overflow
+  let overflow = totalTime - ACTIVE_TIME
+  if (overflow > 0) {
+    // first try to reduce from the leisure and shopping activities other than home
+    for (let i = dailyRoutine.length - 1; i >= 0 && overflow > 0; i--) {
+      let activity = dailyRoutine[i]
+      if (
+        activity.label !== Activities.StayAtHome &&
+        (activity.category === 'leisure' || activity.category === 'shopping') &&
+        activity.duration > overflow
+      ) {
+        dailyRoutine[i] = { ...activity, duration: activity.duration - overflow }
+        overflow = 0
+      } else if (
+        activity.label !== Activities.StayAtHome &&
+        activity.category !== 'work' &&
+        activity.category !== 'study' &&
+        activity.category !== 'errands'
+      ) {
+        overflow -= activity.duration + 15
+        dailyRoutine[i] = { ...activity, duration: 15 }
+      }
+    }
+
+    totalTime = dailyRoutine.reduce((acc, activity) => acc + activity.duration, 0) // recalculate total time after reducing activities duration
+    overflow = totalTime - ACTIVE_TIME
+
+    // if overflow still exists, reduce from HOME_TIME but not below MINIMUN_HOME_TIME
+    if (overflow > 0 && homeTime - overflow >= MINIMUM_HOME_TIME) {
+      homeTime -= overflow
+      overflow = 0
     }
   }
 
-  dailyRoutine.push(stayAtHomeActivity)
+  dailyRoutine.push({ ...stayAtHomeActivity, duration: homeTime })
   totalTime += sleepActivity.duration
 
-  if (reverseRoutine) {
-    return dailyRoutine.reverse()
+  // remove and extend duplicate activities duration to a single activity
+  let finalDailyRoutine = []
+  let i = 0
+  while (i < dailyRoutine.length) {
+    let currentActivity = dailyRoutine[i]
+    let totalDuration = currentActivity.duration
+    let j = i + 1
+
+    while (
+      j < dailyRoutine.length &&
+      currentActivity.label === dailyRoutine[j].label &&
+      currentActivity.setting === dailyRoutine[j].setting &&
+      currentActivity.distance === dailyRoutine[j].distance &&
+      currentActivity.voice === dailyRoutine[j].voice
+    ) {
+      totalDuration += dailyRoutine[j].duration
+      j++
+    }
+
+    finalDailyRoutine.push({ ...currentActivity, duration: totalDuration })
+    i = j
   }
 
-  return dailyRoutine
+  const reverseRoutine = isWorkNightShift && workDays.includes(day)
+  if (reverseRoutine) {
+    return finalDailyRoutine.reverse()
+  }
+
+  return finalDailyRoutine
 }

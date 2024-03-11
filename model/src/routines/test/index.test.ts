@@ -14,7 +14,7 @@ function test() {
 
       let totalTime = 0
       day.forEach((activity) => {
-        console.log(activity.label)
+        console.log(activity.label, activity.duration)
         totalTime += activity.duration
       })
 
@@ -24,17 +24,17 @@ function test() {
 }
 
 const baby: Individual = {
-  id: 1,
+  id: 0,
   sex: 'male',
   age: [0, 4],
   educationStatus: 'unschooled',
   currentActivity: undefined,
   routine: [],
   house: {
-    id: 298999,
+    id: 1,
     region: 'south',
     size: 4,
-    housemates: [285377, 134216, 551275, 1]
+    housemates: [0, 1, 2, 3]
   },
   income: [0, 0],
   transportationMean: 'public',
@@ -51,17 +51,17 @@ const baby: Individual = {
 }
 
 const child: Individual = {
-  id: 0,
+  id: 1,
   sex: 'male',
   age: [0, 4],
   educationStatus: 'preschool',
   currentActivity: undefined,
   routine: [],
   house: {
-    id: 276265,
+    id: 1,
     region: 'south',
     size: 4,
-    housemates: [291122, 0, 89097, 129168]
+    housemates: [0, 1, 2, 3]
   },
   income: [0, 0],
   transportationMean: 'public',
@@ -70,7 +70,7 @@ const child: Individual = {
     {
       id: 324,
       type: 'study',
-      label: 'preschool',
+      label: 'study.preschool',
       intervalSize: [0, 0],
       actualSize: 93
     }
@@ -86,17 +86,17 @@ const child: Individual = {
 }
 
 const collegeStudentAndWorker: Individual = {
-  id: 147174,
+  id: 2,
   sex: 'male',
   age: [20, 24],
   educationStatus: 'undergraduate',
   currentActivity: undefined,
   routine: [],
   house: {
-    id: 119150,
-    region: 'north',
-    size: 2,
-    housemates: [294654, 147174]
+    id: 1,
+    region: 'south',
+    size: 4,
+    housemates: [0, 1, 2, 3]
   },
   income: [5, 10],
   transportationMean: 'public',
@@ -105,7 +105,7 @@ const collegeStudentAndWorker: Individual = {
     {
       id: 1199,
       type: 'study',
-      label: 'college',
+      label: 'study.college',
       intervalSize: [0, 0],
       actualSize: 4295
     },
@@ -128,17 +128,17 @@ const collegeStudentAndWorker: Individual = {
 }
 
 const regularWorker: Individual = {
-  id: 300000,
+  id: 3,
   sex: 'male',
   age: [35, 39],
   educationStatus: 'educated',
   currentActivity: undefined,
   routine: [],
   house: {
-    id: 108711,
-    region: 'northwest',
-    size: 2,
-    housemates: [509013, 300000]
+    id: 1,
+    region: 'south',
+    size: 4,
+    housemates: [0, 1, 2, 3]
   },
   income: [0.5, 1],
   transportationMean: 'public',
@@ -163,17 +163,17 @@ const regularWorker: Individual = {
 }
 
 const retired: Individual = {
-  id: 482354,
+  id: 4,
   sex: 'male',
   age: [65, 69],
   educationStatus: 'educated',
   currentActivity: undefined,
   routine: [],
   house: {
-    id: 336806,
+    id: 2,
     region: 'south',
-    size: 6,
-    housemates: [1017053, 172220, 293504, 311691, 947988, 482354]
+    size: 1,
+    housemates: [4]
   },
   income: [0, 0],
   transportationMean: 'private',

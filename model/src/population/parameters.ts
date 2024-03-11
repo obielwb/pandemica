@@ -443,7 +443,7 @@ export function assignEducationStatus(
         ageRangeParameter.value > 0
       ) {
         individual.educationStatus = studyLevelLabel
-        individual.occupationTypes = ['study']
+        individual.occupationTypes.push('study')
         ageRangeParameter.value--
       }
       return individual
@@ -553,22 +553,22 @@ export function assignStudyOccupations(
   let siteIds = 0
   ;[
     {
-      label: 'preschool',
+      label: 'study.preschool',
       studentsPerSite: Math.ceil(preschoolStudents.length / preschools),
       totalSites: preschools
     },
     {
-      label: 'middle_school',
+      label: 'study.middle_school',
       studentsPerSite: Math.ceil(middleSchoolStudents.length / middleSchools),
       totalSites: middleSchools
     },
     {
-      label: 'high_school',
+      label: 'study.high_school',
       studentsPerSite: Math.ceil(highSchoolStudents.length / highSchools),
       totalSites: highSchools
     },
     {
-      label: 'college',
+      label: 'study.college',
       studentsPerSite: Math.ceil(collegeStudents.length / colleges),
       totalSites: colleges
     }
@@ -580,19 +580,19 @@ export function assignStudyOccupations(
   })
 
   const siteData = {
-    preschool: {
+    'study.preschool': {
       index: 0,
       students: preschoolStudents
     },
-    middle_school: {
+    'study.middle_school': {
       index: 0,
       students: middleSchoolStudents
     },
-    high_school: {
+    'study.high_school': {
       index: 0,
       students: highSchoolStudents
     },
-    college: {
+    'study.college': {
       index: 0,
       students: collegeStudents
     }
@@ -615,10 +615,10 @@ export function assignStudyOccupations(
   return {
     individuals: [
       ...nonStudents,
-      ...siteData.preschool.students,
-      ...siteData.middle_school.students,
-      ...siteData.high_school.students,
-      ...siteData.college.students
+      ...siteData['study.preschool'].students,
+      ...siteData['study.middle_school'].students,
+      ...siteData['study.high_school'].students,
+      ...siteData['study.college'].students
     ],
     lastOccupationId: siteIds
   }

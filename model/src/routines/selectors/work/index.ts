@@ -1,18 +1,26 @@
 import { Activities, Activity, getActivity } from '../../../population/activities'
 import { Individual, Occupation } from '../../../population/individual'
-import { selectTransportation } from '../general'
+import { selectTransportationToOccupation } from '../general'
 import { WorkRoutine } from './getters'
 
 export function selectWorkActivity(
-  individual: Individual,
+  transportToWork: boolean,
+  couldGoOnFootToWork: boolean,
+  transportationMean: Individual['transportationMean'],
   workOccupation: Occupation,
   workRoutine: WorkRoutine,
-  hasEaten: boolean
+  hasEaten: boolean,
+  transportationActivities: Activity[]
 ) {
-  const newActivities: Activity[] = []
+  const transportationToOccupationActivities = transportToWork
+    ? selectTransportationToOccupation(
+        couldGoOnFootToWork,
+        transportationMean,
+        transportationActivities
+      )
+    : []
 
-  const transportationActivities = selectTransportation(individual.transportationMean)
-  newActivities.push(...transportationActivities)
+  const newActivities = [...transportationToOccupationActivities]
 
   const work = getActivity(workOccupation.label)
 
@@ -27,15 +35,21 @@ export function selectWorkActivity(
       work.duration = 8 * 60
       break
   }
-  newActivities.push(work)
 
-  if (!hasEaten) {
+  // lunch break
+  if (!hasEaten && (workRoutine === '12x36' || workRoutine === 'business_hours')) {
+    work.duration = Math.floor(work.duration / 2)
+
+    newActivities.push(work)
+
     const restaurantActivity = getActivity(Activities.RestaurantIndoors)
-    restaurantActivity.maximumIndividualsEngaged = Math.round(workOccupation.actualSize / 2)
+    restaurantActivity.maximumIndividualsEngaged = Math.floor(workOccupation.intervalSize[0] / 2)
     newActivities.push(restaurantActivity)
   }
 
-  newActivities.push(...transportationActivities)
+  newActivities.push(work)
+
+  newActivities.push(...transportationToOccupationActivities)
 
   return newActivities
 }

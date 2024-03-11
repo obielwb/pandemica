@@ -12,17 +12,21 @@ export type Setting = 'indoor' | 'outdoor'
 export type Voice = 'silent' | 'normal' | 'loud'
 
 export class Activity {
+  public label: string
+
   constructor(
     public category: Category,
-    public label: string,
+    label: string,
     public setting: Setting,
     public duration: number,
     public distance: Distance,
     public voice: Voice,
     public maximumIndividualsEngaged: number
-  ) {}
+  ) {
+    this.label = `${this.category}.${label}`
+  }
 
-  public serialize(): string {
+  public serialize?(): string {
     const serializedActivity = {
       c: this.category[0],
       l: this.label,
@@ -132,9 +136,9 @@ export class IndividualActivity extends Activity {
 
 export const groceryShopping = new Activity(
   'shopping',
-  'shopping.grocery',
+  'grocery',
   'indoor',
-  1 * 60,
+  30,
   'normal',
   'normal',
   80
@@ -142,9 +146,9 @@ export const groceryShopping = new Activity(
 
 export const pharmacyShopping = new Activity(
   'shopping',
-  'shopping.pharmacy',
+  'pharmacy',
   'indoor',
-  1 * 60,
+  15,
   'normal',
   'normal',
   20
@@ -152,23 +156,15 @@ export const pharmacyShopping = new Activity(
 
 export const bakeryShopping = new Activity(
   'shopping',
-  'shopping.bakery',
+  'bakery',
   'indoor',
-  15,
+  10,
   'normal',
   'normal',
-  15
+  20
 )
 
-export const mallShopping = new Activity(
-  'shopping',
-  'shopping.mall',
-  'indoor',
-  90,
-  'normal',
-  'loud',
-  100
-)
+export const mallShopping = new Activity('shopping', 'mall', 'indoor', 90, 'normal', 'loud', 100)
 
 export const restaurantOutdoors = new Activity(
   'errands',
@@ -228,7 +224,7 @@ export const stayAtHome = new Activity(
 
 export const publicTransportStation = new Activity(
   'transport',
-  'transport.public.station',
+  'public.station',
   'outdoor',
   15,
   'normal',
@@ -238,7 +234,7 @@ export const publicTransportStation = new Activity(
 
 export const publicTransportRide = new Activity(
   'transport',
-  'transport.public.ride',
+  'public.ride',
   'indoor',
   45,
   'normal',
@@ -248,7 +244,7 @@ export const publicTransportRide = new Activity(
 
 export const privateTransportRide = new Activity(
   'transport',
-  'transport.private.ride',
+  'private.ride',
   'indoor',
   30,
   'normal',
@@ -258,7 +254,7 @@ export const privateTransportRide = new Activity(
 
 export const microIndustryWorkInPerson = new Activity(
   'work',
-  'work.industry.micro',
+  'industry.micro',
   'indoor',
   8 * 60, // can vary to 12x36
   'normal',
@@ -268,7 +264,7 @@ export const microIndustryWorkInPerson = new Activity(
 
 export const microIndustryWorkFromHome = new Activity(
   'work',
-  'work.industry.micro.from_home',
+  'industry.micro.from_home',
   'indoor',
   8 * 60, // can vary to 12x36
   'normal',
@@ -278,7 +274,7 @@ export const microIndustryWorkFromHome = new Activity(
 
 export const smallIndustryWorkInPerson = new Activity(
   'work',
-  'work.industry.small',
+  'industry.small',
   'indoor',
   8 * 60, // can vary to 12x36
   'normal',
@@ -288,7 +284,7 @@ export const smallIndustryWorkInPerson = new Activity(
 
 export const smallIndustryWorkFromHome = new Activity(
   'work',
-  'work.industry.small.from_home',
+  'industry.small.from_home',
   'indoor',
   8 * 60, // can vary to 12x36
   'normal',
@@ -298,7 +294,7 @@ export const smallIndustryWorkFromHome = new Activity(
 
 export const mediumIndustryWorkInPerson = new Activity(
   'work',
-  'work.industry.medium',
+  'industry.medium',
   'indoor',
   12 * 60,
   'normal',
@@ -308,7 +304,7 @@ export const mediumIndustryWorkInPerson = new Activity(
 
 export const mediumIndustryWorkFromHome = new Activity(
   'work',
-  'work.industry.medium.from_home',
+  'industry.medium.from_home',
   'indoor',
   12 * 60,
   'normal',
@@ -318,7 +314,7 @@ export const mediumIndustryWorkFromHome = new Activity(
 
 export const largeIndustryWorkInPerson = new Activity(
   'work',
-  'work.industry.large',
+  'industry.large',
   'indoor',
   12 * 60,
   'normal',
@@ -328,7 +324,7 @@ export const largeIndustryWorkInPerson = new Activity(
 
 export const largeIndustryWorkFromHome = new Activity(
   'work',
-  'work.industry.large.from_home',
+  'industry.large.from_home',
   'indoor',
   12 * 60,
   'normal',
@@ -338,7 +334,7 @@ export const largeIndustryWorkFromHome = new Activity(
 
 export const microCommerceAndServicesWorkInPerson = new Activity(
   'work',
-  'work.commerce_services.micro',
+  'industry.commerce_services.micro',
   'indoor',
   8 * 60,
   'normal',
@@ -348,7 +344,7 @@ export const microCommerceAndServicesWorkInPerson = new Activity(
 
 export const microCommerceAndServicesWorkFromHome = new Activity(
   'work',
-  'work.commerce_services.micro.from_home',
+  'commerce_services.micro.from_home',
   'indoor',
   8 * 60,
   'normal',
@@ -358,7 +354,7 @@ export const microCommerceAndServicesWorkFromHome = new Activity(
 
 export const smallCommerceAndServicesWorkInPerson = new Activity(
   'work',
-  'work.commerce_services.small',
+  'commerce_services.small',
   'indoor',
   8 * 60,
   'normal',
@@ -368,7 +364,7 @@ export const smallCommerceAndServicesWorkInPerson = new Activity(
 
 export const smallCommerceAndServicesWorkFromHome = new Activity(
   'work',
-  'work.commerce_services.small.from_home',
+  'commerce_services.small.from_home',
   'indoor',
   8 * 60,
   'normal',
@@ -378,7 +374,7 @@ export const smallCommerceAndServicesWorkFromHome = new Activity(
 
 export const mediumCommerceAndServicesWorkInPerson = new Activity(
   'work',
-  'work.commerce_services.medium',
+  'commerce_services.medium',
   'indoor',
   8 * 60,
   'normal',
@@ -388,7 +384,7 @@ export const mediumCommerceAndServicesWorkInPerson = new Activity(
 
 export const mediumCommerceAndServicesWorkFromHome = new Activity(
   'work',
-  'work.commerce_services.medium.from_home',
+  'commerce_services.medium.from_home',
   'indoor',
   8 * 60,
   'normal',
@@ -398,7 +394,7 @@ export const mediumCommerceAndServicesWorkFromHome = new Activity(
 
 export const largeCommerceAndServicesWorkInPerson = new Activity(
   'work',
-  'work.commerce_services.large',
+  'commerce_services.large',
   'indoor',
   8 * 60,
   'normal',
@@ -408,7 +404,7 @@ export const largeCommerceAndServicesWorkInPerson = new Activity(
 
 export const largeCommerceAndServicesWorkFromHome = new Activity(
   'work',
-  'work.commerce_services.large.from_home',
+  'commerce_services.large.from_home',
   'indoor',
   8 * 60,
   'normal',
@@ -418,9 +414,9 @@ export const largeCommerceAndServicesWorkFromHome = new Activity(
 
 export const preschoolStudy = new Activity(
   'study',
-  'study.preschool',
+  'preschool',
   'indoor',
-  5 * 60,
+  9 * 60,
   'normal',
   'normal',
   30
@@ -428,9 +424,9 @@ export const preschoolStudy = new Activity(
 
 export const preschoolStudyFromHome = new Activity(
   'study',
-  'study.preschool.from_home',
+  'preschool.from_home',
   'indoor',
-  5 * 60,
+  9 * 60,
   'normal',
   'normal',
   11 // max residents per house
@@ -438,9 +434,9 @@ export const preschoolStudyFromHome = new Activity(
 
 export const middleSchoolStudy = new Activity(
   'study',
-  'study.middle_school',
+  'middle_school',
   'indoor',
-  6 * 60,
+  5 * 60,
   'normal',
   'normal',
   45
@@ -448,9 +444,9 @@ export const middleSchoolStudy = new Activity(
 
 export const middleSchoolStudyFromHome = new Activity(
   'study',
-  'study.middle_school.from_home',
+  'middle_school.from_home',
   'indoor',
-  6 * 60,
+  5 * 60,
   'normal',
   'normal',
   11 // max residents per house
@@ -458,9 +454,9 @@ export const middleSchoolStudyFromHome = new Activity(
 
 export const highSchoolStudy = new Activity(
   'study',
-  'study.high_school',
+  'high_school',
   'indoor',
-  7 * 60,
+  6 * 60,
   'normal',
   'normal',
   60
@@ -468,9 +464,9 @@ export const highSchoolStudy = new Activity(
 
 export const highSchoolStudyFromHome = new Activity(
   'study',
-  'study.high_school.from_home',
+  'high_school.from_home',
   'indoor',
-  7 * 60,
+  6 * 60,
   'normal',
   'normal',
   11 // max residents per house
@@ -478,9 +474,9 @@ export const highSchoolStudyFromHome = new Activity(
 
 export const collegeStudy = new Activity(
   'study',
-  'study.college',
+  'college',
   'indoor',
-  8 * 60,
+  7.5 * 60,
   'normal',
   'normal',
   75
@@ -488,7 +484,7 @@ export const collegeStudy = new Activity(
 
 export const collegeStudyFromHome = new Activity(
   'study',
-  'study.high_school.from_home',
+  'high_school.from_home',
   'indoor',
   8 * 60,
   'normal',
@@ -538,7 +534,7 @@ export const sixHoursSleep = new Activity(
 
 export const fiveHoursSleep = new Activity(
   'home',
-  'sleep.six_hours',
+  'sleep.five_hours',
   'indoor',
   5 * 60,
   'normal',
@@ -603,6 +599,7 @@ export const activitiesList = [
   groceryShopping,
   pharmacyShopping,
   bakeryShopping,
+  mallShopping,
 
   restaurantOutdoors,
   restaurantIndoors,
@@ -646,18 +643,19 @@ export enum Activities {
   GroceryShopping = 'shopping.grocery',
   PharmacyShopping = 'shopping.pharmacy',
   BakeryShopping = 'shopping.bakery',
+  MallShopping = 'shopping.mall',
 
-  RestaurantOutdoors = 'restaurant.outdoor',
-  RestaurantIndoors = 'restaurant.indoor',
+  RestaurantOutdoors = 'errands.restaurant.outdoor',
+  RestaurantIndoors = 'errands.restaurant.indoor',
 
-  Bar = 'bar',
-  OutdoorParty = 'party.outdoor',
-  IndoorParty = 'party.indoor',
-  Park = 'park',
-  Gym = 'gym',
-  Church = 'church',
+  Bar = 'leisure.bar',
+  OutdoorParty = 'leisure.party.outdoor',
+  IndoorParty = 'leisure.party.indoor',
+  Park = 'leisure.park',
+  Gym = 'leisure.gym',
+  Church = 'leisure.church',
 
-  StayAtHome = 'stay_at_home',
+  StayAtHome = 'home.stay_at_home',
 
   PublicTransportStation = 'transport.public.station',
   PublicTransportRide = 'transport.public.ride',
@@ -678,21 +676,21 @@ export enum Activities {
   HighSchoolStudyInPerson = 'study.high_school',
   CollegeStudyInPerson = 'study.college',
 
-  FiveHoursSleep = 'sleep.five_hours',
-  SixHoursSleep = 'sleep.six_hours',
-  SevenHoursSleep = 'sleep.seven_hours',
-  EightHoursSleep = 'sleep.eight_hours',
-  NineHoursSleep = 'sleep.nine_hours'
+  FiveHoursSleep = 'home.sleep.five_hours',
+  SixHoursSleep = 'home.sleep.six_hours',
+  SevenHoursSleep = 'home.sleep.seven_hours',
+  EightHoursSleep = 'home.sleep.eight_hours',
+  NineHoursSleep = 'home.sleep.nine_hours'
 }
 
 export enum DailyActivities {
-  GroceryShopping = 'shopping.grocery',
-  PharmacyShopping = 'shopping.pharmacy',
-  BakeryShopping = 'shopping.bakery',
-  MallShopping = 'shopping.mall',
+  GroceryShopping = 'grocery',
+  PharmacyShopping = 'pharmacy',
+  BakeryShopping = 'bakery',
+  MallShopping = 'mall',
 
-  RestaurantOutdoors = 'restaurant.outdoor',
-  RestaurantIndoors = 'restaurant.indoor',
+  RestaurantOutdoors = 'outdoor',
+  RestaurantIndoors = 'indoor',
 
   Bar = 'bar',
   OutdoorParty = 'party.outdoor',
