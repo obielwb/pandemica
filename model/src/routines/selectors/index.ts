@@ -106,18 +106,7 @@ export function selectActivitiesBasedOnAttributes(
       )
     }
   } else {
-    if (individual.age[1] >= RETIREMENT_AGE) {
-      newActivities.push(
-        ...selectRandomDayOffActivity(
-          dailyRoutine,
-          individual,
-          day,
-          remainingTime,
-          weeklyRoutine,
-          transportationActivities
-        )
-      )
-    } else if (individual.age[1] <= CHILD_AGE) {
+    if (individual.age[1] <= CHILD_AGE) {
       // note: by mimicking a child's routine with their guardian's activities,
       // we also have to group them together in a single activity in order
       // to main the integrity of their routines. it wouldn't make any sense
