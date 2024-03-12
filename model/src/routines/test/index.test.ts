@@ -2,7 +2,7 @@ import { assignRoutine } from '..'
 import { Individual } from '../../population/individual'
 
 function test() {
-  let population: Individual[] = [baby, regularWorker]
+  let population: Individual[] = [child, regularWorker]
 
   population = assignRoutine(population)
   const weekDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']

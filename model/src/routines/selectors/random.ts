@@ -1,3 +1,4 @@
+import { CHILD_AGE } from './../../../data/census/index'
 import { RETIREMENT_AGE } from '../../../data/census'
 import { Activities, Activity, getActivity } from '../../population/activities'
 import { Individual } from '../../population/individual'
@@ -227,8 +228,12 @@ function adjustWeightsForAge(
   individual: Individual,
   weights: { [key: string]: number }
 ): { [key: string]: number } {
-  if (individual.age[1] < 19) {
+  if (individual.age[1] <= CHILD_AGE) {
     weights['leisure.bar'] = 0
+    weights['leisure.gym'] = 0
+  }
+
+  if (individual.age[1] >= CHILD_AGE && individual.age[1] <= 19) {
     weights['leisure.party.outdoor'] = 0.5
     weights['leisure.party.indoor'] = 0.5
   } else if (individual.age[1] >= RETIREMENT_AGE) {

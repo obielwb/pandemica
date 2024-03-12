@@ -602,7 +602,7 @@ export function assignStudyOccupations(
     let { index, students } = siteData[site.label]
 
     for (let i = 0; i < site.actualSize; i++)
-      if (index < students.length) students[index++].occupations = [site]
+      if (index < students.length) students[index++].occupations.push(site)
 
     siteData[site.label] = {
       index,

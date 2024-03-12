@@ -19,7 +19,7 @@ export function selectStudyActivity(
 
   const school = { ...getActivity(studyOccupation.label) }
   const restaurantActivity = getActivity(Activities.RestaurantIndoors)
-  restaurantActivity.maximumIndividualsEngaged = Math.floor(studyOccupation.intervalSize[0] / 2)
+  restaurantActivity.maximumIndividualsEngaged = Math.floor(studyOccupation.actualSize / 5)
 
   newActivities.push(school)
 
