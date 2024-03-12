@@ -4,7 +4,7 @@ import { selectTransportationToOccupation } from '../general'
 import { WorkRoutine } from './getters'
 
 export function selectWorkActivity(
-  transportToWork: boolean,
+  needsTransportToWork: boolean,
   couldGoOnFootToWork: boolean,
   transportationMean: Individual['transportationMean'],
   workOccupation: Occupation,
@@ -12,15 +12,13 @@ export function selectWorkActivity(
   hasEaten: boolean,
   transportationActivities: Activity[]
 ) {
-  const transportationToOccupationActivities = transportToWork
-    ? selectTransportationToOccupation(
-        couldGoOnFootToWork,
-        transportationMean,
-        transportationActivities
-      )
-    : []
+  const transportationToOccupationActivities = selectTransportationToOccupation(
+    couldGoOnFootToWork,
+    transportationMean,
+    transportationActivities
+  )
 
-  const newActivities = [...transportationToOccupationActivities]
+  const newActivities = needsTransportToWork ? [...transportationToOccupationActivities] : []
 
   const work = getActivity(workOccupation.label)
 
