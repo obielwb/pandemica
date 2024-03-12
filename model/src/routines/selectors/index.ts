@@ -50,15 +50,6 @@ export function selectActivitiesBasedOnAttributes(
         needsTransportToWork = false
         hasEaten = true
         remainingTime -= newActivities.reduce((acc, activity) => acc + activity.duration, 0)
-        console.log(day)
-        console.log(
-          newActivities.map((activity) => `${activity.label} ${activity.duration}`).join('\n'),
-          newActivities.reduce((acc, activity) => acc + activity.duration, 0),
-          workDays,
-          workOccupation &&
-            workDays.includes(day) &&
-            !dailyRoutine.find((activity) => activity.category === 'work')
-        )
       }
 
       if (
@@ -79,10 +70,6 @@ export function selectActivitiesBasedOnAttributes(
         )
         hasEaten = true
         remainingTime -= newActivities.reduce((acc, activity) => acc + activity.duration, 0)
-        console.log(
-          newActivities.map((activity) => `${activity.label} ${activity.duration}`).join('\n'),
-          newActivities.reduce((acc, activity) => acc + activity.duration, 0)
-        )
       }
 
       if (
