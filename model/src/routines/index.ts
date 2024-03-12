@@ -24,12 +24,27 @@ export function assignRoutine(individuals: Individual[]) {
     }
   >()
 
-  const individualWithRoutines = individuals.map((individual) => {
+  let totalRoutines = individuals.length
+  const LOG_INTERVAL = 1_000
+
+  const individualWithRoutines = individuals.map((individual, index) => {
+    if (index % LOG_INTERVAL === 0) {
+      log('', { time: true, timeLabel: `ROUTINE-${index}` })
+    }
+
     const routine = generateWeeklyRoutine(individual, individualsRoutinesMap)
-    individualsRoutinesMap.set(individual.id, {
-      age: individual.age,
-      routine
-    })
+
+    if (individual.age[1] > 19) {
+      individualsRoutinesMap.set(individual.id, {
+        age: individual.age,
+        routine
+      })
+    }
+
+    if (index % LOG_INTERVAL === 0) {
+      log('', { timeEnd: true, timeLabel: `ROUTINE-${index}` })
+      totalRoutines -= LOG_INTERVAL
+    }
 
     return {
       ...individual,

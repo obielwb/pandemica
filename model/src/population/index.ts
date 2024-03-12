@@ -90,7 +90,7 @@ async function readPopulationFromDisk() {
     time: true,
     timeLabel: 'DESERIALIZATION'
   })
-  const populationDir = join(__dirname, '..', 'data', 'simulation', 'population')
+  const populationDir = join(__dirname, '..', '..', 'data', 'simulation', 'population')
 
   let population = []
 
@@ -156,7 +156,7 @@ async function savePopulationToDisk(population: Individual[]) {
   const fragments = Math.ceil(populationTotalSize / FRAGMENT_FILE_SIZE)
   const fragmentIndividualCount = Math.ceil(population.length / fragments)
 
-  const populationDir = join(__dirname, '..', 'data', 'simulation', 'population')
+  const populationDir = join(__dirname, '..', '..', 'data', 'simulation', 'population')
 
   for (let i = 0; i < fragments; i++) {
     log(`Saving fragment ${i} to disk`, {
@@ -229,7 +229,7 @@ function instantiatePopulation() {
     individual.occupations = []
 
     individual.state = 'susceptible'
-    individual.hadCovid = false
+    individual.hadCovid = individual.isInLockdown = false
 
     individuals.push(individual)
   }

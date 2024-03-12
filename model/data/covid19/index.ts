@@ -25,31 +25,37 @@ export function readPandemicData(years: number[] = [2020, 2021, 2022]): Pandemic
     const pandemicRegisters: PandemicRegister[] = []
 
     content.forEach((line) => {
-      const [
-        epi_week,
-        date,
-        newDeaths,
-        deaths,
-        newCases,
-        totalCases,
-        deaths_per_100k_inhabitants,
-        totalCases_per_100k_inhabitants,
-        deaths_by_totalCases
-      ] = line.split(',')
+      if (line.length > 0) {
+        const [
+          epi_week,
+          date,
+          state, // unused but read
+          city, // unused but read
+          ibgeID, // unused but read
+          newDeaths,
+          deaths,
+          newCases,
+          totalCases,
+          deaths_per_100k_inhabitants,
+          totalCases_per_100k_inhabitants,
+          deaths_by_totalCases
+        ] = line.split(',')
 
-      const register: PandemicRegister = {
-        epiWeek: parseInt(epi_week),
-        date,
-        newDeaths: parseInt(newDeaths),
-        deaths: parseInt(deaths),
-        newCases: parseInt(newCases),
-        totalCases: parseInt(totalCases),
-        deathsPer100kInhabitants: parseFloat(deaths_per_100k_inhabitants),
-        totalCasesPer100kInhabitants: parseFloat(totalCases_per_100k_inhabitants),
-        deathsByTotalCases: parseFloat(deaths_by_totalCases)
+        const register: PandemicRegister = {
+          epiWeek: parseInt(epi_week),
+          date,
+          newDeaths: parseInt(newDeaths),
+          deaths: parseInt(deaths),
+          newCases: parseInt(newCases),
+          totalCases: parseInt(totalCases),
+          deathsPer100kInhabitants: parseFloat(deaths_per_100k_inhabitants),
+          totalCasesPer100kInhabitants: parseFloat(totalCases_per_100k_inhabitants),
+          deathsByTotalCases: parseFloat(deaths_by_totalCases)
+        }
+
+        if (years.some((year) => register.date.includes(year.toString())))
+          pandemicRegisters.push(register)
       }
-
-      if (years.some((year) => date.includes(year.toString()))) pandemicRegisters.push(register)
     })
 
     return pandemicRegisters

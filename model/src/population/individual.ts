@@ -116,13 +116,17 @@ export class Individual {
 export type OccupationType = 'study' | 'work'
 
 export class Occupation {
+  public label: string
+
   constructor(
     public id: number,
     public type: OccupationType,
-    public label: string,
+    label: string,
     public intervalSize: [number, number],
     public actualSize: number
-  ) {}
+  ) {
+    this.label = `${this.type}.${label}`
+  }
 
   public serialize?(): string {
     const serializedOccupation = {

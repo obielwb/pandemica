@@ -334,7 +334,7 @@ export const largeIndustryWorkFromHome = new Activity(
 
 export const microCommerceAndServicesWorkInPerson = new Activity(
   'work',
-  'industry.commerce_services.micro',
+  'commerce_services.micro',
   'indoor',
   8 * 60,
   'normal',

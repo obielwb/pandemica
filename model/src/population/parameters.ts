@@ -553,22 +553,22 @@ export function assignStudyOccupations(
   let siteIds = 0
   ;[
     {
-      label: 'study.preschool',
+      label: 'preschool',
       studentsPerSite: Math.ceil(preschoolStudents.length / preschools),
       totalSites: preschools
     },
     {
-      label: 'study.middle_school',
+      label: 'middle_school',
       studentsPerSite: Math.ceil(middleSchoolStudents.length / middleSchools),
       totalSites: middleSchools
     },
     {
-      label: 'study.high_school',
+      label: 'high_school',
       studentsPerSite: Math.ceil(highSchoolStudents.length / highSchools),
       totalSites: highSchools
     },
     {
-      label: 'study.college',
+      label: 'college',
       studentsPerSite: Math.ceil(collegeStudents.length / colleges),
       totalSites: colleges
     }
@@ -654,7 +654,7 @@ export function assignWorkOccupations(
         const workstation = new Occupation(
           siteIds++,
           'work',
-          'work.' + category.label,
+          category.label.toString(),
           [minEmployees, maxEmployees],
           0
         )
