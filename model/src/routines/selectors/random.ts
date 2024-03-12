@@ -234,10 +234,11 @@ function adjustWeightsForAge(
   }
 
   if (individual.age[1] >= CHILD_AGE && individual.age[1] <= 19) {
-    weights['leisure.party.outdoor'] = 0.5
-    weights['leisure.party.indoor'] = 0.5
+    weights['leisure.party.outdoor'] += 0.5
+    weights['leisure.party.indoor'] += 0.5
   } else if (individual.age[1] >= RETIREMENT_AGE) {
-    weights['leisure.gym'] = 1.5
+    weights['leisure.gym'] /= 2
+    weights['leisure.church'] += 1
   }
 
   return weights

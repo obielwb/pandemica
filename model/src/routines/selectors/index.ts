@@ -115,16 +115,22 @@ export function selectActivitiesBasedOnAttributes(
 
       newActivities.push(...selectMimickedActivities(individual, day, individualsRoutinesMap))
     } else {
-      newActivities.push(
-        ...selectRandomDayOffActivity(
-          dailyRoutine,
-          individual,
-          day,
-          remainingTime,
-          weeklyRoutine,
-          transportationActivities
+      // if the retired or nem-nem lives with more people, there's a fifty-fifty chance
+      // he will follow his guardian activities
+      if (individual.house.size > 1 && Math.random() <= 0.5) {
+        newActivities.push(...selectMimickedActivities(individual, day, individualsRoutinesMap))
+      } else {
+        newActivities.push(
+          ...selectRandomDayOffActivity(
+            dailyRoutine,
+            individual,
+            day,
+            remainingTime,
+            weeklyRoutine,
+            transportationActivities
+          )
         )
-      )
+      }
     }
   }
 
