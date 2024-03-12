@@ -6,13 +6,14 @@ import { quickSort } from './clock/sorting'
 import { IndividualActivity } from './population/activities'
 import { calculate } from './calculus'
 import { Individual } from './population/individual'
-import { log } from './utilities'
+import { fisherYatesShuffle, log } from './utilities'
 import { nanoid } from 'nanoid'
 import { VaccineTrigger } from './clock/triggers/vaccines'
 import { LockdownTrigger } from './clock/triggers/lockdown'
 import { MaskTrigger } from './clock/triggers/masks'
 import { PandemicRegister } from '../data/covid19'
 import { join } from 'path'
+import { assignHospitalizedRoutine } from './routines'
 
 // todo: these individuals are outdated
 const individuals: Individual[] = []
@@ -83,8 +84,6 @@ export async function run(
   const vaccines = new VaccineTrigger(individuals)
   const masks = new MaskTrigger(individuals, [])
 
-  setInitialScenario(initialScenario, population)
-
   // lockdown.assign(clock.currentDateString())
   // vaccines.assign(clock.currentDateString())
   // masks.assign(clock.currentDateString())
@@ -122,9 +121,36 @@ export async function run(
   saveSimulatedPandemicRegistersToDisk(runId, simulatedPandemicRegisters)
 }
 
-function setInitialScenario(pandemicRegisters: PandemicRegister[], population: Individual[]) {
-  for (const pandemicRegister of pandemicRegisters) {
-  }
+function setInitialScenario(
+  totalDeaths: number,
+  totalCases: number,
+  pandemicRegisters: PandemicRegister[],
+  population: Individual[]
+) {
+  log('Setting initial pandemic scenario', { time: true, timeLabel: 'SIMULATION' })
+  const totalIndividualsContaminated = fisherYatesShuffle(population).slice(0, totalCases)
+
+  const individualsDead = totalIndividualsContaminated.slice(0, totalDeaths)
+
+  individualsDead.map((individual) => (individual.state = 'dead'))
+
+  // todo: be aware of dead individuals in runner
+  // todo: implement assignCovidstateRoutine functions
+  // todo: implement covid recuperation
+
+  // infected individuals recover. To start the simulation
+  // being contaminated we only catch individuals who were infected in the last 14 days
+  const individualsCurrentContaminted = totalIndividualsContaminated.slice(
+    totalDeaths, // starts to select where individualsDead ends
+    totalDeaths + (pandemicRegisters[-1].totalCases - pandemicRegisters[-14].totalCases)
+  )
+
+  individualsCurrentContaminted.slice(totalDeaths).map((individual) => {
+    individual.state = 'hospitalized'
+    assignHospitalizedRoutine(individual)
+  })
+
+  return pandemicRegisters[pandemicRegisters.length - 1].date
 }
 
 function saveSimulatedPandemicRegistersToDisk(
