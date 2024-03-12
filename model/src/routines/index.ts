@@ -42,3 +42,5 @@ export function assignRoutine(individuals: Individual[]) {
 
   return individualWithRoutines
 }
+
+export function assignHospitalizedRoutine(individual: Individual) {}

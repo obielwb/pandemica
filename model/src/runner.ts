@@ -13,6 +13,7 @@ import { LockdownTrigger } from './clock/triggers/lockdown'
 import { MaskTrigger } from './clock/triggers/masks'
 import { PandemicRegister } from '../data/covid19'
 import { join } from 'path'
+import { assignHospitalizedRoutine } from './routines'
 
 // todo: these individuals are outdated
 const individuals: Individual[] = []
@@ -82,8 +83,6 @@ export async function run(
   )
   const vaccines = new VaccineTrigger(individuals)
   const masks = new MaskTrigger(individuals, [])
-
-  setInitialScenario(initialScenario, population)
 
   // lockdown.assign(clock.currentDateString())
   // vaccines.assign(clock.currentDateString())
