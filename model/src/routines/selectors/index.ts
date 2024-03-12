@@ -1,5 +1,5 @@
 import { IndividualsRoutinesMap } from '..'
-import { CHILD_AGE, RETIREMENT_AGE } from '../../../data/census'
+import { CHILD_AGE } from '../../../data/census'
 import { Activity } from '../../population/activities'
 import { Individual, Occupation } from '../../population/individual'
 import { ACTIVE_TIME } from '../generators'
@@ -72,10 +72,7 @@ export function selectActivitiesBasedOnAttributes(
         remainingTime -= newActivities.reduce((acc, activity) => acc + activity.duration, 0)
       }
 
-      if (
-        newActivities.length === 0 &&
-        dailyRoutine.filter((activity) => activity.category === 'home').length === 2 // sleep and morning stay at home
-      ) {
+      if (newActivities.length === 0) {
         const randomActivity = selectRandomDailyActivity(
           individual,
           day,

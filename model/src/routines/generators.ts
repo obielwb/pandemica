@@ -78,7 +78,7 @@ export function generateDailyRoutine(
   dailyRoutine.push(sleepActivity) // day starts or ends with sleep
   totalTime += sleepActivity.duration
 
-  const stayAtHomeActivity = getActivity(Activities.StayAtHome)
+  const stayAtHomeActivity = { ...getActivity(Activities.StayAtHome) }
   stayAtHomeActivity.duration = 1 * 60
   stayAtHomeActivity.maximumIndividualsEngaged = individual.house.size
   dailyRoutine.push(stayAtHomeActivity)

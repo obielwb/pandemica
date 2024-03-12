@@ -33,17 +33,23 @@ export function selectRandomDailyActivity(
   const activityPenalty = !dayOff ? calculateActivityPenalty([...dailyRoutineRandomActivities]) : {}
   const activityTimeSpent = calculateActivityTimeSpent([...dailyRoutineRandomActivities])
 
+  const adjustedWeeklyActivityWeightsEntries = Object.entries(adjustedWeeklyActivityWeights)
   // convert weekly probabilities to daily by dividing by 7
   const suitableActivities = Object.fromEntries(
-    Object.entries(adjustedWeeklyActivityWeights)
-      .filter(([activity]) => getActivity(activity).duration <= remainingTime)
-      .map(([activity, weight]) => {
-        const activityLabel = getActivity(activity).label
-        const frequencyAdjustmentFactor = getLabelAdjustmentFactor(labelFrequency, activityLabel)
-        const timeSpentFactor = getTimeSpentAdjustmentFactor(activityTimeSpent, activity)
-        const penalty = activityPenalty[activityLabel] || 1
-        return [activity, (weight / 7) * frequencyAdjustmentFactor * timeSpentFactor * penalty]
-      })
+    (adjustedWeeklyActivityWeightsEntries.filter(
+      ([activityLabel]) => getActivity(activityLabel).duration <= remainingTime
+    ).length > 0
+      ? adjustedWeeklyActivityWeightsEntries.filter(
+          ([activityLabel]) => getActivity(activityLabel).duration <= remainingTime
+        )
+      : adjustedWeeklyActivityWeightsEntries
+    ).map(([activity, weight]) => {
+      const activityLabel = getActivity(activity).label
+      const frequencyAdjustmentFactor = getLabelAdjustmentFactor(labelFrequency, activityLabel)
+      const timeSpentFactor = getTimeSpentAdjustmentFactor(activityTimeSpent, activity)
+      const penalty = activityPenalty[activityLabel] || 1
+      return [activity, (weight / 7) * frequencyAdjustmentFactor * timeSpentFactor * penalty]
+    })
   )
 
   const selectedActivity = weightedRandomSelection(suitableActivities)
