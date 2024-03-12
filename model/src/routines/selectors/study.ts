@@ -4,6 +4,7 @@ import { selectTransportationToOccupation } from './general'
 
 export function selectStudyActivity(
   individual: Individual,
+  alsoWorksToday: boolean,
   couldGoOnFootToSchool: boolean,
   studyOccupation: Occupation,
   transportationActivities: Activity[]
@@ -16,24 +17,21 @@ export function selectStudyActivity(
 
   const newActivities = [...transportationToOccupationActivities.slice()]
 
-  const school = getActivity(studyOccupation.label)
+  const school = { ...getActivity(studyOccupation.label) }
   const restaurantActivity = getActivity(Activities.RestaurantIndoors)
   restaurantActivity.maximumIndividualsEngaged = Math.floor(studyOccupation.intervalSize[0] / 2)
 
-  const alsoWorks = individual.occupationTypes.includes('work')
-
-  newActivities.push({
-    ...school,
-    duration: alsoWorks ? school.duration - 2 : school.duration
-  })
+  newActivities.push(school)
 
   // lunch in between
   if (individual.educationStatus === 'middle_school') {
     newActivities.push(restaurantActivity)
   } else {
-    school.duration = Math.floor(school.duration / 2)
+    const schoolDuration = alsoWorksToday ? school.duration - 2 * 60 : school.duration
+
+    school.duration = Math.floor(schoolDuration / 2)
     newActivities.push(restaurantActivity)
-    newActivities.push({ ...school, duration: alsoWorks ? school.duration - 2 : school.duration })
+    newActivities.push(school)
   }
 
   newActivities.push(...transportationToOccupationActivities)

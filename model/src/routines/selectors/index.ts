@@ -30,7 +30,7 @@ export function selectActivitiesBasedOnAttributes(
   if (studyOccupation || workOccupation) {
     if ((day >= 1 && day <= 5) || workDays.includes(day)) {
       let hasEaten = false
-      let transportToWork = true
+      let needsTransportToWork = true
 
       if (
         studyOccupation &&
@@ -41,14 +41,24 @@ export function selectActivitiesBasedOnAttributes(
         newActivities.push(
           ...selectStudyActivity(
             individual,
+            workDays.includes(day),
             couldGoOnFootToSchool,
             studyOccupation,
             transportationActivities
           )
         )
-        transportToWork = false
+        needsTransportToWork = false
         hasEaten = true
         remainingTime -= newActivities.reduce((acc, activity) => acc + activity.duration, 0)
+        console.log(day)
+        console.log(
+          newActivities.map((activity) => `${activity.label} ${activity.duration}`).join('\n'),
+          newActivities.reduce((acc, activity) => acc + activity.duration, 0),
+          workDays,
+          workOccupation &&
+            workDays.includes(day) &&
+            !dailyRoutine.find((activity) => activity.category === 'work')
+        )
       }
 
       if (
@@ -58,7 +68,7 @@ export function selectActivitiesBasedOnAttributes(
       ) {
         newActivities.push(
           ...selectWorkActivity(
-            transportToWork,
+            needsTransportToWork,
             couldGoOnFootToWork,
             individual.transportationMean,
             workOccupation,
@@ -68,11 +78,11 @@ export function selectActivitiesBasedOnAttributes(
           )
         )
         hasEaten = true
+        remainingTime -= newActivities.reduce((acc, activity) => acc + activity.duration, 0)
         console.log(
-          newActivities.map((activity) => activity.label).join('\n'),
+          newActivities.map((activity) => `${activity.label} ${activity.duration}`).join('\n'),
           newActivities.reduce((acc, activity) => acc + activity.duration, 0)
         )
-        remainingTime -= newActivities.reduce((acc, activity) => acc + activity.duration, 0)
       }
 
       if (

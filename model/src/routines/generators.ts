@@ -1,4 +1,3 @@
-import { exit } from 'process'
 import { IndividualsRoutinesMap } from '.'
 import { Activities, Activity, getActivity } from '../population/activities'
 import { Individual, Occupation } from '../population/individual'
