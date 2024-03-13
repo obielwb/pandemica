@@ -112,7 +112,7 @@ const collegeStudentAndWorker: Individual = {
     {
       id: 18846,
       type: 'work',
-      label: 'work.industry.medium',
+      label: 'work.i.m',
       intervalSize: [100, 499],
       actualSize: 101
     }
@@ -147,7 +147,7 @@ const regularWorker: Individual = {
     {
       id: 135285,
       type: 'work',
-      label: 'work.commerce_services.small',
+      label: 'work.cs.s',
       intervalSize: [10, 49],
       actualSize: 11
     }

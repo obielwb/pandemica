@@ -254,7 +254,7 @@ export const privateTransportRide = new Activity(
 
 export const microIndustryWorkInPerson = new Activity(
   'work',
-  'industry.micro',
+  'i.xs',
   'indoor',
   8 * 60, // can vary to 12x36
   'normal',
@@ -264,7 +264,7 @@ export const microIndustryWorkInPerson = new Activity(
 
 export const microIndustryWorkFromHome = new Activity(
   'work',
-  'industry.micro.from_home',
+  'i.xs.fh',
   'indoor',
   8 * 60, // can vary to 12x36
   'normal',
@@ -274,7 +274,7 @@ export const microIndustryWorkFromHome = new Activity(
 
 export const smallIndustryWorkInPerson = new Activity(
   'work',
-  'industry.small',
+  'i.s',
   'indoor',
   8 * 60, // can vary to 12x36
   'normal',
@@ -284,7 +284,7 @@ export const smallIndustryWorkInPerson = new Activity(
 
 export const smallIndustryWorkFromHome = new Activity(
   'work',
-  'industry.small.from_home',
+  'i.s.fh',
   'indoor',
   8 * 60, // can vary to 12x36
   'normal',
@@ -294,7 +294,7 @@ export const smallIndustryWorkFromHome = new Activity(
 
 export const mediumIndustryWorkInPerson = new Activity(
   'work',
-  'industry.medium',
+  'i.m',
   'indoor',
   12 * 60,
   'normal',
@@ -304,7 +304,7 @@ export const mediumIndustryWorkInPerson = new Activity(
 
 export const mediumIndustryWorkFromHome = new Activity(
   'work',
-  'industry.medium.from_home',
+  'i.m.fh',
   'indoor',
   12 * 60,
   'normal',
@@ -314,7 +314,7 @@ export const mediumIndustryWorkFromHome = new Activity(
 
 export const largeIndustryWorkInPerson = new Activity(
   'work',
-  'industry.large',
+  'i.l',
   'indoor',
   12 * 60,
   'normal',
@@ -324,7 +324,7 @@ export const largeIndustryWorkInPerson = new Activity(
 
 export const largeIndustryWorkFromHome = new Activity(
   'work',
-  'industry.large.from_home',
+  'i.l.fh',
   'indoor',
   12 * 60,
   'normal',
@@ -334,7 +334,7 @@ export const largeIndustryWorkFromHome = new Activity(
 
 export const microCommerceAndServicesWorkInPerson = new Activity(
   'work',
-  'commerce_services.micro',
+  'cs.xs',
   'indoor',
   8 * 60,
   'normal',
@@ -344,7 +344,7 @@ export const microCommerceAndServicesWorkInPerson = new Activity(
 
 export const microCommerceAndServicesWorkFromHome = new Activity(
   'work',
-  'commerce_services.micro.from_home',
+  'cs.xs.fh',
   'indoor',
   8 * 60,
   'normal',
@@ -354,7 +354,7 @@ export const microCommerceAndServicesWorkFromHome = new Activity(
 
 export const smallCommerceAndServicesWorkInPerson = new Activity(
   'work',
-  'commerce_services.small',
+  'cs.s',
   'indoor',
   8 * 60,
   'normal',
@@ -364,7 +364,7 @@ export const smallCommerceAndServicesWorkInPerson = new Activity(
 
 export const smallCommerceAndServicesWorkFromHome = new Activity(
   'work',
-  'commerce_services.small.from_home',
+  'cs.s.fh',
   'indoor',
   8 * 60,
   'normal',
@@ -374,7 +374,7 @@ export const smallCommerceAndServicesWorkFromHome = new Activity(
 
 export const mediumCommerceAndServicesWorkInPerson = new Activity(
   'work',
-  'commerce_services.medium',
+  'cs.m',
   'indoor',
   8 * 60,
   'normal',
@@ -384,7 +384,7 @@ export const mediumCommerceAndServicesWorkInPerson = new Activity(
 
 export const mediumCommerceAndServicesWorkFromHome = new Activity(
   'work',
-  'commerce_services.medium.from_home',
+  'cs.m.fh',
   'indoor',
   8 * 60,
   'normal',
@@ -394,7 +394,7 @@ export const mediumCommerceAndServicesWorkFromHome = new Activity(
 
 export const largeCommerceAndServicesWorkInPerson = new Activity(
   'work',
-  'commerce_services.large',
+  'cs.l',
   'indoor',
   8 * 60,
   'normal',
@@ -404,7 +404,7 @@ export const largeCommerceAndServicesWorkInPerson = new Activity(
 
 export const largeCommerceAndServicesWorkFromHome = new Activity(
   'work',
-  'commerce_services.large.from_home',
+  'cs.l.fh',
   'indoor',
   8 * 60,
   'normal',
@@ -424,7 +424,7 @@ export const preschoolStudy = new Activity(
 
 export const preschoolStudyFromHome = new Activity(
   'study',
-  'preschool.from_home',
+  'preschool.fh',
   'indoor',
   9 * 60,
   'normal',
@@ -444,7 +444,7 @@ export const middleSchoolStudy = new Activity(
 
 export const middleSchoolStudyFromHome = new Activity(
   'study',
-  'middle_school.from_home',
+  'middle_school.fh',
   'indoor',
   5 * 60,
   'normal',
@@ -464,7 +464,7 @@ export const highSchoolStudy = new Activity(
 
 export const highSchoolStudyFromHome = new Activity(
   'study',
-  'high_school.from_home',
+  'high_school.fh',
   'indoor',
   6 * 60,
   'normal',
@@ -484,7 +484,7 @@ export const collegeStudy = new Activity(
 
 export const collegeStudyFromHome = new Activity(
   'study',
-  'high_school.from_home',
+  'high_school.fh',
   'indoor',
   8 * 60,
   'normal',
@@ -661,15 +661,15 @@ export enum Activities {
   PublicTransportRide = 'transport.public.ride',
   PrivateTransportRide = 'transport.private.ride',
 
-  MicroIndustryWorkInPerson = 'work.industry.micro',
-  SmallIndustryWorkInPerson = 'work.industry.small',
-  MediumIndustryWorkInPerson = 'work.industry.medium',
-  LargeIndustryWorkInPerson = 'work.industry.large',
+  MicroIndustryWorkInPerson = 'work.i.xs',
+  SmallIndustryWorkInPerson = 'work.i.s',
+  MediumIndustryWorkInPerson = 'work.i.m',
+  LargeIndustryWorkInPerson = 'work.i.l',
 
-  MicroCommerceAndServicesWorkInPerson = 'work.commerce_services.micro',
-  SmallCommerceAndServicesWorkInPerson = 'work.commerce_services.small',
-  MediumCommerceAndServicesWorkInPerson = 'work.commerce_services.medium',
-  LargeCommerceAndServicesWorkInPerson = 'work.commerce_services.large',
+  MicroCommerceAndServicesWorkInPerson = 'work.cs.xs',
+  SmallCommerceAndServicesWorkInPerson = 'work.cs.s',
+  MediumCommerceAndServicesWorkInPerson = 'work.cs.m',
+  LargeCommerceAndServicesWorkInPerson = 'work.cs.l',
 
   PreschoolStudyInPerson = 'study.preschool',
   MiddleSchoolStudyInPeron = 'study.middle_school',

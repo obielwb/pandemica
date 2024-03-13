@@ -677,10 +677,10 @@ export function assignWorkOccupations(
 
   const sizePriority = (size: string) => {
     const workstationPriorities = {
-      micro: 4,
-      small: 3,
-      medium: 2,
-      large: 1
+      xs: 4,
+      s: 3,
+      m: 2,
+      l: 1
     }
 
     return workstationPriorities[size]
