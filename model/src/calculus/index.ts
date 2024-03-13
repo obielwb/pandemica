@@ -34,8 +34,10 @@ export function calculate(
         ]
     }
 
-    withCovidMultiplier +=
-      MaskMultiplier[individual.mask] * VoiceMultiplier[activity.voice] * vaccineMultiplier * 1
+    if (individual.state !== 'susceptible') {
+      withCovidMultiplier +=
+        MaskMultiplier[individual.mask] * VoiceMultiplier[activity.voice] * vaccineMultiplier * 1
+    }
   })
 
   let vaccineMultiplier = 1
@@ -62,7 +64,6 @@ export function calculate(
   if (individualInFocus.hadCovid) individualMultiplier * 0.08
 
   const contractionProbability = environment * withCovidMultiplier * individualMultiplier
-  log('Contraction Probability: ' + contractionProbability)
 
   let acquiredCovid = false
   if (contractionProbability >= threshold) acquiredCovid = true

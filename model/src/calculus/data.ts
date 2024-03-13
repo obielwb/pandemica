@@ -97,5 +97,5 @@ export const AgeMultipler: { [key: string]: AgeValue } = {
   }
 }
 
-// number of days before symptoms appear
-export const OmicronIncubationPeriod = 3 // days
+// number of days before becoming contagious
+export const OmicronIncubationPeriod = 2 // days
