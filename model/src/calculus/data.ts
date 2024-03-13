@@ -96,3 +96,6 @@ export const AgeMultipler: { [key: string]: AgeValue } = {
     deathRate: 0.06
   }
 }
+
+// number of days before symptoms appear
+export const OmicronIncubationPeriod = 3 // days
