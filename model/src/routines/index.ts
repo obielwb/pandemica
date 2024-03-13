@@ -25,7 +25,7 @@ export function assignRoutine(individuals: Individual[]) {
   >()
 
   let totalRoutines = individuals.length
-  const LOG_INTERVAL = 1_000
+  const LOG_INTERVAL = 10_000
 
   const individualWithRoutines = individuals.map((individual, index) => {
     if (index % LOG_INTERVAL === 0) {
