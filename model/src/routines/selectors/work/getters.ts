@@ -1,14 +1,14 @@
 import { Individual } from '../../../population/individual'
 
-export type WorkRoutine = 'none' | 'business_hours' | '12x36' | 'part_time'
+export type WorkRoutine = '' | 'business_hours' | '12x36' | 'part_time'
 
 export function getIndividualWorkRoutine(individual: Individual): WorkRoutine {
-  if (individual.occupationTypes.includes('work')) {
-    if (individual.occupationTypes.includes('study')) {
+  if (individual.occupationTypes.includes('w')) {
+    if (individual.occupationTypes.includes('s')) {
       return 'part_time'
     }
 
-    const work = individual.occupations.find((o) => o!.type === 'work')!
+    const work = individual.occupations.find((o) => o!.type === 'w')!
     const workType = work.label.split(',')[0]
 
     if (workType === 'i') {
@@ -23,12 +23,12 @@ export function getIndividualWorkRoutine(individual: Individual): WorkRoutine {
     }
   }
 
-  return 'none'
+  return ''
 }
 
 // atention: days are zero-index
 export function getWorkDays(workRoutine: WorkRoutine, workSize: string): number[] {
-  if (workRoutine === 'none') {
+  if (workRoutine === '') {
     return []
   } else if (workRoutine === '12x36') {
     const workOnWeekends =

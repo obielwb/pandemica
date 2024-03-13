@@ -7,14 +7,14 @@ import { MaskType, Vaccine } from '../calculus/data'
 // - lockdown stage
 export class Individual {
   public id: number
-  public sex: 'male' | 'female'
+  public sex: 'm' | 'f'
   public age: number[]
   public educationStatus: string
   public currentActivity?: IndividualActivity
   public routine: Activity[][]
   public house: House
   public income: number[]
-  public transportationMean: 'private' | 'public'
+  public transportationMean: 'pr' | 'pu'
   public occupationTypes: [OccupationType?, OccupationType?]
   public occupations: [Occupation?, Occupation?]
 
@@ -29,31 +29,31 @@ export class Individual {
 
   public serialize?(): string {
     const educationStatusMap = {
-      preschool: 'ps',
-      middle_school: 'ms',
-      high_school: 'hs',
-      undergraduate: 'ug',
-      graduate: 'gr',
-      unschooled: 'us',
-      educated: 'ed'
+      ps: 'ps',
+      ms: 'ms',
+      hs: 'hs',
+      ug: 'ug',
+      g: 'gr',
+      us: 'us',
+      ed: 'ed'
     }
 
     const serializedIndividual = {
       i: this.id,
-      s: this.sex === 'male' ? 0 : 1,
+      s: this.sex === 'm' ? 0 : 1,
       a: this.age,
       es: educationStatusMap[this.educationStatus],
       ca: this.currentActivity ? this.currentActivity.serialize() : null,
       r: this.routine.map((row) => row.map((activity) => activity.serialize())),
       h: this.house.serialize!!(),
       inc: this.income,
-      tm: this.transportationMean === 'private' ? 0 : 1,
-      ot: this.occupationTypes.map((o) => (o === 'study' ? 1 : 0)),
+      tm: this.transportationMean === 'pr' ? 0 : 1,
+      ot: this.occupationTypes.map((o) => (o === 's' ? 1 : 0)),
       oc: this.occupations.map((o) => (o ? o.serialize!!() : null)),
       st: this.state[0],
       hdc: this.hadCovid ? 1 : 0,
-      v: this.vaccine.type !== 'none' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
-      m: this.mask !== 'none' ? this.mask : null,
+      v: this.vaccine.type !== '' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
+      m: this.mask !== '' ? this.mask : null,
       l: this.isInLockdown ? 1 : 0,
       dse: this.daysSinceExposed ? this.daysSinceExposed : null
     }
@@ -77,15 +77,15 @@ export class Individual {
       ps: 'preschool',
       ms: 'middle_school',
       hs: 'high_school',
-      ug: 'undergraduate',
-      gr: 'graduate',
-      us: 'unschooled',
-      ed: 'educated'
+      ug: 'ug',
+      gr: 'g',
+      us: 'us',
+      ed: 'ed'
     }
 
     const individual = new Individual()
     individual.id = deserializedIndividual.i
-    individual.sex = deserializedIndividual.s === 0 ? 'male' : 'female'
+    individual.sex = deserializedIndividual.s === 0 ? 'm' : 'f'
     individual.age = deserializedIndividual.a
     individual.educationStatus = educationStatusReverseMap[deserializedIndividual.es]
     individual.currentActivity = deserializedIndividual.ca
@@ -96,10 +96,8 @@ export class Individual {
     )
     individual.house = House.deserialize(deserializedIndividual.h)
     individual.income = deserializedIndividual.inc || []
-    individual.transportationMean = deserializedIndividual.tm === 0 ? 'private' : 'public'
-    individual.occupationTypes = deserializedIndividual.ot.map((o: number) =>
-      o === 1 ? 'study' : 'work'
-    )
+    individual.transportationMean = deserializedIndividual.tm === 0 ? 'pr' : 'pu'
+    individual.occupationTypes = deserializedIndividual.ot.map((o: number) => (o === 1 ? 's' : 'w'))
     individual.occupations = deserializedIndividual.oc.map((o) =>
       o ? Occupation.deserialize(o) : null
     )
@@ -107,8 +105,8 @@ export class Individual {
     individual.hadCovid = deserializedIndividual.hdc === 1
     individual.vaccine = deserializedIndividual.v
       ? { type: deserializedIndividual.v.t, doses: deserializedIndividual.v.d }
-      : { type: 'none', doses: 0 }
-    individual.mask = deserializedIndividual.m || 'none'
+      : { type: '', doses: 0 }
+    individual.mask = deserializedIndividual.m || ''
     individual.isInLockdown = deserializedIndividual.l === 1
     individual.daysSinceExposed = deserializedIndividual.dse
 
@@ -116,7 +114,7 @@ export class Individual {
   }
 }
 
-export type OccupationType = 'study' | 'work'
+export type OccupationType = 's' | 'w'
 
 export class Occupation {
   public label: string
@@ -147,7 +145,7 @@ export class Occupation {
     const deserializedOccupation = JSON.parse(serialized)
     return new Occupation(
       deserializedOccupation.i,
-      deserializedOccupation.t === 's' ? 'study' : 'work',
+      deserializedOccupation.t === 's' ? 's' : 'w',
       deserializedOccupation.l,
       deserializedOccupation.is,
       deserializedOccupation.as

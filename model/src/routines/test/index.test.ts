@@ -25,9 +25,9 @@ function test() {
 
 const baby: Individual = {
   id: 0,
-  sex: 'male',
+  sex: 'm',
   age: [0, 4],
-  educationStatus: 'unschooled',
+  educationStatus: 'us',
   currentActivity: undefined,
   routine: [],
   house: {
@@ -37,24 +37,24 @@ const baby: Individual = {
     housemates: [0, 1, 2, 3]
   },
   income: [0, 0],
-  transportationMean: 'public',
+  transportationMean: 'pu',
   occupationTypes: [],
   occupations: [],
   state: 'susceptible',
   hadCovid: false,
   vaccine: {
-    type: 'none',
+    type: '',
     doses: 0
   },
-  mask: 'none',
+  mask: '',
   isInLockdown: undefined
 }
 
 const child: Individual = {
   id: 1,
-  sex: 'male',
+  sex: 'm',
   age: [0, 4],
-  educationStatus: 'preschool',
+  educationStatus: 'ps',
   currentActivity: undefined,
   routine: [],
   house: {
@@ -64,13 +64,13 @@ const child: Individual = {
     housemates: [0, 1, 2, 3]
   },
   income: [0, 0],
-  transportationMean: 'public',
-  occupationTypes: ['study'],
+  transportationMean: 'pu',
+  occupationTypes: ['s'],
   occupations: [
     {
       id: 324,
-      type: 'study',
-      label: 'study.preschool',
+      type: 's',
+      label: 's.ps',
       intervalSize: [0, 0],
       actualSize: 93
     }
@@ -78,18 +78,18 @@ const child: Individual = {
   state: 'susceptible',
   hadCovid: false,
   vaccine: {
-    type: 'none',
+    type: '',
     doses: 0
   },
-  mask: 'none',
+  mask: '',
   isInLockdown: undefined
 }
 
 const collegeStudentAndWorker: Individual = {
   id: 2,
-  sex: 'male',
+  sex: 'm',
   age: [20, 24],
-  educationStatus: 'undergraduate',
+  educationStatus: 'ug',
   currentActivity: undefined,
   routine: [],
   house: {
@@ -99,20 +99,20 @@ const collegeStudentAndWorker: Individual = {
     housemates: [0, 1, 2, 3]
   },
   income: [5, 10],
-  transportationMean: 'public',
-  occupationTypes: ['study', 'work'],
+  transportationMean: 'pu',
+  occupationTypes: ['s', 'w'],
   occupations: [
     {
       id: 1199,
-      type: 'study',
-      label: 'study.college',
+      type: 's',
+      label: 's.c',
       intervalSize: [0, 0],
       actualSize: 4295
     },
     {
       id: 18846,
-      type: 'work',
-      label: 'work.i.m',
+      type: 'w',
+      label: 'w.i.m',
       intervalSize: [100, 499],
       actualSize: 101
     }
@@ -120,18 +120,18 @@ const collegeStudentAndWorker: Individual = {
   state: 'susceptible',
   hadCovid: false,
   vaccine: {
-    type: 'none',
+    type: '',
     doses: 0
   },
-  mask: 'none',
+  mask: '',
   isInLockdown: undefined
 }
 
 const regularWorker: Individual = {
   id: 3,
-  sex: 'male',
+  sex: 'm',
   age: [35, 39],
-  educationStatus: 'educated',
+  educationStatus: 'ed',
   currentActivity: undefined,
   routine: [],
   house: {
@@ -141,13 +141,13 @@ const regularWorker: Individual = {
     housemates: [0, 1, 2, 3]
   },
   income: [0.5, 1],
-  transportationMean: 'public',
-  occupationTypes: ['work'],
+  transportationMean: 'pu',
+  occupationTypes: ['w'],
   occupations: [
     {
       id: 135285,
-      type: 'work',
-      label: 'work.cs.s',
+      type: 'w',
+      label: 'w.cs.s',
       intervalSize: [10, 49],
       actualSize: 11
     }
@@ -155,18 +155,18 @@ const regularWorker: Individual = {
   state: 'susceptible',
   hadCovid: false,
   vaccine: {
-    type: 'none',
+    type: '',
     doses: 0
   },
-  mask: 'none',
+  mask: '',
   isInLockdown: undefined
 }
 
 const retired: Individual = {
   id: 4,
-  sex: 'male',
+  sex: 'm',
   age: [65, 69],
-  educationStatus: 'educated',
+  educationStatus: 'ed',
   currentActivity: undefined,
   routine: [],
   house: {
@@ -176,16 +176,16 @@ const retired: Individual = {
     housemates: [4]
   },
   income: [0, 0],
-  transportationMean: 'private',
+  transportationMean: 'pr',
   occupationTypes: [],
   occupations: [],
   state: 'susceptible',
   hadCovid: false,
   vaccine: {
-    type: 'none',
+    type: '',
     doses: 0
   },
-  mask: 'none',
+  mask: '',
   isInLockdown: undefined
 }
 

@@ -16,7 +16,7 @@ export const DistanceMultiplier: { [key in ActivityDistance]: number } = {
 }
 
 export type MaskType =
-  | 'none'
+  | ''
   | 'thin'
   | 'basic'
   | 'surgical'
@@ -61,7 +61,7 @@ export const VaccinesRiskReduction: { [key: string]: VaccineValue } = {
   }
 }
 
-export type VaccineType = 'pfizer' | 'moderna' | 'astra_zeneca' | 'johnson_johnson' | 'none'
+export type VaccineType = 'pfizer' | 'moderna' | 'astra_zeneca' | 'johnson_johnson' | ''
 
 export type Vaccine = {
   type: VaccineType

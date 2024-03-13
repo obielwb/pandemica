@@ -26,7 +26,7 @@ export function calculate(
   let withCovidMultiplier = 0
   individualsWithCovid.forEach((individual) => {
     let vaccineMultiplier = 1
-    if (individual.vaccine.type !== 'none') {
+    if (individual.vaccine.type !== '') {
       vaccineMultiplier =
         1 -
         VaccinesRiskReduction[individual.vaccine.type].multiplierPerDose[
@@ -39,7 +39,7 @@ export function calculate(
   })
 
   let vaccineMultiplier = 1
-  if (individualInFocus.vaccine.type !== 'none') {
+  if (individualInFocus.vaccine.type !== '') {
     vaccineMultiplier =
       1 -
       VaccinesRiskReduction[individualInFocus.vaccine.type].multiplierPerDose[

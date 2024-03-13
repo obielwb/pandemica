@@ -76,16 +76,16 @@ export class LockdownTrigger {
     const shuffledPopulation = fisherYatesShuffle(this.individuals)
 
     const workers = fasterFilter(shuffledPopulation, (individual) =>
-      individual.occupationTypes.includes('work')
+      individual.occupationTypes.includes('w')
     )
     const students = fasterFilter(shuffledPopulation, (individual) =>
-      individual.occupationTypes.includes('study')
+      individual.occupationTypes.includes('s')
     )
     const withouthOccupationIndividuals = fasterFilter(
       shuffledPopulation,
       (individual) =>
-        individual.occupationTypes.includes('study') === false &&
-        individual.occupationTypes.includes('work') === false
+        individual.occupationTypes.includes('s') === false &&
+        individual.occupationTypes.includes('w') === false
     )
 
     const lockdownWorkers = workers.slice(
@@ -128,15 +128,15 @@ export class LockdownTrigger {
 
   private implementSchoolFromHome(individual: Individual) {
     const labelToStudyRoutineMap = new Map<string, Activity>([
-      ['study.preschool', preschoolStudyFromHome],
-      ['study.middle_school', middleSchoolStudyFromHome],
-      ['study.high_school', highSchoolStudyFromHome],
-      ['study.college', collegeStudyFromHome]
+      ['s.ps', preschoolStudyFromHome],
+      ['s.ms', middleSchoolStudyFromHome],
+      ['s.hs', highSchoolStudyFromHome],
+      ['s.c', collegeStudyFromHome]
     ])
 
     individual.routine.forEach((dayRoutine) => {
       dayRoutine.forEach((activity) => {
-        if (activity.category === 'study') {
+        if (activity.category === 's') {
           const replacement = labelToStudyRoutineMap.get(activity.label)
           if (replacement) {
             activity = replacement
@@ -148,19 +148,19 @@ export class LockdownTrigger {
 
   private implementWorkFromHome(individual: Individual) {
     const labelToWorkRoutineMap = new Map<string, Activity>([
-      ['work.i.xs', microIndustryWorkFromHome],
-      ['work.i.s', smallIndustryWorkFromHome],
-      ['work.i.m', mediumIndustryWorkFromHome],
-      ['work.i.l', largeIndustryWorkFromHome],
-      ['work.cs.xs', microCommerceAndServicesWorkFromHome],
-      ['work.cs.s', smallCommerceAndServicesWorkFromHome],
-      ['work.cs.m', mediumCommerceAndServicesWorkFromHome],
-      ['work.cs.l', largeCommerceAndServicesWorkFromHome]
+      ['w.i.xs', microIndustryWorkFromHome],
+      ['w.i.s', smallIndustryWorkFromHome],
+      ['w.i.m', mediumIndustryWorkFromHome],
+      ['w.i.l', largeIndustryWorkFromHome],
+      ['w.cs.xs', microCommerceAndServicesWorkFromHome],
+      ['w.cs.s', smallCommerceAndServicesWorkFromHome],
+      ['w.cs.m', mediumCommerceAndServicesWorkFromHome],
+      ['w.cs.l', largeCommerceAndServicesWorkFromHome]
     ])
 
     individual.routine.forEach((dayRoutine) => {
       dayRoutine.forEach((activity) => {
-        if (activity.category === 'work') {
+        if (activity.category === 'w') {
           const replacement = labelToWorkRoutineMap.get(activity.label)
           if (replacement) {
             activity = replacement
@@ -173,22 +173,22 @@ export class LockdownTrigger {
   private schoolRecuperation(recuperationNumber: number) {
     const students = fasterFilter(
       this.individuals,
-      (individual) => individual.isInLockdown && individual.occupationTypes.includes('study')
+      (individual) => individual.isInLockdown && individual.occupationTypes.includes('s')
     )
 
     const shuffledStudents = fisherYatesShuffle(students)
 
     const labelToStudyRoutineMap = new Map<string, Activity>([
-      ['study.preschool.fh', preschoolStudy],
-      ['study.middle_school.fh', middleSchoolStudy],
-      ['study.high_school.from_homw', highSchoolStudy],
-      ['study.college.fh', collegeStudy]
+      ['s.ps.fh', preschoolStudy],
+      ['s.ms.fh', middleSchoolStudy],
+      ['s.hs.from_homw', highSchoolStudy],
+      ['s.c.fh', collegeStudy]
     ])
 
     shuffledStudents.slice(0, recuperationNumber).forEach((individual) => {
       individual.routine.forEach((dayRoutine) => {
         dayRoutine.forEach((activity) => {
-          if (activity.category === 'study') {
+          if (activity.category === 's') {
             const replacement = labelToStudyRoutineMap.get(activity.label)
             if (replacement) {
               activity = replacement
@@ -202,26 +202,26 @@ export class LockdownTrigger {
   private workRecuperation(recuperationNumber: number) {
     const workers = fasterFilter(
       this.individuals,
-      (individual) => individual.isInLockdown && individual.occupationTypes.includes('work')
+      (individual) => individual.isInLockdown && individual.occupationTypes.includes('w')
     )
 
     const shuffledWorkers = fisherYatesShuffle(workers)
 
     const labelToWorkRoutineMap = new Map<string, Activity>([
-      ['work.i.xs.fh', microIndustryWorkInPerson],
-      ['work.i.s.fh', smallIndustryWorkInPerson],
-      ['work.i.m.fh', mediumIndustryWorkInPerson],
-      ['work.i.l.fh', largeIndustryWorkInPerson],
-      ['work.cs.xs.fh', microCommerceAndServicesWorkInPerson],
-      ['work.cs.s.fh', smallCommerceAndServicesWorkInPerson],
-      ['work.cs.m.fh', mediumCommerceAndServicesWorkInPerson],
-      ['work.cs.l.fh', largeCommerceAndServicesWorkInPerson]
+      ['w.i.xs.fh', microIndustryWorkInPerson],
+      ['w.i.s.fh', smallIndustryWorkInPerson],
+      ['w.i.m.fh', mediumIndustryWorkInPerson],
+      ['w.i.l.fh', largeIndustryWorkInPerson],
+      ['w.cs.xs.fh', microCommerceAndServicesWorkInPerson],
+      ['w.cs.s.fh', smallCommerceAndServicesWorkInPerson],
+      ['w.cs.m.fh', mediumCommerceAndServicesWorkInPerson],
+      ['w.cs.l.fh', largeCommerceAndServicesWorkInPerson]
     ])
 
     shuffledWorkers.slice(0, recuperationNumber).forEach((individual) => {
       individual.routine.forEach((dayRoutine) => {
         dayRoutine.forEach((activity) => {
-          if (activity.category === 'work') {
+          if (activity.category === 'w') {
             const replacement = labelToWorkRoutineMap.get(activity.label)
             if (replacement) {
               activity = replacement

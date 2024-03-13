@@ -219,10 +219,10 @@ function instantiatePopulation() {
     individual.id = i
 
     // initial settings
-    individual.mask = 'none'
+    individual.mask = ''
     individual.vaccine = {
       doses: 0,
-      type: 'none'
+      type: ''
     }
 
     individual.occupationTypes = []

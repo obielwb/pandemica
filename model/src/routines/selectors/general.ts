@@ -6,7 +6,7 @@ export function selectTransportation(
 ): Activity[] {
   const transportationActivities: Activity[] = []
 
-  if (transportationMean === 'private') {
+  if (transportationMean === 'pr') {
     transportationActivities.push(getActivity(Activities.PrivateTransportRide))
   } else {
     transportationActivities.push(getActivity(Activities.PublicTransportStation))
@@ -22,7 +22,7 @@ export function selectTransportationToOccupation(
   transportationActivities: Activity[]
 ) {
   if (couldGoOnFoot) {
-    const shoudlGoOnFoot = transportationMean === 'private'
+    const shoudlGoOnFoot = transportationMean === 'pr'
     if (shoudlGoOnFoot) {
       const privateTransportRide = transportationActivities[0]
       privateTransportRide.duration = 7.5 // decrease distance (duration) if the occupation is close enough to go on foot

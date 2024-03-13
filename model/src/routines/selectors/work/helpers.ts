@@ -1,14 +1,14 @@
 import { Individual } from '../../../population/individual'
 
 export const worksOrStudiesToday = (individual: Individual, day: number, workDays: number[]) =>
-  (individual.occupationTypes.includes('study') && day >= 1 && day <= 5) || workDays.includes(day)
+  (individual.occupationTypes.includes('s') && day >= 1 && day <= 5) || workDays.includes(day)
 
 export const getWorkSize = (individual: Individual) =>
-  individual.occupations.find((o) => o!.type === 'work')!.label.split('.')[2]
+  individual.occupations.find((o) => o!.type === 'w')!.label.split('.')[2]
 
 export function isNightShift(individual: Individual, workSize: string) {
   // individual studies and works
-  if (individual.occupationTypes.includes('study')) {
+  if (individual.occupationTypes.includes('s')) {
     return false
   }
 
@@ -30,7 +30,7 @@ export function isNightShift(individual: Individual, workSize: string) {
 
   if (Math.random() <= nightShiftAvailabilityProbability) {
     // based on https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-022-13830-5
-    if (individual.sex === 'male') {
+    if (individual.sex === 'm') {
       return Math.random() <= 0.224 // 22.4% chance for males
     }
 

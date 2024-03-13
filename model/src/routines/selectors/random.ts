@@ -254,7 +254,7 @@ function adjustWeightsForSex(
   individual: Individual,
   weights: { [key: string]: number }
 ): { [key: string]: number } {
-  if (individual.sex === 'male') {
+  if (individual.sex === 'm') {
     weights['leisure.gym'] += 0.5
   }
 

@@ -36,7 +36,7 @@ export function selectActivitiesBasedOnAttributes(
         studyOccupation &&
         day >= 1 &&
         day <= 5 &&
-        !dailyRoutine.find((activity) => activity.category === 'study')
+        !dailyRoutine.find((activity) => activity.category === 's')
       ) {
         newActivities.push(
           ...selectStudyActivity(
@@ -55,7 +55,7 @@ export function selectActivitiesBasedOnAttributes(
       if (
         workOccupation &&
         workDays.includes(day) &&
-        !dailyRoutine.find((activity) => activity.category === 'work')
+        !dailyRoutine.find((activity) => activity.category === 'w')
       ) {
         newActivities.push(
           ...selectWorkActivity(

@@ -24,7 +24,7 @@ export function selectStudyActivity(
   newActivities.push(school)
 
   // lunch in between
-  if (individual.educationStatus === 'middle_school') {
+  if (individual.educationStatus === 'ms') {
     newActivities.push(restaurantActivity)
   } else {
     const schoolDuration = alsoWorksToday ? school.duration - 2 * 60 : school.duration

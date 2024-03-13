@@ -20,7 +20,7 @@ export function selectMimickedActivities(
 
   if (oldestGuardian.routine.length > 0) {
     return oldestGuardian.routine[day].map((activity) => {
-      if (activity.category === 'work' || activity.category === 'study') {
+      if (activity.category === 'w' || activity.category === 's') {
         const stayAtHomeActivity = { ...getActivity(Activities.StayAtHome) }
         stayAtHomeActivity.duration = activity.duration
         return stayAtHomeActivity

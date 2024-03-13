@@ -1,11 +1,11 @@
 export type Category =
   | 'leisure'
   | 'errands'
-  | 'work'
+  | 'w'
   | 'home'
   | 'transport'
   | 'shopping'
-  | 'study'
+  | 's'
   | 'sleep'
 export type Distance = 'normal' | 'sixFt' | 'tenFt'
 export type Setting = 'indoor' | 'outdoor'
@@ -58,11 +58,11 @@ export class Activity {
     const map = {
       l: 'leisure',
       e: 'errands',
-      w: 'work',
+      w: 'w',
       h: 'home',
       t: 'transport',
       s: 'shopping',
-      y: 'study'
+      y: 's'
     }
     return map[shortString] || 'leisure'
   }
@@ -253,7 +253,7 @@ export const privateTransportRide = new Activity(
 )
 
 export const microIndustryWorkInPerson = new Activity(
-  'work',
+  'w',
   'i.xs',
   'indoor',
   8 * 60, // can vary to 12x36
@@ -263,7 +263,7 @@ export const microIndustryWorkInPerson = new Activity(
 )
 
 export const microIndustryWorkFromHome = new Activity(
-  'work',
+  'w',
   'i.xs.fh',
   'indoor',
   8 * 60, // can vary to 12x36
@@ -273,7 +273,7 @@ export const microIndustryWorkFromHome = new Activity(
 )
 
 export const smallIndustryWorkInPerson = new Activity(
-  'work',
+  'w',
   'i.s',
   'indoor',
   8 * 60, // can vary to 12x36
@@ -283,7 +283,7 @@ export const smallIndustryWorkInPerson = new Activity(
 )
 
 export const smallIndustryWorkFromHome = new Activity(
-  'work',
+  'w',
   'i.s.fh',
   'indoor',
   8 * 60, // can vary to 12x36
@@ -293,7 +293,7 @@ export const smallIndustryWorkFromHome = new Activity(
 )
 
 export const mediumIndustryWorkInPerson = new Activity(
-  'work',
+  'w',
   'i.m',
   'indoor',
   12 * 60,
@@ -303,7 +303,7 @@ export const mediumIndustryWorkInPerson = new Activity(
 )
 
 export const mediumIndustryWorkFromHome = new Activity(
-  'work',
+  'w',
   'i.m.fh',
   'indoor',
   12 * 60,
@@ -313,7 +313,7 @@ export const mediumIndustryWorkFromHome = new Activity(
 )
 
 export const largeIndustryWorkInPerson = new Activity(
-  'work',
+  'w',
   'i.l',
   'indoor',
   12 * 60,
@@ -323,7 +323,7 @@ export const largeIndustryWorkInPerson = new Activity(
 )
 
 export const largeIndustryWorkFromHome = new Activity(
-  'work',
+  'w',
   'i.l.fh',
   'indoor',
   12 * 60,
@@ -333,7 +333,7 @@ export const largeIndustryWorkFromHome = new Activity(
 )
 
 export const microCommerceAndServicesWorkInPerson = new Activity(
-  'work',
+  'w',
   'cs.xs',
   'indoor',
   8 * 60,
@@ -343,7 +343,7 @@ export const microCommerceAndServicesWorkInPerson = new Activity(
 )
 
 export const microCommerceAndServicesWorkFromHome = new Activity(
-  'work',
+  'w',
   'cs.xs.fh',
   'indoor',
   8 * 60,
@@ -353,7 +353,7 @@ export const microCommerceAndServicesWorkFromHome = new Activity(
 )
 
 export const smallCommerceAndServicesWorkInPerson = new Activity(
-  'work',
+  'w',
   'cs.s',
   'indoor',
   8 * 60,
@@ -363,7 +363,7 @@ export const smallCommerceAndServicesWorkInPerson = new Activity(
 )
 
 export const smallCommerceAndServicesWorkFromHome = new Activity(
-  'work',
+  'w',
   'cs.s.fh',
   'indoor',
   8 * 60,
@@ -373,7 +373,7 @@ export const smallCommerceAndServicesWorkFromHome = new Activity(
 )
 
 export const mediumCommerceAndServicesWorkInPerson = new Activity(
-  'work',
+  'w',
   'cs.m',
   'indoor',
   8 * 60,
@@ -383,7 +383,7 @@ export const mediumCommerceAndServicesWorkInPerson = new Activity(
 )
 
 export const mediumCommerceAndServicesWorkFromHome = new Activity(
-  'work',
+  'w',
   'cs.m.fh',
   'indoor',
   8 * 60,
@@ -393,7 +393,7 @@ export const mediumCommerceAndServicesWorkFromHome = new Activity(
 )
 
 export const largeCommerceAndServicesWorkInPerson = new Activity(
-  'work',
+  'w',
   'cs.l',
   'indoor',
   8 * 60,
@@ -403,7 +403,7 @@ export const largeCommerceAndServicesWorkInPerson = new Activity(
 )
 
 export const largeCommerceAndServicesWorkFromHome = new Activity(
-  'work',
+  'w',
   'cs.l.fh',
   'indoor',
   8 * 60,
@@ -412,19 +412,11 @@ export const largeCommerceAndServicesWorkFromHome = new Activity(
   11
 )
 
-export const preschoolStudy = new Activity(
-  'study',
-  'preschool',
-  'indoor',
-  9 * 60,
-  'normal',
-  'normal',
-  30
-)
+export const preschoolStudy = new Activity('s', 'ps', 'indoor', 9 * 60, 'normal', 'normal', 30)
 
 export const preschoolStudyFromHome = new Activity(
-  'study',
-  'preschool.fh',
+  's',
+  'ps.fh',
   'indoor',
   9 * 60,
   'normal',
@@ -432,19 +424,11 @@ export const preschoolStudyFromHome = new Activity(
   11 // max residents per house
 )
 
-export const middleSchoolStudy = new Activity(
-  'study',
-  'middle_school',
-  'indoor',
-  5 * 60,
-  'normal',
-  'normal',
-  45
-)
+export const middleSchoolStudy = new Activity('s', 'ms', 'indoor', 5 * 60, 'normal', 'normal', 45)
 
 export const middleSchoolStudyFromHome = new Activity(
-  'study',
-  'middle_school.fh',
+  's',
+  'ms.fh',
   'indoor',
   5 * 60,
   'normal',
@@ -452,19 +436,11 @@ export const middleSchoolStudyFromHome = new Activity(
   11 // max residents per house
 )
 
-export const highSchoolStudy = new Activity(
-  'study',
-  'high_school',
-  'indoor',
-  6 * 60,
-  'normal',
-  'normal',
-  60
-)
+export const highSchoolStudy = new Activity('s', 'hs', 'indoor', 6 * 60, 'normal', 'normal', 60)
 
 export const highSchoolStudyFromHome = new Activity(
-  'study',
-  'high_school.fh',
+  's',
+  'hs.fh',
   'indoor',
   6 * 60,
   'normal',
@@ -472,19 +448,11 @@ export const highSchoolStudyFromHome = new Activity(
   11 // max residents per house
 )
 
-export const collegeStudy = new Activity(
-  'study',
-  'college',
-  'indoor',
-  7.5 * 60,
-  'normal',
-  'normal',
-  75
-)
+export const collegeStudy = new Activity('s', 'c', 'indoor', 7.5 * 60, 'normal', 'normal', 75)
 
 export const collegeStudyFromHome = new Activity(
-  'study',
-  'high_school.fh',
+  's',
+  'hs.fh',
   'indoor',
   8 * 60,
   'normal',
@@ -661,20 +629,20 @@ export enum Activities {
   PublicTransportRide = 'transport.public.ride',
   PrivateTransportRide = 'transport.private.ride',
 
-  MicroIndustryWorkInPerson = 'work.i.xs',
-  SmallIndustryWorkInPerson = 'work.i.s',
-  MediumIndustryWorkInPerson = 'work.i.m',
-  LargeIndustryWorkInPerson = 'work.i.l',
+  MicroIndustryWorkInPerson = 'w.i.xs',
+  SmallIndustryWorkInPerson = 'w.i.s',
+  MediumIndustryWorkInPerson = 'w.i.m',
+  LargeIndustryWorkInPerson = 'w.i.l',
 
-  MicroCommerceAndServicesWorkInPerson = 'work.cs.xs',
-  SmallCommerceAndServicesWorkInPerson = 'work.cs.s',
-  MediumCommerceAndServicesWorkInPerson = 'work.cs.m',
-  LargeCommerceAndServicesWorkInPerson = 'work.cs.l',
+  MicroCommerceAndServicesWorkInPerson = 'w.cs.xs',
+  SmallCommerceAndServicesWorkInPerson = 'w.cs.s',
+  MediumCommerceAndServicesWorkInPerson = 'w.cs.m',
+  LargeCommerceAndServicesWorkInPerson = 'w.cs.l',
 
-  PreschoolStudyInPerson = 'study.preschool',
-  MiddleSchoolStudyInPeron = 'study.middle_school',
-  HighSchoolStudyInPerson = 'study.high_school',
-  CollegeStudyInPerson = 'study.college',
+  PreschoolStudyInPerson = 's.ps',
+  MiddleSchoolStudyInPeron = 's.ms',
+  HighSchoolStudyInPerson = 's.hs',
+  CollegeStudyInPerson = 's.c',
 
   FiveHoursSleep = 'home.sleep.five_hours',
   SixHoursSleep = 'home.sleep.six_hours',

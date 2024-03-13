@@ -14,16 +14,16 @@ export function generateWeeklyRoutine(
   let workDays = []
   let isWorkNightShift = false
 
-  if (workRoutine != 'none') {
+  if (workRoutine != '') {
     const workSize = getWorkSize(individual)
     isWorkNightShift = isNightShift(individual, workSize)
     workDays = getWorkDays(workRoutine, workSize)
   }
 
-  const workOccupation = individual.occupations.find((o) => o.type === 'work')
+  const workOccupation = individual.occupations.find((o) => o.type === 'w')
   const couldGoOnFootToWork = workOccupation && Math.random() <= 0.05 // todo: replace with actual value
 
-  const studyOccupation = individual.occupations.find((o) => o.type === 'study')
+  const studyOccupation = individual.occupations.find((o) => o.type === 's')
   const couldGoOnFootToSchool = studyOccupation && Math.random() <= 0.05 // todo: replace with actual value
 
   const transportationActivities = selectTransportation(individual.transportationMean)
@@ -118,8 +118,8 @@ export function generateDailyRoutine(
         overflow = 0
       } else if (
         activity.label !== Activities.StayAtHome &&
-        activity.category !== 'work' &&
-        activity.category !== 'study' &&
+        activity.category !== 'w' &&
+        activity.category !== 's' &&
         activity.category !== 'errands'
       ) {
         overflow -= activity.duration + 15

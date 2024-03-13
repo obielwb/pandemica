@@ -8,9 +8,9 @@ export type MaskRegister = {
   populationPercentage: number
   options?: Partial<{
     age: number[]
-    sex: 'male' | 'female'
+    sex: 'm' | 'f'
     income: number[]
-    transportationMean: 'private' | 'public'
+    transportationMean: 'pr' | 'pu'
     occupationTypes: [OccupationType?, OccupationType?]
     occupations: [Occupation?, Occupation?]
   }>
@@ -65,7 +65,7 @@ export class MaskTrigger {
 
   private cleanCurrentMasks() {
     this.population.forEach((individual) => {
-      individual.mask = 'none'
+      individual.mask = ''
     })
   }
 }

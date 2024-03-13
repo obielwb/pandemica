@@ -41,7 +41,7 @@ export class VaccineTrigger {
             register.age.includes(individual.age[0].toString()) &&
             individual.sex === register.sex &&
             individual.vaccine.doses === register.dose - 1 && // only people with first dose takes the second dose vaccine
-            (individual.vaccine.type === register.vaccine || individual.vaccine.type === 'none')
+            (individual.vaccine.type === register.vaccine || individual.vaccine.type === '')
         )
 
         const shuffledIndividuals = fisherYatesShuffle(matchCharacteristics)
@@ -90,8 +90,8 @@ export class VaccineTrigger {
                   return parseInt(columnValue)
                 }
 
-                if (context.column == 'sex' && columnValue == 'F') return 'female'
-                if (context.column == 'sex' && columnValue == 'M') return 'male'
+                if (context.column == 'sex' && columnValue == 'F') return 'f'
+                if (context.column == 'sex' && columnValue == 'M') return 'm'
 
                 return columnValue
               }

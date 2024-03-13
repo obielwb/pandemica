@@ -61,7 +61,7 @@ export async function run(
 
   // console.log(
   //   population.find(
-  //     (individual) => individual.age[1] <= 19 && individual.occupationTypes.includes('study')
+  //     (individual) => individual.age[1] <= 19 && individual.occupationTypes.includes('s')
   //   )
   // )
 
