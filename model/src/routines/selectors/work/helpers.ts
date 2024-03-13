@@ -14,17 +14,17 @@ export function isNightShift(individual: Individual, workSize: string) {
 
   let nightShiftAvailabilityProbability: number
   switch (workSize) {
-    case 'large':
-      nightShiftAvailabilityProbability = 0.8 // 80% chance for large sites
+    case 'l':
+      nightShiftAvailabilityProbability = 0.8 // 80% chance for l sites
       break
-    case 'medium':
-      nightShiftAvailabilityProbability = 0.2 // 20% chance for medium sites
+    case 'm':
+      nightShiftAvailabilityProbability = 0.2 // 20% chance for m sites
       break
-    case 'small':
-      nightShiftAvailabilityProbability = 0.1 // 10% for small sites
+    case 's':
+      nightShiftAvailabilityProbability = 0.1 // 10% for s sites
       break
-    case 'micro':
-      nightShiftAvailabilityProbability = 0.05 // 5% for micro sites
+    case 'xs':
+      nightShiftAvailabilityProbability = 0.05 // 5% for xs sites
       break
   }
 

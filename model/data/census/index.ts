@@ -314,37 +314,37 @@ export const residentsPerHouse = [
 // ibge 2018
 export const microIndustries = {
   value: 14398,
-  label: 'industry.micro'
+  label: 'i.xs'
 }
 export const smallIndustries = {
   value: 2846,
-  label: 'industry.small'
+  label: 'i.s'
 }
 export const mediumIndustries = {
   value: 724,
-  label: 'industry.medium'
+  label: 'i.m'
 }
 export const largeIndustries = {
   value: 160,
-  label: 'industry.large'
+  label: 'i.l'
 }
 export const industries = [microIndustries, smallIndustries, mediumIndustries, largeIndustries]
 
 export const microCommerceAndServices = {
   value: 109612,
-  label: 'commerce_services.micro'
+  label: 'cs.xs'
 }
 export const smallCommerceAndServices = {
   value: 7834,
-  label: 'commerce_services.small'
+  label: 'cs.s'
 }
 export const mediumCommerceAndServices = {
   value: 1202,
-  label: 'commerce_services.medium'
+  label: 'cs.m'
 }
 export const largeCommerceAndServices = {
   value: 0,
-  label: 'commerce_services.large'
+  label: 'cs.l'
 }
 export const commerceAndServices = [
   microCommerceAndServices,

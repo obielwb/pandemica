@@ -11,7 +11,7 @@ export function getIndividualWorkRoutine(individual: Individual): WorkRoutine {
     const work = individual.occupations.find((o) => o!.type === 'work')!
     const workType = work.label.split(',')[0]
 
-    if (workType === 'industry') {
+    if (workType === 'i') {
       return '12x36'
     } else {
       // commerce_services
@@ -32,8 +32,7 @@ export function getWorkDays(workRoutine: WorkRoutine, workSize: string): number[
     return []
   } else if (workRoutine === '12x36') {
     const workOnWeekends =
-      (workSize === 'large' && Math.random() <= 0.8) ||
-      (workSize === 'medium' && Math.random() <= 0.5)
+      (workSize === 'l' && Math.random() <= 0.8) || (workSize === 'm' && Math.random() <= 0.5)
 
     if (Math.random() <= 0.5) {
       let workDays = [0, 2, 4] // starts on sunday
@@ -55,20 +54,20 @@ export function getWorkDays(workRoutine: WorkRoutine, workSize: string): number[
     let workDays = [1, 2, 3, 4, 5] // monday to friday
     const offMonday = Math.random() <= 0.3
     const workOnWeekends =
-      (workSize === 'large' && Math.random() <= 0.5) ||
-      (workSize === 'medium' && Math.random() <= 0.25) ||
-      (workSize === 'small' && Math.random() <= 0.15) ||
-      (workSize === 'micro' && Math.random() <= 0.05)
+      (workSize === 'l' && Math.random() <= 0.5) ||
+      (workSize === 'm' && Math.random() <= 0.25) ||
+      (workSize === 's' && Math.random() <= 0.15) ||
+      (workSize === 'xs' && Math.random() <= 0.05)
 
     if (offMonday) {
       workDays = workDays.filter((day) => day !== 1)
     }
 
     if (workOnWeekends) {
-      if (workSize === 'medium' || workSize === 'large') {
+      if (workSize === 'm' || workSize === 'l') {
         workDays.push(6)
       }
-      if (workSize === 'large' || Math.random() <= 0.2) {
+      if (workSize === 'l' || Math.random() <= 0.2) {
         workDays.push(0)
       }
     }

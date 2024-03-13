@@ -148,14 +148,14 @@ export class LockdownTrigger {
 
   private implementWorkFromHome(individual: Individual) {
     const labelToWorkRoutineMap = new Map<string, Activity>([
-      ['work.industry.micro', microIndustryWorkFromHome],
-      ['work.industry.small', smallIndustryWorkFromHome],
-      ['work.industry.medium', mediumIndustryWorkFromHome],
-      ['work.industry.large', largeIndustryWorkFromHome],
-      ['work.commerce_services.micro', microCommerceAndServicesWorkFromHome],
-      ['work.commerce_services.small', smallCommerceAndServicesWorkFromHome],
-      ['work.commerce_services.medium', mediumCommerceAndServicesWorkFromHome],
-      ['work.commerce_services.large', largeCommerceAndServicesWorkFromHome]
+      ['work.i.xs', microIndustryWorkFromHome],
+      ['work.i.s', smallIndustryWorkFromHome],
+      ['work.i.m', mediumIndustryWorkFromHome],
+      ['work.i.l', largeIndustryWorkFromHome],
+      ['work.cs.xs', microCommerceAndServicesWorkFromHome],
+      ['work.cs.s', smallCommerceAndServicesWorkFromHome],
+      ['work.cs.m', mediumCommerceAndServicesWorkFromHome],
+      ['work.cs.l', largeCommerceAndServicesWorkFromHome]
     ])
 
     individual.routine.forEach((dayRoutine) => {
@@ -179,10 +179,10 @@ export class LockdownTrigger {
     const shuffledStudents = fisherYatesShuffle(students)
 
     const labelToStudyRoutineMap = new Map<string, Activity>([
-      ['study.preschool.from_home', preschoolStudy],
-      ['study.middle_school.from_home', middleSchoolStudy],
+      ['study.preschool.fh', preschoolStudy],
+      ['study.middle_school.fh', middleSchoolStudy],
       ['study.high_school.from_homw', highSchoolStudy],
-      ['study.college.from_home', collegeStudy]
+      ['study.college.fh', collegeStudy]
     ])
 
     shuffledStudents.slice(0, recuperationNumber).forEach((individual) => {
@@ -208,14 +208,14 @@ export class LockdownTrigger {
     const shuffledWorkers = fisherYatesShuffle(workers)
 
     const labelToWorkRoutineMap = new Map<string, Activity>([
-      ['work.industry.micro.from_home', microIndustryWorkInPerson],
-      ['work.industry.small.from_home', smallIndustryWorkInPerson],
-      ['work.industry.medium.from_home', mediumIndustryWorkInPerson],
-      ['work.industry.large.from_home', largeIndustryWorkInPerson],
-      ['work.commerce_services.micro.from_home', microCommerceAndServicesWorkInPerson],
-      ['work.commerce_services.small.from_home', smallCommerceAndServicesWorkInPerson],
-      ['work.commerce_services.medium.from_home', mediumCommerceAndServicesWorkInPerson],
-      ['work.commerce_services.large.from_home', largeCommerceAndServicesWorkInPerson]
+      ['work.i.xs.fh', microIndustryWorkInPerson],
+      ['work.i.s.fh', smallIndustryWorkInPerson],
+      ['work.i.m.fh', mediumIndustryWorkInPerson],
+      ['work.i.l.fh', largeIndustryWorkInPerson],
+      ['work.cs.xs.fh', microCommerceAndServicesWorkInPerson],
+      ['work.cs.s.fh', smallCommerceAndServicesWorkInPerson],
+      ['work.cs.m.fh', mediumCommerceAndServicesWorkInPerson],
+      ['work.cs.l.fh', largeCommerceAndServicesWorkInPerson]
     ])
 
     shuffledWorkers.slice(0, recuperationNumber).forEach((individual) => {
