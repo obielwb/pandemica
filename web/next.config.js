@@ -15,6 +15,15 @@ const nextConfig = {
     config.resolve.alias.canvas = false
 
     return config
+  },
+  async redirects() {
+    return [
+      {
+        source: '/banner',
+        destination: '/paper',
+        permanent: true
+      }
+    ]
   }
 }
 
