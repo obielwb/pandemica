@@ -1,5 +1,6 @@
 import {
   Activity,
+  Category,
   collegeStudy,
   collegeStudyFromHome,
   highSchoolStudy,
@@ -41,7 +42,8 @@ export class LockdownTrigger {
     private lockdownSchoolPercentage: number,
     schoolRecuperationDates: string[],
     private lockdownWorkPercentage: number,
-    workRecuperationDates: string[]
+    workRecuperationDates: string[],
+    private interruptedActivities: Category[]
   ) {
     this.startDate = startDate
 
@@ -123,7 +125,7 @@ export class LockdownTrigger {
         (recuperationDate.quantity = workRecuperationIndividualsPerDate[i].length)
     )
 
-    //todo: decrease outside activities, like shopping and leisure
+    this.implementReductionInCommonActivities()
   }
 
   private implementSchoolFromHome(individual: Individual) {
@@ -168,6 +170,24 @@ export class LockdownTrigger {
         }
       })
     })
+  }
+
+  private implementReductionInCommonActivities(affectedPopulationPercentage: number = 1) {
+    for (let i = 0; i < Math.ceil(this.individuals.length * affectedPopulationPercentage); i++) {
+      const individual = this.individuals[i]
+
+      individual.routine.forEach((day) => {
+        let addedTimeAtHome = 0
+        day = fasterFilter(day, (activity) => {
+          if (this.interruptedActivities.includes(activity.category)) {
+            addedTimeAtHome += activity.duration
+            return false
+          }
+        })
+
+        day.find((activity) => activity.category === 'home').duration += addedTimeAtHome
+      })
+    }
   }
 
   private schoolRecuperation(recuperationNumber: number) {
