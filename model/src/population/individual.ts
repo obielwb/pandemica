@@ -12,6 +12,7 @@ export class Individual {
   public educationStatus: string
   public currentActivity?: IndividualActivity
   public routine: Activity[][]
+  public pir?: Activity[][] // preInfectedRoutine
   public house: House
   public income: number[]
   public transportationMean: 'pr' | 'pu'

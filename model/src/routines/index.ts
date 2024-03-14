@@ -1,6 +1,7 @@
-import { Activity, eightHoursSleep, hospitalized } from '../population/activities'
+import { MaskType } from '../calculus/data'
+import { Activity, Category, eightHoursSleep, hospitalized } from '../population/activities'
 import { Individual } from '../population/individual'
-import { log } from '../utilities'
+import { fasterFilter, log } from '../utilities'
 import { generateWeeklyRoutine } from './generators'
 
 export type IndividualsRoutinesMap = Map<
@@ -68,12 +69,30 @@ export function assignHospitalizedRoutine(individual: Individual) {
   }
 }
 
-export function assignInfectiousRoutine(individual: Individual) {
-  // individual.mask =
+export function assignInfectiousRoutine(
+  individual: Individual,
+  useMask: boolean = false,
+  maskType: MaskType = '',
+  interruptedActivities: Category[] = []
+) {
+  individual.pir = individual.routine
+
+  if (useMask) individual.mask = maskType
 
   individual.routine.forEach((day) => {
-    day.forEach((activity) => {})
+    let addedTimeAtHome = 0
+    day = fasterFilter(day, (activity) => {
+      if (interruptedActivities.includes(activity.category)) {
+        addedTimeAtHome += activity.duration
+        return false
+      }
+    })
+
+    day.find((activity) => activity.category === 'home').duration += addedTimeAtHome
   })
 }
 
-export function assignRecuperedRoutine(individual: Individual) {}
+export function assignRecuperedRoutine(individual: Individual) {
+  individual.routine = individual.pir
+  individual.pir = null
+}
