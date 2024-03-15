@@ -100,26 +100,25 @@ export function changeSEIRState(population: Individual[]) {
   for (let i = 0; i < population.length; i++) {
     const individual = population[i]
 
-    if (individual.daysSinceExposed !== null) {
-      if (individual.deadAfterDaysSinceExposed !== null) {
-        if (individual.daysSinceExposed >= individual.deadAfterDaysSinceExposed)
-          individual.state = 'dead'
+    if (individual.dse !== null) {
+      if (individual.dadse !== null) {
+        if (individual.dse >= individual.dadse) individual.state = 'dead'
         break
       }
-      if (individual.hospitalizedAfterDaysSinceExposed !== null) {
-        if (individual.daysSinceExposed >= individual.hospitalizedAfterDaysSinceExposed) {
+      if (individual.hadse !== null) {
+        if (individual.dse >= individual.hadse) {
           individual.state = 'hospitalized'
           assignHospitalizedRoutine(individual)
           break
         }
       }
 
-      if (individual.daysSinceExposed >= omicronIncubationPeriod) {
+      if (individual.dse >= omicronIncubationPeriod) {
         individual.state = 'infectious'
         assignInfectiousRoutine(individual)
       }
 
-      if (individual.daysSinceExposed >= 10) {
+      if (individual.dse >= 10) {
         individual.state = 'recovered'
         assignRecuperedRoutine(individual)
       }

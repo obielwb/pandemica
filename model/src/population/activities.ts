@@ -1,52 +1,41 @@
-export enum Category {
-  Leisure,
-  Errands,
-  Work,
-  Home,
-  Transport,
-  Shopping,
-  Study,
-  Sleep,
-  Hospital
-}
-
-export enum Distance {
-  Normal,
-  SixFt,
-  TenFt
-}
-
-export enum Setting {
-  Indoor,
-  Outdoor
-}
-
-export enum Voice {
-  Silent,
-  Normal,
-  Loud
-}
+export type Category =
+  | 'leisure'
+  | 'errands'
+  | 'w'
+  | 'home'
+  | 'transport'
+  | 'shopping'
+  | 's'
+  | 'sleep'
+  | 'ho' // hospital
+export type Distance = 'normal' | 'sixFt' | 'tenFt'
+export type Setting = 'indoor' | 'outdoor'
+export type Voice = 'silent' | 'normal' | 'loud'
 
 export class Activity {
+  public label: string
+
   constructor(
     public category: Category,
-    public label: Label,
+    label: string,
     public setting: Setting,
     public duration: number,
     public distance: Distance,
     public voice: Voice,
     public maximumIndividualsEngaged: number
-  ) {}
+  ) {
+    this.label = `${this.category}.${label}`
+  }
 
-  public static serialize(activity: Activity): string {
+  public serialize?(): string {
     const serializedActivity = {
-      c: activity.category,
-      l: activity.label,
-      s: activity.setting,
-      d: activity.duration,
-      di: activity.distance,
-      v: activity.voice,
-      m: activity.maximumIndividualsEngaged
+      c: this.category[0],
+      l: this.label,
+      s: this.setting[0],
+      d: this.duration,
+      dst: this.distance,
+      v: this.voice[0],
+      m: this.maximumIndividualsEngaged
     }
     return JSON.stringify(serializedActivity)
   }
@@ -54,16 +43,42 @@ export class Activity {
   public static deserialize(serialized: string): Activity {
     const deserializedActivity = JSON.parse(serialized)
     const activity = new Activity(
-      deserializedActivity.c,
+      Activity.categoryFromShortString(deserializedActivity.c),
       deserializedActivity.l,
-      deserializedActivity.s,
+      Activity.settingFromShortString(deserializedActivity.s),
       deserializedActivity.d,
-      deserializedActivity.di as Distance,
-      deserializedActivity.v,
+      deserializedActivity.dst as Distance,
+      Activity.voiceFromShortString(deserializedActivity.v),
       deserializedActivity.m
     )
 
     return activity
+  }
+
+  private static categoryFromShortString(shortString: string): Category {
+    const map = {
+      l: 'leisure',
+      e: 'errands',
+      w: 'w',
+      h: 'home',
+      t: 'transport',
+      s: 'shopping',
+      y: 's'
+    }
+    return map[shortString] || 'leisure'
+  }
+
+  private static settingFromShortString(shortString: string): Setting {
+    return shortString === 'i' ? 'indoor' : 'outdoor'
+  }
+
+  private static voiceFromShortString(shortString: string): Voice {
+    const map = {
+      s: 'silent',
+      n: 'normal',
+      l: 'loud'
+    }
+    return map[shortString] || 'normal'
   }
 }
 
@@ -71,7 +86,7 @@ export class IndividualActivity extends Activity {
   constructor(
     public id: number,
     category: Category,
-    label: Label,
+    label: string,
     setting: Setting,
     duration: number,
     distance: Distance,
@@ -87,19 +102,7 @@ export class IndividualActivity extends Activity {
 
   public serialize(): string {
     const serializedData = {
-      ...JSON.parse(
-        Activity.serialize(
-          new Activity(
-            this.category,
-            this.label,
-            this.setting,
-            this.duration,
-            this.distance,
-            this.voice,
-            this.maximumIndividualsEngaged
-          )
-        )
-      ),
+      ...JSON.parse(super.serialize()),
       id: this.id,
       ie: this.individualsEngaged,
       sa: this.activityStartedAt?.toISOString(),
@@ -132,555 +135,381 @@ export class IndividualActivity extends Activity {
   }
 }
 
-export enum Label {
-  Grocery,
-  Pharmacy,
-  Bakery,
-  Mall,
-
-  RestaurantIndoor,
-  RestaurantOutdoor,
-
-  Bar,
-  PartyIndoor,
-  PartyOutdoor,
-  Park,
-  Gym,
-  Church,
-
-  StayAtHome,
-  Sleep5h,
-  Sleep6h,
-  Sleep7h,
-  Sleep8h,
-  Sleep9h,
-
-  PublicTransportStation,
-  PublicTransportRide,
-  PrivateTransportRide,
-
-  MicroIndustryInPerson,
-  SmallIndustryInPerson,
-  MediumIndustryInPerson,
-  LargeIndustryInPerson,
-
-  MicroIndustryFromHome,
-  SmallIndustryFromHome,
-  MediumIndustryFromHome,
-  LargeIndustryFromHome,
-
-  MicroCommerceInPerson,
-  SmallCommerceInPerson,
-  MediumCommerceInPerson,
-  LargeCommerceInPerson,
-
-  MicroCommerceFromHome,
-  SmallCommerceFromHome,
-  MediumCommerceFromHome,
-  LargeCommerceFromHome,
-
-  PreschoolInPerson,
-  MiddleSchoolInPerson,
-  HighSchoolInPerson,
-  CollegeInPerson,
-
-  PreschoolFromHome,
-  MiddleSchoolFromHome,
-  HighSchoolFromHome,
-  CollegeFromHome,
-
-  Hospitalized
-}
-
-export enum OccupationLabel {
-  MicroIndustryInPerson,
-  SmallIndustryInPerson,
-  MediumIndustryInPerson,
-  LargeIndustryInPerson,
-
-  MicroIndustryFromHome,
-  SmallIndustryFromHome,
-  MediumIndustryFromHome,
-  LargeIndustryFromHome,
-
-  MicroCommerceInPerson,
-  SmallCommerceInPerson,
-  MediumCommerceInPerson,
-  LargeCommerceInPerson,
-
-  MicroCommerceFromHome,
-  SmallCommerceFromHome,
-  MediumCommerceFromHome,
-  LargeCommerceFromHome,
-
-  PreschoolInPerson,
-  MiddleSchoolInPerson,
-  HighSchoolInPerson,
-  CollegeInPerson,
-
-  PreschoolFromHome,
-  MiddleSchoolFromHome,
-  HighSchoolFromHome,
-  CollegeFromHome
-}
-
 export const groceryShopping = new Activity(
-  Category.Shopping,
-  Label.Grocery,
-  Setting.Indoor,
+  'shopping',
+  'grocery',
+  'indoor',
   30,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   80
 )
 
 export const pharmacyShopping = new Activity(
-  Category.Shopping,
-  Label.Pharmacy,
-  Setting.Indoor,
+  'shopping',
+  'pharmacy',
+  'indoor',
   15,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   20
 )
 
 export const bakeryShopping = new Activity(
-  Category.Shopping,
-  Label.Bakery,
-  Setting.Indoor,
+  'shopping',
+  'bakery',
+  'indoor',
   10,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   20
 )
 
-export const mallShopping = new Activity(
-  Category.Shopping,
-  Label.Mall,
-  Setting.Indoor,
-  90,
-  Distance.Normal,
-  Voice.Loud,
-  100
-)
+export const mallShopping = new Activity('shopping', 'mall', 'indoor', 90, 'normal', 'loud', 100)
 
 export const restaurantOutdoors = new Activity(
-  Category.Errands,
-  Label.RestaurantOutdoor,
-  Setting.Outdoor,
+  'errands',
+  'restaurant.outdoor',
+  'outdoor',
   1 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   50
 )
 
 export const restaurantIndoors = new Activity(
-  Category.Errands,
-  Label.RestaurantIndoor,
-  Setting.Indoor,
+  'errands',
+  'restaurant.indoor',
+  'indoor',
   1 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   40
 )
 
-export const bar = new Activity(
-  Category.Leisure,
-  Label.Bar,
-  Setting.Indoor,
-  2 * 60,
-  Distance.Normal,
-  Voice.Normal,
-  30
-)
+export const bar = new Activity('leisure', 'bar', 'indoor', 2 * 60, 'normal', 'normal', 30)
 
 export const outdoorParty = new Activity(
-  Category.Leisure,
-  Label.PartyOutdoor,
-  Setting.Outdoor,
+  'leisure',
+  'party.outdoor',
+  'outdoor',
   3 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   50
 )
 
 export const indoorParty = new Activity(
-  Category.Leisure,
-  Label.PartyIndoor,
-  Setting.Indoor,
+  'leisure',
+  'party.indoor',
+  'indoor',
   3 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   30
 )
 
-export const park = new Activity(
-  Category.Leisure,
-  Label.Park,
-  Setting.Outdoor,
-  1.5 * 60,
-  Distance.SixFt,
-  Voice.Normal,
-  50
-)
-
-export const gym = new Activity(
-  Category.Leisure,
-  Label.Gym,
-  Setting.Indoor,
-  1 * 60,
-  Distance.Normal,
-  Voice.Normal,
-  30
-)
-
-export const church = new Activity(
-  Category.Leisure,
-  Label.Church,
-  Setting.Indoor,
-  1 * 60,
-  Distance.Normal,
-  Voice.Silent,
-  50
-)
+export const park = new Activity('leisure', 'park', 'outdoor', 1.5 * 60, 'sixFt', 'normal', 50)
+export const gym = new Activity('leisure', 'gym', 'indoor', 1 * 60, 'normal', 'normal', 30)
+export const church = new Activity('leisure', 'church', 'indoor', 1 * 60, 'normal', 'silent', 50)
 
 export const stayAtHome = new Activity(
-  Category.Home,
-  Label.StayAtHome,
-  Setting.Indoor,
+  'home',
+  'stay_at_home',
+  'indoor',
   10 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   11 // maximum number of residents per house
 )
 
 export const publicTransportStation = new Activity(
-  Category.Transport,
-  Label.PublicTransportStation,
-  Setting.Outdoor,
+  'transport',
+  'public.station',
+  'outdoor',
   15,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   10
 )
 
 export const publicTransportRide = new Activity(
-  Category.Transport,
-  Label.PublicTransportRide,
-  Setting.Indoor,
+  'transport',
+  'public.ride',
+  'indoor',
   45,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   50
 )
 
 export const privateTransportRide = new Activity(
-  Category.Transport,
-  Label.PrivateTransportRide,
-  Setting.Indoor,
+  'transport',
+  'private.ride',
+  'indoor',
   30,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   5
 )
 
 export const microIndustryWorkInPerson = new Activity(
-  Category.Work,
-  Label.MicroIndustryInPerson,
-  Setting.Indoor,
+  'w',
+  'i.xs',
+  'indoor',
   8 * 60, // can vary to 12x36
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   10
 )
 
 export const microIndustryWorkFromHome = new Activity(
-  Category.Work,
-  Label.MicroIndustryFromHome,
-  Setting.Indoor,
+  'w',
+  'i.xs.fh',
+  'indoor',
   8 * 60, // can vary to 12x36
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   11
 )
 
 export const smallIndustryWorkInPerson = new Activity(
-  Category.Work,
-  Label.SmallIndustryInPerson,
-  Setting.Indoor,
+  'w',
+  'i.s',
+  'indoor',
   8 * 60, // can vary to 12x36
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   60
 )
 
 export const smallIndustryWorkFromHome = new Activity(
-  Category.Work,
-  Label.SmallIndustryFromHome,
-  Setting.Indoor,
+  'w',
+  'i.s.fh',
+  'indoor',
   8 * 60, // can vary to 12x36
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   11
 )
 
 export const mediumIndustryWorkInPerson = new Activity(
-  Category.Work,
-  Label.MediumIndustryInPerson,
-  Setting.Indoor,
+  'w',
+  'i.m',
+  'indoor',
   12 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   300
 )
 
 export const mediumIndustryWorkFromHome = new Activity(
-  Category.Work,
-  Label.MediumIndustryFromHome,
-  Setting.Indoor,
+  'w',
+  'i.m.fh',
+  'indoor',
   12 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   11
 )
 
 export const largeIndustryWorkInPerson = new Activity(
-  Category.Work,
-  Label.LargeIndustryInPerson,
-  Setting.Indoor,
+  'w',
+  'i.l',
+  'indoor',
   12 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   500
 )
 
 export const largeIndustryWorkFromHome = new Activity(
-  Category.Work,
-  Label.LargeIndustryFromHome,
-  Setting.Indoor,
+  'w',
+  'i.l.fh',
+  'indoor',
   12 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   11
 )
 
 export const microCommerceAndServicesWorkInPerson = new Activity(
-  Category.Work,
-  Label.MicroCommerceInPerson,
-  Setting.Indoor,
+  'w',
+  'cs.xs',
+  'indoor',
   8 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   5
 )
 
 export const microCommerceAndServicesWorkFromHome = new Activity(
-  Category.Work,
-  Label.MicroCommerceFromHome,
-  Setting.Indoor,
+  'w',
+  'cs.xs.fh',
+  'indoor',
   8 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   11
 )
 
 export const smallCommerceAndServicesWorkInPerson = new Activity(
-  Category.Work,
-  Label.SmallCommerceInPerson,
-  Setting.Indoor,
+  'w',
+  'cs.s',
+  'indoor',
   8 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   30
 )
 
 export const smallCommerceAndServicesWorkFromHome = new Activity(
-  Category.Work,
-  Label.SmallCommerceFromHome,
-  Setting.Indoor,
+  'w',
+  'cs.s.fh',
+  'indoor',
   8 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   11
 )
 
 export const mediumCommerceAndServicesWorkInPerson = new Activity(
-  Category.Work,
-  Label.MediumCommerceInPerson,
-  Setting.Indoor,
+  'w',
+  'cs.m',
+  'indoor',
   8 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   75
 )
 
 export const mediumCommerceAndServicesWorkFromHome = new Activity(
-  Category.Work,
-  Label.MediumCommerceFromHome,
-  Setting.Indoor,
+  'w',
+  'cs.m.fh',
+  'indoor',
   8 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   11
 )
 
 export const largeCommerceAndServicesWorkInPerson = new Activity(
-  Category.Work,
-  Label.LargeCommerceInPerson,
-  Setting.Indoor,
+  'w',
+  'cs.l',
+  'indoor',
   8 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   200
 )
 
 export const largeCommerceAndServicesWorkFromHome = new Activity(
-  Category.Work,
-  Label.LargeCommerceFromHome,
-  Setting.Indoor,
+  'w',
+  'cs.l.fh',
+  'indoor',
   8 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   11
 )
 
-export const preschoolStudy = new Activity(
-  Category.Study,
-  Label.PreschoolInPerson,
-  Setting.Indoor,
-  9 * 60,
-  Distance.Normal,
-  Voice.Normal,
-  30
-)
+export const preschoolStudy = new Activity('s', 'ps', 'indoor', 9 * 60, 'normal', 'normal', 30)
 
 export const preschoolStudyFromHome = new Activity(
-  Category.Study,
-  Label.PreschoolFromHome,
-  Setting.Indoor,
+  's',
+  'ps.fh',
+  'indoor',
   9 * 60,
-  Distance.Normal,
-  Voice.Normal,
-  11
+  'normal',
+  'normal',
+  11 // max residents per house
 )
 
-export const middleSchoolStudy = new Activity(
-  Category.Study,
-  Label.MiddleSchoolInPerson,
-  Setting.Indoor,
-  5 * 60,
-  Distance.Normal,
-  Voice.Normal,
-  45
-)
+export const middleSchoolStudy = new Activity('s', 'ms', 'indoor', 5 * 60, 'normal', 'normal', 45)
 
 export const middleSchoolStudyFromHome = new Activity(
-  Category.Study,
-  Label.MiddleSchoolFromHome,
-  Setting.Indoor,
+  's',
+  'ms.fh',
+  'indoor',
   5 * 60,
-  Distance.Normal,
-  Voice.Normal,
-  11
+  'normal',
+  'normal',
+  11 // max residents per house
 )
 
-export const highSchoolStudy = new Activity(
-  Category.Study,
-  Label.HighSchoolInPerson,
-  Setting.Indoor,
-  6 * 60,
-  Distance.Normal,
-  Voice.Normal,
-  60
-)
+export const highSchoolStudy = new Activity('s', 'hs', 'indoor', 6 * 60, 'normal', 'normal', 60)
 
 export const highSchoolStudyFromHome = new Activity(
-  Category.Study,
-  Label.HighSchoolFromHome,
-  Setting.Indoor,
+  's',
+  'hs.fh',
+  'indoor',
   6 * 60,
-  Distance.Normal,
-  Voice.Normal,
-  11
+  'normal',
+  'normal',
+  11 // max residents per house
 )
 
-export const collegeStudy = new Activity(
-  Category.Study,
-  Label.CollegeInPerson,
-  Setting.Indoor,
-  7.5 * 60,
-  Distance.Normal,
-  Voice.Normal,
-  75
-)
+export const collegeStudy = new Activity('s', 'c', 'indoor', 7.5 * 60, 'normal', 'normal', 75)
 
 export const collegeStudyFromHome = new Activity(
-  Category.Study,
-  Label.CollegeFromHome,
-  Setting.Indoor,
+  's',
+  'hs.fh',
+  'indoor',
   8 * 60,
-  Distance.Normal,
-  Voice.Normal,
-  11
+  'normal',
+  'normal',
+  11 // max residents per house
 )
 
-export const hospitalized = new Activity(
-  Category.Hospital,
-  Label.Hospitalized,
-  Setting.Indoor,
-  16 * 60,
-  Distance.Normal,
-  Voice.Silent,
-  2
-)
+export const hospitalized = new Activity('ho', 'ho.si', 'indoor', 16 * 60, 'normal', 'silent', 2)
 
 export const nineHoursSleep = new Activity(
-  Category.Home,
-  Label.Sleep9h,
-  Setting.Indoor,
+  'home',
+  'sleep.nine_hours',
+  'indoor',
   9 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   2
 )
 
 export const eightHoursSleep = new Activity(
-  Category.Home,
-  Label.Sleep8h,
-  Setting.Indoor,
+  'home',
+  'sleep.eight_hours',
+  'indoor',
   8 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   2
 )
 
 export const sevenHoursSleep = new Activity(
-  Category.Home,
-  Label.Sleep7h,
-  Setting.Indoor,
+  'home',
+  'sleep.seven_hours',
+  'indoor',
   7 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   2
 )
 
 export const sixHoursSleep = new Activity(
-  Category.Home,
-  Label.Sleep6h,
-  Setting.Indoor,
+  'home',
+  'sleep.six_hours',
+  'indoor',
   6 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   2
 )
 
 export const fiveHoursSleep = new Activity(
-  Category.Home,
-  Label.Sleep5h,
-  Setting.Indoor,
+  'home',
+  'sleep.five_hours',
+  'indoor',
   5 * 60,
-  Distance.Normal,
-  Voice.Normal,
+  'normal',
+  'normal',
   2
 )
 
@@ -737,66 +566,119 @@ export const activities: { [activity: string]: Activity } = {
   nineHoursSleep
 }
 
-export const activitiesMap = {
-  [Label.Grocery]: groceryShopping,
-  [Label.Pharmacy]: pharmacyShopping,
-  [Label.Bakery]: bakeryShopping,
-  [Label.Mall]: mallShopping,
+export const activitiesList = [
+  groceryShopping,
+  pharmacyShopping,
+  bakeryShopping,
+  mallShopping,
 
-  [Label.RestaurantIndoor]: restaurantIndoors,
-  [Label.RestaurantOutdoor]: restaurantOutdoors,
+  restaurantOutdoors,
+  restaurantIndoors,
 
-  [Label.Bar]: bar,
-  [Label.PartyIndoor]: indoorParty,
-  [Label.PartyOutdoor]: outdoorParty,
-  [Label.Park]: park,
-  [Label.Gym]: gym,
-  [Label.Church]: church,
+  bar,
+  outdoorParty,
+  indoorParty,
+  park,
+  gym,
+  church,
 
-  [Label.StayAtHome]: stayAtHome,
-  [Label.Sleep5h]: fiveHoursSleep,
-  [Label.Sleep6h]: sixHoursSleep,
-  [Label.Sleep7h]: sevenHoursSleep,
-  [Label.Sleep8h]: eightHoursSleep,
-  [Label.Sleep9h]: nineHoursSleep,
+  stayAtHome,
 
-  [Label.PublicTransportStation]: publicTransportStation,
-  [Label.PublicTransportRide]: publicTransportRide,
-  [Label.PrivateTransportRide]: privateTransportRide,
+  publicTransportStation,
+  publicTransportRide,
+  privateTransportRide,
 
-  [Label.MicroIndustryInPerson]: microIndustryWorkInPerson,
-  [Label.SmallIndustryInPerson]: smallIndustryWorkInPerson,
-  [Label.MediumIndustryInPerson]: mediumIndustryWorkInPerson,
-  [Label.LargeIndustryInPerson]: largeIndustryWorkInPerson,
+  microIndustryWorkInPerson,
+  smallIndustryWorkInPerson,
+  mediumIndustryWorkInPerson,
+  largeIndustryWorkInPerson,
 
-  [Label.MicroIndustryFromHome]: microIndustryWorkFromHome,
-  [Label.SmallIndustryFromHome]: smallIndustryWorkFromHome,
-  [Label.MediumIndustryFromHome]: mediumIndustryWorkFromHome,
-  [Label.LargeIndustryFromHome]: largeIndustryWorkFromHome,
+  microCommerceAndServicesWorkInPerson,
+  smallCommerceAndServicesWorkInPerson,
+  mediumCommerceAndServicesWorkInPerson,
+  largeCommerceAndServicesWorkInPerson,
 
-  [Label.MicroCommerceInPerson]: microCommerceAndServicesWorkInPerson,
-  [Label.SmallCommerceInPerson]: smallCommerceAndServicesWorkInPerson,
-  [Label.MediumCommerceInPerson]: mediumCommerceAndServicesWorkInPerson,
-  [Label.LargeCommerceInPerson]: largeCommerceAndServicesWorkInPerson,
+  preschoolStudy,
+  middleSchoolStudy,
+  highSchoolStudy,
+  collegeStudy,
 
-  [Label.MicroCommerceFromHome]: microCommerceAndServicesWorkFromHome,
-  [Label.SmallCommerceFromHome]: smallCommerceAndServicesWorkFromHome,
-  [Label.MediumCommerceFromHome]: mediumCommerceAndServicesWorkFromHome,
-  [Label.LargeCommerceFromHome]: largeCommerceAndServicesWorkFromHome,
+  fiveHoursSleep,
+  sixHoursSleep,
+  sevenHoursSleep,
+  eightHoursSleep,
+  nineHoursSleep
+]
 
-  [Label.PreschoolInPerson]: preschoolStudy,
-  [Label.MiddleSchoolInPerson]: middleSchoolStudy,
-  [Label.HighSchoolInPerson]: highSchoolStudy,
-  [Label.CollegeInPerson]: collegeStudy,
+export enum Activities {
+  GroceryShopping = 'shopping.grocery',
+  PharmacyShopping = 'shopping.pharmacy',
+  BakeryShopping = 'shopping.bakery',
+  MallShopping = 'shopping.mall',
 
-  [Label.PreschoolFromHome]: preschoolStudyFromHome,
-  [Label.MiddleSchoolFromHome]: middleSchoolStudyFromHome,
-  [Label.HighSchoolFromHome]: highSchoolStudyFromHome,
-  [Label.CollegeFromHome]: collegeStudyFromHome,
+  RestaurantOutdoors = 'errands.restaurant.outdoor',
+  RestaurantIndoors = 'errands.restaurant.indoor',
 
-  [Label.Hospitalized]: hospitalized
+  Bar = 'leisure.bar',
+  OutdoorParty = 'leisure.party.outdoor',
+  IndoorParty = 'leisure.party.indoor',
+  Park = 'leisure.park',
+  Gym = 'leisure.gym',
+  Church = 'leisure.church',
+
+  StayAtHome = 'home.stay_at_home',
+
+  PublicTransportStation = 'transport.public.station',
+  PublicTransportRide = 'transport.public.ride',
+  PrivateTransportRide = 'transport.private.ride',
+
+  MicroIndustryWorkInPerson = 'w.i.xs',
+  SmallIndustryWorkInPerson = 'w.i.s',
+  MediumIndustryWorkInPerson = 'w.i.m',
+  LargeIndustryWorkInPerson = 'w.i.l',
+
+  MicroCommerceAndServicesWorkInPerson = 'w.cs.xs',
+  SmallCommerceAndServicesWorkInPerson = 'w.cs.s',
+  MediumCommerceAndServicesWorkInPerson = 'w.cs.m',
+  LargeCommerceAndServicesWorkInPerson = 'w.cs.l',
+
+  PreschoolStudyInPerson = 's.ps',
+  MiddleSchoolStudyInPeron = 's.ms',
+  HighSchoolStudyInPerson = 's.hs',
+  CollegeStudyInPerson = 's.c',
+
+  FiveHoursSleep = 'home.sleep.five_hours',
+  SixHoursSleep = 'home.sleep.six_hours',
+  SevenHoursSleep = 'home.sleep.seven_hours',
+  EightHoursSleep = 'home.sleep.eight_hours',
+  NineHoursSleep = 'home.sleep.nine_hours'
 }
 
-export function getActivity(label: Label | string): Activity {
+export enum DailyActivities {
+  GroceryShopping = 'grocery',
+  PharmacyShopping = 'pharmacy',
+  BakeryShopping = 'bakery',
+  MallShopping = 'mall',
+
+  RestaurantOutdoors = 'outdoor',
+  RestaurantIndoors = 'indoor',
+
+  Bar = 'bar',
+  OutdoorParty = 'party.outdoor',
+  IndoorParty = 'party.indoor',
+  Park = 'park',
+  Gym = 'gym',
+  Church = 'church',
+
+  StayAtHome = 'stay_at_home'
+}
+
+// convert activitiesList to a map for easy access
+export const activitiesMap = activitiesList.reduce((acc, activity) => {
+  acc[activity.label] = activity
+  return acc
+}, {})
+
+export function getActivity(label: Activities | string): Activity {
   return activitiesMap[label]
 }

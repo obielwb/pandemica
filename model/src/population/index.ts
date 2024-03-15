@@ -140,7 +140,7 @@ async function readPopulationFragmentFromFile(filePath: string): Promise<Individ
   }
 }
 
-const FRAGMENT_FILE_SIZE = 496 * 1024 * 1024 // 496mb
+const FRAGMENT_FILE_SIZE = 42 * 1024 * 1024 // 42mb
 
 async function savePopulationToDisk(population: Individual[]) {
   log('Serializing population', {
