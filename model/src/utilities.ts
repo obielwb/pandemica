@@ -68,3 +68,9 @@ export function fasterFilter<T>(array: T[], predicate: (value: T) => boolean): T
   }
   return result
 }
+
+export function willEventOccur(probability: number): boolean {
+  const random = Math.random()
+
+  return random <= probability
+}

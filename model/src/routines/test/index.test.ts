@@ -2,13 +2,14 @@ import { assignRoutine } from '..'
 import { Individual } from '../../population/individual'
 
 function test() {
-  let population: Individual[] = [baby, child, collegeStudentAndWorker, regularWorker, retired]
+  const labels = ['baby', 'child', 'collegeStudentAndWorker', 'regularWorker', 'retired']
+  let population: Individual[] = [baby, regularWorker]
 
   population = assignRoutine(population)
   const weekDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 
   population.forEach((individual) => {
-    console.log(individual.occupationTypes)
+    console.log(labels[individual.id].toUpperCase())
     individual.routine.forEach((day, i) => {
       console.log('\n' + weekDays[i].toUpperCase())
 

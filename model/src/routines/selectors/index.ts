@@ -1,3 +1,4 @@
+import { exit } from 'node:process'
 import { IndividualsRoutinesMap } from '..'
 import { CHILD_AGE } from '../../../data/census'
 import { Activity } from '../../population/activities'
@@ -22,7 +23,8 @@ export function selectActivitiesBasedOnAttributes(
   individualsRoutinesMap: IndividualsRoutinesMap,
   transportationActivities: Activity[],
   couldGoOnFootToWork: boolean,
-  couldGoOnFootToSchool: boolean
+  couldGoOnFootToSchool: boolean,
+  willIncapableFollowGuardian: boolean
 ): Activity[] {
   const newActivities: Activity[] = []
   let remainingTime = ACTIVE_TIME - totalTime
@@ -114,7 +116,7 @@ export function selectActivitiesBasedOnAttributes(
     } else {
       // if the retired or nem-nem lives with more people, there's a fifty-fifty chance
       // he will follow his guardian activities
-      if (individual.house.size > 1 && Math.random() <= 0.5) {
+      if (individual.house.size > 1 && willIncapableFollowGuardian) {
         newActivities.push(...selectMimickedActivities(individual, day, individualsRoutinesMap))
       } else {
         newActivities.push(

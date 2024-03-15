@@ -1,6 +1,8 @@
 import { IndividualsRoutinesMap } from '.'
+import { CHILD_AGE } from '../../data/census'
 import { Activities, Activity, getActivity } from '../population/activities'
 import { Individual, Occupation } from '../population/individual'
+import { willEventOccur } from '../utilities'
 import { selectActivitiesBasedOnAttributes } from './selectors'
 import { selectSleepActivity, selectTransportation } from './selectors/general'
 import { getIndividualWorkRoutine, getWorkDays, WorkRoutine } from './selectors/work/getters'
@@ -74,15 +76,23 @@ export function generateDailyRoutine(
   let totalTime = 0
   let homeTime = INITIAl_HOME_TIME
 
-  const sleepActivity = selectSleepActivity(worksOrStudiesToday(individual, day, workDays))
-  dailyRoutine.push(sleepActivity) // day starts or ends with sleep
-  totalTime += sleepActivity.duration
+  const willIncapableFollowGuardian = willEventOccur(0.5)
 
-  const stayAtHomeActivity = { ...getActivity(Activities.StayAtHome) }
-  stayAtHomeActivity.duration = 1 * 60
-  stayAtHomeActivity.maximumIndividualsEngaged = individual.house.size
-  dailyRoutine.push(stayAtHomeActivity)
-  totalTime += stayAtHomeActivity.duration
+  if (
+    // routine not mimicked
+    individual.age[1] > CHILD_AGE ||
+    (individual.house.size === 1 && !willIncapableFollowGuardian)
+  ) {
+    const sleepActivity = selectSleepActivity(worksOrStudiesToday(individual, day, workDays))
+    dailyRoutine.push(sleepActivity) // day starts or ends with sleep
+    totalTime += sleepActivity.duration
+
+    const stayAtHomeActivity = { ...getActivity(Activities.StayAtHome) }
+    stayAtHomeActivity.duration = 1 * 60
+    stayAtHomeActivity.maximumIndividualsEngaged = individual.house.size
+    dailyRoutine.push(stayAtHomeActivity)
+    totalTime += stayAtHomeActivity.duration
+  }
 
   while (totalTime < ACTIVE_TIME) {
     const newActivities = selectActivitiesBasedOnAttributes(
@@ -98,7 +108,8 @@ export function generateDailyRoutine(
       individualsRoutinesMap,
       transportationActivities,
       couldGoOnFootToWork,
-      couldGoOnFootToSchool
+      couldGoOnFootToSchool,
+      willIncapableFollowGuardian
     )
     dailyRoutine.push(...newActivities)
     totalTime += newActivities.reduce((acc, newActivity) => acc + newActivity.duration, 0)
@@ -122,6 +133,7 @@ export function generateDailyRoutine(
         activity.category !== 's' &&
         activity.category !== 'errands'
       ) {
+        console.log('asdasdas')
         overflow -= activity.duration + 15
         dailyRoutine[i] = { ...activity, duration: 15 }
       }
@@ -137,8 +149,12 @@ export function generateDailyRoutine(
     }
   }
 
-  dailyRoutine.push({ ...stayAtHomeActivity, duration: homeTime })
-  totalTime += sleepActivity.duration
+  if (totalTime < 24 * 60) {
+    const stayAtHomeActivity = { ...getActivity(Activities.StayAtHome) }
+    stayAtHomeActivity.duration = homeTime
+    stayAtHomeActivity.maximumIndividualsEngaged = individual.house.size
+    dailyRoutine.push(stayAtHomeActivity)
+  }
 
   // remove and extend duplicate activities duration to a single activity
   let finalDailyRoutine = []

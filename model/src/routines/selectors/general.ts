@@ -58,5 +58,5 @@ export function selectSleepActivity(worksOrStudiesToday: boolean): Activity {
 
   const weightedSleepTypes = createWeightedSleepTypes(worksOrStudiesToday)
   const randomIndex = Math.floor(Math.random() * weightedSleepTypes.length)
-  return getActivity(weightedSleepTypes[randomIndex])
+  return { ...getActivity(weightedSleepTypes[randomIndex]) }
 }
