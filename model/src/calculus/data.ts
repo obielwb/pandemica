@@ -16,14 +16,14 @@ export const DistanceMultiplier: { [key in ActivityDistance]: number } = {
 }
 
 export enum Mask {
+  None,
   Thin,
   Basic,
   Surgical,
   Filtered,
   N95,
   N95Sealed,
-  P100,
-  None
+  P100
 }
 
 export const MaskMultiplier: { [key in Mask]: number } = {
@@ -48,11 +48,11 @@ export interface VaccineValue {
 }
 
 export enum VaccineType {
+  None,
   Pfizer,
   AstraZeneca,
   Janssen,
-  CoronaVac,
-  None
+  CoronaVac
 }
 
 export type Vaccine = {
