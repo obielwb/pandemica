@@ -5,10 +5,16 @@ import {
   MaskMultiplier,
   SettingMultiplier,
   VaccinesRiskReduction,
-  VoiceMultiplier
+  VoiceMultiplier,
+  omicronIncubationPeriod
 } from './data'
 import { Individual } from '../population/individual'
-import { log } from '../utilities'
+import { log, randomInt, willEventOccur } from '../utilities'
+import {
+  assignHospitalizedRoutine,
+  assignInfectiousRoutine,
+  assignRecuperedRoutine
+} from '../routines'
 
 const contractionProbabilityThreshold = 0.3
 
@@ -34,10 +40,8 @@ export function calculate(
         ]
     }
 
-    if (individual.state !== 'susceptible') {
-      withCovidMultiplier +=
-        MaskMultiplier[individual.mask] * VoiceMultiplier[activity.voice] * vaccineMultiplier * 1
-    }
+    withCovidMultiplier +=
+      MaskMultiplier[individual.mask] * VoiceMultiplier[activity.voice] * vaccineMultiplier * 1
   })
 
   let vaccineMultiplier = 1
@@ -64,13 +68,60 @@ export function calculate(
   if (individualInFocus.hadCovid) individualMultiplier * 0.08
 
   const contractionProbability = environment * withCovidMultiplier * individualMultiplier
+  log('Contraction Probability: ' + contractionProbability)
 
   let acquiredCovid = false
   if (contractionProbability >= threshold) acquiredCovid = true
 
+  let willDie = willEventOccur(deathProbability)
+  const willBeHospitalized = willEventOccur(hospitalizationProbability)
+  if (willBeHospitalized) willDie = willEventOccur(0.06) // https://jamanetwork.com/journals/jama/fullarticle/2803749
+
+  let deathDate = null
+  if (willDie) deathDate = randomInt(4, 10) // in omicron variant, after 4 days you start to feel symptoms, and after 10 is recovered
+
+  let hospitalizationDate = null
+  if (willBeHospitalized) hospitalizationDate = randomInt(4, 10)
+
   return {
-    deathProbability,
-    hospitalizationProbability,
+    death: {
+      willDie,
+      deathDate
+    },
+    hospitalization: {
+      willBeHospitalized,
+      hospitalizationDate
+    },
     acquiredCovid
+  }
+}
+
+export function changeSEIRState(population: Individual[]) {
+  for (let i = 0; i < population.length; i++) {
+    const individual = population[i]
+
+    if (individual.dse !== null) {
+      if (individual.dadse !== null) {
+        if (individual.dse >= individual.dadse) individual.state = 'dead'
+        break
+      }
+      if (individual.hadse !== null) {
+        if (individual.dse >= individual.hadse) {
+          individual.state = 'hospitalized'
+          assignHospitalizedRoutine(individual)
+          break
+        }
+      }
+
+      if (individual.dse >= omicronIncubationPeriod) {
+        individual.state = 'infectious'
+        assignInfectiousRoutine(individual)
+      }
+
+      if (individual.dse >= 10) {
+        individual.state = 'recovered'
+        assignRecuperedRoutine(individual)
+      }
+    }
   }
 }

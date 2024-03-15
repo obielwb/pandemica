@@ -25,7 +25,9 @@ export class Individual {
   public mask: MaskType
 
   public isInLockdown: boolean
-  public daysSinceExposed?: number
+  public dse?: number // daysSinceExposed
+  public dadse?: number // deadAfterDaysSinceExposed
+  public hadse?: number // hospitalizedAfterDaysSinceExposed
 
   public serialize?(): string {
     const educationStatusMap = {
@@ -53,9 +55,7 @@ export class Individual {
       st: this.state[0],
       hdc: this.hadCovid ? 1 : 0,
       v: this.vaccine.type !== '' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
-      m: this.mask !== '' ? this.mask : null,
-      l: this.isInLockdown ? 1 : 0,
-      dse: this.daysSinceExposed ? this.daysSinceExposed : null
+      m: this.mask !== '' ? this.mask : null
     }
 
     return JSON.stringify(serializedIndividual)
@@ -107,8 +107,8 @@ export class Individual {
       ? { type: deserializedIndividual.v.t, doses: deserializedIndividual.v.d }
       : { type: '', doses: 0 }
     individual.mask = deserializedIndividual.m || ''
-    individual.isInLockdown = deserializedIndividual.l === 1
-    individual.daysSinceExposed = deserializedIndividual.dse
+    individual.isInLockdown = false
+    individual.dse = 0
 
     return individual
   }

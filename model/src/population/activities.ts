@@ -7,6 +7,7 @@ export type Category =
   | 'shopping'
   | 's'
   | 'sleep'
+  | 'ho' // hospital
 export type Distance = 'normal' | 'sixFt' | 'tenFt'
 export type Setting = 'indoor' | 'outdoor'
 export type Voice = 'silent' | 'normal' | 'loud'
@@ -208,9 +209,9 @@ export const indoorParty = new Activity(
   30
 )
 
-export const park = new Activity('leisure', 'park', 'outdoor', 1.5 * 60, 'normal', 'normal', 50)
+export const park = new Activity('leisure', 'park', 'outdoor', 1.5 * 60, 'sixFt', 'normal', 50)
 export const gym = new Activity('leisure', 'gym', 'indoor', 1 * 60, 'normal', 'normal', 30)
-export const church = new Activity('leisure', 'church', 'indoor', 1 * 60, 'normal', 'normal', 50)
+export const church = new Activity('leisure', 'church', 'indoor', 1 * 60, 'normal', 'silent', 50)
 
 export const stayAtHome = new Activity(
   'home',
@@ -459,6 +460,8 @@ export const collegeStudyFromHome = new Activity(
   'normal',
   11 // max residents per house
 )
+
+export const hospitalized = new Activity('ho', 'ho.si', 'indoor', 16 * 60, 'normal', 'silent', 2)
 
 export const nineHoursSleep = new Activity(
   'home',

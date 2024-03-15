@@ -1,4 +1,4 @@
-import { Activity } from '../population/activities'
+import { Activity, eightHoursSleep, hospitalized } from '../population/activities'
 import { Individual } from '../population/individual'
 import { log } from '../utilities'
 import { generateWeeklyRoutine } from './generators'
@@ -58,4 +58,22 @@ export function assignRoutine(individuals: Individual[]) {
   return individualWithRoutines
 }
 
-export function assignHospitalizedRoutine(individual: Individual) {}
+// SEIR Routines
+
+export function assignHospitalizedRoutine(individual: Individual) {
+  individual.routine = [[]]
+  for (let i = 0; i < 7; i++) {
+    individual.routine[i].push({ ...eightHoursSleep })
+    individual.routine[i].push({ ...hospitalized })
+  }
+}
+
+export function assignInfectiousRoutine(individual: Individual) {
+  // individual.mask =
+
+  individual.routine.forEach((day) => {
+    day.forEach((activity) => {})
+  })
+}
+
+export function assignRecuperedRoutine(individual: Individual) {}
