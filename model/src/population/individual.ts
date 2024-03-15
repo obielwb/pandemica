@@ -1,4 +1,4 @@
-import { Activity, IndividualActivity } from './activities'
+import { Activity, IndividualActivity, OccupationLabel } from './activities'
 import { MaskType, Vaccine } from '../calculus/data'
 
 // todo: routines should change
@@ -15,20 +15,20 @@ export class Individual {
   public pir?: Activity[][] // preInfectedRoutine
   public house: House
   public income: number[]
-  public transportationMean: 'pr' | 'pu'
+  public transportationMean: TransporationMean
   public occupationTypes: [OccupationType?, OccupationType?]
   public occupations: [Occupation?, Occupation?]
 
-  public state: 'susceptible' | 'exposed' | 'infectious' | 'recovered' | 'hospitalized' | 'dead'
+  public state: State
   public hadCovid: boolean
 
   public vaccine: Vaccine
   public mask: MaskType
 
   public isInLockdown: boolean
-  public dse?: number // daysSinceExposed
-  public dadse?: number // deadAfterDaysSinceExposed
-  public hadse?: number // hospitalizedAfterDaysSinceExposed
+  public daysSinceExposed?: number
+  public deadAfterDaysSinceExposed?: number
+  public hospitalizedAfterDaysSinceExposed?: number
 
   public serialize?(): string {
     const educationStatusMap = {
@@ -47,12 +47,12 @@ export class Individual {
       a: this.age,
       es: educationStatusMap[this.educationStatus],
       ca: this.currentActivity ? this.currentActivity.serialize() : null,
-      r: this.routine.map((row) => row.map((activity) => activity.serialize())),
+      r: this.routine.map((day) => day.map((activity) => Activity.serialize(activity))),
       h: this.house.serialize!!(),
       inc: this.income,
-      tm: this.transportationMean === 'pr' ? 0 : 1,
-      ot: this.occupationTypes.map((o) => (o === 's' ? 1 : 0)),
-      oc: this.occupations.map((o) => (o ? o.serialize!!() : null)),
+      tm: this.transportationMean === TransporationMean.Private ? 0 : 1,
+      ot: this.occupationTypes.map((o) => (o === OccupationType.Study ? 1 : 0)),
+      oc: this.occupations.map((o) => (o ? Occupation.serialize(o) : null)),
       st: this.state[0],
       hdc: this.hadCovid ? 1 : 0,
       v: this.vaccine.type !== '' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
@@ -109,34 +109,52 @@ export class Individual {
       : { type: '', doses: 0 }
     individual.mask = deserializedIndividual.m || ''
     individual.isInLockdown = false
-    individual.dse = 0
+    individual.daysSinceExposed = 0
 
     return individual
   }
 }
 
-export type OccupationType = 's' | 'w'
+export enum Sex {
+  Male,
+  Female
+}
+
+export enum TransporationMean {
+  Public,
+  Private
+}
+
+export enum State {
+  Susceptible,
+  Exposed,
+  Infectious,
+  Recovered,
+  Hospitalized,
+  Dead
+}
+
+export enum OccupationType {
+  Study,
+  Work
+}
 
 export class Occupation {
-  public label: string
-
   constructor(
     public id: number,
     public type: OccupationType,
-    label: string,
+    public label: OccupationLabel,
     public intervalSize: [number, number],
     public actualSize: number
-  ) {
-    this.label = `${this.type}.${label}`
-  }
+  ) {}
 
-  public serialize?(): string {
+  public static serialize(occupation: Occupation): string {
     const serializedOccupation = {
-      i: this.id,
-      t: this.type[0],
-      l: this.label,
-      is: this.intervalSize,
-      as: this.actualSize
+      i: occupation.id,
+      t: occupation.type,
+      l: occupation.label,
+      is: occupation.intervalSize,
+      as: occupation.actualSize
     }
 
     return JSON.stringify(serializedOccupation)
@@ -146,7 +164,7 @@ export class Occupation {
     const deserializedOccupation = JSON.parse(serialized)
     return new Occupation(
       deserializedOccupation.i,
-      deserializedOccupation.t === 's' ? 's' : 'w',
+      deserializedOccupation.t,
       deserializedOccupation.l,
       deserializedOccupation.is,
       deserializedOccupation.as
