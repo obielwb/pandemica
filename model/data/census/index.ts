@@ -8,7 +8,8 @@ export enum Region {
   Northwest,
   North,
   South,
-  Southwest
+  Southwest,
+  None
 }
 
 // 2016 social information report - needs normalization down
