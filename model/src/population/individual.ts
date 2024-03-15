@@ -15,20 +15,20 @@ export class Individual {
   public preInfectedRoutine?: Activity[][]
   public house: House
   public income: number[]
-  public transportationMean: 'pr' | 'pu'
+  public transportationMean: TransporationMean
   public occupationTypes: [OccupationType?, OccupationType?]
   public occupations: [Occupation?, Occupation?]
 
-  public state: 'susceptible' | 'exposed' | 'infectious' | 'recovered' | 'hospitalized' | 'dead'
+  public state: State
   public hadCovid: boolean
 
   public vaccine: Vaccine
   public mask: Mask
 
   public isInLockdown: boolean
-  public dse?: number // daysSinceExposed
-  public dadse?: number // deadAfterDaysSinceExposed
-  public hadse?: number // hospitalizedAfterDaysSinceExposed
+  public daysSinceExposed?: number
+  public deadAfterDaysSinceExposed?: number
+  public hospitalizedAfterDaysSinceExposed?: number
 
   public static serialize(individual: Individual): string {
     const serializedIndividual = {
@@ -120,25 +120,21 @@ export enum OccupationType {
 }
 
 export class Occupation {
-  public label: string
-
   constructor(
     public id: number,
     public type: OccupationType,
-    label: string,
+    public label: OccupationLabel,
     public intervalSize: [number, number],
     public actualSize: number
-  ) {
-    this.label = `${this.type}.${label}`
-  }
+  ) {}
 
-  public serialize?(): string {
+  public static serialize(occupation: Occupation): string {
     const serializedOccupation = {
-      i: this.id,
-      t: this.type[0],
-      l: this.label,
-      is: this.intervalSize,
-      as: this.actualSize
+      i: occupation.id,
+      t: occupation.type,
+      l: occupation.label,
+      is: occupation.intervalSize,
+      as: occupation.actualSize
     }
 
     return JSON.stringify(serializedOccupation)
@@ -148,7 +144,7 @@ export class Occupation {
     const deserializedOccupation = JSON.parse(serialized)
     return new Occupation(
       deserializedOccupation.i,
-      deserializedOccupation.t === 's' ? 's' : 'w',
+      deserializedOccupation.t,
       deserializedOccupation.l,
       deserializedOccupation.is,
       deserializedOccupation.as

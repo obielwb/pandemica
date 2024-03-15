@@ -141,7 +141,7 @@ async function readPopulationFragmentFromFile(filePath: string): Promise<Individ
   }
 }
 
-const FRAGMENT_FILE_SIZE = 42 * 1024 * 1024 // 42mb
+const FRAGMENT_FILE_SIZE = 496 * 1024 * 1024 // 496mb
 
 async function savePopulationToDisk(population: Individual[]) {
   log('Serializing population', {
@@ -205,7 +205,7 @@ async function savePopulationToDisk(population: Individual[]) {
 }
 
 function serializeIndividual(individual: Individual) {
-  const serializedIndividual = individual.serialize!()
+  const serializedIndividual = Individual.serialize(individual)
   const jsonString = JSON.stringify(serializedIndividual)
   const buffer = Buffer.from(jsonString)
   return buffer

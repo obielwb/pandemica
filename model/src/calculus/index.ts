@@ -105,17 +105,11 @@ export function changeSEIRState(population: Individual[]) {
       if (individual.deadAfterDaysSinceExposed !== null) {
         if (individual.daysSinceExposed >= individual.deadAfterDaysSinceExposed)
           individual.state = State.Dead
-    if (individual.dse !== null) {
-      if (individual.dadse !== null) {
-        if (individual.dse >= individual.dadse) individual.state = 'dead'
         break
       }
       if (individual.hospitalizedAfterDaysSinceExposed !== null) {
         if (individual.daysSinceExposed >= individual.hospitalizedAfterDaysSinceExposed) {
           individual.state = State.Hospitalized
-      if (individual.hadse !== null) {
-        if (individual.dse >= individual.hadse) {
-          individual.state = 'hospitalized'
           assignHospitalizedRoutine(individual)
           break
         }
@@ -123,15 +117,11 @@ export function changeSEIRState(population: Individual[]) {
 
       if (individual.daysSinceExposed >= omicronIncubationPeriod) {
         individual.state = State.Infectious
-      if (individual.dse >= omicronIncubationPeriod) {
-        individual.state = 'infectious'
         assignInfectiousRoutine(individual)
       }
 
       if (individual.daysSinceExposed >= 10) {
         individual.state = State.Recovered
-      if (individual.dse >= 10) {
-        individual.state = 'recovered'
         assignRecuperedRoutine(individual)
       }
     }

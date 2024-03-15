@@ -1,4 +1,4 @@
-import { CHILD_AGE } from './../../../data/census/index'
+import { CHILD_AGE } from '../../../data/census/index'
 import { RETIREMENT_AGE } from '../../../data/census'
 import { Activities, Activity, getActivity } from '../../population/activities'
 import { Individual } from '../../population/individual'
