@@ -3,7 +3,7 @@ import { Individual } from '../../population/individual'
 
 function test() {
   const labels = ['baby', 'child', 'collegeStudentAndWorker', 'regularWorker', 'retired']
-  let population: Individual[] = [baby, regularWorker]
+  let population: Individual[] = [baby, child, collegeStudentAndWorker, regularWorker, retired]
 
   population = assignRoutine(population)
   const weekDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
@@ -11,15 +11,16 @@ function test() {
   population.forEach((individual) => {
     console.log(labels[individual.id].toUpperCase())
     individual.routine.forEach((day, i) => {
-      console.log('\n' + weekDays[i].toUpperCase())
+      const totalTime = day.reduce((acc, activity) => acc + activity.duration, 0)
+      if (totalTime !== 1440) {
+        console.log('\n' + weekDays[i].toUpperCase())
 
-      let totalTime = 0
-      day.forEach((activity) => {
-        console.log(activity.label, activity.duration)
-        totalTime += activity.duration
-      })
+        day.forEach((activity) => {
+          console.log(activity.label, activity.duration)
+        })
 
-      console.log(totalTime)
+        console.log(totalTime)
+      }
     })
   })
 }

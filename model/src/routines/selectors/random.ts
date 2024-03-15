@@ -195,7 +195,7 @@ const baseWeeklyActivityWeights = {
   'shopping.pharmacy': 1,
   'shopping.bakery': 2,
   'shopping.mall': 1,
-  'errands.restaurant.outdoor': 1,
+  'errands.restaurant.outdoor': 0.5,
   'errands.restaurant.indoor': 1,
   'leisure.bar': 0.5,
   'leisure.party.outdoor': 0.25,

@@ -76,13 +76,14 @@ export function generateDailyRoutine(
   let totalTime = 0
   let homeTime = INITIAl_HOME_TIME
 
-  const willIncapableFollowGuardian = willEventOccur(0.5)
+  const willIncapableFollowGuardian =
+    willEventOccur(0.5) &&
+    individual.house.housemates.find((housemate) => individualsRoutinesMap.get(housemate)) !==
+      undefined
+  const isRegularRoutine = () =>
+    individual.age[1] > CHILD_AGE || (individual.house.size === 1 && !willIncapableFollowGuardian)
 
-  if (
-    // routine not mimicked
-    individual.age[1] > CHILD_AGE ||
-    (individual.house.size === 1 && !willIncapableFollowGuardian)
-  ) {
+  if (isRegularRoutine()) {
     const sleepActivity = selectSleepActivity(worksOrStudiesToday(individual, day, workDays))
     dailyRoutine.push(sleepActivity) // day starts or ends with sleep
     totalTime += sleepActivity.duration
@@ -116,7 +117,7 @@ export function generateDailyRoutine(
   }
 
   let overflow = totalTime - ACTIVE_TIME
-  if (overflow > 0) {
+  if (overflow > 0 && isRegularRoutine()) {
     // first try to reduce from the leisure and shopping activities other than home
     for (let i = dailyRoutine.length - 1; i >= 0 && overflow > 0; i--) {
       let activity = dailyRoutine[i]
@@ -133,7 +134,6 @@ export function generateDailyRoutine(
         activity.category !== 's' &&
         activity.category !== 'errands'
       ) {
-        console.log('asdasdas')
         overflow -= activity.duration + 15
         dailyRoutine[i] = { ...activity, duration: 15 }
       }

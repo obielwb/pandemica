@@ -25,14 +25,10 @@ export function assignRoutine(individuals: Individual[]) {
     }
   >()
 
-  let totalRoutines = individuals.length
   const LOG_INTERVAL = 10_000
+  let initialTime = new Date()
 
   const individualWithRoutines = individuals.map((individual, index) => {
-    if (index % LOG_INTERVAL === 0) {
-      log('', { time: true, timeLabel: `ROUTINE-${index}` })
-    }
-
     const routine = generateWeeklyRoutine(individual, individualsRoutinesMap)
 
     if (individual.age[1] > 19) {
@@ -42,9 +38,22 @@ export function assignRoutine(individuals: Individual[]) {
       })
     }
 
-    if (index % LOG_INTERVAL === 0) {
-      log('', { timeEnd: true, timeLabel: `ROUTINE-${index}` })
-      totalRoutines -= LOG_INTERVAL
+    if (index % LOG_INTERVAL === 0 && index !== 0) {
+      const currentTime = new Date().getTime()
+      const timeElapsed = currentTime - initialTime.getTime()
+      const timePerRoutine = timeElapsed / LOG_INTERVAL
+      const totalRemainingTimeInSeconds = ((individuals.length - index) * timePerRoutine) / 1000
+      const remainingMinutes = Math.floor(totalRemainingTimeInSeconds / 60)
+      const remainingSeconds = Math.round(totalRemainingTimeInSeconds % 60)
+
+      console.log(
+        `[ROUTINES]: ${index.toLocaleString()} assigned in ${(timeElapsed / 1000).toFixed(2)}s, ` +
+          `${(individuals.length - index).toLocaleString()} remaining ` +
+          `(${Math.round(timePerRoutine)}ms per routine, ` +
+          `${remainingMinutes}min ${remainingSeconds}s estimated to completion)`
+      )
+
+      initialTime = new Date()
     }
 
     return {

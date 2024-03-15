@@ -1,4 +1,3 @@
-import { exit } from 'node:process'
 import { IndividualsRoutinesMap } from '..'
 import { CHILD_AGE } from '../../../data/census'
 import { Activity } from '../../population/activities'
