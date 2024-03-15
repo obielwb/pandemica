@@ -1,10 +1,20 @@
-import { type Age } from '../../data/census'
-import { House, Occupation, type Individual } from './individual'
+import { WorkSize, type Age, RETIREMENT_AGE, Region } from '../../data/census'
+import {
+  House,
+  Occupation,
+  type Individual,
+  Sex,
+  OccupationType,
+  EducationStatus,
+  TransporationMean
+} from './individual'
 import { fisherYatesShuffle, log } from '../utilities'
+import { Label } from './activities'
 
 export type Parameter = {
   label: string | number | string[] | number[]
   value: number
+  prototype?: any
 }
 
 // base generic conception of assign and normalize functions
@@ -66,9 +76,10 @@ export function assignSex(individuals: Individual[], malePercentage: number) {
   log('Assigning `sex` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
 
   let i = 0
-  for (; i < Math.round((malePercentage / 100) * individuals.length); i++) individuals[i].sex = 'm'
+  for (; i < Math.round((malePercentage / 100) * individuals.length); i++)
+    individuals[i].sex = Sex.Male
 
-  for (; i < individuals.length; i++) individuals[i].sex = 'f'
+  for (; i < individuals.length; i++) individuals[i].sex = Sex.Female
 
   log('', { timeEnd: true, timeLabel: 'ASSIGNMENT' })
 
@@ -78,7 +89,7 @@ export function assignSex(individuals: Individual[], malePercentage: number) {
 export function assignAge(individuals: Individual[], ages: Age[]) {
   log('Assigning `age` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
 
-  individuals = individuals.sort((a, b) => a.sex.localeCompare(b.sex))
+  individuals = individuals.sort((a, b) => a.sex - b.sex)
 
   let index = 0
   ages.forEach((age) => {
@@ -108,7 +119,7 @@ export function assignHouse(
   let houseIds = 0
   residentsPerHouse.forEach((house) => {
     for (let i = 0; i < house.value; i++) {
-      houses.push(new House(houseIds++, '', house.label as number, []))
+      houses.push(new House(houseIds++, Region.None, house.label as number, []))
     }
   })
 
@@ -117,7 +128,7 @@ export function assignHouse(
   let index = 0
   houseRegions.forEach((region) => {
     for (let i = 0; i < region.value; i++) {
-      houses[index++].region = region.label as string
+      houses[index++].region = region.label as Region
     }
   })
 
@@ -377,11 +388,19 @@ export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
   }
 
   ofAgeIndividuals.sort((a, b) => {
-    const aHasWork = a.occupationTypes.some((occupationType) => occupationType === 'w')
-    const bHasWork = b.occupationTypes.some((occupationType) => occupationType === 'w')
+    const aHasWork = a.occupationTypes.some(
+      (occupationType) => occupationType === OccupationType.Work
+    )
+    const bHasWork = b.occupationTypes.some(
+      (occupationType) => occupationType === OccupationType.Work
+    )
 
     if (aHasWork === bHasWork) {
-      const educationRank = { g: 3, ug: 2, ed: 1 }
+      const educationRank = {
+        [EducationStatus.Graduate]: 3,
+        [EducationStatus.Undergraduate]: 2,
+        [EducationStatus.Educated]: 1
+      }
 
       const aEducationRank = educationRank[a.educationStatus] || 0
       const bEducationRank = educationRank[b.educationStatus] || 0
@@ -393,9 +412,9 @@ export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
   })
 
   ofAgeIndividuals.forEach((individual, i) => {
-    let selectedIncome
+    let selectedIncome: Parameter
 
-    const hasWork = individual.occupationTypes.includes('w')
+    const hasWork = individual.occupationTypes.includes(OccupationType.Work)
 
     while (!selectedIncome) {
       selectedIncome = weightedIncomes.find((income) => {
@@ -421,7 +440,8 @@ export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
 export function assignEducationStatus(
   individuals: Individual[],
   preschoolers: Parameter,
-  middleSchoolers: Parameter,
+  middleSchoolerYoungerThanTen: Parameter,
+  middleSchoolerOlderThanTen: Parameter,
   highSchoolers: Parameter,
   undergradStudents: Parameter,
   gradStudents: Parameter,
@@ -433,32 +453,43 @@ export function assignEducationStatus(
   function assignEducationLevel(
     individuals: Individual[],
     ageRangeParameter: Parameter,
-    studyLevelLabel: string
+    studyLevelLabel: EducationStatus
   ) {
-    return individuals.map((individual) => {
+    let count = 0
+    for (let individual of individuals) {
       if (
+        !individual.educationStatus &&
         individual.age[0] >= ageRangeParameter.label[0] &&
-        individual.age[1] <= ageRangeParameter.label[1] &&
-        ageRangeParameter.value > 0
+        individual.age[1] <= ageRangeParameter.label[1]
       ) {
-        individual.educationStatus = studyLevelLabel
-        individual.occupationTypes.push('s')
-        ageRangeParameter.value--
+        individual.educationStatus = studyLevelLabel as EducationStatus
+        individual.occupationTypes.push(OccupationType.Study)
+        count++
+        if (count >= ageRangeParameter.value) break
       }
-      return individual
-    })
+    }
+    return individuals
   }
 
-  individuals = assignEducationLevel(individuals, preschoolers, 'ps')
-  individuals = assignEducationLevel(individuals, middleSchoolers, 'ms')
-  individuals = assignEducationLevel(individuals, highSchoolers, 'hs')
-  individuals = assignEducationLevel(individuals, undergradStudents, 'ug')
-  individuals = assignEducationLevel(individuals, gradStudents, 'g')
+  individuals = assignEducationLevel(individuals, preschoolers, EducationStatus.Preschooler)
+  individuals = assignEducationLevel(
+    individuals,
+    middleSchoolerYoungerThanTen,
+    EducationStatus.MiddleSchooler
+  )
+  individuals = assignEducationLevel(
+    individuals,
+    middleSchoolerOlderThanTen,
+    EducationStatus.MiddleSchooler
+  )
+  individuals = assignEducationLevel(individuals, highSchoolers, EducationStatus.HighSchooler)
+  individuals = assignEducationLevel(individuals, undergradStudents, EducationStatus.Undergraduate)
+  individuals = assignEducationLevel(individuals, gradStudents, EducationStatus.Graduate)
 
   individuals.forEach((individual) => {
     if (!individual.educationStatus && individual.age[1] <= highSchoolers.label[1]) {
       if (neverAttended > 0) {
-        individual.educationStatus = 'us'
+        individual.educationStatus = EducationStatus.Unschooled
         neverAttended--
       }
     }
@@ -467,10 +498,10 @@ export function assignEducationStatus(
   individuals.forEach((individual) => {
     if (!individual.educationStatus && individual.age[0] > highSchoolers.label[1]) {
       if (neverAttended > 0) {
-        individual.educationStatus = 'us'
+        individual.educationStatus = EducationStatus.Unschooled
         neverAttended--
       } else if (alreadyAttended > 0) {
-        individual.educationStatus = 'ed'
+        individual.educationStatus = EducationStatus.Educated
         alreadyAttended--
       }
     }
@@ -502,10 +533,10 @@ export function assignTransportationMean(
         const individual = individualMap.get(individualId)!
 
         if (housesWithVehicles > 0) {
-          individual.transportationMean = 'pr'
+          individual.transportationMean = TransporationMean.Private
           housesWithVehicles--
         } else {
-          individual.transportationMean = 'pu'
+          individual.transportationMean = TransporationMean.Public
         }
 
         individualsWithTransportationMean.push(individual)
@@ -529,16 +560,24 @@ export function assignStudyOccupations(
 ) {
   log('Assigning `studyOccupations` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
 
-  const preschoolStudents = individuals.filter((individual) => individual.educationStatus === 'ps')
-  const middleSchoolStudents = individuals.filter(
-    (individual) => individual.educationStatus === 'ms'
+  const preschoolStudents = individuals.filter(
+    (individual) => individual.educationStatus === EducationStatus.Preschooler
   )
-  const highSchoolStudents = individuals.filter((individual) => individual.educationStatus === 'hs')
+  const middleSchoolStudents = individuals.filter(
+    (individual) => individual.educationStatus === EducationStatus.MiddleSchooler
+  )
+  const highSchoolStudents = individuals.filter(
+    (individual) => individual.educationStatus === EducationStatus.HighSchooler
+  )
   const collegeStudents = individuals.filter(
-    (individual) => individual.educationStatus === 'ug' || individual.educationStatus === 'g'
+    (individual) =>
+      individual.educationStatus === EducationStatus.Undergraduate ||
+      individual.educationStatus === EducationStatus.Graduate
   )
   const nonStudents = individuals.filter(
-    (individual) => individual.educationStatus === 'us' || individual.educationStatus === 'ed'
+    (individual) =>
+      individual.educationStatus === EducationStatus.Unschooled ||
+      individual.educationStatus === EducationStatus.Educated
   )
 
   const sites: Occupation[] = []
@@ -546,46 +585,48 @@ export function assignStudyOccupations(
   let siteIds = 0
   ;[
     {
-      label: 'ps',
+      label: Label.PreschoolInPerson,
       studentsPerSite: Math.ceil(preschoolStudents.length / preschools),
       totalSites: preschools
     },
     {
-      label: 'ms',
+      label: Label.MiddleSchoolInPerson,
       studentsPerSite: Math.ceil(middleSchoolStudents.length / middleSchools),
       totalSites: middleSchools
     },
     {
-      label: 'hs',
+      label: Label.HighSchoolInPerson,
       studentsPerSite: Math.ceil(highSchoolStudents.length / highSchools),
       totalSites: highSchools
     },
     {
-      label: 'c',
+      label: Label.CollegeInPerson,
       studentsPerSite: Math.ceil(collegeStudents.length / colleges),
       totalSites: colleges
     }
   ].forEach((educationalLevel) => {
     for (let i = 0; i < educationalLevel.totalSites; i++) {
       const size = educationalLevel.studentsPerSite
-      sites.push(new Occupation(siteIds++, 's', educationalLevel.label, [size, size], size))
+      sites.push(
+        new Occupation(siteIds++, OccupationType.Study, educationalLevel.label, [size, size], size)
+      )
     }
   })
 
   const siteData = {
-    's.ps': {
+    [Label.PreschoolInPerson]: {
       index: 0,
       students: preschoolStudents
     },
-    's.ms': {
+    [Label.MiddleSchoolInPerson]: {
       index: 0,
       students: middleSchoolStudents
     },
-    's.hs': {
+    [Label.HighSchoolInPerson]: {
       index: 0,
       students: highSchoolStudents
     },
-    's.c': {
+    [Label.CollegeInPerson]: {
       index: 0,
       students: collegeStudents
     }
@@ -608,10 +649,10 @@ export function assignStudyOccupations(
   return {
     individuals: [
       ...nonStudents,
-      ...siteData['s.ps'].students,
-      ...siteData['s.ms'].students,
-      ...siteData['s.hs'].students,
-      ...siteData['s.c'].students
+      ...siteData[Label.PreschoolInPerson].students,
+      ...siteData[Label.MiddleSchoolInPerson].students,
+      ...siteData[Label.HighSchoolInPerson].students,
+      ...siteData[Label.CollegeInPerson].students
     ],
     lastOccupationId: siteIds
   }
@@ -623,8 +664,7 @@ export function assignWorkOccupations(
   industries: Parameter[],
   industriesEmployees: number[][],
   commerceAndServices: Parameter[],
-  commerceAndServicesEmployees: number[][],
-  RETIREMENT_AGE: number
+  commerceAndServicesEmployees: number[][]
 ) {
   log('Assigning `workOccupations` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
 
@@ -646,10 +686,11 @@ export function assignWorkOccupations(
       for (let i = 0; i < category.value; i++) {
         const workstation = new Occupation(
           siteIds++,
-          'w',
-          category.label.toString(),
+          OccupationType.Work,
+          category.label as Label,
           [minEmployees, maxEmployees],
-          0
+          0,
+          category.prototype
         )
 
         workstations.push(workstation)
@@ -670,10 +711,10 @@ export function assignWorkOccupations(
 
   const sizePriority = (size: string) => {
     const workstationPriorities = {
-      xs: 4,
-      s: 3,
-      m: 2,
-      l: 1
+      [WorkSize.Micro]: 4,
+      [WorkSize.Small]: 3,
+      [WorkSize.Medium]: 2,
+      [WorkSize.Large]: 1
     }
 
     return workstationPriorities[size]
@@ -682,23 +723,23 @@ export function assignWorkOccupations(
   let index = 0
   workstations.forEach((workstation) => {
     for (let i = 0; i < workstation.intervalSize![0]; i++) {
-      workers[index].occupationTypes.push('w')
+      workers[index].occupationTypes.push(OccupationType.Work)
       workers[index++].occupations.push(workstation)
       workstation.actualSize++
     }
   })
 
   workstations.sort((a, b) => {
-    const sizeA = sizePriority(a.label.split('.')[2])
-    const sizeB = sizePriority(b.label.split('.')[2])
+    const sizeA = sizePriority(a.prototype.size)
+    const sizeB = sizePriority(b.prototype.size)
     return sizeB - sizeA
   })
   let workstationIndex = 0
 
   workers.forEach((worker) => {
-    if (!worker.occupations.find((occupation) => occupation?.type === 'w')) {
+    if (!worker.occupations.find((occupation) => occupation?.type === OccupationType.Work)) {
       workstations[workstationIndex].actualSize++
-      worker.occupationTypes.push('w')
+      worker.occupationTypes.push(OccupationType.Work)
       worker.occupations.push(workstations[workstationIndex])
       workstationIndex = (workstationIndex + 1) % workstations.length
     }
@@ -831,7 +872,7 @@ export function normalizeIncomes(incomes: Parameter[], individuals: Individual[]
   log('Normalizing `incomes`', { time: true, timeLabel: 'NORMALIZATION' })
 
   const workers = individuals.reduce(
-    (acc, individual) => acc + (individual.occupationTypes.includes('w') ? 1 : 0),
+    (acc, individual) => acc + (individual.occupationTypes.includes(OccupationType.Work) ? 1 : 0),
     0
   )
 

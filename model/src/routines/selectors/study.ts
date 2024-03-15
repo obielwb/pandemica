@@ -1,5 +1,5 @@
-import { Activities, Activity, getActivity } from '../../population/activities'
-import { Individual, Occupation } from '../../population/individual'
+import { Label as Activities, Activity, getActivity } from '../../population/activities'
+import { EducationStatus, Individual, Occupation } from '../../population/individual'
 import { selectTransportationToOccupation } from './general'
 
 export function selectStudyActivity(
@@ -18,13 +18,13 @@ export function selectStudyActivity(
   const newActivities = [...transportationToOccupationActivities.slice()]
 
   const school = { ...getActivity(studyOccupation.label) }
-  const restaurantActivity = getActivity(Activities.RestaurantIndoors)
+  const restaurantActivity = getActivity(Activities.RestaurantIndoor)
   restaurantActivity.maximumIndividualsEngaged = Math.floor(studyOccupation.actualSize / 5)
 
   newActivities.push(school)
 
-  // lunch in between
-  if (individual.educationStatus === 'ms') {
+  // doesn't lunch in between
+  if (individual.educationStatus === EducationStatus.MiddleSchooler) {
     newActivities.push(restaurantActivity)
   } else {
     const schoolDuration = alsoWorksToday ? school.duration - 2 * 60 : school.duration

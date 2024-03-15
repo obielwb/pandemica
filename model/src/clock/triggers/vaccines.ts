@@ -1,21 +1,21 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { parse } from 'csv-parse'
-import { Individual } from '../../population/individual'
-import { fasterFilter, fisherYatesShuffle, log, shuffle } from '../../utilities'
+import { Individual, Sex } from '../../population/individual'
+import { fasterFilter, fisherYatesShuffle, log } from '../../utilities'
 import { VaccineType } from '../../calculus/data'
 
 /*
-  Note: this code is used for validation purpose only.
+  Note: this code is used for validation purposes only
 */
 
 type VaccineRegister = {
   date: string
   state: string
   city: string
-  ibgeID: string
-  vaccine: string
-  sex: string
+  ibgeID: number
+  vaccine: VaccineType
+  sex: Sex
   age: string
   dose: number
   pop2021: number
@@ -25,9 +25,7 @@ type VaccineRegister = {
 export class VaccineTrigger {
   private vaccineRegisters: VaccineRegister[] = []
 
-  constructor(public population: Individual[]) {}
-
-  public assign(currentDate: string) {
+  public assign(currentDate: string, population: Individual[]) {
     if (this.vaccineRegisters !== null) {
       const registersOfTheDay = fasterFilter(
         this.vaccineRegisters,
@@ -36,12 +34,13 @@ export class VaccineTrigger {
 
       for (const register of registersOfTheDay) {
         const matchCharacteristics = fasterFilter(
-          this.population,
+          population,
           (individual) =>
             register.age.includes(individual.age[0].toString()) &&
             individual.sex === register.sex &&
             individual.vaccine.doses === register.dose - 1 && // only people with first dose takes the second dose vaccine
-            (individual.vaccine.type === register.vaccine || individual.vaccine.type === '')
+            (individual.vaccine.type === register.vaccine ||
+              individual.vaccine.type === VaccineType.None)
         )
 
         const shuffledIndividuals = fisherYatesShuffle(matchCharacteristics)
@@ -57,54 +56,46 @@ export class VaccineTrigger {
 
   public async readVaccineData() {
     try {
-      const csvFilePath = path.resolve(__dirname, 'datacovid19campinas_2021_vaccines.csv')
-      const headers = [
-        'date',
-        'state',
-        'city',
-        'ibgeID',
-        'vaccine',
-        'sex',
-        'age',
-        'dose',
-        'pop2021',
-        'count'
-      ]
+      log('Reading Vaccine Data', { time: true, timeLabel: 'INITIALIZATION' })
 
-      const content = await fs.promises.readFile(csvFilePath, { encoding: 'utf-8' })
+      const csvFilePath = path.resolve(
+        path.join(__dirname, 'data', 'covid19', 'campinas_2021_vaccines.csv')
+      )
 
-      const parseData = () =>
-        new Promise<VaccineRegister[]>((resolve, reject) => {
-          parse(
-            content,
-            {
-              delimiter: ',',
-              columns: headers,
-              fromLine: 2,
-              cast: (columnValue, context) => {
-                if (
-                  context.column == 'count' ||
-                  context.column == 'pop2021' ||
-                  context.column == 'dose'
-                ) {
-                  return parseInt(columnValue)
-                }
+      const content = fs.readFileSync(csvFilePath, { encoding: 'utf-8' }).split('\n').slice(1)
 
-                if (context.column == 'sex' && columnValue == 'F') return 'f'
-                if (context.column == 'sex' && columnValue == 'M') return 'm'
+      const vaccineRegisters: VaccineRegister[] = []
 
-                return columnValue
-              }
-            },
-            (error, result: VaccineRegister[]) => {
-              if (error) reject(error)
-              else resolve(result)
-            }
-          )
-        })
+      content.forEach((line) => {
+        if (line.length > 0) {
+          const [date, state, city, ibgeID, vaccine, sex, age, dose, pop2021, count] =
+            line.split(',')
 
-      const result = await parseData()
-      this.vaccineRegisters = result
+          const stringToVaccineMap = new Map<string, VaccineType>([
+            ['Sinovac', VaccineType.CoronaVac],
+            ['Janssen', VaccineType.Janssen],
+            ['Pfizer/BioNTech', VaccineType.Pfizer],
+            ['AstraZeneca', VaccineType.AstraZeneca]
+          ])
+
+          const register: VaccineRegister = {
+            date: date,
+            state: state,
+            city: city,
+            ibgeID: parseInt(ibgeID),
+            vaccine: stringToVaccineMap[vaccine.split('-')[0].trim()],
+            sex: sex == 'F' ? Sex.Female : Sex.Male,
+            age: age,
+            dose: parseInt(dose),
+            pop2021: parseInt(pop2021),
+            count: parseInt(count)
+          }
+
+          vaccineRegisters.push(register)
+        }
+      })
+
+      return vaccineRegisters
     } catch (error) {
       log(error, { time: true, timeLabel: 'VACCINE IMPLEMENTATION ERROR' })
       return null

@@ -1,6 +1,6 @@
 import { IndividualsRoutinesMap } from '..'
 import { CHILD_AGE } from '../../../data/census'
-import { Activity } from '../../population/activities'
+import { Label as Activities, Activity, Category } from '../../population/activities'
 import { Individual, Occupation } from '../../population/individual'
 import { ACTIVE_TIME } from '../generators'
 import { selectMimickedActivities } from './mimicked'
@@ -37,7 +37,7 @@ export function selectActivitiesBasedOnAttributes(
         studyOccupation &&
         day >= 1 &&
         day <= 5 &&
-        !dailyRoutine.find((activity) => activity.category === 's')
+        !dailyRoutine.find((activity) => activity.category === Category.Study)
       ) {
         newActivities.push(
           ...selectStudyActivity(
@@ -56,7 +56,7 @@ export function selectActivitiesBasedOnAttributes(
       if (
         workOccupation &&
         workDays.includes(day) &&
-        !dailyRoutine.find((activity) => activity.category === 'w')
+        !dailyRoutine.find((activity) => activity.category === Category.Work)
       ) {
         newActivities.push(
           ...selectWorkActivity(
@@ -83,7 +83,7 @@ export function selectActivitiesBasedOnAttributes(
         )
 
         if (randomActivity) {
-          if (randomActivity.label === 'home.stay_at_home') {
+          if (randomActivity.label === Activities.StayAtHome) {
             randomActivity.duration = remainingTime
           }
 

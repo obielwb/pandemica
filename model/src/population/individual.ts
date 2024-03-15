@@ -1,5 +1,6 @@
-import { Activity, IndividualActivity } from './activities'
-import { MaskType, Vaccine } from '../calculus/data'
+import { Activity, IndividualActivity, Label } from './activities'
+import { Mask, Vaccine, VaccineType } from '../calculus/data'
+import { Region } from '../../data/census'
 
 // todo: routines should change
 // - social distancing stage
@@ -7,56 +8,47 @@ import { MaskType, Vaccine } from '../calculus/data'
 // - lockdown stage
 export class Individual {
   public id: number
-  public sex: 'm' | 'f'
+  public sex: Sex
   public age: number[]
-  public educationStatus: string
+  public educationStatus: EducationStatus
   public currentActivity?: IndividualActivity
   public routine: Activity[][]
-  public pir?: Activity[][] // preInfectedRoutine
+  public preInfectedRoutine?: Activity[][]
   public house: House
   public income: number[]
-  public transportationMean: 'pr' | 'pu'
+  public transportationMean: TransporationMean
   public occupationTypes: [OccupationType?, OccupationType?]
   public occupations: [Occupation?, Occupation?]
 
-  public state: 'susceptible' | 'exposed' | 'infectious' | 'recovered' | 'hospitalized' | 'dead'
+  public state: State
   public hadCovid: boolean
 
   public vaccine: Vaccine
-  public mask: MaskType
+  public mask: Mask
 
   public isInLockdown: boolean
-  public dse?: number // daysSinceExposed
-  public dadse?: number // deadAfterDaysSinceExposed
-  public hadse?: number // hospitalizedAfterDaysSinceExposed
+  public daysSinceExposed?: number
+  public deadAfterDaysSinceExposed?: number
+  public hospitalizedAfterDaysSinceExposed?: number
 
-  public serialize?(): string {
-    const educationStatusMap = {
-      ps: 'ps',
-      ms: 'ms',
-      hs: 'hs',
-      ug: 'ug',
-      g: 'gr',
-      us: 'us',
-      ed: 'ed'
-    }
-
+  public static serialize(individual: Individual): string {
     const serializedIndividual = {
-      i: this.id,
-      s: this.sex === 'm' ? 0 : 1,
-      a: this.age,
-      es: educationStatusMap[this.educationStatus],
-      ca: this.currentActivity ? this.currentActivity.serialize() : null,
-      r: this.routine.map((row) => row.map((activity) => activity.serialize())),
-      h: this.house.serialize!!(),
-      inc: this.income,
-      tm: this.transportationMean === 'pr' ? 0 : 1,
-      ot: this.occupationTypes.map((o) => (o === 's' ? 1 : 0)),
-      oc: this.occupations.map((o) => (o ? o.serialize!!() : null)),
-      st: this.state[0],
-      hdc: this.hadCovid ? 1 : 0,
-      v: this.vaccine.type !== '' ? { t: this.vaccine.type, d: this.vaccine.doses } : null,
-      m: this.mask !== '' ? this.mask : null
+      i: individual.id,
+      s: individual.sex,
+      a: individual.age,
+      es: individual.educationStatus,
+      r: individual.routine.map((day) => day.map((activity) => Activity.serialize(activity))),
+      h: House.serialize(individual.house),
+      inc: individual.income,
+      tm: individual.transportationMean,
+      ot: individual.occupationTypes,
+      oc: individual.occupations.map((o) => Occupation.serialize(o)),
+      st: individual.state,
+      v:
+        individual.vaccine.type !== VaccineType.None
+          ? { t: individual.vaccine.type, d: individual.vaccine.doses }
+          : null,
+      m: individual.mask
     }
 
     return JSON.stringify(serializedIndividual)
@@ -65,78 +57,88 @@ export class Individual {
   public static deserialize(serialized: string): Individual {
     const deserializedIndividual = JSON.parse(serialized)
 
-    const stateReverseMap = {
-      s: 'susceptible',
-      e: 'exposed',
-      i: 'infectious',
-      r: 'recovered',
-      h: 'hospitalized',
-      d: 'dead'
-    }
-
-    const educationStatusReverseMap = {
-      ps: 'preschool',
-      ms: 'middle_school',
-      hs: 'high_school',
-      ug: 'ug',
-      gr: 'g',
-      us: 'us',
-      ed: 'ed'
-    }
-
     const individual = new Individual()
     individual.id = deserializedIndividual.i
-    individual.sex = deserializedIndividual.s === 0 ? 'm' : 'f'
+    individual.sex = deserializedIndividual.s
     individual.age = deserializedIndividual.a
-    individual.educationStatus = educationStatusReverseMap[deserializedIndividual.es]
-    individual.currentActivity = deserializedIndividual.ca
-      ? IndividualActivity.deserialize(deserializedIndividual.ca)
-      : undefined
-    individual.routine = deserializedIndividual.r.map((row: string[]) =>
-      row.map((activitySerialized) => Activity.deserialize(activitySerialized))
+    individual.educationStatus = deserializedIndividual.es
+    individual.currentActivity = null
+    individual.routine = deserializedIndividual.r.map((day: string[]) =>
+      day.map((activitySerialized) => Activity.deserialize(activitySerialized))
     )
     individual.house = House.deserialize(deserializedIndividual.h)
     individual.income = deserializedIndividual.inc || []
-    individual.transportationMean = deserializedIndividual.tm === 0 ? 'pr' : 'pu'
-    individual.occupationTypes = deserializedIndividual.ot.map((o: number) => (o === 1 ? 's' : 'w'))
-    individual.occupations = deserializedIndividual.oc.map((o) =>
-      o ? Occupation.deserialize(o) : null
-    )
-    individual.state = stateReverseMap[deserializedIndividual.st]
-    individual.hadCovid = deserializedIndividual.hdc === 1
+    individual.transportationMean = deserializedIndividual.tm
+    individual.occupationTypes = deserializedIndividual.ot
+    individual.occupations = deserializedIndividual.oc.map((o) => Occupation.deserialize(o))
+    individual.state = deserializedIndividual.st
+    individual.hadCovid = false
     individual.vaccine = deserializedIndividual.v
       ? { type: deserializedIndividual.v.t, doses: deserializedIndividual.v.d }
       : { type: '', doses: 0 }
-    individual.mask = deserializedIndividual.m || ''
+    individual.mask = deserializedIndividual.m
     individual.isInLockdown = false
-    individual.dse = 0
+    individual.daysSinceExposed = null
+    individual.hospitalizedAfterDaysSinceExposed = null
+    individual.deadAfterDaysSinceExposed = null
 
     return individual
   }
 }
 
-export type OccupationType = 's' | 'w'
+export enum EducationStatus {
+  None,
+  Preschooler,
+  MiddleSchooler,
+  HighSchooler,
+  Undergraduate,
+  Graduate,
+  Educated,
+  Unschooled
+}
+
+export enum Sex {
+  Male,
+  Female
+}
+
+export enum TransporationMean {
+  Public,
+  Private
+}
+
+export enum State {
+  Susceptible,
+  Exposed,
+  Infectious,
+  Recovered,
+  Hospitalized,
+  Dead
+}
+
+export enum OccupationType {
+  Study,
+  Work
+}
 
 export class Occupation {
-  public label: string
-
   constructor(
     public id: number,
     public type: OccupationType,
-    label: string,
+    public label: Label,
     public intervalSize: [number, number],
-    public actualSize: number
-  ) {
-    this.label = `${this.type}.${label}`
-  }
+    public actualSize: number,
+    public prototype?: any
+  ) {}
 
-  public serialize?(): string {
+  public static serialize(occupation: Occupation): string {
     const serializedOccupation = {
-      i: this.id,
-      t: this.type[0],
-      l: this.label,
-      is: this.intervalSize,
-      as: this.actualSize
+      i: occupation.id,
+      t: occupation.type,
+      l: occupation.label,
+      is: occupation.intervalSize,
+      as: occupation.actualSize,
+      p: occupation.prototype
     }
 
     return JSON.stringify(serializedOccupation)
@@ -146,10 +148,11 @@ export class Occupation {
     const deserializedOccupation = JSON.parse(serialized)
     return new Occupation(
       deserializedOccupation.i,
-      deserializedOccupation.t === 's' ? 's' : 'w',
+      deserializedOccupation.t,
       deserializedOccupation.l,
       deserializedOccupation.is,
-      deserializedOccupation.as
+      deserializedOccupation.as,
+      deserializedOccupation.p
     )
   }
 }
@@ -157,23 +160,17 @@ export class Occupation {
 export class House {
   constructor(
     public id: number,
-    public region: string,
+    public region: Region,
     public size: number,
     public housemates: number[]
   ) {}
 
-  public serialize?(): string {
-    const regionMap = (region: string) => {
-      let serializedRegion = region[0]
-      if (region.endsWith('west')) serializedRegion += 'w'
-      return serializedRegion
-    }
-
+  public static serialize(house: House): string {
     const serializedHouse = {
-      i: this.id,
-      r: regionMap(this.region),
-      s: this.size,
-      h: this.housemates
+      i: house.id,
+      r: house.region,
+      s: house.size,
+      h: house.housemates
     }
 
     return JSON.stringify(serializedHouse)
@@ -182,17 +179,9 @@ export class House {
   public static deserialize(serialized: string): House {
     const deserializedHouse = JSON.parse(serialized)
 
-    const regionReverseMap = {
-      s: 'south',
-      sw: 'southwest',
-      e: 'east',
-      n: 'north',
-      nw: 'northwest'
-    }
-
     const house = new House(
       deserializedHouse.i,
-      regionReverseMap[deserializedHouse.r],
+      deserializedHouse.r,
       deserializedHouse.s,
       deserializedHouse.h
     )

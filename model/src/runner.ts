@@ -3,10 +3,9 @@ import * as fs from 'fs'
 import { getPopulation } from './population'
 import { Clock } from './clock'
 import { quickSort } from './clock/sorting'
-import { IndividualActivity } from './population/activities'
-import { calculate } from './calculus'
-import { Individual } from './population/individual'
-import { fisherYatesShuffle, log } from './utilities'
+import { calculate, changeSEIRState } from './calculus'
+import { Individual, State } from './population/individual'
+import { fasterFilter, fisherYatesShuffle, log } from './utilities'
 import { nanoid } from 'nanoid'
 import { VaccineTrigger } from './clock/triggers/vaccines'
 import { LockdownTrigger } from './clock/triggers/lockdown'
@@ -14,23 +13,6 @@ import { MaskTrigger } from './clock/triggers/masks'
 import { PandemicRegister } from '../data/covid19'
 import { join } from 'path'
 import { assignHospitalizedRoutine } from './routines'
-
-// todo: these individuals are outdated
-const individuals: Individual[] = []
-
-const currentActivity: IndividualActivity = {
-  id: 0,
-  category: 'transport',
-  distance: 'normal',
-  duration: 10,
-  individualsEngaged: individuals.map((individual) => individual.id),
-  label: 'transportation.public.ride',
-  setting: 'indoor',
-  maximumIndividualsEngaged: 40,
-  voice: 'loud',
-  // todo
-  serialize: null
-}
 
 // todo: implement run function
 /**
@@ -45,48 +27,28 @@ export async function run(
 
   const simulatedPandemicRegisters: PandemicRegister[] = []
 
-  const population = await getPopulation({
+  let population = await getPopulation({
     cache: true,
     saveToDisk: true
   })
 
-  const clock = new Clock(new Date(initialScenario[0].date), individuals, quickSort)
+  const clock = new Clock(new Date(initialScenario[0].date), population, quickSort)
 
-  // nao sabia se queria isso aqui dnv, acabei nao apagando
-  // console.log(
-  //   population.find(
-  //     (individual) => individual.age[1] <= 19 && individual.occupationTypes.length === 0
-  //   )
-  // )
-
-  // console.log(
-  //   population.find(
-  //     (individual) => individual.age[1] <= 19 && individual.occupationTypes.includes('s')
-  //   )
-  // )
-
-  // console.log(population.find((individual) => individual.occupationTypes.length === 2))
-
-  // console.log(
-  //   population.find(
-  //     (individual) => individual.age[1] > 19 && individual.occupationTypes.length === 0
-  //   )
-  // )
-
+  // todo: assig proper dates to triggers
   const lockdown = new LockdownTrigger(
-    individuals,
     '0000-00-00',
     1,
     ['0000-00-00', '0000-00-00'],
     0.5,
-    ['0000-00-00']
+    ['0000-00-00'],
+    []
   )
-  const vaccines = new VaccineTrigger(individuals)
-  const masks = new MaskTrigger(individuals, [])
+  const vaccines = new VaccineTrigger()
+  const masks = new MaskTrigger([])
 
-  // lockdown.assign(clock.currentDateString())
-  // vaccines.assign(clock.currentDateString())
-  // masks.assign(clock.currentDateString())
+  const { date, withoutDeadPopulation } = setInitialScenario(initialScenario, population)
+  population = withoutDeadPopulation
+  clock.setCurrentDateFromString(date)
 
   // while (clock.currentDate() <= endDate) {
   //   const individualsWithCovid = currentActivity.individualsEngaged.map((i) => {
@@ -118,46 +80,69 @@ export async function run(
   //   })
   // }
 
+  //---------------
+
+  let dailyDeaths = []
+
+  //....
+
+  lockdown.assign(clock.currentDateString(), population)
+  vaccines.assign(clock.currentDateString(), population)
+  masks.assign(clock.currentDateString(), population)
+
+  dailyDeaths = changeSEIRState(population)
+  if (dailyDeaths.length !== 0) {
+    population = fasterFilter(population, (individual) => !dailyDeaths.includes(individual.id))
+  }
+
+  dailyDeaths = []
+  //---------------
+
   saveSimulatedPandemicRegistersToDisk(runId, simulatedPandemicRegisters)
 }
 
 function setInitialScenario(
-  totalDeaths: number,
-  totalCases: number,
   pandemicRegisters: PandemicRegister[],
   population: Individual[]
-) {
+): { date: string; withoutDeadPopulation: Individual[] } {
   log('Setting initial pandemic scenario', { time: true, timeLabel: 'SIMULATION' })
-  const totalIndividualsContaminated = fisherYatesShuffle(population).slice(0, totalCases)
+  const lastPandemicRegister = pandemicRegisters[pandemicRegisters.length - 1]
+  const totalIndividualsContaminated = fisherYatesShuffle(population).slice(
+    0,
+    lastPandemicRegister.totalCases
+  )
 
-  const individualsDead = totalIndividualsContaminated.slice(0, totalDeaths)
-
-  individualsDead.map((individual) => (individual.state = 'dead'))
-
-  // todo: be aware of dead individuals in runner
-  // todo: implement assignCovidstateRoutine functions
-  // todo: implement covid recuperation
+  const deadIndividuals = totalIndividualsContaminated.slice(0, lastPandemicRegister.deaths)
 
   // infected individuals recover. To start the simulation
   // being contaminated we only catch individuals who were infected in the last 14 days
   const individualsCurrentContaminted = totalIndividualsContaminated.slice(
-    totalDeaths, // starts to select where individualsDead ends
-    totalDeaths + (pandemicRegisters[-1].totalCases - pandemicRegisters[-14].totalCases)
+    lastPandemicRegister.deaths, // leave behind dead individuals
+    lastPandemicRegister.deaths +
+      (pandemicRegisters[pandemicRegisters.length - 1].totalCases -
+        pandemicRegisters[pandemicRegisters.length - 14].totalCases)
   )
 
-  individualsCurrentContaminted.slice(totalDeaths).map((individual) => {
-    individual.state = 'hospitalized'
+  individualsCurrentContaminted.map((individual) => {
+    individual.state = State.Hospitalized
     assignHospitalizedRoutine(individual)
   })
 
-  return pandemicRegisters[pandemicRegisters.length - 1].date
+  let withoutDeadPopulation = fasterFilter(population, (individual) =>
+    deadIndividuals.some((deadIndividual) => deadIndividual.id === individual.id)
+  )
+
+  return {
+    date: pandemicRegisters[pandemicRegisters.length - 1].date,
+    withoutDeadPopulation
+  }
 }
 
 function saveSimulatedPandemicRegistersToDisk(
   simulationId: string,
   pandemicRegisters: PandemicRegister[]
 ) {
-  log('Serializing siumation pandemic registers', {
+  log('Serializing simulation pandemic registers', {
     time: true,
     timeLabel: 'SERIALIZATION'
   })

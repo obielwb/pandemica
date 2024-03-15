@@ -1,25 +1,36 @@
+import { Label } from '../../src/population/activities'
+
 // ibge 2010
 export const totalPopulation = 1080113
 
+export enum Region {
+  East,
+  Northwest,
+  North,
+  South,
+  Southwest,
+  None
+}
+
 // 2016 social information report - needs normalization down
 export const eastPopulation = {
-  label: 'east',
+  label: Region.East,
   value: 248939
 }
 export const northwestPopulation = {
-  label: 'northwest',
+  label: Region.Northwest,
   value: 133086
 }
 export const northPopulation = {
-  label: 'north',
+  label: Region.North,
   value: 212342
 }
 export const southwestPopulation = {
-  label: 'southwest',
+  label: Region.Southwest,
   value: 253061
 }
 export const southPopulation = {
-  label: 'south',
+  label: Region.South,
   value: 316671
 }
 export const regionsPopulation = [
@@ -216,12 +227,18 @@ export const ageSix = 12535
 // adapted categories to fit age intervals
 export const preschoolers = {
   label: [0, 4],
-  value: ageZeroToThree + ageFourToFive + ageSix
+  value: ageZeroToThree + ageFourToFive
 }
 export const ageSevenToFourteen = 113766
-export const middleSchoolers = {
-  label: [5, 14],
-  value: ageSevenToFourteen
+export const sevenToNine = Math.floor(ageSevenToFourteen / 2.5)
+export const tenToFourteen = ageSevenToFourteen - sevenToNine
+export const middleSchoolerYoungerThanTen = {
+  label: [5, 9],
+  value: ageSix + sevenToNine
+}
+export const middleSchoolerOlderThanTen = {
+  label: [10, 14],
+  value: tenToFourteen
 }
 export const ageFifteenToSeventeen = 41497
 export const ageEighteenToNineteen = 15200
@@ -311,40 +328,71 @@ export const residentsPerHouse = [
   elevenOrMoreResidents
 ]
 
+export enum WorkSize {
+  Micro,
+  Small,
+  Medium,
+  Large
+}
+
 // ibge 2018
 export const microIndustries = {
   value: 14398,
-  label: 'i.xs'
+  label: Label.MicroIndustryInPerson,
+  prototype: {
+    size: WorkSize.Micro
+  }
 }
 export const smallIndustries = {
   value: 2846,
-  label: 'i.s'
+  label: Label.SmallIndustryInPerson,
+  prototype: {
+    size: WorkSize.Small
+  }
 }
 export const mediumIndustries = {
   value: 724,
-  label: 'i.m'
+  label: Label.MediumIndustryInPerson,
+  prototype: {
+    size: WorkSize.Medium
+  }
 }
 export const largeIndustries = {
   value: 160,
-  label: 'i.l'
+  label: Label.LargeIndustryInPerson,
+  prototype: {
+    size: WorkSize.Large
+  }
 }
 export const industries = [microIndustries, smallIndustries, mediumIndustries, largeIndustries]
 
 export const microCommerceAndServices = {
   value: 109612,
-  label: 'cs.xs'
+  label: Label.MicroCommerceInPerson,
+  prototype: {
+    size: WorkSize.Micro
+  }
 }
 export const smallCommerceAndServices = {
   value: 7834,
-  label: 'cs.s'
+  label: Label.SmallCommerceInPerson,
+  prototype: {
+    size: WorkSize.Small
+  }
 }
 export const mediumCommerceAndServices = {
   value: 1202,
-  label: 'cs.m'
+  label: Label.MediumCommerceInPerson,
+  prototype: {
+    size: WorkSize.Medium
+  }
 }
 export const largeCommerceAndServices = {
   value: 0,
-  label: 'cs.l'
+  label: Label.LargeCommerceInPerson,
+  prototype: {
+    size: WorkSize.Large
+  }
 }
 export const commerceAndServices = [
   microCommerceAndServices,

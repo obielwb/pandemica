@@ -4,11 +4,12 @@ import {
   DistanceMultiplier,
   MaskMultiplier,
   SettingMultiplier,
+  VaccineType,
   VaccinesRiskReduction,
   VoiceMultiplier,
   omicronIncubationPeriod
 } from './data'
-import { Individual } from '../population/individual'
+import { Individual, State } from '../population/individual'
 import { log, randomInt, willEventOccur } from '../utilities'
 import {
   assignHospitalizedRoutine,
@@ -32,7 +33,7 @@ export function calculate(
   let withCovidMultiplier = 0
   individualsWithCovid.forEach((individual) => {
     let vaccineMultiplier = 1
-    if (individual.vaccine.type !== '') {
+    if (individual.vaccine.type !== VaccineType.None) {
       vaccineMultiplier =
         1 -
         VaccinesRiskReduction[individual.vaccine.type].multiplierPerDose[
@@ -45,7 +46,7 @@ export function calculate(
   })
 
   let vaccineMultiplier = 1
-  if (individualInFocus.vaccine.type !== '') {
+  if (individualInFocus.vaccine.type !== VaccineType.None) {
     vaccineMultiplier =
       1 -
       VaccinesRiskReduction[individualInFocus.vaccine.type].multiplierPerDose[
@@ -97,31 +98,37 @@ export function calculate(
 }
 
 export function changeSEIRState(population: Individual[]) {
+  const deadPeoplesId = []
   for (let i = 0; i < population.length; i++) {
     const individual = population[i]
 
-    if (individual.dse !== null) {
-      if (individual.dadse !== null) {
-        if (individual.dse >= individual.dadse) individual.state = 'dead'
+    if (individual.daysSinceExposed !== null) {
+      if (individual.deadAfterDaysSinceExposed !== null) {
+        if (individual.daysSinceExposed >= individual.deadAfterDaysSinceExposed) {
+          individual.state = State.Dead
+          deadPeoplesId.push(individual.id)
+        }
         break
       }
-      if (individual.hadse !== null) {
-        if (individual.dse >= individual.hadse) {
-          individual.state = 'hospitalized'
+      if (individual.hospitalizedAfterDaysSinceExposed !== null) {
+        if (individual.daysSinceExposed >= individual.hospitalizedAfterDaysSinceExposed) {
+          individual.state = State.Hospitalized
           assignHospitalizedRoutine(individual)
           break
         }
       }
 
-      if (individual.dse >= omicronIncubationPeriod) {
-        individual.state = 'infectious'
+      if (individual.daysSinceExposed >= omicronIncubationPeriod) {
+        individual.state = State.Infectious
         assignInfectiousRoutine(individual)
       }
 
-      if (individual.dse >= 10) {
-        individual.state = 'recovered'
+      if (individual.daysSinceExposed >= 10) {
+        individual.state = State.Recovered
         assignRecuperedRoutine(individual)
       }
     }
   }
+
+  return deadPeoplesId
 }

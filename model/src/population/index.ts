@@ -9,7 +9,6 @@ import {
   residentsPerHouse,
   incomes,
   ages,
-  middleSchoolers,
   preschoolers,
   highSchoolers,
   undergradStudents,
@@ -21,7 +20,9 @@ import {
   colleges,
   middleSchools,
   highSchools,
-  RETIREMENT_AGE
+  RETIREMENT_AGE,
+  middleSchoolerOlderThanTen,
+  middleSchoolerYoungerThanTen
 } from '../../data/census'
 import {
   assignSex,
@@ -36,11 +37,12 @@ import {
   assignWorkOccupations,
   normalizeIncomes
 } from './parameters'
-import { Individual } from './individual'
+import { Individual, OccupationType, State } from './individual'
 import { join, extname } from 'node:path'
 import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { log } from '../utilities'
 import { assignRoutine } from '../routines'
+import { Mask, VaccineType } from '../calculus/data'
 
 type GetPopulationParameters = { cache: boolean; saveToDisk: boolean }
 
@@ -140,7 +142,7 @@ async function readPopulationFragmentFromFile(filePath: string): Promise<Individ
   }
 }
 
-const FRAGMENT_FILE_SIZE = 42 * 1024 * 1024 // 42mb
+const FRAGMENT_FILE_SIZE = 496 * 1024 * 1024 // 496mb
 
 async function savePopulationToDisk(population: Individual[]) {
   log('Serializing population', {
@@ -204,7 +206,7 @@ async function savePopulationToDisk(population: Individual[]) {
 }
 
 function serializeIndividual(individual: Individual) {
-  const serializedIndividual = individual.serialize!()
+  const serializedIndividual = Individual.serialize(individual)
   const jsonString = JSON.stringify(serializedIndividual)
   const buffer = Buffer.from(jsonString)
   return buffer
@@ -219,16 +221,16 @@ function instantiatePopulation() {
     individual.id = i
 
     // initial settings
-    individual.mask = ''
+    individual.mask = Mask.None
     individual.vaccine = {
       doses: 0,
-      type: ''
+      type: VaccineType.None
     }
 
     individual.occupationTypes = []
     individual.occupations = []
 
-    individual.state = 'susceptible'
+    individual.state = State.Susceptible
     individual.hadCovid = individual.isInLockdown = false
 
     individuals.push(individual)
@@ -247,7 +249,8 @@ function instantiatePopulation() {
   individuals = assignEducationStatus(
     individuals,
     preschoolers,
-    middleSchoolers,
+    middleSchoolerYoungerThanTen,
+    middleSchoolerOlderThanTen,
     highSchoolers,
     undergradStudents,
     gradStudents,
@@ -269,8 +272,7 @@ function instantiatePopulation() {
     industries,
     industriesEmployees,
     commerceAndServices,
-    commerceAndServicesEmployees,
-    RETIREMENT_AGE
+    commerceAndServicesEmployees
   )
 
   individuals = assignIncome(individuals, normalizeIncomes(incomes, individuals))

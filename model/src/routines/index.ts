@@ -1,4 +1,4 @@
-import { MaskType } from '../calculus/data'
+import { Mask } from '../calculus/data'
 import { Activity, Category, eightHoursSleep, hospitalized } from '../population/activities'
 import { Individual } from '../population/individual'
 import { fasterFilter, log } from '../utilities'
@@ -29,7 +29,8 @@ export function assignRoutine(individuals: Individual[]) {
   let initialTime = new Date()
 
   const individualWithRoutines = individuals.map((individual, index) => {
-    const routine = generateWeeklyRoutine(individual, individualsRoutinesMap)
+    // const routine = generateWeeklyRoutine(individual, individualsRoutinesMap)
+    const routine = []
 
     if (individual.age[1] > 19) {
       individualsRoutinesMap.set(individual.id, {
@@ -58,7 +59,6 @@ export function assignRoutine(individuals: Individual[]) {
 
     return {
       ...individual,
-      serialize: individual.serialize,
       routine
     }
   })
@@ -81,10 +81,10 @@ export function assignHospitalizedRoutine(individual: Individual) {
 export function assignInfectiousRoutine(
   individual: Individual,
   useMask: boolean = false,
-  maskType: MaskType = '',
+  maskType: Mask = Mask.None,
   interruptedActivities: Category[] = []
 ) {
-  individual.pir = individual.routine
+  individual.preInfectedRoutine = individual.routine
 
   if (useMask) individual.mask = maskType
 
@@ -97,11 +97,11 @@ export function assignInfectiousRoutine(
       }
     })
 
-    day.find((activity) => activity.category === 'home').duration += addedTimeAtHome
+    day.find((activity) => activity.category === Category.Home).duration += addedTimeAtHome
   })
 }
 
 export function assignRecuperedRoutine(individual: Individual) {
-  individual.routine = individual.pir
-  individual.pir = null
+  individual.routine = individual.preInfectedRoutine
+  individual.preInfectedRoutine = null
 }
