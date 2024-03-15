@@ -27,168 +27,196 @@ function test() {
 
 const baby: Individual = {
   id: 0,
-  sex: 'm',
+  sex: 0,
   age: [0, 4],
-  educationStatus: 'us',
+  educationStatus: 7,
   currentActivity: undefined,
   routine: [],
+  preInfectedRoutine: undefined,
   house: {
-    id: 1,
-    region: 'south',
-    size: 4,
-    housemates: [0, 1, 2, 3]
+    id: 0,
+    region: 0,
+    size: 5,
+    housemates: [0, 1, 2, 3, 4]
   },
   income: [0, 0],
-  transportationMean: 'pu',
+  transportationMean: 0,
   occupationTypes: [],
   occupations: [],
-  state: 'susceptible',
+  state: 0,
   hadCovid: false,
   vaccine: {
-    type: '',
-    doses: 0
+    doses: 0,
+    type: 0
   },
-  mask: '',
-  isInLockdown: undefined
+  mask: 0,
+  isInLockdown: false,
+  daysSinceExposed: undefined,
+  deadAfterDaysSinceExposed: undefined,
+  hospitalizedAfterDaysSinceExposed: undefined
 }
 
 const child: Individual = {
   id: 1,
-  sex: 'm',
+  sex: 0,
   age: [0, 4],
-  educationStatus: 'ps',
+  educationStatus: 1,
   currentActivity: undefined,
   routine: [],
+  preInfectedRoutine: undefined,
   house: {
-    id: 1,
-    region: 'south',
-    size: 4,
-    housemates: [0, 1, 2, 3]
+    id: 0,
+    region: 0,
+    size: 5,
+    housemates: [0, 1, 2, 3, 4]
   },
   income: [0, 0],
-  transportationMean: 'pu',
-  occupationTypes: ['s'],
+  transportationMean: 0,
+  occupationTypes: [0],
   occupations: [
     {
-      id: 324,
-      type: 's',
-      label: 's.ps',
-      intervalSize: [0, 0],
-      actualSize: 93
+      id: 460,
+      type: 0,
+      label: 37,
+      intervalSize: [72, 72],
+      actualSize: 72,
+      prototype: undefined
     }
   ],
-  state: 'susceptible',
+  state: 0,
   hadCovid: false,
   vaccine: {
-    type: '',
-    doses: 0
+    doses: 0,
+    type: 0
   },
-  mask: '',
-  isInLockdown: undefined
+  mask: 0,
+  isInLockdown: false,
+  daysSinceExposed: undefined,
+  deadAfterDaysSinceExposed: undefined,
+  hospitalizedAfterDaysSinceExposed: undefined
 }
 
 const collegeStudentAndWorker: Individual = {
   id: 2,
-  sex: 'm',
+  sex: 0,
   age: [20, 24],
-  educationStatus: 'ug',
+  educationStatus: 4,
   currentActivity: undefined,
   routine: [],
+  preInfectedRoutine: undefined,
   house: {
-    id: 1,
-    region: 'south',
-    size: 4,
-    housemates: [0, 1, 2, 3]
+    id: 0,
+    region: 0,
+    size: 5,
+    housemates: [0, 1, 2, 3, 4]
   },
-  income: [5, 10],
-  transportationMean: 'pu',
-  occupationTypes: ['s', 'w'],
+  income: [0.5, 1],
+  transportationMean: 1,
+  occupationTypes: [0, 1],
   occupations: [
     {
       id: 1199,
-      type: 's',
-      label: 's.c',
-      intervalSize: [0, 0],
-      actualSize: 4295
+      type: 0,
+      label: 40,
+      intervalSize: [4295, 4295],
+      actualSize: 4295,
+      prototype: undefined
     },
     {
-      id: 18846,
-      type: 'w',
-      label: 'w.i.m',
-      intervalSize: [100, 499],
-      actualSize: 101
+      id: 35001,
+      type: 1,
+      label: 29,
+      intervalSize: [1, 9],
+      actualSize: 3,
+      prototype: {
+        size: 2
+      }
     }
   ],
-  state: 'susceptible',
+  state: 0,
   hadCovid: false,
   vaccine: {
-    type: '',
-    doses: 0
+    doses: 0,
+    type: 0
   },
-  mask: '',
-  isInLockdown: undefined
+  mask: 0,
+  isInLockdown: false,
+  daysSinceExposed: undefined,
+  deadAfterDaysSinceExposed: undefined,
+  hospitalizedAfterDaysSinceExposed: undefined
 }
 
 const regularWorker: Individual = {
   id: 3,
-  sex: 'm',
-  age: [35, 39],
-  educationStatus: 'ed',
+  sex: 0,
+  age: [20, 24],
+  educationStatus: 4,
   currentActivity: undefined,
   routine: [],
+  preInfectedRoutine: undefined,
   house: {
-    id: 1,
-    region: 'south',
-    size: 4,
-    housemates: [0, 1, 2, 3]
+    id: 0,
+    region: 0,
+    size: 5,
+    housemates: [0, 1, 2, 3, 4]
   },
   income: [0.5, 1],
-  transportationMean: 'pu',
-  occupationTypes: ['w'],
+  transportationMean: 1,
+  occupationTypes: [1],
   occupations: [
     {
-      id: 135285,
-      type: 'w',
-      label: 'w.cs.s',
-      intervalSize: [10, 49],
-      actualSize: 11
+      id: 35001,
+      type: 1,
+      label: 29,
+      intervalSize: [1, 9],
+      actualSize: 3,
+      prototype: {
+        size: 2
+      }
     }
   ],
-  state: 'susceptible',
+  state: 0,
   hadCovid: false,
   vaccine: {
-    type: '',
-    doses: 0
+    doses: 0,
+    type: 0
   },
-  mask: '',
-  isInLockdown: undefined
+  mask: 0,
+  isInLockdown: false,
+  daysSinceExposed: undefined,
+  deadAfterDaysSinceExposed: undefined,
+  hospitalizedAfterDaysSinceExposed: undefined
 }
 
 const retired: Individual = {
   id: 4,
-  sex: 'm',
-  age: [65, 69],
-  educationStatus: 'ed',
+  sex: 0,
+  age: [50, 54],
+  educationStatus: 4,
   currentActivity: undefined,
   routine: [],
+  preInfectedRoutine: undefined,
   house: {
-    id: 2,
-    region: 'south',
-    size: 1,
-    housemates: [4]
+    id: 0,
+    region: 0,
+    size: 5,
+    housemates: [0, 1, 2, 3, 4]
   },
-  income: [0, 0],
-  transportationMean: 'pr',
+  income: [0.5, 1],
+  transportationMean: 1,
   occupationTypes: [],
   occupations: [],
-  state: 'susceptible',
+  state: 0,
   hadCovid: false,
   vaccine: {
-    type: '',
-    doses: 0
+    doses: 0,
+    type: 0
   },
-  mask: '',
-  isInLockdown: undefined
+  mask: 0,
+  isInLockdown: false,
+  daysSinceExposed: undefined,
+  deadAfterDaysSinceExposed: undefined,
+  hospitalizedAfterDaysSinceExposed: undefined
 }
 
 test()
