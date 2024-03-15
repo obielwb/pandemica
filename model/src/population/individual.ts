@@ -87,6 +87,7 @@ export class Individual {
 }
 
 export enum EducationStatus {
+  None,
   Preschooler,
   MiddleSchooler,
   HighSchooler,

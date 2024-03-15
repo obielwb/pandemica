@@ -455,38 +455,21 @@ export function assignEducationStatus(
     ageRangeParameter: Parameter,
     studyLevelLabel: EducationStatus
   ) {
-    console.log(
-      individuals.filter(
-        (individual) =>
-          individual.age[0] >= ageRangeParameter.label[0] &&
-          individual.age[1] <= ageRangeParameter.label[1]
-      ).length,
-      ageRangeParameter.value
-    )
-
-    return individuals.map((individual) => {
+    let count = 0
+    for (let individual of individuals) {
       if (
+        !individual.educationStatus &&
         individual.age[0] >= ageRangeParameter.label[0] &&
-        individual.age[1] <= ageRangeParameter.label[1] &&
-        ageRangeParameter.value > 0
+        individual.age[1] <= ageRangeParameter.label[1]
       ) {
-        individual.educationStatus = studyLevelLabel
+        individual.educationStatus = studyLevelLabel as EducationStatus
         individual.occupationTypes.push(OccupationType.Study)
-        ageRangeParameter.value--
+        count++
+        if (count >= ageRangeParameter.value) break
       }
-      return individual
-    })
+    }
+    return individuals
   }
-
-  console.log(
-    individuals.filter((i) => i.educationStatus).length,
-    preschoolers.value +
-      middleSchoolerOlderThanTen.value +
-      middleSchoolerYoungerThanTen.value +
-      highSchoolers.value +
-      undergradStudents.value +
-      gradStudents.value
-  )
 
   individuals = assignEducationLevel(individuals, preschoolers, EducationStatus.Preschooler)
   individuals = assignEducationLevel(
@@ -502,16 +485,6 @@ export function assignEducationStatus(
   individuals = assignEducationLevel(individuals, highSchoolers, EducationStatus.HighSchooler)
   individuals = assignEducationLevel(individuals, undergradStudents, EducationStatus.Undergraduate)
   individuals = assignEducationLevel(individuals, gradStudents, EducationStatus.Graduate)
-
-  console.log(
-    individuals.filter((i) => i.educationStatus).length,
-    preschoolers.value +
-      middleSchoolerOlderThanTen.value +
-      middleSchoolerYoungerThanTen.value +
-      highSchoolers.value +
-      undergradStudents.value +
-      gradStudents.value
-  )
 
   individuals.forEach((individual) => {
     if (!individual.educationStatus && individual.age[1] <= highSchoolers.label[1]) {
