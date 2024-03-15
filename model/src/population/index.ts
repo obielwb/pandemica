@@ -9,7 +9,6 @@ import {
   residentsPerHouse,
   incomes,
   ages,
-  middleSchoolers,
   preschoolers,
   highSchoolers,
   undergradStudents,
@@ -21,7 +20,9 @@ import {
   colleges,
   middleSchools,
   highSchools,
-  RETIREMENT_AGE
+  RETIREMENT_AGE,
+  middleSchoolerOlderThanTen,
+  middleSchoolerYoungerThanTen
 } from '../../data/census'
 import {
   assignSex,
@@ -36,7 +37,7 @@ import {
   assignWorkOccupations,
   normalizeIncomes
 } from './parameters'
-import { Individual, State } from './individual'
+import { Individual, OccupationType, State } from './individual'
 import { join, extname } from 'node:path'
 import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { log } from '../utilities'
@@ -141,7 +142,7 @@ async function readPopulationFragmentFromFile(filePath: string): Promise<Individ
   }
 }
 
-const FRAGMENT_FILE_SIZE = 496 * 1024 * 1024 // 496mb
+const FRAGMENT_FILE_SIZE = 50 * 1024 * 1024 // 496mb
 
 async function savePopulationToDisk(population: Individual[]) {
   log('Serializing population', {
@@ -248,7 +249,8 @@ function instantiatePopulation() {
   individuals = assignEducationStatus(
     individuals,
     preschoolers,
-    middleSchoolers,
+    middleSchoolerYoungerThanTen,
+    middleSchoolerOlderThanTen,
     highSchoolers,
     undergradStudents,
     gradStudents,
@@ -270,8 +272,7 @@ function instantiatePopulation() {
     industries,
     industriesEmployees,
     commerceAndServices,
-    commerceAndServicesEmployees,
-    RETIREMENT_AGE
+    commerceAndServicesEmployees
   )
 
   individuals = assignIncome(individuals, normalizeIncomes(incomes, individuals))

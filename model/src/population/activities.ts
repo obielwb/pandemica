@@ -84,52 +84,6 @@ export class IndividualActivity extends Activity {
   ) {
     super(category, label, setting, duration, distance, voice, maximumIndividualsEngaged)
   }
-
-  public serialize(): string {
-    const serializedData = {
-      ...JSON.parse(
-        Activity.serialize(
-          new Activity(
-            this.category,
-            this.label,
-            this.setting,
-            this.duration,
-            this.distance,
-            this.voice,
-            this.maximumIndividualsEngaged
-          )
-        )
-      ),
-      id: this.id,
-      ie: this.individualsEngaged,
-      sa: this.activityStartedAt?.toISOString(),
-      aea: this.activityEndedAt?.toISOString(),
-      ea: this.engagedAt?.toISOString()
-    }
-    return JSON.stringify(serializedData)
-  }
-
-  public static deserialize(serialized: string): IndividualActivity {
-    const deserializedData = JSON.parse(serialized)
-    const activity = super.deserialize(JSON.stringify(deserializedData))
-
-    const individualActivity = new IndividualActivity(
-      deserializedData.id,
-      activity.category,
-      activity.label,
-      activity.setting,
-      activity.duration,
-      activity.distance,
-      activity.voice,
-      activity.maximumIndividualsEngaged,
-      deserializedData.ie,
-      deserializedData.sa ? new Date(deserializedData.sa) : undefined,
-      deserializedData.aea ? new Date(deserializedData.aea) : undefined,
-      deserializedData.ea ? new Date(deserializedData.ea) : undefined
-    )
-
-    return individualActivity
-  }
 }
 
 export enum Label {
@@ -190,38 +144,6 @@ export enum Label {
   CollegeFromHome,
 
   Hospitalized
-}
-
-export enum OccupationLabel {
-  MicroIndustryInPerson,
-  SmallIndustryInPerson,
-  MediumIndustryInPerson,
-  LargeIndustryInPerson,
-
-  MicroIndustryFromHome,
-  SmallIndustryFromHome,
-  MediumIndustryFromHome,
-  LargeIndustryFromHome,
-
-  MicroCommerceInPerson,
-  SmallCommerceInPerson,
-  MediumCommerceInPerson,
-  LargeCommerceInPerson,
-
-  MicroCommerceFromHome,
-  SmallCommerceFromHome,
-  MediumCommerceFromHome,
-  LargeCommerceFromHome,
-
-  PreschoolInPerson,
-  MiddleSchoolInPerson,
-  HighSchoolInPerson,
-  CollegeInPerson,
-
-  PreschoolFromHome,
-  MiddleSchoolFromHome,
-  HighSchoolFromHome,
-  CollegeFromHome
 }
 
 export const groceryShopping = new Activity(
@@ -797,6 +719,6 @@ export const activitiesMap = {
   [Label.Hospitalized]: hospitalized
 }
 
-export function getActivity(label: Label | string): Activity {
+export function getActivity(label: Label | number): Activity {
   return activitiesMap[label]
 }

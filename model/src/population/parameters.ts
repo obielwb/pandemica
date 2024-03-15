@@ -1,4 +1,4 @@
-import { type Age } from '../../data/census'
+import { WorkSize, type Age, RETIREMENT_AGE } from '../../data/census'
 import {
   House,
   Occupation,
@@ -9,11 +9,12 @@ import {
   TransporationMean
 } from './individual'
 import { fisherYatesShuffle, log } from '../utilities'
-import { Label, OccupationLabel } from './activities'
+import { Label } from './activities'
 
 export type Parameter = {
   label: string | number | string[] | number[]
   value: number
+  prototype?: any
 }
 
 // base generic conception of assign and normalize functions
@@ -395,7 +396,11 @@ export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
     )
 
     if (aHasWork === bHasWork) {
-      const educationRank = { g: 3, ug: 2, ed: 1 }
+      const educationRank = {
+        [EducationStatus.Graduate]: 3,
+        [EducationStatus.Undergraduate]: 2,
+        [EducationStatus.Educated]: 1
+      }
 
       const aEducationRank = educationRank[a.educationStatus] || 0
       const bEducationRank = educationRank[b.educationStatus] || 0
@@ -407,7 +412,7 @@ export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
   })
 
   ofAgeIndividuals.forEach((individual, i) => {
-    let selectedIncome
+    let selectedIncome: Parameter
 
     const hasWork = individual.occupationTypes.includes(OccupationType.Work)
 
@@ -435,7 +440,8 @@ export function assignIncome(individuals: Individual[], incomes: Parameter[]) {
 export function assignEducationStatus(
   individuals: Individual[],
   preschoolers: Parameter,
-  middleSchoolers: Parameter,
+  middleSchoolerYoungerThanTen: Parameter,
+  middleSchoolerOlderThanTen: Parameter,
   highSchoolers: Parameter,
   undergradStudents: Parameter,
   gradStudents: Parameter,
@@ -449,6 +455,15 @@ export function assignEducationStatus(
     ageRangeParameter: Parameter,
     studyLevelLabel: EducationStatus
   ) {
+    console.log(
+      individuals.filter(
+        (individual) =>
+          individual.age[0] >= ageRangeParameter.label[0] &&
+          individual.age[1] <= ageRangeParameter.label[1]
+      ).length,
+      ageRangeParameter.value
+    )
+
     return individuals.map((individual) => {
       if (
         individual.age[0] >= ageRangeParameter.label[0] &&
@@ -463,11 +478,41 @@ export function assignEducationStatus(
     })
   }
 
+  console.log(
+    individuals.filter((i) => i.educationStatus).length,
+    preschoolers.value +
+      middleSchoolerOlderThanTen.value +
+      middleSchoolerYoungerThanTen.value +
+      highSchoolers.value +
+      undergradStudents.value +
+      gradStudents.value
+  )
+
   individuals = assignEducationLevel(individuals, preschoolers, EducationStatus.Preschooler)
-  individuals = assignEducationLevel(individuals, middleSchoolers, EducationStatus.MiddleSchooler)
+  individuals = assignEducationLevel(
+    individuals,
+    middleSchoolerYoungerThanTen,
+    EducationStatus.MiddleSchooler
+  )
+  individuals = assignEducationLevel(
+    individuals,
+    middleSchoolerOlderThanTen,
+    EducationStatus.MiddleSchooler
+  )
   individuals = assignEducationLevel(individuals, highSchoolers, EducationStatus.HighSchooler)
   individuals = assignEducationLevel(individuals, undergradStudents, EducationStatus.Undergraduate)
   individuals = assignEducationLevel(individuals, gradStudents, EducationStatus.Graduate)
+
+  // todo: why the fuck 40 thousand aren't assigned properly?
+  console.log(
+    individuals.filter((i) => i.educationStatus).length,
+    preschoolers.value +
+      middleSchoolerOlderThanTen.value +
+      middleSchoolerYoungerThanTen.value +
+      highSchoolers.value +
+      undergradStudents.value +
+      gradStudents.value
+  )
 
   individuals.forEach((individual) => {
     if (!individual.educationStatus && individual.age[1] <= highSchoolers.label[1]) {
@@ -568,22 +613,22 @@ export function assignStudyOccupations(
   let siteIds = 0
   ;[
     {
-      label: OccupationLabel.PreschoolInPerson,
+      label: Label.PreschoolInPerson,
       studentsPerSite: Math.ceil(preschoolStudents.length / preschools),
       totalSites: preschools
     },
     {
-      label: OccupationLabel.MiddleSchoolInPerson,
+      label: Label.MiddleSchoolInPerson,
       studentsPerSite: Math.ceil(middleSchoolStudents.length / middleSchools),
       totalSites: middleSchools
     },
     {
-      label: OccupationLabel.HighSchoolInPerson,
+      label: Label.HighSchoolInPerson,
       studentsPerSite: Math.ceil(highSchoolStudents.length / highSchools),
       totalSites: highSchools
     },
     {
-      label: OccupationLabel.CollegeInPerson,
+      label: Label.CollegeInPerson,
       studentsPerSite: Math.ceil(collegeStudents.length / colleges),
       totalSites: colleges
     }
@@ -597,19 +642,19 @@ export function assignStudyOccupations(
   })
 
   const siteData = {
-    [OccupationLabel.PreschoolInPerson]: {
+    [Label.PreschoolInPerson]: {
       index: 0,
       students: preschoolStudents
     },
-    [OccupationLabel.MiddleSchoolInPerson]: {
+    [Label.MiddleSchoolInPerson]: {
       index: 0,
       students: middleSchoolStudents
     },
-    [OccupationLabel.HighSchoolInPerson]: {
+    [Label.HighSchoolInPerson]: {
       index: 0,
       students: highSchoolStudents
     },
-    [OccupationLabel.CollegeInPerson]: {
+    [Label.CollegeInPerson]: {
       index: 0,
       students: collegeStudents
     }
@@ -632,24 +677,22 @@ export function assignStudyOccupations(
   return {
     individuals: [
       ...nonStudents,
-      ...siteData['s.ps'].students,
-      ...siteData['s.ms'].students,
-      ...siteData['s.hs'].students,
-      ...siteData['s.c'].students
+      ...siteData[Label.PreschoolInPerson].students,
+      ...siteData[Label.MiddleSchoolInPerson].students,
+      ...siteData[Label.HighSchoolInPerson].students,
+      ...siteData[Label.CollegeInPerson].students
     ],
     lastOccupationId: siteIds
   }
 }
 
-// todo: revise this
 export function assignWorkOccupations(
   individuals: Individual[],
   lastOccupationId: number,
   industries: Parameter[],
   industriesEmployees: number[][],
   commerceAndServices: Parameter[],
-  commerceAndServicesEmployees: number[][],
-  RETIREMENT_AGE: number
+  commerceAndServicesEmployees: number[][]
 ) {
   log('Assigning `workOccupations` to individuals', { time: true, timeLabel: 'ASSIGNMENT' })
 
@@ -672,9 +715,10 @@ export function assignWorkOccupations(
         const workstation = new Occupation(
           siteIds++,
           OccupationType.Work,
-          category.label,
+          category.label as Label,
           [minEmployees, maxEmployees],
-          0
+          0,
+          category.prototype
         )
 
         workstations.push(workstation)
@@ -695,10 +739,10 @@ export function assignWorkOccupations(
 
   const sizePriority = (size: string) => {
     const workstationPriorities = {
-      xs: 4,
-      s: 3,
-      m: 2,
-      l: 1
+      [WorkSize.Micro]: 4,
+      [WorkSize.Small]: 3,
+      [WorkSize.Medium]: 2,
+      [WorkSize.Large]: 1
     }
 
     return workstationPriorities[size]
@@ -713,11 +757,9 @@ export function assignWorkOccupations(
     }
   })
 
-  // todo: think how to prioritize work
-  // create enum in data and add attribute to occupation?
   workstations.sort((a, b) => {
-    const sizeA = sizePriority(a.label.split('.')[2])
-    const sizeB = sizePriority(b.label.split('.')[2])
+    const sizeA = sizePriority(a.prototype.size)
+    const sizeB = sizePriority(b.prototype.size)
     return sizeB - sizeA
   })
   let workstationIndex = 0

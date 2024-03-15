@@ -1,4 +1,4 @@
-import { Activities, Activity, getActivity } from '../../../population/activities'
+import { Label as Activities, Activity, getActivity } from '../../../population/activities'
 import { Individual, Occupation } from '../../../population/individual'
 import { selectTransportationToOccupation } from '../general'
 import { WorkRoutine } from './getters'
@@ -40,7 +40,7 @@ export function selectWorkActivity(
 
     newActivities.push(work)
 
-    const restaurantActivity = getActivity(Activities.RestaurantIndoors)
+    const restaurantActivity = getActivity(Activities.RestaurantIndoor)
     restaurantActivity.maximumIndividualsEngaged = Math.floor(workOccupation.intervalSize[0] / 2)
     newActivities.push(restaurantActivity)
   }

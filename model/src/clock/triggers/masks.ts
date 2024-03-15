@@ -23,9 +23,9 @@ export type MaskRegister = {
 }
 
 export class MaskTrigger {
-  constructor(public population: Individual[], private maskDates: MaskRegister[]) {}
+  constructor(private maskDates: MaskRegister[]) {}
 
-  public assign(currentDate: string) {
+  public assign(currentDate: string, population: Individual[]) {
     const matchMasksRegisters = fasterFilter(
       this.maskDates,
       (maskDate) => maskDate.date === currentDate
@@ -33,15 +33,15 @@ export class MaskTrigger {
 
     if (matchMasksRegisters.length !== 0) {
       for (const matchMaskRegister of matchMasksRegisters) {
-        this.implementMaskDistribution(matchMaskRegister)
+        this.implementMaskDistribution(matchMaskRegister, population)
       }
     }
   }
 
-  private implementMaskDistribution(maskImplementation: MaskRegister) {
-    this.cleanCurrentMasks()
+  private implementMaskDistribution(maskImplementation: MaskRegister, population: Individual[]) {
+    this.cleanCurrentMasks(population)
 
-    const shuffledPopulation = fisherYatesShuffle(this.population)
+    const shuffledPopulation = fisherYatesShuffle(population)
     // verify if individual is according option. If option is defined and not found in current individual, they dont go into matchedIndividuals
     let matchedIndividuals = fasterFilter(
       shuffledPopulation,
@@ -69,8 +69,8 @@ export class MaskTrigger {
     })
   }
 
-  private cleanCurrentMasks() {
-    this.population.forEach((individual) => {
+  private cleanCurrentMasks(population: Individual[]) {
+    population.forEach((individual) => {
       individual.mask = Mask.None
     })
   }

@@ -1,4 +1,4 @@
-import { Activity, IndividualActivity, OccupationLabel } from './activities'
+import { Activity, IndividualActivity, Label } from './activities'
 import { Mask, Vaccine, VaccineType } from '../calculus/data'
 
 // todo: routines should change
@@ -123,9 +123,10 @@ export class Occupation {
   constructor(
     public id: number,
     public type: OccupationType,
-    public label: OccupationLabel,
+    public label: Label,
     public intervalSize: [number, number],
-    public actualSize: number
+    public actualSize: number,
+    public prototype?: any
   ) {}
 
   public static serialize(occupation: Occupation): string {
@@ -134,7 +135,8 @@ export class Occupation {
       t: occupation.type,
       l: occupation.label,
       is: occupation.intervalSize,
-      as: occupation.actualSize
+      as: occupation.actualSize,
+      p: occupation.prototype
     }
 
     return JSON.stringify(serializedOccupation)
@@ -147,7 +149,8 @@ export class Occupation {
       deserializedOccupation.t,
       deserializedOccupation.l,
       deserializedOccupation.is,
-      deserializedOccupation.as
+      deserializedOccupation.as,
+      deserializedOccupation.p
     )
   }
 }

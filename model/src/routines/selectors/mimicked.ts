@@ -1,5 +1,5 @@
 import { IndividualsRoutinesMap } from '..'
-import { Activities, Activity, getActivity } from '../../population/activities'
+import { Label as Activities, Activity, Category, getActivity } from '../../population/activities'
 import { Individual } from '../../population/individual'
 
 export function selectMimickedActivities(
@@ -20,7 +20,7 @@ export function selectMimickedActivities(
 
   if (oldestGuardian.routine.length > 0) {
     const mimickedRoutine = oldestGuardian.routine[day].map((activity) => {
-      if (activity.category === 'w' || activity.category === 's') {
+      if (activity.category === Category.Work || activity.category === Category.Study) {
         const stayAtHomeActivity = { ...getActivity(Activities.StayAtHome) }
         stayAtHomeActivity.duration = activity.duration
         return stayAtHomeActivity

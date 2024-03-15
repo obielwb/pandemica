@@ -49,7 +49,6 @@ export interface VaccineValue {
 
 export enum VaccineType {
   Pfizer,
-  // Moderna,
   AstraZeneca,
   Janssen,
   CoronaVac,

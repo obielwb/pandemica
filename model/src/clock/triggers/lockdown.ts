@@ -38,7 +38,6 @@ export class LockdownTrigger {
   private workRecuperationDates: { date: string; quantity?: number }[] = []
 
   constructor(
-    public individuals: Individual[],
     startDate: string,
     private lockdownSchoolPercentage: number,
     schoolRecuperationDates: string[],
@@ -55,28 +54,28 @@ export class LockdownTrigger {
       this.workRecuperationDates.push({ date: recuperationDate })
   }
 
-  public assign(currentDate: string) {
-    if (this.startDate === currentDate) this.startLockdown()
-
-    if (this.startDate === currentDate) this.startLockdown()
+  public assign(currentDate: string, population: Individual[]) {
+    if (this.startDate === currentDate) this.startLockdown(population)
 
     if (
       this.schoolRecuperationDates.some((recuperationDate) => recuperationDate.date === currentDate)
     )
       this.schoolRecuperation(
-        this.schoolRecuperationDates.find((date) => date.date === currentDate).quantity
+        this.schoolRecuperationDates.find((date) => date.date === currentDate).quantity,
+        population
       )
 
     if (
       this.workRecuperationDates.some((recuperationDate) => recuperationDate.date === currentDate)
     )
       this.workRecuperation(
-        this.workRecuperationDates.find((date) => date.date === currentDate).quantity
+        this.workRecuperationDates.find((date) => date.date === currentDate).quantity,
+        population
       )
   }
 
-  private startLockdown() {
-    const shuffledPopulation = fisherYatesShuffle(this.individuals)
+  private startLockdown(population: Individual[]) {
+    const shuffledPopulation = fisherYatesShuffle(population)
 
     const workers = fasterFilter(shuffledPopulation, (individual) =>
       individual.occupationTypes.includes(OccupationType.Work)
@@ -84,7 +83,7 @@ export class LockdownTrigger {
     const students = fasterFilter(shuffledPopulation, (individual) =>
       individual.occupationTypes.includes(OccupationType.Study)
     )
-    const withouthOccupationIndividuals = fasterFilter(
+    const withouthOccupationpopulation = fasterFilter(
       shuffledPopulation,
       (individual) =>
         individual.occupationTypes.includes(OccupationType.Study) === false &&
@@ -107,26 +106,26 @@ export class LockdownTrigger {
       this.implementSchoolFromHome(individual)
     }
 
-    // assign the quantity of individuals that return to normal live in each recuperation date
-    const schoolRecuperationIndividualsPerDate = chunkIntoNParts(
+    // assign the quantity of population that return to normal live in each recuperation date
+    const schoolRecuperationpopulationPerDate = chunkIntoNParts(
       lockdownWorkers,
       this.workRecuperationDates.length
     )
     this.schoolRecuperationDates.map(
       (recuperationDate, i) =>
-        (recuperationDate.quantity = schoolRecuperationIndividualsPerDate[i].length)
+        (recuperationDate.quantity = schoolRecuperationpopulationPerDate[i].length)
     )
 
-    const workRecuperationIndividualsPerDate = chunkIntoNParts(
+    const workRecuperationpopulationPerDate = chunkIntoNParts(
       lockdownWorkers,
       this.workRecuperationDates.length
     )
     this.workRecuperationDates.map(
       (recuperationDate, i) =>
-        (recuperationDate.quantity = workRecuperationIndividualsPerDate[i].length)
+        (recuperationDate.quantity = workRecuperationpopulationPerDate[i].length)
     )
 
-    this.implementReductionInCommonActivities()
+    this.implementReductionInCommonActivities(1, population)
   }
 
   private implementSchoolFromHome(individual: Individual) {
@@ -173,9 +172,12 @@ export class LockdownTrigger {
     })
   }
 
-  private implementReductionInCommonActivities(affectedPopulationPercentage: number = 1) {
-    for (let i = 0; i < Math.ceil(this.individuals.length * affectedPopulationPercentage); i++) {
-      const individual = this.individuals[i]
+  private implementReductionInCommonActivities(
+    affectedPopulationPercentage: number = 1,
+    population: Individual[]
+  ) {
+    for (let i = 0; i < Math.ceil(population.length * affectedPopulationPercentage); i++) {
+      const individual = population[i]
 
       individual.routine.forEach((day) => {
         let addedTimeAtHome = 0
@@ -191,9 +193,9 @@ export class LockdownTrigger {
     }
   }
 
-  private schoolRecuperation(recuperationNumber: number) {
+  private schoolRecuperation(recuperationNumber: number, population: Individual[]) {
     const students = fasterFilter(
-      this.individuals,
+      population,
       (individual) =>
         individual.isInLockdown && individual.occupationTypes.includes(OccupationType.Study)
     )
@@ -221,9 +223,9 @@ export class LockdownTrigger {
     })
   }
 
-  private workRecuperation(recuperationNumber: number) {
+  private workRecuperation(recuperationNumber: number, population: Individual[]) {
     const workers = fasterFilter(
-      this.individuals,
+      population,
       (individual) =>
         individual.isInLockdown && individual.occupationTypes.includes(OccupationType.Work)
     )

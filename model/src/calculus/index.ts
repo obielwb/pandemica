@@ -98,13 +98,16 @@ export function calculate(
 }
 
 export function changeSEIRState(population: Individual[]) {
+  const deadPeoplesId = []
   for (let i = 0; i < population.length; i++) {
     const individual = population[i]
 
     if (individual.daysSinceExposed !== null) {
       if (individual.deadAfterDaysSinceExposed !== null) {
-        if (individual.daysSinceExposed >= individual.deadAfterDaysSinceExposed)
+        if (individual.daysSinceExposed >= individual.deadAfterDaysSinceExposed) {
           individual.state = State.Dead
+          deadPeoplesId.push(individual.id)
+        }
         break
       }
       if (individual.hospitalizedAfterDaysSinceExposed !== null) {
@@ -126,4 +129,6 @@ export function changeSEIRState(population: Individual[]) {
       }
     }
   }
+
+  return deadPeoplesId
 }

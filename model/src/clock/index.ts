@@ -43,6 +43,15 @@ export class Clock {
     return `${this.currentYear}-${this.currentMonth}-${this.currentDay}`
   }
 
+  public setCurrentDateFromString(date: string) {
+    const parts = date.split('-')
+    if (parts.length === 3) {
+      this.currentYear = parseInt(parts[0])
+      this.currentMonth = parseInt(parts[1])
+      this.currentDay = parseInt(parts[2])
+    }
+  }
+
   public tick(minutes: number) {
     this.currentMinute += minutes
     this.elapsedMinutes += minutes

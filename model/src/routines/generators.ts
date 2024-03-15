@@ -1,7 +1,7 @@
 import { IndividualsRoutinesMap } from '.'
 import { CHILD_AGE } from '../../data/census'
-import { Activities, Activity, getActivity } from '../population/activities'
-import { Individual, Occupation } from '../population/individual'
+import { Label as Activities, Activity, Category, getActivity } from '../population/activities'
+import { Individual, Occupation, OccupationType } from '../population/individual'
 import { willEventOccur } from '../utilities'
 import { selectActivitiesBasedOnAttributes } from './selectors'
 import { selectSleepActivity, selectTransportation } from './selectors/general'
@@ -22,10 +22,10 @@ export function generateWeeklyRoutine(
     workDays = getWorkDays(workRoutine, workSize)
   }
 
-  const workOccupation = individual.occupations.find((o) => o.type === 'w')
+  const workOccupation = individual.occupations.find((o) => o.type === OccupationType.Work)
   const couldGoOnFootToWork = workOccupation && Math.random() <= 0.05 // todo: replace with actual value
 
-  const studyOccupation = individual.occupations.find((o) => o.type === 's')
+  const studyOccupation = individual.occupations.find((o) => o.type === OccupationType.Study)
   const couldGoOnFootToSchool = studyOccupation && Math.random() <= 0.05 // todo: replace with actual value
 
   const transportationActivities = selectTransportation(individual.transportationMean)
@@ -123,16 +123,16 @@ export function generateDailyRoutine(
       let activity = dailyRoutine[i]
       if (
         activity.label !== Activities.StayAtHome &&
-        (activity.category === 'leisure' || activity.category === 'shopping') &&
+        (activity.category === Category.Leisure || activity.category === Category.Shopping) &&
         activity.duration > overflow
       ) {
         dailyRoutine[i] = { ...activity, duration: activity.duration - overflow }
         overflow = 0
       } else if (
         activity.label !== Activities.StayAtHome &&
-        activity.category !== 'w' &&
-        activity.category !== 's' &&
-        activity.category !== 'errands'
+        activity.category !== Category.Work &&
+        activity.category !== Category.Study &&
+        activity.category !== Category.Errands
       ) {
         overflow -= activity.duration + 15
         dailyRoutine[i] = { ...activity, duration: 15 }

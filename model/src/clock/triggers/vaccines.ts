@@ -13,7 +13,7 @@ type VaccineRegister = {
   date: string
   state: string
   city: string
-  ibgeID: string
+  ibgeID: number
   vaccine: VaccineType
   sex: Sex
   age: string
@@ -25,9 +25,7 @@ type VaccineRegister = {
 export class VaccineTrigger {
   private vaccineRegisters: VaccineRegister[] = []
 
-  constructor(public population: Individual[]) {}
-
-  public assign(currentDate: string) {
+  public assign(currentDate: string, population: Individual[]) {
     if (this.vaccineRegisters !== null) {
       const registersOfTheDay = fasterFilter(
         this.vaccineRegisters,
@@ -36,7 +34,7 @@ export class VaccineTrigger {
 
       for (const register of registersOfTheDay) {
         const matchCharacteristics = fasterFilter(
-          this.population,
+          population,
           (individual) =>
             register.age.includes(individual.age[0].toString()) &&
             individual.sex === register.sex &&
@@ -58,71 +56,46 @@ export class VaccineTrigger {
 
   public async readVaccineData() {
     try {
+      log('Reading Vaccine Data', { time: true, timeLabel: 'INITIALIZATION' })
+
       const csvFilePath = path.resolve(
         path.join(__dirname, 'data', 'covid19', 'campinas_2021_vaccines.csv')
       )
-      const headers = [
-        'date',
-        'state',
-        'city',
-        'ibgeID',
-        'vaccine',
-        'sex',
-        'age',
-        'dose',
-        'pop2021',
-        'count'
-      ]
 
-      const content = await fs.promises.readFile(csvFilePath, { encoding: 'utf-8' })
+      const content = fs.readFileSync(csvFilePath, { encoding: 'utf-8' }).split('\n').slice(1)
 
-      const parseData = () =>
-        new Promise<VaccineRegister[]>((resolve, reject) => {
-          parse(
-            content,
-            {
-              delimiter: ',',
-              columns: headers,
-              fromLine: 2,
-              cast: (columnValue, context) => {
-                if (
-                  context.column === 'count' ||
-                  context.column === 'pop2021' ||
-                  context.column === 'dose'
-                ) {
-                  return parseInt(columnValue)
-                }
+      const vaccineRegisters: VaccineRegister[] = []
 
-                if (context.column === 'sex' && columnValue == 'F') return Sex.Female
-                if (context.column === 'sex' && columnValue == 'M') return Sex.Male
+      content.forEach((line) => {
+        if (line.length > 0) {
+          const [date, state, city, ibgeID, vaccine, sex, age, dose, pop2021, count] =
+            line.split(',')
 
-                if (context.column === 'vaccine') {
-                  switch (columnValue) {
-                    case 'Sinovac':
-                      return VaccineType.CoronaVac
-                    case 'Janssen':
-                      return VaccineType.Janssen
-                    case 'Pfizer/BioNTech':
-                      return VaccineType.Pfizer
-                    case 'AstraZeneca':
-                      return VaccineType.AstraZeneca
-                    default:
-                      return VaccineType.None
-                  }
-                }
+          const stringToVaccineMap = new Map<string, VaccineType>([
+            ['Sinovac', VaccineType.CoronaVac],
+            ['Janssen', VaccineType.Janssen],
+            ['Pfizer/BioNTech', VaccineType.Pfizer],
+            ['AstraZeneca', VaccineType.AstraZeneca]
+          ])
 
-                return columnValue
-              }
-            },
-            (error, result: VaccineRegister[]) => {
-              if (error) reject(error)
-              else resolve(result)
-            }
-          )
-        })
+          const register: VaccineRegister = {
+            date: date,
+            state: state,
+            city: city,
+            ibgeID: parseInt(ibgeID),
+            vaccine: stringToVaccineMap[vaccine.split('-')[0].trim()],
+            sex: sex == 'F' ? Sex.Female : Sex.Male,
+            age: age,
+            dose: parseInt(dose),
+            pop2021: parseInt(pop2021),
+            count: parseInt(count)
+          }
 
-      const result = await parseData()
-      this.vaccineRegisters = result
+          vaccineRegisters.push(register)
+        }
+      })
+
+      return vaccineRegisters
     } catch (error) {
       log(error, { time: true, timeLabel: 'VACCINE IMPLEMENTATION ERROR' })
       return null
