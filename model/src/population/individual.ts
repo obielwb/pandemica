@@ -1,5 +1,6 @@
 import { Activity, IndividualActivity, Label } from './activities'
 import { Mask, Vaccine, VaccineType } from '../calculus/data'
+import { Region } from '../../data/census'
 
 // todo: routines should change
 // - social distancing stage
@@ -158,7 +159,7 @@ export class Occupation {
 export class House {
   constructor(
     public id: number,
-    public region: string,
+    public region: Region,
     public size: number,
     public housemates: number[]
   ) {}

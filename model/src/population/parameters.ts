@@ -1,4 +1,4 @@
-import { WorkSize, type Age, RETIREMENT_AGE } from '../../data/census'
+import { WorkSize, type Age, RETIREMENT_AGE, Region } from '../../data/census'
 import {
   House,
   Occupation,
@@ -119,7 +119,7 @@ export function assignHouse(
   let houseIds = 0
   residentsPerHouse.forEach((house) => {
     for (let i = 0; i < house.value; i++) {
-      houses.push(new House(houseIds++, '', house.label as number, []))
+      houses.push(new House(houseIds++, Region.None, house.label as number, []))
     }
   })
 
@@ -128,7 +128,7 @@ export function assignHouse(
   let index = 0
   houseRegions.forEach((region) => {
     for (let i = 0; i < region.value; i++) {
-      houses[index++].region = region.label as string
+      houses[index++].region = region.label as Region
     }
   })
 
@@ -503,7 +503,6 @@ export function assignEducationStatus(
   individuals = assignEducationLevel(individuals, undergradStudents, EducationStatus.Undergraduate)
   individuals = assignEducationLevel(individuals, gradStudents, EducationStatus.Graduate)
 
-  // todo: why the fuck 40 thousand aren't assigned properly?
   console.log(
     individuals.filter((i) => i.educationStatus).length,
     preschoolers.value +
