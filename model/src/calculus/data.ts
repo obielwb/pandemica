@@ -1,71 +1,82 @@
 import {
-  type Distance as ActivityDistance,
-  type Setting as ActivitySetting,
-  type Voice as ActivityVoice
+  Setting as ActivitySetting,
+  Distance as ActivityDistance,
+  Voice as ActivityVoice
 } from '../population/activities'
 
 export const SettingMultiplier: { [key in ActivitySetting]: number } = {
-  indoor: 1,
-  outdoor: 0.05
+  [ActivitySetting.Indoor]: 1,
+  [ActivitySetting.Outdoor]: 0.05
 }
 
 export const DistanceMultiplier: { [key in ActivityDistance]: number } = {
-  normal: 1,
-  sixFt: 0.5,
-  tenFt: 0.25
+  [ActivityDistance.Normal]: 1,
+  [ActivityDistance.SixFt]: 0.5,
+  [ActivityDistance.TenFt]: 0.25
 }
 
-export type MaskType =
-  | ''
-  | 'thin'
-  | 'basic'
-  | 'surgical'
-  | 'filtered'
-  | 'n95'
-  | 'n95Sealed'
-  | 'p100'
+export enum Mask {
+  Thin,
+  Basic,
+  Surgical,
+  Filtered,
+  N95,
+  N95Sealed,
+  P100,
+  None
+}
 
-export const MaskMultiplier: { [key: string]: number } = {
-  none: 1.0,
-  thin: 1 / 2,
-  basic: 1 / 3,
-  surgical: 1 / 4,
-  filtered: 1 / 4,
-  n95: 1 / 6,
-  n95Sealed: 1 / 16,
-  p100: 1 / 3
+export const MaskMultiplier: { [key in Mask]: number } = {
+  [Mask.None]: 1.0,
+  [Mask.Thin]: 1 / 2,
+  [Mask.Basic]: 1 / 3,
+  [Mask.Surgical]: 1 / 4,
+  [Mask.Filtered]: 1 / 4,
+  [Mask.N95]: 1 / 6,
+  [Mask.N95Sealed]: 1 / 16,
+  [Mask.P100]: 1 / 3
 }
 
 export const VoiceMultiplier: { [key in ActivityVoice]: number } = {
-  silent: 0.2,
-  normal: 1,
-  loud: 5
+  [ActivityVoice.Silent]: 0.2,
+  [ActivityVoice.Normal]: 1,
+  [ActivityVoice.Loud]: 5
 }
 
 export interface VaccineValue {
   multiplierPerDose: number[] // muliplierPerDose[n] is the multiplier for having |n| doses of vaccine.
 }
 
-export const VaccinesRiskReduction: { [key: string]: VaccineValue } = {
-  pfizer: {
-    multiplierPerDose: [0.91, 0.95]
-  },
-  astraZeneca: {
-    multiplierPerDose: [0.67, 0.85]
-  },
-  janssen: {
-    multiplierPerDose: [0.77, 1, 0.95]
-  },
-  none: {
-    multiplierPerDose: [0, 0, 0, 0]
-  }
+export enum VaccineType {
+  Pfizer,
+  // Moderna,
+  AstraZeneca,
+  Janssen,
+  CoronaVac,
+  None
 }
-
-export type VaccineType = 'pfizer' | 'moderna' | 'astra_zeneca' | 'johnson_johnson' | ''
 
 export type Vaccine = {
   type: VaccineType
   doses: number
+}
+
+export const VaccinesRiskReduction: { [key in VaccineType]: VaccineValue } = {
+  [VaccineType.Pfizer]: {
+    multiplierPerDose: [0.91, 0.95]
+  },
+  [VaccineType.AstraZeneca]: {
+    multiplierPerDose: [0.67, 0.85]
+  },
+  [VaccineType.Janssen]: {
+    multiplierPerDose: [0.77, 1, 0.95]
+  },
+  [VaccineType.CoronaVac]: {
+    multiplierPerDose: [0, 0, 0] // todo: add values
+  },
+  [VaccineType.None]: {
+    multiplierPerDose: [0, 0, 0, 0]
+  }
 }
 
 export interface AgeValue {

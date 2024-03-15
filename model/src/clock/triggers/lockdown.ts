@@ -1,6 +1,7 @@
 import {
   Activity,
   Category,
+  Label,
   collegeStudy,
   collegeStudyFromHome,
   highSchoolStudy,
@@ -26,7 +27,7 @@ import {
   smallIndustryWorkFromHome,
   smallIndustryWorkInPerson
 } from '../../population/activities'
-import { Individual } from '../../population/individual'
+import { Individual, OccupationType } from '../../population/individual'
 import { chunkIntoNParts, fasterFilter, fisherYatesShuffle } from '../../utilities'
 
 export class LockdownTrigger {
@@ -78,16 +79,16 @@ export class LockdownTrigger {
     const shuffledPopulation = fisherYatesShuffle(this.individuals)
 
     const workers = fasterFilter(shuffledPopulation, (individual) =>
-      individual.occupationTypes.includes('w')
+      individual.occupationTypes.includes(OccupationType.Work)
     )
     const students = fasterFilter(shuffledPopulation, (individual) =>
-      individual.occupationTypes.includes('s')
+      individual.occupationTypes.includes(OccupationType.Study)
     )
     const withouthOccupationIndividuals = fasterFilter(
       shuffledPopulation,
       (individual) =>
-        individual.occupationTypes.includes('s') === false &&
-        individual.occupationTypes.includes('w') === false
+        individual.occupationTypes.includes(OccupationType.Study) === false &&
+        individual.occupationTypes.includes(OccupationType.Work) === false
     )
 
     const lockdownWorkers = workers.slice(
@@ -129,16 +130,16 @@ export class LockdownTrigger {
   }
 
   private implementSchoolFromHome(individual: Individual) {
-    const labelToStudyRoutineMap = new Map<string, Activity>([
-      ['s.ps', preschoolStudyFromHome],
-      ['s.ms', middleSchoolStudyFromHome],
-      ['s.hs', highSchoolStudyFromHome],
-      ['s.c', collegeStudyFromHome]
+    const labelToStudyRoutineMap = new Map<Label, Activity>([
+      [Label.PreschoolInPerson, { ...preschoolStudyFromHome }],
+      [Label.MiddleSchoolInPerson, { ...middleSchoolStudyFromHome }],
+      [Label.HighSchoolInPerson, { ...highSchoolStudyFromHome }],
+      [Label.CollegeInPerson, { ...collegeStudyFromHome }]
     ])
 
     individual.routine.forEach((dayRoutine) => {
       dayRoutine.forEach((activity) => {
-        if (activity.category === 's') {
+        if (activity.category === Category.Study) {
           const replacement = labelToStudyRoutineMap.get(activity.label)
           if (replacement) {
             activity = replacement
@@ -149,23 +150,23 @@ export class LockdownTrigger {
   }
 
   private implementWorkFromHome(individual: Individual) {
-    const labelToWorkRoutineMap = new Map<string, Activity>([
-      ['w.i.xs', microIndustryWorkFromHome],
-      ['w.i.s', smallIndustryWorkFromHome],
-      ['w.i.m', mediumIndustryWorkFromHome],
-      ['w.i.l', largeIndustryWorkFromHome],
-      ['w.cs.xs', microCommerceAndServicesWorkFromHome],
-      ['w.cs.s', smallCommerceAndServicesWorkFromHome],
-      ['w.cs.m', mediumCommerceAndServicesWorkFromHome],
-      ['w.cs.l', largeCommerceAndServicesWorkFromHome]
+    const labelToWorkRoutineMap = new Map<Label, Activity>([
+      [Label.MicroIndustryInPerson, microIndustryWorkFromHome],
+      [Label.SmallIndustryInPerson, smallIndustryWorkFromHome],
+      [Label.MediumIndustryInPerson, mediumIndustryWorkFromHome],
+      [Label.LargeIndustryInPerson, largeIndustryWorkFromHome],
+      [Label.MicroCommerceInPerson, microCommerceAndServicesWorkFromHome],
+      [Label.SmallCommerceInPerson, smallCommerceAndServicesWorkFromHome],
+      [Label.MediumCommerceInPerson, mediumCommerceAndServicesWorkFromHome],
+      [Label.LargeCommerceInPerson, largeCommerceAndServicesWorkFromHome]
     ])
 
     individual.routine.forEach((dayRoutine) => {
       dayRoutine.forEach((activity) => {
-        if (activity.category === 'w') {
+        if (activity.category === Category.Work) {
           const replacement = labelToWorkRoutineMap.get(activity.label)
           if (replacement) {
-            activity = replacement
+            activity = { ...replacement }
           }
         }
       })
@@ -185,7 +186,7 @@ export class LockdownTrigger {
           }
         })
 
-        day.find((activity) => activity.category === 'home').duration += addedTimeAtHome
+        day.find((activity) => activity.category === Category.Home).duration += addedTimeAtHome
       })
     }
   }
@@ -193,25 +194,26 @@ export class LockdownTrigger {
   private schoolRecuperation(recuperationNumber: number) {
     const students = fasterFilter(
       this.individuals,
-      (individual) => individual.isInLockdown && individual.occupationTypes.includes('s')
+      (individual) =>
+        individual.isInLockdown && individual.occupationTypes.includes(OccupationType.Study)
     )
 
     const shuffledStudents = fisherYatesShuffle(students)
 
-    const labelToStudyRoutineMap = new Map<string, Activity>([
-      ['s.ps.fh', preschoolStudy],
-      ['s.ms.fh', middleSchoolStudy],
-      ['s.hs.from_homw', highSchoolStudy],
-      ['s.c.fh', collegeStudy]
+    const labelToStudyRoutineMap = new Map<Label, Activity>([
+      [Label.PreschoolFromHome, preschoolStudy],
+      [Label.MiddleSchoolFromHome, middleSchoolStudy],
+      [Label.HighSchoolFromHome, highSchoolStudy],
+      [Label.CollegeFromHome, collegeStudy]
     ])
 
     shuffledStudents.slice(0, recuperationNumber).forEach((individual) => {
       individual.routine.forEach((dayRoutine) => {
         dayRoutine.forEach((activity) => {
-          if (activity.category === 's') {
+          if (activity.category === Category.Study) {
             const replacement = labelToStudyRoutineMap.get(activity.label)
             if (replacement) {
-              activity = replacement
+              activity = { ...replacement }
             }
           }
         })
@@ -222,29 +224,30 @@ export class LockdownTrigger {
   private workRecuperation(recuperationNumber: number) {
     const workers = fasterFilter(
       this.individuals,
-      (individual) => individual.isInLockdown && individual.occupationTypes.includes('w')
+      (individual) =>
+        individual.isInLockdown && individual.occupationTypes.includes(OccupationType.Work)
     )
 
     const shuffledWorkers = fisherYatesShuffle(workers)
 
-    const labelToWorkRoutineMap = new Map<string, Activity>([
-      ['w.i.xs.fh', microIndustryWorkInPerson],
-      ['w.i.s.fh', smallIndustryWorkInPerson],
-      ['w.i.m.fh', mediumIndustryWorkInPerson],
-      ['w.i.l.fh', largeIndustryWorkInPerson],
-      ['w.cs.xs.fh', microCommerceAndServicesWorkInPerson],
-      ['w.cs.s.fh', smallCommerceAndServicesWorkInPerson],
-      ['w.cs.m.fh', mediumCommerceAndServicesWorkInPerson],
-      ['w.cs.l.fh', largeCommerceAndServicesWorkInPerson]
+    const labelToWorkRoutineMap = new Map<Label, Activity>([
+      [Label.MicroIndustryFromHome, microIndustryWorkInPerson],
+      [Label.SmallIndustryFromHome, smallIndustryWorkInPerson],
+      [Label.MediumIndustryFromHome, mediumIndustryWorkInPerson],
+      [Label.LargeIndustryFromHome, largeIndustryWorkInPerson],
+      [Label.MicroCommerceFromHome, microCommerceAndServicesWorkInPerson],
+      [Label.SmallCommerceFromHome, smallCommerceAndServicesWorkInPerson],
+      [Label.MediumCommerceFromHome, mediumCommerceAndServicesWorkInPerson],
+      [Label.LargeCommerceFromHome, largeCommerceAndServicesWorkInPerson]
     ])
 
     shuffledWorkers.slice(0, recuperationNumber).forEach((individual) => {
       individual.routine.forEach((dayRoutine) => {
         dayRoutine.forEach((activity) => {
-          if (activity.category === 'w') {
+          if (activity.category === Category.Work) {
             const replacement = labelToWorkRoutineMap.get(activity.label)
             if (replacement) {
-              activity = replacement
+              activity = { ...replacement }
             }
           }
         })

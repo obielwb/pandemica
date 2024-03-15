@@ -3,9 +3,8 @@ import * as fs from 'fs'
 import { getPopulation } from './population'
 import { Clock } from './clock'
 import { quickSort } from './clock/sorting'
-import { IndividualActivity } from './population/activities'
 import { calculate } from './calculus'
-import { Individual } from './population/individual'
+import { Individual, State } from './population/individual'
 import { fisherYatesShuffle, log } from './utilities'
 import { nanoid } from 'nanoid'
 import { VaccineTrigger } from './clock/triggers/vaccines'
@@ -14,23 +13,6 @@ import { MaskTrigger } from './clock/triggers/masks'
 import { PandemicRegister } from '../data/covid19'
 import { join } from 'path'
 import { assignHospitalizedRoutine } from './routines'
-
-// todo: these individuals are outdated
-const individuals: Individual[] = []
-
-const currentActivity: IndividualActivity = {
-  id: 0,
-  category: 'transport',
-  distance: 'normal',
-  duration: 10,
-  individualsEngaged: individuals.map((individual) => individual.id),
-  label: 'transportation.public.ride',
-  setting: 'indoor',
-  maximumIndividualsEngaged: 40,
-  voice: 'loud',
-  // todo
-  serialize: null
-}
 
 // todo: implement run function
 /**
@@ -50,7 +32,7 @@ export async function run(
     saveToDisk: true
   })
 
-  const clock = new Clock(new Date(initialScenario[0].date), individuals, quickSort)
+  const clock = new Clock(new Date(initialScenario[0].date), population, quickSort)
 
   // nao sabia se queria isso aqui dnv, acabei nao apagando
   // console.log(
@@ -74,15 +56,16 @@ export async function run(
   // )
 
   const lockdown = new LockdownTrigger(
-    individuals,
+    population,
     '0000-00-00',
     1,
     ['0000-00-00', '0000-00-00'],
     0.5,
-    ['0000-00-00']
+    ['0000-00-00'],
+    []
   )
-  const vaccines = new VaccineTrigger(individuals)
-  const masks = new MaskTrigger(individuals, [])
+  const vaccines = new VaccineTrigger(population)
+  const masks = new MaskTrigger(population, [])
 
   // lockdown.assign(clock.currentDateString())
   // vaccines.assign(clock.currentDateString())
@@ -132,7 +115,7 @@ function setInitialScenario(
 
   const individualsDead = totalIndividualsContaminated.slice(0, totalDeaths)
 
-  individualsDead.map((individual) => (individual.state = 'dead'))
+  individualsDead.map((individual) => (individual.state = State.Dead))
 
   // todo: be aware of dead individuals in runner
   // todo: implement assignCovidstateRoutine functions
@@ -146,7 +129,7 @@ function setInitialScenario(
   )
 
   individualsCurrentContaminted.slice(totalDeaths).map((individual) => {
-    individual.state = 'hospitalized'
+    individual.state = State.Hospitalized
     assignHospitalizedRoutine(individual)
   })
 

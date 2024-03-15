@@ -1,12 +1,12 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { parse } from 'csv-parse'
-import { Individual } from '../../population/individual'
-import { fasterFilter, fisherYatesShuffle, log, shuffle } from '../../utilities'
+import { Individual, Sex } from '../../population/individual'
+import { fasterFilter, fisherYatesShuffle, log } from '../../utilities'
 import { VaccineType } from '../../calculus/data'
 
 /*
-  Note: this code is used for validation purpose only.
+  Note: this code is used for validation purposes only
 */
 
 type VaccineRegister = {
@@ -14,8 +14,8 @@ type VaccineRegister = {
   state: string
   city: string
   ibgeID: string
-  vaccine: string
-  sex: string
+  vaccine: VaccineType
+  sex: Sex
   age: string
   dose: number
   pop2021: number
@@ -41,7 +41,8 @@ export class VaccineTrigger {
             register.age.includes(individual.age[0].toString()) &&
             individual.sex === register.sex &&
             individual.vaccine.doses === register.dose - 1 && // only people with first dose takes the second dose vaccine
-            (individual.vaccine.type === register.vaccine || individual.vaccine.type === '')
+            (individual.vaccine.type === register.vaccine ||
+              individual.vaccine.type === VaccineType.None)
         )
 
         const shuffledIndividuals = fisherYatesShuffle(matchCharacteristics)
@@ -57,7 +58,9 @@ export class VaccineTrigger {
 
   public async readVaccineData() {
     try {
-      const csvFilePath = path.resolve(__dirname, 'datacovid19campinas_2021_vaccines.csv')
+      const csvFilePath = path.resolve(
+        path.join(__dirname, 'data', 'covid19', 'campinas_2021_vaccines.csv')
+      )
       const headers = [
         'date',
         'state',
@@ -83,15 +86,30 @@ export class VaccineTrigger {
               fromLine: 2,
               cast: (columnValue, context) => {
                 if (
-                  context.column == 'count' ||
-                  context.column == 'pop2021' ||
-                  context.column == 'dose'
+                  context.column === 'count' ||
+                  context.column === 'pop2021' ||
+                  context.column === 'dose'
                 ) {
                   return parseInt(columnValue)
                 }
 
-                if (context.column == 'sex' && columnValue == 'F') return 'f'
-                if (context.column == 'sex' && columnValue == 'M') return 'm'
+                if (context.column === 'sex' && columnValue == 'F') return Sex.Female
+                if (context.column === 'sex' && columnValue == 'M') return Sex.Male
+
+                if (context.column === 'vaccine') {
+                  switch (columnValue) {
+                    case 'Sinovac':
+                      return VaccineType.CoronaVac
+                    case 'Janssen':
+                      return VaccineType.Janssen
+                    case 'Pfizer/BioNTech':
+                      return VaccineType.Pfizer
+                    case 'AstraZeneca':
+                      return VaccineType.AstraZeneca
+                    default:
+                      return VaccineType.None
+                  }
+                }
 
                 return columnValue
               }

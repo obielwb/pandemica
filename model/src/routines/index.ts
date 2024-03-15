@@ -1,4 +1,4 @@
-import { MaskType } from '../calculus/data'
+import { Mask } from '../calculus/data'
 import { Activity, Category, eightHoursSleep, hospitalized } from '../population/activities'
 import { Individual } from '../population/individual'
 import { fasterFilter, log } from '../utilities'
@@ -81,10 +81,10 @@ export function assignHospitalizedRoutine(individual: Individual) {
 export function assignInfectiousRoutine(
   individual: Individual,
   useMask: boolean = false,
-  maskType: MaskType = '',
+  maskType: Mask = '',
   interruptedActivities: Category[] = []
 ) {
-  individual.pir = individual.routine
+  individual.preInfectedRoutine = individual.routine
 
   if (useMask) individual.mask = maskType
 
@@ -102,6 +102,6 @@ export function assignInfectiousRoutine(
 }
 
 export function assignRecuperedRoutine(individual: Individual) {
-  individual.routine = individual.pir
-  individual.pir = null
+  individual.routine = individual.preInfectedRoutine
+  individual.preInfectedRoutine = null
 }

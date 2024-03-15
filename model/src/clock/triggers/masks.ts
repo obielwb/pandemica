@@ -1,16 +1,22 @@
-import { MaskType } from '../../calculus/data'
-import { Individual, Occupation, OccupationType } from '../../population/individual'
-import { fasterFilter, fisherYatesShuffle, shuffle } from '../../utilities'
+import { Mask } from '../../calculus/data'
+import {
+  Individual,
+  Occupation,
+  OccupationType,
+  Sex,
+  TransporationMean
+} from '../../population/individual'
+import { fasterFilter, fisherYatesShuffle } from '../../utilities'
 
 export type MaskRegister = {
   date: string
-  type: MaskType
+  type: Mask
   populationPercentage: number
   options?: Partial<{
     age: number[]
-    sex: 'm' | 'f'
+    sex: Sex
     income: number[]
-    transportationMean: 'pr' | 'pu'
+    transportationMean: TransporationMean
     occupationTypes: [OccupationType?, OccupationType?]
     occupations: [Occupation?, Occupation?]
   }>
@@ -65,7 +71,7 @@ export class MaskTrigger {
 
   private cleanCurrentMasks() {
     this.population.forEach((individual) => {
-      individual.mask = ''
+      individual.mask = Mask.None
     })
   }
 }

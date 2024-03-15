@@ -36,11 +36,12 @@ import {
   assignWorkOccupations,
   normalizeIncomes
 } from './parameters'
-import { Individual } from './individual'
+import { Individual, State } from './individual'
 import { join, extname } from 'node:path'
 import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { log } from '../utilities'
 import { assignRoutine } from '../routines'
+import { Mask, VaccineType } from '../calculus/data'
 
 type GetPopulationParameters = { cache: boolean; saveToDisk: boolean }
 
@@ -219,16 +220,16 @@ function instantiatePopulation() {
     individual.id = i
 
     // initial settings
-    individual.mask = ''
+    individual.mask = Mask.None
     individual.vaccine = {
       doses: 0,
-      type: ''
+      type: VaccineType.None
     }
 
     individual.occupationTypes = []
     individual.occupations = []
 
-    individual.state = 'susceptible'
+    individual.state = State.Susceptible
     individual.hadCovid = individual.isInLockdown = false
 
     individuals.push(individual)
