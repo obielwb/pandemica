@@ -35,7 +35,7 @@ export async function run(
 
   const clock = new Clock(new Date(initialScenario[0].date), population, quickSort)
 
-  // todo: assig proper dates to triggers
+  // todo: assign proper dates to triggers
   const lockdown = new LockdownTrigger(
     '0000-00-00',
     1,
@@ -51,53 +51,53 @@ export async function run(
   population = withoutDeadPopulation
   clock.setCurrentDateFromString(date)
 
-  // while (clock.currentDate() <= endDate) {
-  //   const individualsWithCovid = currentActivity.individualsEngaged.map((i) => {
-  //     let individual = individuals[i]
-  //     if (individual.state === 'exposed' || individual.state === 'infectious') return individual
-  //   })
+  while (clock.currentDate() <= endDate) {
+    clock.sortIndividuals()
+    let minActivityTime = 0
 
-  //   const individualsWithoutCovid = currentActivity.individualsEngaged.filter((i) => {
-  //     const individual = individuals[i]
+    // const individualsWithCovid = currentActivity.individualsEngaged.map((i) => {
+    //   let individual = individuals[i]
+    //   if (individual.state === 'exposed' || individual.state === 'infectious') return individual
+    // })
 
-  //     return (
-  //       individual.state !== 'exposed' &&
-  //       individual.state !== 'infectious' &&
-  //       individual.state !== 'recovered' &&
-  //       individual.state !== 'dead' &&
-  //       individual.state !== 'hospitalized'
-  //     )
-  //   })
+    // const individualsWithoutCovid = currentActivity.individualsEngaged.filter((i) => {
+    //   const individual = individuals[i]
 
-  //   individualsWithoutCovid.forEach((i) => {
-  //     const { acquiredCovid, deathProbability, hospitalizationProbability } = calculate(
-  //       currentActivity,
-  //       individualsWithCovid,
-  //       individuals[i]
-  //     )
-  //     log('Hospitalization probability: ' + hospitalizationProbability)
-  //     log('Death probability: ' + deathProbability)
-  //     if (acquiredCovid) individuals[i].state = 'exposed'
-  //   })
-  // }
+    //   return (
+    //     individual.state !== 'exposed' &&
+    //     individual.state !== 'infectious' &&
+    //     individual.state !== 'recovered' &&
+    //     individual.state !== 'dead' &&
+    //     individual.state !== 'hospitalized'
+    //   )
+    // })
 
-  //---------------
+    // individualsWithoutCovid.forEach((i) => {
+    //   const { acquiredCovid, deathProbability, hospitalizationProbability } = calculate(
+    //     currentActivity,
+    //     individualsWithCovid,
+    //     individuals[i]
+    //   )
+    //   log('Hospitalization probability: ' + hospitalizationProbability)
+    //   log('Death probability: ' + deathProbability)
+    //   if (acquiredCovid) individuals[i].state = 'exposed'
+    // })
 
-  let dailyDeaths = []
+    let dailyDeaths = []
 
-  //....
+    lockdown.assign(clock.currentDateString(), population)
+    vaccines.assign(clock.currentDateString(), population)
+    masks.assign(clock.currentDateString(), population)
 
-  lockdown.assign(clock.currentDateString(), population)
-  vaccines.assign(clock.currentDateString(), population)
-  masks.assign(clock.currentDateString(), population)
+    dailyDeaths = changeSEIRState(population)
+    if (dailyDeaths.length !== 0) {
+      population = fasterFilter(population, (individual) => !dailyDeaths.includes(individual.id))
+    }
 
-  dailyDeaths = changeSEIRState(population)
-  if (dailyDeaths.length !== 0) {
-    population = fasterFilter(population, (individual) => !dailyDeaths.includes(individual.id))
+    dailyDeaths = []
+
+    clock.tick(minActivityTime)
   }
-
-  dailyDeaths = []
-  //---------------
 
   saveSimulatedPandemicRegistersToDisk(runId, simulatedPandemicRegisters)
 }
@@ -115,7 +115,7 @@ function setInitialScenario(
 
   const deadIndividuals = totalIndividualsContaminated.slice(0, lastPandemicRegister.deaths)
 
-  // infected individuals recover. To start the simulation
+  // infected individuals recover. to start the simulation
   // being contaminated we only catch individuals who were infected in the last 14 days
   const individualsCurrentContaminted = totalIndividualsContaminated.slice(
     lastPandemicRegister.deaths, // leave behind dead individuals
@@ -152,7 +152,7 @@ function saveSimulatedPandemicRegistersToDisk(
   const rows = pandemicRegisters.map((entry) => Object.values(entry).join(','))
 
   const resultDir = join(__dirname, '..', 'data', 'simulation', 'results')
-  const filePath = join(resultDir, `simulation_${simulationId}.csv`)
+  const filePath = join(resultDir, `simulation-${simulationId}.csv`)
 
   fs.writeFileSync(filePath, `${headers}\n${rows.join('\n')}`)
 }
