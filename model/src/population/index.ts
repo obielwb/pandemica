@@ -43,8 +43,10 @@ import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { log } from '../utilities'
 import { assignRoutine } from '../routines'
 import { Mask, VaccineType } from '../calculus/data'
+import os from 'node:os'
+import { exec } from 'node:child_process'
 
-type GetPopulationParameters = { cache: boolean; saveToDisk: boolean }
+type GetPopulationParameters = { cache: boolean; saveToDisk: boolean; city: 'campinas' }
 
 // todo: improve jsdoc usage
 /**
@@ -52,9 +54,9 @@ type GetPopulationParameters = { cache: boolean; saveToDisk: boolean }
  * @param saveToDisk {boolean} Defaults to false
  */
 export async function getPopulation(
-  options: GetPopulationParameters = { cache: false, saveToDisk: false }
+  params: GetPopulationParameters = { cache: false, saveToDisk: false, city: 'campinas' }
 ): Promise<Individual[]> {
-  const { cache, saveToDisk } = options
+  const { cache, saveToDisk, city } = params
 
   if (cache) {
     log('Trying to read existing population', {
@@ -62,7 +64,7 @@ export async function getPopulation(
       timeLabel: 'POPULATION'
     })
 
-    const population = await readPopulationFromDisk()
+    const population = await readPopulationFromDisk(city)
 
     log('', {
       timeEnd: true,
@@ -79,7 +81,7 @@ export async function getPopulation(
   const population = instantiatePopulation()
 
   if (saveToDisk) {
-    await savePopulationToDisk(population)
+    await savePopulationToDisk(population, city)
   }
 
   log('', { timeEnd: true, timeLabel: 'POPULATION' })
@@ -87,31 +89,83 @@ export async function getPopulation(
   return population
 }
 
-async function readPopulationFromDisk() {
+async function readPopulationFromDisk(city: 'campinas') {
   log('Deserializing population', {
     time: true,
     timeLabel: 'DESERIALIZATION'
   })
-  const populationDir = join(__dirname, '..', '..', 'data', 'simulation', 'population')
+
+  const populationsDir = join(__dirname, '..', '..', 'data', 'simulation', 'populations')
+  const populationDir = join(populationsDir, city)
 
   let population = []
 
   try {
-    const files = await readdir(populationDir)
+    let files = await readdir(populationDir)
+
+    const jsonFiles = files.filter((file) => extname(file) === '.json')
+
+    if (jsonFiles.length === 0) {
+      const decompressScript = `${populationsDir}/decompress.${
+        os.platform() === 'win32' ? 'bat' : 'sh'
+      }`
+      const decompressCommand = `${decompressScript} ${city}`
+
+      log('Decompressing population data', { time: true, timeLabel: 'DECOMPRESSION' })
+      await new Promise((resolve, reject) => {
+        exec(decompressCommand, (error, stdout, stderr) => {
+          if (error) {
+            log(`Error during decompression: ${error}`, { error })
+            reject(error)
+          } else {
+            log('Population data decompressed successfully', {
+              timeEnd: true,
+              timeLabel: 'DECOMPRESSION'
+            })
+            resolve(stdout)
+          }
+        })
+      })
+
+      files = await readdir(populationDir)
+    } else {
+      log('Population data already decompressed, skipping')
+    }
+
+    let fileCount = 0
+    let initialTime = new Date()
+
     for (const file of files) {
       if (extname(file) === '.json') {
         const filePath = join(populationDir, file)
+        fileCount++
         const individuals = await readPopulationFragmentFromFile(filePath)
         population = population.concat(individuals)
+
+        const currentTime = new Date().getTime()
+        const timeElapsed = currentTime - initialTime.getTime()
+        const totalRemainingTimeInSeconds = ((files.length - fileCount) * timeElapsed) / 1000
+        const remainingMinutes = Math.floor(totalRemainingTimeInSeconds / 60)
+        const remainingSeconds = Math.round(totalRemainingTimeInSeconds % 60)
+
+        console.log(
+          `[POPULATION]: ${individuals.length.toLocaleString()} individuals processed in ${(
+            timeElapsed / 1000
+          ).toFixed(2)}s, ` +
+            `${(files.length - fileCount).toLocaleString()} fragments remaining ` +
+            `(${Math.round(individuals.length / timeElapsed)}ms per individual, ` +
+            `${remainingMinutes}min ${remainingSeconds}s estimated to completion)`
+        )
+
+        initialTime = new Date()
       }
     }
-    population.sort((a, b) => a.id - b.id)
   } catch (error) {
     log('Error reading population from disk', { error })
     throw error
   }
 
-  log('', {
+  log('Deserialization complete', {
     timeEnd: true,
     timeLabel: 'DESERIALIZATION'
   })
@@ -144,7 +198,7 @@ async function readPopulationFragmentFromFile(filePath: string): Promise<Individ
 
 const FRAGMENT_FILE_SIZE = 496 * 1024 * 1024 // 496mb
 
-async function savePopulationToDisk(population: Individual[]) {
+async function savePopulationToDisk(population: Individual[], city: 'campinas') {
   log('Serializing population', {
     time: true,
     timeLabel: 'SERIALIZATION'
@@ -158,8 +212,10 @@ async function savePopulationToDisk(population: Individual[]) {
   const fragments = Math.ceil(populationTotalSize / FRAGMENT_FILE_SIZE)
   const fragmentIndividualCount = Math.ceil(population.length / fragments)
 
-  const populationDir = join(__dirname, '..', '..', 'data', 'simulation', 'population')
+  const populationsDir = join(__dirname, '..', '..', 'data', 'simulation', 'populations')
+  const cityPopulationDir = join(populationsDir, city)
 
+  let initialTime = new Date()
   for (let i = 0; i < fragments; i++) {
     log(`Saving fragment ${i} to disk`, {
       time: true,
@@ -183,12 +239,28 @@ async function savePopulationToDisk(population: Individual[]) {
       fragmentIndividuals.push(serializedIndividual)
     }
 
-    const filePath = join(populationDir, `fragment-${i}.json`)
+    const filePath = join(cityPopulationDir, `fragment-${i}.json`)
 
     const jsonString = `[${fragmentIndividuals.join(',')}]`
 
     try {
       await writeFile(filePath, jsonString)
+
+      const currentTime = new Date().getTime()
+      const timeElapsed = currentTime - initialTime.getTime()
+      const totalRemainingTimeInSeconds = ((fragments - i - 1) * timeElapsed) / 1000
+      const remainingMinutes = Math.floor(totalRemainingTimeInSeconds / 60)
+      const remainingSeconds = Math.round(totalRemainingTimeInSeconds % 60)
+
+      console.log(
+        `[SERIALIZATION]: Fragment ${i} saved in ${(timeElapsed / 1000).toFixed(2)}s, ` +
+          `${fragments - i - 1} fragments remaining ` +
+          `(${Math.round(fragmentIndividualCount / timeElapsed)}ms per individual, ` +
+          `${remainingMinutes}min ${remainingSeconds}s estimated to completion)`
+      )
+
+      initialTime = new Date()
+
       log('', {
         timeEnd: true,
         timeLabel: 'FRAGMENT'
@@ -197,6 +269,32 @@ async function savePopulationToDisk(population: Individual[]) {
       log(`Error saving fragment ${i} to disk`, { error })
       throw error
     }
+  }
+
+  log('Compressing population', {
+    time: true,
+    timeLabel: 'COMPRESSION'
+  })
+
+  const compressScript = `${populationsDir}/compress.${os.platform() === 'win32' ? 'bat' : 'sh'}`
+  const compressCommand = `${compressScript} ${city}`
+
+  try {
+    await new Promise((resolve, reject) => {
+      exec(compressCommand, (error, stdout, stderr) => {
+        if (error) {
+          log(`Error during compression: ${error}`, { error })
+          return
+        }
+        log('Population data compressed successfully', {
+          timeEnd: true,
+          timeLabel: 'COMPRESSION'
+        })
+      })
+    })
+  } catch (error) {
+    log('Compression failed', { error })
+    throw error
   }
 
   log('', {
