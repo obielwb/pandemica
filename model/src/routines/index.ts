@@ -29,8 +29,7 @@ export function assignRoutine(individuals: Individual[]) {
   let initialTime = new Date()
 
   const individualWithRoutines = individuals.map((individual, index) => {
-    // const routine = generateWeeklyRoutine(individual, individualsRoutinesMap)
-    const routine = []
+    const routine = generateWeeklyRoutine(individual, individualsRoutinesMap)
 
     if (individual.age[1] > 19) {
       individualsRoutinesMap.set(individual.id, {
@@ -95,13 +94,14 @@ export function assignInfectiousRoutine(
         addedTimeAtHome += activity.duration
         return false
       }
+      return true // gabriel, is this right>
     })
 
-    day.find((activity) => activity.category === Category.Home).duration += addedTimeAtHome
+    day.find((activity) => activity.category === Category.Home)!.duration += addedTimeAtHome
   })
 }
 
 export function assignRecuperedRoutine(individual: Individual) {
-  individual.routine = individual.preInfectedRoutine
-  individual.preInfectedRoutine = null
+  individual.routine = individual.preInfectedRoutine!
+  individual.preInfectedRoutine = undefined
 }

@@ -3,7 +3,9 @@
   "private": "true",
   "license": "mit",
   "scripts": {
-    "start": "tsx src/main.ts",
+    "build": "npx tsup",
+    "start": "node --max-old-space-size=16384 ./dist/main.js",
+    "start:dev": "tsx src/main.ts",
     "test": "bun test -t",
     "test:watch": "bun test --watch",
     "test:benchmark": "tsx test/benchmark/main.ts"
@@ -11,8 +13,9 @@
   "dependencies": {
     "csv-parse": "^5.5.3",
     "moment": "^2.29.4",
-    "nanoid": "^5.0.6",
+    "nanoid": "^3.0.0",
     "ts-node": "^10.9.2",
+    "tsup": "^8.0.2",
     "typescript": "^5.2.2"
   },
   "devDependencies": {

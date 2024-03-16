@@ -1,7 +1,13 @@
 {
   "compilerOptions": {
-    "module": "es2022",
+    "outDir": "dist",
+    "module": "commonjs",
     "target": "es2022",
-    "moduleResolution": "Node"
-  }
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "baseUrl": "."
+  },
+  "include": ["./src", "data/census/index.ts", "data/covid19/index.ts"]
 }
