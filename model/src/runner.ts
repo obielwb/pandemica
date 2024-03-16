@@ -29,7 +29,8 @@ export async function run(
 
   let population = await getPopulation({
     cache: true,
-    saveToDisk: true
+    saveToDisk: true,
+    city: 'campinas'
   })
 
   const clock = new Clock(new Date(initialScenario[0].date), population, quickSort)
