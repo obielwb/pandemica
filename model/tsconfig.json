@@ -3,11 +3,10 @@
     "outDir": "dist",
     "module": "commonjs",
     "target": "es2022",
-    "moduleResolution": "Node",
+    "moduleResolution": "Node10",
+    "rootDir": "./",
     "esModuleInterop": true,
-    "sourceMap": true,
-    "strictNullChecks": true,
-    "baseUrl": "."
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["./src", "data/census/index.ts", "data/covid19/index.ts"]
+  "include": ["./src/**/*", "./data/**/*"]
 }

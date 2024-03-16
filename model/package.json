@@ -3,23 +3,26 @@
   "private": "true",
   "license": "mit",
   "scripts": {
-    "build": "npx tsup",
-    "start": "node --max-old-space-size=16384 ./dist/main.js",
-    "start:dev": "tsx src/main.ts",
+    "prebuild": "rimraf ./dist",
+    "build": "tsup",
+    "postbuild": "shx cp ./data/covid19/*.csv ./dist/data/covid19/",
+    "start": "node --max-old-space-size=16384 ./dist/src/main.js",
+    "start:dev": "tsx ./src/main.ts",
     "test": "bun test -t",
     "test:watch": "bun test --watch",
-    "test:benchmark": "tsx test/benchmark/main.ts"
+    "test:benchmark": "tsx ./test/benchmark/main.ts"
   },
   "dependencies": {
     "csv-parse": "^5.5.3",
     "moment": "^2.29.4",
-    "nanoid": "^3.0.0",
-    "ts-node": "^10.9.2",
-    "tsup": "^8.0.2",
-    "typescript": "^5.2.2"
+    "nanoid": "^3.3.7",
+    "rimraf": "^5.0.5"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",
-    "tsx": "^4.7.1"
+    "shx": "^0.3.4",
+    "tsup": "^8.0.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
   }
 }
