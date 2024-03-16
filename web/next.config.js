@@ -21,7 +21,7 @@ const nextConfig = {
       {
         source: '/banner',
         destination: '/paper',
-        permanent: true
+        permanent: false // as we might change it
       }
     ]
   }

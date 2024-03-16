@@ -1,0 +1,3 @@
+[submodule "model/data/simulation/populations"]
+	path = model/data/simulation/populations
+	url = https://github.com/ojpbarbosa/pandemica-populations

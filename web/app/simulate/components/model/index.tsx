@@ -30,16 +30,16 @@ const patologies = [
   {
     value: 'covid-19',
     label: 'COVID-19'
-  },
-  {
-    value: 'fluxo cerebrino tropical',
-    label: 'Fluxo Cerebrino Tropical'
   }
+  // {
+  //   value: 'fluxo cerebrino tropical',
+  //   label: 'Fluxo Cerebrino Tropical'
+  // }
 ]
 
 const patologyActualValues = {
-  'covid-19': 'covid',
-  'fluxo cerebrino tropical': 'fct'
+  'covid-19': 'covid'
+  // 'fluxo cerebrino tropical': 'fct'
 }
 
 const formSchema = z.object({
@@ -50,7 +50,7 @@ const formSchema = z.object({
 export default function ModelConfiguration() {
   const [configuration, setConfiguration] = useState({
     city: '',
-    patology: ','
+    patology: ''
   })
   const [submitted, setSubmitted] = useState(false)
 
@@ -117,7 +117,8 @@ export default function ModelConfiguration() {
                     />
                   </FormControl>
                   <FormMessage className="text-muted-foreground font-normal">
-                    Fluxo Cerebino Tropical é uma patologia de teste.
+                    {/* Fluxo Cerebino Tropical é uma patologia de teste. */}
+                    Atualmente, apenas a patologia do COVID-19 está disponível.
                   </FormMessage>
                 </FormItem>
               )}

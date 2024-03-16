@@ -18,7 +18,10 @@ export function readPandemicData(years: number[] = [2020, 2021, 2022]): Pandemic
   try {
     log('Reading pandemic registers', { time: true, timeLabel: 'INITIALIZATION' })
 
-    const csvFilePath = path.resolve(__dirname, 'campinas_2020_2021_2022_cases.csv')
+    const csvFilePath = path.resolve(
+      __dirname.replace('src', 'data/covid19'),
+      'campinas_2020_2021_2022_cases.csv'
+    )
 
     const content = fs.readFileSync(csvFilePath, { encoding: 'utf-8' }).split('\n').slice(1)
 

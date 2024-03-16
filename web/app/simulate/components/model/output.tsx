@@ -32,8 +32,8 @@ export default function Output({ configuration }: ModelOutputProps) {
   return (
     <Tabs defaultValue="logs" className="w-full">
       <TabsList className="w-full">
-        <TabsTrigger className="w-auto" value="logs">
-          Logs
+        <TabsTrigger className="w-auto" value="charts">
+          Gráficos
         </TabsTrigger>
         <TabsTrigger className="w-auto" value="city">
           Cidade
@@ -41,18 +41,19 @@ export default function Output({ configuration }: ModelOutputProps) {
         <TabsTrigger className="w-auto" value="patology">
           Patologia
         </TabsTrigger>
-        <TabsTrigger className="w-auto" value="charts">
-          Gráficos
-        </TabsTrigger>
+        {/* <TabsTrigger className="w-auto" value="logs">
+          Logs
+        </TabsTrigger> */}
       </TabsList>
-      <TabsContent value="logs">
+      <TabsContent value="charts">Muitos, muitos gráficos.</TabsContent>
+      {/* todo?: perhaps remove the tabs bellow and focus only on the charts */}
+      <TabsContent value="city">Dados da cidade em questão.</TabsContent>
+      <TabsContent value="patology">Dados da patologia em questão.</TabsContent>
+      {/* <TabsContent value="logs">
         <div className="bg-muted w-full rounded">
           <Textarea value={'A ser feito.'} readOnly />
         </div>
-      </TabsContent>
-      <TabsContent value="city">Dados da cidade em questão.</TabsContent>
-      <TabsContent value="patology">Dados da patologia em questão.</TabsContent>
-      <TabsContent value="charts">Muitos, muitos gráficos.</TabsContent>
+      </TabsContent> */}
     </Tabs>
   )
 }
