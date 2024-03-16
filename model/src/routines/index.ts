@@ -70,7 +70,8 @@ export function assignRoutine(individuals: Individual[]) {
 // SEIR Routines
 
 export function assignHospitalizedRoutine(individual: Individual) {
-  individual.routine = [[]]
+  individual.preInfectedRoutine = individual.routine
+  individual.routine = Array.from({ length: 7 }, () => [] as Activity[] | [])
   for (let i = 0; i < 7; i++) {
     individual.routine[i].push({ ...eightHoursSleep })
     individual.routine[i].push({ ...hospitalized })
