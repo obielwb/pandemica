@@ -14,10 +14,10 @@ export default function Output({ configuration }: ModelOutputProps) {
   const [output, setOutput] = useState(['runId'])
 
   return (
-    <Tabs defaultValue="data" className="w-full">
+    <Tabs defaultValue="results" className="w-full">
       <TabsList className="w-full">
-        <TabsTrigger className="w-auto" value="data">
-          Dados
+        <TabsTrigger className="w-auto" value="results">
+          Resultados
         </TabsTrigger>
         <TabsTrigger className="w-auto" value="city">
           Cidade
@@ -29,7 +29,7 @@ export default function Output({ configuration }: ModelOutputProps) {
           Logs
         </TabsTrigger> */}
       </TabsList>
-      <TabsContent value="data" className="flex flex-col gap-y-4">
+      <TabsContent value="results" className="flex flex-col gap-y-4">
         {/* todo: properly calculate accuracy */}
         {/* todo: use papaparse to parse the last line of both csvs in order to plot the real value here */}
         {/* <div className="flex flex-col gap-4 md:flex-row w-full">
@@ -64,7 +64,7 @@ export default function Output({ configuration }: ModelOutputProps) {
                     </div>
                   </section>
                 </div> */}
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full mt-2">
           <DataVisualization />
         </div>
         <div className="w-full flex items-center justify-center px-8">

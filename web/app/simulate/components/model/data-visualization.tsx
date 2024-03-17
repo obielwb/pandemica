@@ -47,8 +47,8 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
             .toLocaleString(DateTime.DATE_MED)}
         </dt>
         <div className="flex items-start gap-x-2 flex-col">
-          <dd className="text-[#4063C9]">Real: {payload![0].value.toLocaleString()}</dd>
-          <dd className="text-[#FFD200]">Simulado: {payload![1].value.toLocaleString()}</dd>
+          <dd className="text-[#4063C9]">Real: {payload![1].value.toLocaleString()}</dd>
+          <dd className="text-[#FFD200]">Simulado: {payload![0].value.toLocaleString()}</dd>
         </div>
       </dl>
     )
@@ -135,18 +135,18 @@ export default function DataVisualization() {
       </h4>
       {loaded ? (
         metrics.map((metric, i) => (
-          <Tabs key={`result-data-${i}`} defaultValue="bar" className="flex flex-col gap-y-4">
+          <Tabs key={`result-data-${i}`} defaultValue="line" className="flex flex-col gap-y-4">
             <div className="flex flex-row justify-between">
-              <p className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text">
+              <p className="font-sans-heading sm:text-sm md:text-base from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text">
                 {metricLabels[metric as Metric]}
               </p>
               <TabsList>
                 <TabsTrigger className="w-auto" value="line">
-                  Linha
+                  Gráfico de linha
                 </TabsTrigger>
-                <TabsTrigger className="w-auto" value="bar">
+                {/* <TabsTrigger className="w-auto" value="bar">
                   Barra
-                </TabsTrigger>
+                </TabsTrigger> */}
               </TabsList>
             </div>
 
@@ -180,7 +180,7 @@ export default function DataVisualization() {
                 </LineChart>
               </ResponsiveContainer>
             </TabsContent>
-            <TabsContent value="bar">
+            {/* <TabsContent value="bar">
               <ResponsiveContainer width="100%" height={400}>
                 <BarChart
                   data={mergeData(realData, simulatedData, metric)}
@@ -195,11 +195,13 @@ export default function DataVisualization() {
                   <Bar dataKey="real" fill="#0018FF" name={'Real'} />
                 </BarChart>
               </ResponsiveContainer>
-            </TabsContent>
+            </TabsContent> */}
           </Tabs>
         ))
       ) : (
-        <p className="text-muted-foreground text-sm font-sans-heading">Carregando...</p>
+        <p className="font-sans-heading text-muted-foreground sm:text-sm md:text-base">
+          Carregando...
+        </p>
       )}
     </div>
   )

@@ -17,10 +17,6 @@ const links = [
     label: 'Artigo'
   },
   {
-    url: '/simulate',
-    label: 'Simulação'
-  },
-  {
     url: '/references',
     label: 'Referências'
   },
@@ -107,19 +103,19 @@ export default function Header() {
               className="bg-transparent dark:bg-transparent dark:hover:bg-transparent"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              <span className="sr-only">Abrir Menu</span>
-              <Menu className="text-black dark:text-white" />
+              <span className="sr-only">Abrir menu</span>
+              <Menu className="text-foreground" />
             </Button>
           </div>
         </nav>
       </header>
       {isMobileMenuOpen ? (
-        <div className="flex flex-col gap-6  bg-background z-50 px-9 py-5 transition-all duration-200 ease-linear border-2 border-muted    m-4 rounded ">
+        <div className="flex flex-col w-auto mx-4 mt-2 justify-end items-start gap-y-6 bg-background rounded z-50 p-2 py-4 transition-all duration-200 ease-linear border border-border">
           {links.map((link, i) => {
             return (
               <Link
                 key={`header-ref-${i}`}
-                className="text-muted-foreground hover:text-foreground flex h-0 items-center text-sm font-normal transition-colors duration-200"
+                className="text-foreground-muted hover:text-foreground flex h-0 items-center text-sm font-normal transition-colors duration-200"
                 href={
                   link.url === '/paper' ? (pathname === '/' ? link.url : '/simulate') : link.url
                 }
