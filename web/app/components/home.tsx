@@ -20,9 +20,9 @@ import { GoogleGeminiEffect } from '@/components/ui/google-gemini-effect'
 const details = [
   {
     icon: Globe,
-    title: 'Previsão de Disseminações Globais',
+    title: 'Previsão de Disseminações Globais em Escala Municipal',
     description:
-      'Capacidade de antecipar a propagação de doenças em escala mundial, auxiliando na preparação e resposta eficaz a pandemias emergentes.'
+      'Capacidade de antecipar a propagação de doenças de magnitude mundial em escala local, auxiliando na preparação e resposta eficaz a pandemias emergentes por entidades locais.'
   },
   {
     icon: ShieldCheck,
@@ -108,14 +108,14 @@ export default function Home() {
                     </p>
                     <Link href="/simulate">
                       <Button className="bg-pandemica-blue/70 dark:bg-pandemica-blue/50 dark:hover:bg-pandemica-blue border-pandemica-blue hover:bg-pandemica-blue dark:text-primary flex h-9 flex-row gap-x-0.5 rounded-full border text-white">
-                        Simular <ChevronRight className="-mr-1" height={16} width={16} />
+                        Simulação <ChevronRight className="-mr-1" height={16} width={16} />
                       </Button>
                     </Link>
                   </div>
                 </div>
                 <div className="mx-auto w-full max-w-full space-y-4">
                   <p className="text-muted-foreground mx-auto max-w-[600px] text-xs sm:text-sm">
-                    Funcionalidades na ponta do click.
+                    Funcionalidades a um click.
                   </p>
                   <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
                     {details.map((detail, i) => (

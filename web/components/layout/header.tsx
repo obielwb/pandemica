@@ -17,8 +17,8 @@ const links = [
     label: 'Artigo'
   },
   {
-    url: '/results',
-    label: 'Resultados'
+    url: '/simulate',
+    label: 'Simulação'
   },
   {
     url: '/references',
@@ -78,7 +78,7 @@ export default function Header() {
                     {link.label === 'Artigo'
                       ? pathname === '/'
                         ? link.label
-                        : 'Simular'
+                        : 'Simulação'
                       : link.label}
                   </Link>
                 )
@@ -94,7 +94,7 @@ export default function Header() {
               >
                 <Button className="flex h-9 items-center gap-x-0.5 rounded-full font-medium">
                   {pathname === '/' || pathname === '/paper' || pathname === '/references'
-                    ? 'Simular'
+                    ? 'Simulação'
                     : 'Artigo'}
                   <ChevronRight className="-mr-1" height={16} width={16} />
                 </Button>
@@ -124,7 +124,11 @@ export default function Header() {
                   link.url === '/paper' ? (pathname === '/' ? link.url : '/simulate') : link.url
                 }
               >
-                {link.label === 'Artigo' ? (pathname === '/' ? link.label : 'Simular') : link.label}
+                {link.label === 'Artigo'
+                  ? pathname === '/'
+                    ? link.label
+                    : 'Simulação'
+                  : link.label}
               </Link>
             )
           })}

@@ -130,7 +130,7 @@ export default function ModelConfiguration() {
                 type="submit"
                 className="bg-pandemica-blue/70 dark:bg-pandemica-blue/50 dark:hover:bg-pandemica-blue border-pandemica-blue hover:bg-pandemica-blue dark:text-primary flex h-9 w-24 flex-row gap-x-0.5 rounded-full border py-2 text-white"
               >
-                Inicar
+                Simulação
               </Button>
             </div>
           </div>

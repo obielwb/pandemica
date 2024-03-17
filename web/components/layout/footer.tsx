@@ -20,7 +20,7 @@ const links = [
     references: [
       {
         url: '/simulate',
-        label: 'Simular'
+        label: 'Simulação'
       },
       {
         url: '/paper',

@@ -37,7 +37,7 @@ export const GoogleGeminiEffect = ({
       <div className="absolute top-[-8.75rem] z-50 flex h-[890px] w-full items-center justify-center bg-transparent md:top-[-5.75rem]">
         <Link href="/simulate">
           <Button className="bg-pandemica-blue/60 dark:bg-pandemica-blue/60 dark:hover:bg-pandemica-blue border-pandemica-blue hover:bg-pandemica-blue dark:text-primary flex h-9 w-fit flex-row gap-x-0.5 rounded-full border text-white backdrop-blur-sm">
-            Simular <ChevronRight className="-mr-1" height={16} width={16} />
+            Simulação <ChevronRight className="-mr-1" height={16} width={16} />
           </Button>
         </Link>
       </div>
