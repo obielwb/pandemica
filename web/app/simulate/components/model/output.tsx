@@ -1,5 +1,4 @@
 import { useContext, useState, useCallback, useEffect } from 'react'
-import { WebSocketContext } from '@/contexts/websocket-context'
 import { Textarea } from '@/components/ui/textarea'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
@@ -11,7 +10,6 @@ type ModelOutputProps = {
 }
 
 export default function Output({ configuration }: ModelOutputProps) {
-  const { socket } = useContext(WebSocketContext)
   const [output, setOutput] = useState(['runId'])
 
   const onModelOutput = useCallback(
@@ -20,14 +18,6 @@ export default function Output({ configuration }: ModelOutputProps) {
     },
     [output]
   )
-
-  useEffect(() => {
-    socket.on('runId', onModelOutput)
-
-    return () => {
-      socket.off('runId', onModelOutput)
-    }
-  }, [socket, onModelOutput])
 
   return (
     <Tabs defaultValue="logs" className="w-full">

@@ -1,18 +1,18 @@
 import { Download, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-import { allPapers } from 'contentlayer/generated'
 
 import Layout from '@/components/layout'
 import MarkdownContent from '@/components/markdown-content'
 import { Button } from '@/components/ui/button'
 import { TracingBeam } from '@/components/ui/tracing-beam'
+import { getContent } from '@/lib/content'
 
 export const dynamic = 'force-static'
 
 const file = '/paper.pdf'
 
-export default function Paper() {
-  const paper = allPapers[0]
+export default async function Paper() {
+  const paper = await getContent('paper')
 
   return (
     <Layout className="h-full w-full justify-start">
@@ -40,7 +40,7 @@ export default function Paper() {
                       Departamento de Processamento de Dados - Colégio Técnico de Campinas - Unicamp
                     </p>
                   </div>
-                  {paper && <MarkdownContent html={paper.body.html} />}
+                  {paper && <MarkdownContent>{paper?.body}</MarkdownContent>}
                   <div className="flex w-full items-center justify-center">
                     <Link href="/references">
                       <Button className="bg-pandemica-blue/70 dark:bg-pandemica-blue/50 dark:hover:bg-pandemica-blue border-pandemica-blue hover:bg-pandemica-blue dark:text-primary flex h-9 flex-row gap-x-0.5 rounded-full border text-white">
