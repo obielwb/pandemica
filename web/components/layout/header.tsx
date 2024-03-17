@@ -67,10 +67,6 @@ export default function Header() {
           <div className="hidden w-full justify-end md:justify-between sm:flex">
             <div className="flex items-center gap-3 sm:gap- 6">
               {links.map((link, i) => {
-                if (link.url === '/references' && size.width <= 768) {
-                  link.label = 'Ref.'
-                }
-
                 return (
                   <Link
                     key={`header-ref-${i}`}
@@ -118,12 +114,8 @@ export default function Header() {
         </nav>
       </header>
       {isMobileMenuOpen ? (
-        <div className="flex flex-col gap-6  bg-background z-50 px-9 transition-all duration-200 ease-linear border-2 border-muted    m-4 rounded ">
+        <div className="flex flex-col gap-6  bg-background z-50 px-9 py-5 transition-all duration-200 ease-linear border-2 border-muted    m-4 rounded ">
           {links.map((link, i) => {
-            if (link.url === '/references' && size.width <= 768) {
-              link.label = 'Ref.'
-            }
-
             return (
               <Link
                 key={`header-ref-${i}`}
