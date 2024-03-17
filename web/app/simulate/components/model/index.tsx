@@ -49,8 +49,8 @@ const formSchema = z.object({
 
 export default function ModelConfiguration() {
   const [configuration, setConfiguration] = useState({
-    city: '',
-    patology: ''
+    city: 'campinas',
+    patology: 'covid-19'
   })
   const [submitted, setSubmitted] = useState(false)
 
@@ -58,8 +58,8 @@ export default function ModelConfiguration() {
     resolver: zodResolver(formSchema),
     mode: 'onBlur',
     defaultValues: {
-      city: '',
-      patology: ''
+      city: 'campinas',
+      patology: 'covid-19'
     }
   })
 
@@ -130,7 +130,7 @@ export default function ModelConfiguration() {
                 type="submit"
                 className="bg-pandemica-blue/70 dark:bg-pandemica-blue/50 dark:hover:bg-pandemica-blue border-pandemica-blue hover:bg-pandemica-blue dark:text-primary flex h-9 w-24 flex-row gap-x-0.5 rounded-full border py-2 text-white"
               >
-                Simulação
+                Simular
               </Button>
             </div>
           </div>
