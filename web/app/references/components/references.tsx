@@ -1,15 +1,15 @@
 import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
-import { allReferences } from 'contentlayer/generated'
 
 import Layout from '@/components/layout'
 import MarkdownContent from '@/components/markdown-content'
 import { Button } from '@/components/ui/button'
+import { getContent } from '@/lib/content'
 
 export const dynamic = 'force-static'
 
-export default function References() {
-  const references = allReferences[0]
+export default async function References() {
+  const references = await getContent('references')
 
   return (
     <Layout className="h-full w-full justify-start">
@@ -32,11 +32,11 @@ export default function References() {
                   </h2>
                   <p className="text-muted-foreground text-sm md:text-base">
                     Abaixo, estão descritas todas as{' '}
-                    {(references.body.html.match(/Acesso/g) || []).length} referências que foram
+                    {(references?.body.match(/Acesso/g) || []).length} referências que foram
                     utilizadas na concepção, idealização e materialização do modelo Pandemica.
                   </p>
                 </div>
-                {references && <MarkdownContent html={references.body.html} />}
+                {references && <MarkdownContent>{references?.body}</MarkdownContent>}
               </article>
             </div>
           </div>

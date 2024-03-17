@@ -1,4 +1,4 @@
-const { withContentlayer } = require('next-contentlayer')
+const withMDX = require('@next/mdx')()
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -27,4 +27,4 @@ const nextConfig = {
   }
 }
 
-module.exports = withContentlayer(nextConfig)
+module.exports = withMDX(nextConfig)
