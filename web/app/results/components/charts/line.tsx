@@ -9,8 +9,8 @@ export default function LineGraph() {
     { name: 'Page d', uv: 600, pv: 2500, amt: 2500 }
   ]
   return (
-    <ResponsiveContainer width="100%" height={200} min-width={300}>
-      <LineChart width={600} height={300} data={data}>
+    <ResponsiveContainer width="100%" height={400} min-width={300}>
+      <LineChart data={data}>
         <Line type="monotone" dataKey="uv" stroke="#994141" />
         <CartesianGrid stroke="#ccc" />
         <XAxis dataKey="name" />
