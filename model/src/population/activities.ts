@@ -79,8 +79,7 @@ export class IndividualActivity extends Activity {
     maximumIndividualsEngaged: number,
     public individualsEngaged: number[],
     public activityStartedAt?: Date,
-    public activityEndedAt?: Date,
-    public engagedAt?: Date
+    public activityEndedAt?: Date
   ) {
     super(category, label, setting, duration, distance, voice, maximumIndividualsEngaged)
   }

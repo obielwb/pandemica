@@ -41,7 +41,9 @@ export class Clock {
   }
 
   public currentDateString() {
-    return `${this.currentYear}-${this.currentMonth}-${this.currentDay}`
+    const dayOfTheMonth = this.currentMonth + 1
+    const dayOfTheMonthString = dayOfTheMonth < 10 ? `0${dayOfTheMonth}` : dayOfTheMonth.toString()
+    return `${this.currentYear}-${dayOfTheMonthString}-${this.currentDay}`
   }
 
   public setCurrentDateFromString(date: string) {

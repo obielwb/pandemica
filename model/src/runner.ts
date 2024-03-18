@@ -13,6 +13,7 @@ import { MaskTrigger } from './clock/triggers/masks'
 import { PandemicRegister } from '../data/covid19'
 import { join } from 'path'
 import { assignHospitalizedRoutine } from './routines'
+import { Activity, Category, IndividualActivity, Label } from './population/activities'
 
 // todo: implement run function
 /**
@@ -20,7 +21,7 @@ import { assignHospitalizedRoutine } from './routines'
  * @param initialScenario {PandemicRegister[]} First real pandemic cases to set up our model
  */
 export async function run(
-  endDate: Date = new Date('2023-01-01'),
+  endDate: Date = new Date('2022-12-31'),
   initialScenario: PandemicRegister[]
 ) {
   const runId = nanoid() // for result file storage purposes
@@ -49,6 +50,59 @@ export async function run(
   const { date, withoutDeadPopulation } = setInitialScenario(initialScenario, population)
   population = withoutDeadPopulation
   clock.setCurrentDateFromString(date)
+
+  type HouseActivities =
+    | Label.StayAtHome
+    | Label.Sleep5h
+    | Label.Sleep6h
+    | Label.Sleep7h
+    | Label.Sleep8h
+    | Label.Sleep9h
+
+  const occupationSites = new Map<number, IndividualActivity>()
+  const houseActivties = new Map<number, Map<HouseActivities, IndividualActivity>>()
+  const currentActivities = new Map<number, IndividualActivity>()
+
+  let activitiesIds = 0
+
+  const firstDayOfTheWeek = clock.currentDate().getDay()
+  population.forEach((individual) => {
+    const firstIndividualActivity = individual.routine[firstDayOfTheWeek][0]
+
+    if (firstIndividualActivity.category === Category.Home) {
+      let house = houseActivties.get(individual.house.id)
+
+      if (house) {
+        const ongoingHouseActivity = house.get(firstIndividualActivity.label as HouseActivities)
+
+        if (ongoingHouseActivity) {
+          individual.currentActivity = ongoingHouseActivity
+          ongoingHouseActivity.individualsEngaged.push(individual.id)
+        } else {
+          const newHouseActivity = createIndividualActivity(
+            activitiesIds++,
+            firstIndividualActivity,
+            individual.id,
+            clock.currentDate()
+          )
+          house.set(firstIndividualActivity.label as HouseActivities, newHouseActivity)
+          individual.currentActivity = newHouseActivity
+        }
+      } else {
+        houseActivties.set(individual.house.id, new Map<HouseActivities, IndividualActivity>())
+
+        const newHouseActivity = createIndividualActivity(
+          activitiesIds++,
+          firstIndividualActivity,
+          individual.id,
+          clock.currentDate()
+        )
+
+        house = houseActivties.get(individual.house.id)
+        house.set(firstIndividualActivity.label as HouseActivities, newHouseActivity)
+      }
+    }
+  })
 
   while (clock.currentDate() <= endDate) {
     clock.sortIndividuals()
@@ -151,7 +205,32 @@ function saveSimulatedPandemicRegistersToDisk(
   const rows = pandemicRegisters.map((entry) => Object.values(entry).join(','))
 
   const resultDir = join(__dirname, '..', 'data', 'simulation', 'results')
-  const filePath = join(resultDir, `simulation-${simulationId}.csv`)
+  const filePath = join(resultDir, `${simulationId}.csv`)
 
   fs.writeFileSync(filePath, `${headers}\n${rows.join('\n')}`)
+
+  log('', {
+    timeEnd: true,
+    timeLabel: 'SERIALIZATION'
+  })
+}
+
+function createIndividualActivity(
+  activityId: number,
+  activity: Activity,
+  individualId: number,
+  date: Date
+) {
+  return new IndividualActivity(
+    activityId,
+    activity.category,
+    activity.label,
+    activity.setting,
+    activity.duration,
+    activity.distance,
+    activity.voice,
+    activity.maximumIndividualsEngaged,
+    [individualId],
+    date
+  )
 }

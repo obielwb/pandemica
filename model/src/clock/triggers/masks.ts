@@ -39,7 +39,7 @@ export class MaskTrigger {
   }
 
   private implementMaskDistribution(maskImplementation: MaskRegister, population: Individual[]) {
-    this.cleanCurrentMasks(population)
+    this.removeCurrentMasks(population)
 
     const shuffledPopulation = fisherYatesShuffle(population)
     // verify if individual is according option. If option is defined and not found in current individual, they dont go into matchedIndividuals
@@ -69,7 +69,7 @@ export class MaskTrigger {
     })
   }
 
-  private cleanCurrentMasks(population: Individual[]) {
+  private removeCurrentMasks(population: Individual[]) {
     population.forEach((individual) => {
       individual.mask = Mask.None
     })
