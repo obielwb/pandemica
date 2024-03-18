@@ -35,13 +35,12 @@ export async function run(
 
   const clock = new Clock(new Date(initialScenario[0].date), population, quickSort)
 
-  // todo: assign proper dates to triggers
   const lockdown = new LockdownTrigger(
-    '0000-00-00',
+    '2020-03-30',
     1,
-    ['0000-00-00', '0000-00-00'],
+    ['2021-05-01', '2021-08-01', '2021-11-01'],
     0.5,
-    ['0000-00-00'],
+    ['2020-06-01', '2020-08-01', '2020-10-01', '2020-12-01'],
     []
   )
   const vaccines = new VaccineTrigger()
