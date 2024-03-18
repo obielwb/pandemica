@@ -72,7 +72,7 @@ export default function Home() {
   return (
     <Layout>
       <div
-        className="dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative h-[100vh] w-full overflow-clip rounded-md bg-fixed pt-40 "
+        className="dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative h-[100vh] w-full overflow-clip rounded-md bg-fixed pt-28 "
         ref={ref}
       >
         <div className="dark:bg-background pointer-events-none fixed  inset-0 z-20 flex h-screen items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
