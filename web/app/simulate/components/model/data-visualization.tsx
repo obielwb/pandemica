@@ -136,7 +136,7 @@ export default function DataVisualization() {
       {loaded ? (
         metrics.map((metric, i) => (
           <Tabs key={`result-data-${i}`} defaultValue="line" className="flex flex-col gap-y-4">
-            <div className="flex flex-row justify-between">
+            <div className="flex flex-row justify-between items-center">
               <p className="font-sans-heading sm:text-sm md:text-base from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text">
                 {metricLabels[metric as Metric]}
               </p>

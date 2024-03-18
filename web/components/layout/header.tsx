@@ -117,11 +117,15 @@ export default function Header() {
                 key={`header-ref-${i}`}
                 className="text-foreground-muted hover:text-foreground flex h-0 items-center text-sm font-normal transition-colors duration-200"
                 href={
-                  link.url === '/paper' ? (pathname === '/' ? link.url : '/simulate') : link.url
+                  link.url === '/paper'
+                    ? pathname === '/' || pathname === '/simulate'
+                      ? link.url
+                      : '/simulate'
+                    : link.url
                 }
               >
                 {link.label === 'Artigo'
-                  ? pathname === '/'
+                  ? pathname === '/' || pathname === '/simulate'
                     ? link.label
                     : 'Simulação'
                   : link.label}
