@@ -69,23 +69,21 @@ Visando promover uma melhor abordagem para a simulação de pandemias e, consequ
 
 **Autômatos celulares**
 
-Os autômatos celulares (ACs) bidimensionais são sistemas dinâmicos discretos constituídos por células uniformemente distribuídas, que definem um número finito de linhas × colunas objectos idênticos. Cada célula tem um estado próprio que muda a cada geração de células de acordo com um conjunto de regras de transição local (de um conjunto limitado de estados ). Isto significa que a vizinhança, ou o estado de um grupo de células, no tempo − 1, determina o estado de uma dada célula no tempo . Mais especificamente, o conjunto de quatro elementos ( , , , ), no qual é o espaço celular, define um AC:
+Os autômatos celulares (ACs) bidimensionais são sistemas dinâmicos discretos constituídos por células uniformemente distribuídas, que definem um número finito de linhas × colunas objectos idênticos. Cada célula tem um estado próprio que muda a cada geração de células de acordo com um conjunto de regras de transição local (de um conjunto limitado de estados ). Isto significa que a vizinhança, ou o estado de um grupo de células, no tempo − 1, determina o estado de uma dada célula no tempo . Mais especificamente, o conjunto de quatro elementos (C,Q,V,f), no qual é o espaço celular, define um AC:
 
-- \{( , ), 1 ⩽ ⩽ , 1 ⩽ ⩽ \}
+- 𝐶={(𝑖, 𝑗),1 ⩽ 𝑖 ⩽ 𝑟, 1 ⩽ 𝑗 ⩽ 𝑐}
 
-define o conjunto total e finito com todos os estados possíveis para uma célula. = \{(α , β ), 1 ⩽ ⩽ \} ⊂ × , é o conjunto total de índices que definem a vizinhança de cada célula, de tal forma que a vizinhança da célula ( , ) é dada por:
+Q define o conjunto total e finito com todos os estados possíveis para uma célula. V = {(α k, β k), 1 ⩽ k ⩽ n} ⊂ Z × Z , é o conjunto total de índices que definem a vizinhança de cada célula, de tal forma que a vizinhança da célula (i, j) é dada por:
 
-- \{( + 𝛼1, + 𝛽1), …, ( + , + )\}
+- V(i,j)={(𝑖+𝛼1,𝑗+𝛽1),…,(i +𝛼𝑛,𝑗+𝛽𝑛)}
 
-Além disso, = − {(0, 0)}. Por fim, a função f é a função de transição local
-
-\*
+Além disso,V = V − {(0, 0)}. Por fim, a função f é a função de transição local
 
 (WHITE, 2007):
 
-- ( − 1𝑖 + 𝛼1, + 𝛽1, …, − 1𝑖 + , + ) ∈
+- 𝑠𝑡(i,j)=𝑓(𝑠𝑡−1𝑖+𝛼1, 𝑗+𝛽1, …, 𝑠𝑡−1𝑖+𝛼𝑛, 𝑗+𝛽𝑛) ∈ 𝑄
 
-Em que representa o estado da célula ( , ) no tempo .
+Em que st(i, j) representa o estado da célula (i, j) no tempo t.
 
 Como mencionado, as células são representadas como zonas quadrangulares idênticas que constituem o espaço celular (Figura 1(a)). As duas variedades mais significativas de vizinhança são a vizinhança de von Neumann ( Figura 1(b)), formada pela célula individual e as quatro células situadas a norte, sul, leste e oeste, e a Vizinhança de Moore (Figura 1(c)), formada pela célula individual e as suas oito células mais próximas.
 
@@ -97,13 +95,13 @@ Fonte: Autoria própria (2023)
 
 O conjunto de índices para as vizinhanças de von Neumann é o seguinte:
 
-- \{(0, 0), (− 1, 0), (0, 1), (1, 0), (0, − 1)}
+- 𝑉={(0, 0), (−1, 0), (0, 1), (1, 0), (0, −1)}
 
 Enquanto que, para as vizinhanças de Moore, V é definido da seguinte forma:
 
-- \{(0, 0), (− 1, 0), (− 1, 1), (0, 1), (1, 1), (1, 0), (1, − 1), (0, − 1), (− 1, − 1)}
+- 𝑉={(0, 0), (−1, 0), (−1, 1), (0, 1), (1, 1), (1, 0), (1, −1), (0, −1), (−1, −1)}
 
-Como já mencionado, um AC evolui deterministicamente em etapas de tempo discretas, alterando os estados das células por meio da função de transição local . Como o espaço celular é considerado finito, as condições de limite devem ser consideradas para garantir uma dinâmica bem definida do AC. Essas condições de contorno dependem do processo a ser simulado.
+Como já mencionado, um AC evolui deterministicamente em etapas de tempo discretas, alterando os estados das células por meio da função de transição local f. Como o espaço celular é considerado finito, as condições de limite devem ser consideradas para garantir uma dinâmica bem definida do AC. Essas condições de contorno dependem do processo a ser simulado.
 
 **Sistemas multiagentes**
 
@@ -138,15 +136,12 @@ E: Humanos expostos (latentes)
 
 ε: Taxa per capita de progressão para estado infeccioso
 
-/ = Λ − β − µ γ − µ . (1) / = β − ε (2)
-
-/ = ε − γ − µ (3)
-
-/ = γ − µ (4)
-
+dS/dt = Λ − rβS I N − µS γI − µR . (1)
+dE/dt = rβS I N − εE (2)
+dI/dt = εE − γI − µI (3)
+dR/dt = γI − µR (4)
 Com
-
----
+N = S + E + I + R
 
 Figura 3 - Dinâmica epidemiológica do modelo SEIR
 
@@ -201,9 +196,7 @@ O achatamento da curva visa enfrentar os desafios colocados pela curva epidêmic
 
 Na epidemiologia, a prevalência é definida como a proporção da população com uma condição em um momento específico (prevalência pontual) ou durante um período de tempo (prevalência de período) (KIER, 2011). A prevalência aumenta quando novos casos de doenças são identificados (incidência) e diminui quando um paciente é curado ou morre. Muitas vezes, a prevalência de período fornecerá um quadro mais preciso da prevalência geral, pois a prevalência de período inclui todos os indivíduos com a doença entre duas datas: casos antigos e novos (incidentes), bem como aqueles que foram curados ou morreram durante o período (WHITING, 2015).
 
-ê = ( ú ç ) /
-
-( çã ç )
+- Prevalência = (número total de pessoas com a doença) / (população em risco de contrair a doença)
 
 **Análise do comportamento do vírus em diferentes ambientes**
 
@@ -215,7 +208,7 @@ O COVID é transmitido principalmente por pequenas gotículas produzidas quando 
 
 Começamos estimando o risco de interagir com uma única pessoa positiva para COVID-19 em ambientes fechados por 1 hora a uma distância de socialização normal de 1 metro durante uma conversa em volume normal.
 
-_Risco da atividade: Falar com 1 pessoa com COVID-19, por 1 hora, dentro de casa, sem máscara, a 1 metro = 14%_
+- Risco da atividade: Falar com 1 pessoa com COVID-19, por 1 hora, dentro de casa, sem máscara, a 1 metro = 14%
 
 Para esta estimativa, foram combinados estudos de passageiros em trens (HU et al., 2021), modelos de transmissão de aerossol (JIMENEZ, 2022), que usam dados de rastreamento de contato, meta-análises (CHU et al., 2020) e estudos prospectivos (CHENG et al., 2020). Pode-se, a partir desta estimativa, multiplicar os 14% em 1,5x com base no aumento do contágio da variante B117 (DAVIES et al., 2013) e, novamente, em 1,5x, como consequência da variante Delta (DAVIES et al., 2013).
 
@@ -253,7 +246,7 @@ Fonte: Adaptado de Lindsley et al. (2020), van der Sande et al. (2008), Davies e
 
 Para calcular o risco de atividade de almoçar no parque com um amigo, começa-se com 14% (o risco de atividade da interação de referência) e os modificadores são aplicados conforme necessário:
 
-14% \* 2 (ℎ𝑜𝑟𝑎𝑠) / 20 ( ) / 2 ( â 2 − 3 ) = 0, 7%
+- 14% \* 2 (horas) / 20 (ao ar livre) / 2 (distância de 2-3 metros) = 0,7%
 
 Como resultado, há 0,7% de chance de se contrair COVID-19 com essa única atividade se a outra pessoa estiver contaminada. Vale notar que não há modificador para máscaras ou volume porque a interação de referência já está contabilizada sem máscara e no volume normal. Para uma ocasião de jantar entre duas pessoas, considerando os seguintes fatores: 2 horas, dentro de casa, a uma distância de cerca de 1 metro, sem máscaras. Com a aplicação dos modificadores, 14% \* 2 (ℎ𝑜𝑟𝑎𝑠) = 28%. Como resultado, há 28% de chance de se contrair COVID-19 caso a outra pessoa esteja contaminada.
 
@@ -309,7 +302,7 @@ Fonte: Adaptado de Byambasuren et al. (2020)
 
 Tratando casos assintomáticos como 0,4 de infecciosidade relativa, isso dá uma taxa ajustada de infecciosidade de:
 
-(0, 4 + 0, 4 \* 0, 27) / (1 + 0 , 4 \* 0, 2) = 0, 47
+(0, 4 + 0, 4 \* 0,27) / (1 + 0 , 4 \* 0, 2) = 0, 47
 
 **Pfizer**
 
@@ -337,7 +330,7 @@ Fonte: Adaptado de Byambasuren et al. (2020) e Bernal et al. (2021)
 
 Tratando casos nunca sintomáticos como 0,4 de infecciosidade relativa, isso dá uma taxa ajustada de infecciosidade de:
 
-(0, 12 + 0, 4 \* 0, 17) / (1 + 0, 4 \* 0, 2) = 0, 17
+(0, 12 + 0, 4 \* 0,17) / (1 + 0, 4 \* 0, 2) = 0, 17
 
 **CoronaVac**
 
@@ -375,7 +368,7 @@ Fonte: Adaptado de Byambasuren et al. (2020)
 
 Tratando casos assintomáticos como 0,4 de infecciosidade relativa, isso resulta em uma taxa ajustada de infecciosidade de:
 
-(0, 36 + 0, 4 \* 0, 065) / (1 + 0, 4 \* 0, 2) = 0, 36
+(0, 36 + 0, 4 \* 0,065) / (1 + 0, 4 \* 0, 2) = 0, 36
 
 **Taxa de Hospitalização e Morte por grupo de idade**
 
@@ -385,9 +378,9 @@ Quadro 7 - Taxa de hospitalização e morte por grupo de idade
 
 |            | Taxa de hospitalização (%) | Taxa de morte (%) |
 | :--------- | -------------------------- | ----------------- |
-| 0-17 anos  | 0\.8%                      | 0\.0015%          |
-| 18-49 anos | 2\.5%                      | 0\.07%            |
-| 50-64 anos | 7\.9%                      | 0\.7%             |
+| 0-17 anos  | 0.8%                       | 0.0015%           |
+| 18-49 anos | 2.5%                       | 0.07%             |
+| 50-64 anos | 7.9%                       | 0.7%              |
 | 65+ anos   | 5%                         | 6%                |
 
 Fonte: Adaptado de Aslaner et al. (2021)
@@ -496,23 +489,15 @@ Devido a diversas incongruências encontradas nos dados do censo, bem como entre
 
 Dado um conjunto de valores totais para uma única categoria de um parâmetro a ser atribuído para uma população de indivíduos, a normalização dos conjunto de parâmetros será dada pela seguinte relação matemática:
 
-**REVER**
+1. %CPi =PiSCPi
+2. N=I-SCPi
+3. CPNi=CPi+%CPiN
 
-- ∑ ( )
+Para cada parâmetro Pi, sua porcentagem de “contribuição”, % CPi é calculada através da divisão da quantidade total de valores do parâmetro Pi pela soma dos valores de todos os parâmetros P de um conjunto CP denominada SCPi. Com a porcentagem de “contribuição” de um parâmetro CPi não normalizado, é atribuído ao seu correspondente normalizado o montante anterior, CPi somado
 
-=1
+com o respectivo montante faltante, calculado pela porcentagem de “contribuição” de CPi %CPi multiplicada pelo número de indivíduos a serem normalizados, N (3)
 
-1. % = ÷
-
-   2. = −
-
-1. = + % ×
-
-Para cada parâmetro , sua porcentagem de “contribuição”, % _,_ é calculada através da divisão da quantidade total de valores do parâmetro pela soma dos valores de todos os parâmetros de um conjunto _,_ denominada (1)_._ Com a porcentagem de “contribuição” de um parâmetro não normalizado, é atribuído ao seu correspondente normalizado o montante anterior, _,_ somado
-
-com o respectivo montante faltante, calculado pela porcentagem de “contribuição” de _,_ % _,_ multiplicada pelo número de indivíduos a serem normalizados, (3)_. ,_
-
-por sua vez, o número de indivíduos a serem normalizados, fora calculado através da diferença entre os indivíduos totais pela soma dos valores de todos os parâmetros de um conjunto _, ,_ (2)_._
+N por sua vez, o número de indivíduos a serem normalizados, fora calculado através da diferença entre os indivíduos totais pela soma dos valores de todos os parâmetros P de um conjunto CP, SCPi (2)
 
 Após uma bateria de testes, comprovamos que a relação matemática acima descrita mantém a proporção original entre os diferentes parâmetros, sendo capaz de normalizar quaisquer parâmetros formatados, escalonando-os para cima ou para baixo.
 
