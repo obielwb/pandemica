@@ -20,7 +20,7 @@ const nextConfig = {
     return [
       {
         source: '/banner',
-        destination: '/results',
+        destination: '/simulate',
         permanent: false // as we might change it
       }
     ]
