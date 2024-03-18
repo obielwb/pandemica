@@ -1,4 +1,4 @@
-import { Activity } from '../population/activities'
+import { Activity, IndividualActivity, Label } from '../population/activities'
 import { Individual } from '../population/individual'
 
 export class Clock {
@@ -14,6 +14,7 @@ export class Clock {
   private elapsedMonths: number = 0
   private currentYear: number
   private elapsedYears: number = 0
+  private currentActivities: Map<Label, IndividualActivity[]>
 
   constructor(
     startDate: Date,
