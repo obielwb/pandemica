@@ -10,8 +10,8 @@ import {
   Users
 } from 'lucide-react'
 import Link from 'next/link'
-import { useScroll, useTransform } from 'framer-motion'
-import { useRef } from 'react'
+import { useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import Layout from '@/components/layout'
@@ -63,16 +63,16 @@ export default function Home() {
     offset: ['start start', 'end start']
   })
 
-  const pathLengthFirst = useTransform(scrollYProgress, [0, 0.8], [0.2, 1.6])
-  const pathLengthSecond = useTransform(scrollYProgress, [0, 0.8], [0.15, 1.6])
-  const pathLengthThird = useTransform(scrollYProgress, [0, 0.8], [0.1, 1.6])
-  const pathLengthFourth = useTransform(scrollYProgress, [0, 0.8], [0.05, 1.6])
-  const pathLengthFifth = useTransform(scrollYProgress, [0, 0.8], [0, 1.6])
+  const pathLengthFirst = useTransform(scrollYProgress, [0, 0.8], [0.2, 90])
+  const pathLengthSecond = useTransform(scrollYProgress, [0, 0.8], [0.15, 90])
+  const pathLengthThird = useTransform(scrollYProgress, [0, 0.8], [0.1, 90])
+  const pathLengthFourth = useTransform(scrollYProgress, [0, 0.8], [0.05, 90])
+  const pathLengthFifth = useTransform(scrollYProgress, [0, 0.8], [0, 90])
 
   return (
     <Layout>
       <div
-        className="dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative h-[400vh] w-full overflow-clip rounded-md bg-fixed pt-40 "
+        className="dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative h-[100vh] w-full overflow-clip rounded-md bg-fixed pt-40 "
         ref={ref}
       >
         <div className="dark:bg-background pointer-events-none fixed  inset-0 z-20 flex h-screen items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
