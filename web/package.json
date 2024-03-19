@@ -46,6 +46,7 @@
     "next": "^14.1.3",
     "next-mdx-remote": "^4.4.1",
     "next-themes": "^0.2.1",
+    "nodemailer": "^6.9.12",
     "papaparse": "^5.4.1",
     "postcss": "8.4.24",
     "react": "18.2.0",
@@ -69,6 +70,7 @@
   },
   "devDependencies": {
     "@types/luxon": "^3.3.0",
+    "@types/nodemailer": "^6.4.14",
     "@types/recharts": "^1.8.29",
     "@types/three": "^0.162.0"
   }
