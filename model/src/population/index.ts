@@ -109,7 +109,9 @@ async function readPopulationFromDisk(city: 'campinas') {
       const decompressScript = `${populationsDir}/decompress.${
         os.platform() === 'win32' ? 'bat' : 'sh'
       }`
-      const decompressCommand = `${decompressScript} ${city}`
+      const decompressCommand = `${
+        os.platform() === 'win32' ? '' : 'chmod +x'
+      } ${decompressScript} && ${decompressScript} ${city}`
 
       log('Decompressing population data', { time: true, timeLabel: 'DECOMPRESSION' })
       await new Promise((resolve, reject) => {
@@ -277,7 +279,9 @@ async function savePopulationToDisk(population: Individual[], city: 'campinas') 
   })
 
   const compressScript = `${populationsDir}/compress.${os.platform() === 'win32' ? 'bat' : 'sh'}`
-  const compressCommand = `${compressScript} ${city}`
+  const compressCommand = `${
+    os.platform() === 'win32' ? '' : 'chmod +x'
+  } ${compressScript} && ${compressScript} ${city}`
 
   try {
     await new Promise((resolve, reject) => {
