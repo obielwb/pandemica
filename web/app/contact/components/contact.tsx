@@ -17,7 +17,6 @@ import { Input } from '@/components/ui/input'
 import Layout from '@/components/layout'
 import { Textarea } from '@/components/ui/textarea'
 import Link from 'next/link'
-import { Nodemailer } from '@/lib/nodemailer'
 
 const formSchema = z.object({
   firstName: z
@@ -70,12 +69,7 @@ export default function Contact() {
   const { isValid } = useFormState({ control: form.control })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const mail = new Nodemailer()
-    mail.send({
-      to: { address: 'obielwb@gmail.com,joaopedroferreirabarbosa6@gmail.com', name: 'Pandemica' },
-      subject: `${values.email} - ${values.firstName} ${values.lastName}`,
-      html: values.message
-    })
+    console.log(values)
   }
 
   return (
