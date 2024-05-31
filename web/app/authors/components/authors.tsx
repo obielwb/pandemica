@@ -30,8 +30,6 @@ const authors = [
         Técnico em Informática - Colégio Técnico de Campinas - Unicamp
         <br />
         Engenheiro de Software - iFood
-        <br />
-        Estudante de Estatística - Unicamp
       </>
     ),
     linkedin: 'https://www.linkedin.com/in/barbosa-jp/',
