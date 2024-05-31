@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import Footer from './footer'
 import Header from './header'
+import Banner from './banner'
 import { cn } from '@/lib/utils'
 
 export default function Layout({
@@ -17,6 +18,7 @@ export default function Layout({
 }) {
   return (
     <div className={cn('bg-background flex min-h-screen flex-col', className)}>
+      <Banner />
       {header && <Header />}
       {children}
       {footer && <Footer />}
