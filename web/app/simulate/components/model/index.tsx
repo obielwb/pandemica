@@ -11,7 +11,7 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Combobox from './combobox'
 import { Button } from '@/components/ui/button'
@@ -64,6 +64,10 @@ export default function ModelConfiguration() {
   })
 
   const { isValid } = useFormState({ control: form.control })
+
+  useEffect(() => {
+    setSubmitted(true)
+  }, [])
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setSubmitted(true)

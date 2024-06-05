@@ -72,11 +72,11 @@ type Metric =
 const metrics: Metric[] = [
   'totalCases',
   'deaths',
+  'deaths_by_totalCases',
   'newCases',
   'newDeaths',
   'totalCases_per_100k_inhabitants',
-  'deaths_per_100k_inhabitants',
-  'deaths_by_totalCases'
+  'deaths_per_100k_inhabitants'
 ]
 
 const metricLabels: { [key in Metric]: string } = {
