@@ -13,35 +13,45 @@ import {
 } from '@/components/ui/accordion'
 import PandemicaHeading from '@/components/pandemica-heading'
 import { FaGithub } from 'react-icons/fa6'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '../ui/select'
+import { LuSun, LuMonitor, LuMoonStar } from 'react-icons/lu'
+import { useEffect, useState } from 'react'
 
 const links = [
   {
-    section: 'Modelo',
+    section: 'Model',
     references: [
       {
         url: '/simulate',
-        label: 'Simulação'
+        label: 'Simulation'
       },
       {
         url: '/paper',
-        label: 'Artigo'
+        label: 'Paper'
       },
       {
         url: '/references',
-        label: 'Referências'
+        label: 'References'
       }
     ]
   },
   {
-    section: 'Sobre',
+    section: 'About',
     references: [
       {
         url: '/authors',
-        label: 'Autores'
+        label: 'Authors'
       },
       {
         url: '/contact',
-        label: 'Contato'
+        label: 'Contact'
       }
     ]
   }
@@ -49,7 +59,10 @@ const links = [
 
 export default function Footer() {
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const size = useWindowSize()
+
+  useEffect(() => setMounted(true), [])
 
   return (
     <footer className="dark:border-muted z-40 flex w-full shrink-0 flex-col items-start gap-2 border-t border-neutral-200 px-0.5 py-6 sm:flex-col md:px-6">
@@ -89,53 +102,42 @@ export default function Footer() {
               ))}
             </div>
             <div className="flex flex-col gap-y-3">
-              <h4 className="font-sans-heading text-sm font-medium">Tema</h4>
+              <h4 className="font-sans-heading text-sm font-medium">Theme</h4>
               {theme && (
-                <div className="text-muted-foreground flex flex-row items-center gap-x-2">
-                  <ul className="flex flex-col items-start gap-y-3">
-                    <li>
-                      <a
-                        onClick={() => setTheme('light')}
-                        className={cn(
-                          'text-muted-foreground hover:text-foreground flex h-4 cursor-pointer items-center text-sm font-normal transition-colors duration-200',
-                          theme === 'light' && 'text-foreground'
-                        )}
-                      >
-                        Claro
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        onClick={() => setTheme('dark')}
-                        className={cn(
-                          'text-muted-foreground hover:text-foreground flex h-4 cursor-pointer items-center text-sm font-normal transition-colors duration-200',
-                          theme === 'dark' && 'text-foreground'
-                        )}
-                      >
-                        Escuro
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        onClick={() => setTheme('system')}
-                        className={cn(
-                          'text-muted-foreground hover:text-foreground flex h-4 cursor-pointer items-center text-sm font-normal transition-colors duration-200',
-                          theme === 'system' && 'text-foreground'
-                        )}
-                      >
-                        Sistema
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                <Select value={mounted ? theme : ''} onValueChange={(value) => setTheme(value)}>
+                  <SelectTrigger className="w-32 h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="light" className="cursor-pointer">
+                        <div className="flex flex-row gap-x-2 items-center">
+                          <LuSun className="text-lg" />
+                          Light
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="dark" className="cursor-pointer">
+                        <div className="flex flex-row gap-x-2 items-center">
+                          <LuMoonStar className="text-lg" />
+                          Dark
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="system" className="cursor-pointer">
+                        <div className="flex flex-row gap-x-2 items-center">
+                          <LuMonitor className="text-lg" />
+                          System
+                        </div>
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               )}
             </div>
             <div className="flex flex-col gap-y-3">
               <h4 className="font-sans-heading text-sm font-medium">Disclaimer</h4>
               <p className="text-muted-foreground -mt-1 text-sm font-normal">
-                Este modelo tem o intuito de oferecer uma estimativa fundamentada nos dados
-                disponíveis, mesmo quando esses dados podem não ser definitivos. Este trabalho não
-                foi revisado por pares no âmbito científico.
+                This model aims to provide an estimate based on available data, even when this data
+                may not be definitive. This work has not been peer-reviewed yet.
               </p>
             </div>
           </div>
@@ -172,55 +174,44 @@ export default function Footer() {
               })}
               <AccordionItem value="item-theme" className="w-full">
                 <AccordionTrigger className="w-full text-sm hover:no-underline">
-                  Tema
+                  Theme
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className="text-muted-foreground flex flex-row items-center gap-x-2">
-                    <ul className="flex flex-col items-start gap-y-3">
-                      <li>
-                        <a
-                          onClick={() => setTheme('light')}
-                          className={cn(
-                            'text-muted-foreground hover:text-foreground flex h-4 cursor-pointer items-center text-sm font-normal transition-colors duration-200',
-                            theme === 'light' && 'text-foreground'
-                          )}
-                        >
-                          Claro
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          onClick={() => setTheme('dark')}
-                          className={cn(
-                            'text-muted-foregroundhover:text-foreground flex h-4 cursor-pointer items-center text-sm font-normal transition-colors duration-200',
-                            theme === 'dark' && 'text-foreground'
-                          )}
-                        >
-                          Escuro
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          onClick={() => setTheme('system')}
-                          className={cn(
-                            'text-muted-foreground hover:text-foreground flex h-4 cursor-pointer items-center text-sm font-normal transition-colors duration-200',
-                            theme === 'system' && 'text-foreground'
-                          )}
-                        >
-                          Sistema
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                  <Select value={mounted ? theme : ''} onValueChange={(value) => setTheme(value)}>
+                    <SelectTrigger className="w-32 h-9 mt-2">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="light" className="cursor-pointer">
+                          <div className="flex flex-row gap-x-2 items-center">
+                            <LuSun className="text-lg" />
+                            Light
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="dark" className="cursor-pointer">
+                          <div className="flex flex-row gap-x-2 items-center">
+                            <LuMoonStar className="text-lg" />
+                            Dark
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="system" className="cursor-pointer">
+                          <div className="flex flex-row gap-x-2 items-center">
+                            <LuMonitor className="text-lg" />
+                            System
+                          </div>
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
             <div className="flex flex-col gap-y-3">
               <h4 className="font-sans-heading text-sm font-medium">Disclaimer</h4>
               <p className="text-muted-foreground -mt-1 text-sm font-normal">
-                Este modelo tem o intuito de oferecer uma estimativa fundamentada nos dados
-                disponíveis, mesmo quando esses dados podem não ser definitivos. Este trabalho não
-                foi revisado por pares no âmbito científico.
+                This model aims to provide an estimate based on available data, even when this data
+                may not be definitive. This work has not been peer-reviewed yet.
               </p>
             </div>
           </div>

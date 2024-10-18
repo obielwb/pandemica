@@ -14,19 +14,19 @@ import { useWindowSize } from 'react-use'
 const links = [
   {
     url: '/paper',
-    label: 'Artigo'
+    label: 'Paper'
   },
   {
     url: '/references',
-    label: 'Referências'
+    label: 'References'
   },
   {
     url: '/authors',
-    label: 'Autores'
+    label: 'Authors'
   },
   {
     url: '/contact',
-    label: 'Contato'
+    label: 'Contact'
   }
 ]
 
@@ -71,10 +71,10 @@ export default function Header() {
                       link.url === '/paper' ? (pathname === '/' ? link.url : '/simulate') : link.url
                     }
                   >
-                    {link.label === 'Artigo'
+                    {link.label === 'Paper'
                       ? pathname === '/'
                         ? link.label
-                        : 'Simulação'
+                        : 'Simulation'
                       : link.label}
                   </Link>
                 )
@@ -90,8 +90,8 @@ export default function Header() {
               >
                 <Button className="flex h-9 items-center gap-x-0.5 rounded-full font-medium">
                   {pathname === '/' || pathname === '/paper' || pathname === '/references'
-                    ? 'Simulação'
-                    : 'Artigo'}
+                    ? 'Simulation'
+                    : 'Paper'}
                   <ChevronRight className="-mr-1" height={16} width={16} />
                 </Button>
               </Link>
@@ -103,7 +103,7 @@ export default function Header() {
               className="bg-transparent dark:bg-transparent dark:hover:bg-transparent"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              <span className="sr-only">Abrir menu</span>
+              <span className="sr-only">Open menu</span>
               <Menu className="text-foreground" />
             </Button>
           </div>
@@ -124,10 +124,10 @@ export default function Header() {
                     : link.url
                 }
               >
-                {link.label === 'Artigo'
+                {link.label === 'Paper'
                   ? pathname === '/' || pathname === '/simulate'
                     ? link.label
-                    : 'Simulação'
+                    : 'Simulation'
                   : link.label}
               </Link>
             )
