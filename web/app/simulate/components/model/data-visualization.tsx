@@ -41,14 +41,14 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
       <dl className="text-sm md:text-base rounded p-2 bg-background/60 backdrop-blur filter text-foreground border justify-between border-border transition-colors duration-200">
         <dt className="font-semibold">
           {DateTime.fromISO(label!, {
-            zone: 'America/Sao_Paulo'
+            zone: 'UTC'
           })
-            .setLocale('pt-BR')
+            .setLocale('en-US')
             .toLocaleString(DateTime.DATE_MED)}
         </dt>
         <div className="flex items-start gap-x-2 flex-col">
           <dd className="text-[#4063C9]">Real: {payload![1].value.toLocaleString()}</dd>
-          <dd className="text-[#FFD200]">Simulado: {payload![0].value.toLocaleString()}</dd>
+          <dd className="text-[#FFD200]">Simulated: {payload![0].value.toLocaleString()}</dd>
         </div>
       </dl>
     )
@@ -58,7 +58,7 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 }
 
 const REAL_DATA_SOURCE = '/simulation/data/campinas/2020_2021_2022_cases.csv'
-const SIMULATED_DATA_SOURCE = '/simulation/results/campinas/v0.csv'
+const SIMULATED_DATA_SOURCE = '/simulation/results/campinas/v1.csv'
 
 type Metric =
   | 'totalCases'
@@ -73,20 +73,20 @@ const metrics: Metric[] = [
   'totalCases',
   'deaths',
   'deaths_by_totalCases',
-  'newCases',
-  'newDeaths',
   'totalCases_per_100k_inhabitants',
-  'deaths_per_100k_inhabitants'
+  'deaths_per_100k_inhabitants',
+  'newCases',
+  'newDeaths'
 ]
 
 const metricLabels: { [key in Metric]: string } = {
-  totalCases: 'Casos totais',
-  deaths: 'Mortes',
-  newCases: 'Novos casos',
-  newDeaths: 'Novas mortes',
-  totalCases_per_100k_inhabitants: 'Casos totais por 100 mil habitantes',
-  deaths_per_100k_inhabitants: 'Mortes por 100 mil habitantes',
-  deaths_by_totalCases: 'Mortes por casos totais'
+  totalCases: 'Total cases',
+  deaths: 'Deaths',
+  newCases: 'New cases',
+  newDeaths: 'New deaths',
+  totalCases_per_100k_inhabitants: 'Total cases per 100 thousand habitants',
+  deaths_per_100k_inhabitants: 'Deaths per 100 thousand habitants',
+  deaths_by_totalCases: 'Deaths per total cases'
 }
 
 export default function DataVisualization() {
@@ -131,7 +131,7 @@ export default function DataVisualization() {
   return (
     <div className="w-full flex flex-col gap-y-4">
       <h4 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-lg font-semibold tracking-tighter text-transparent sm:text-xl xl:text-2xl/none">
-        Visualização
+        Visualization
       </h4>
       {loaded ? (
         metrics.map((metric, i) => (
@@ -142,7 +142,7 @@ export default function DataVisualization() {
               </p>
               <TabsList>
                 <TabsTrigger className="w-auto" value="line">
-                  Gráfico de linha
+                  Line chart
                 </TabsTrigger>
                 {/* <TabsTrigger className="w-auto" value="bar">
                   Barra
@@ -167,7 +167,7 @@ export default function DataVisualization() {
                     stroke="#FFD200"
                     dot={false}
                     activeDot={{ r: 5 }}
-                    name={'Simulado'}
+                    name={'Simulated'}
                   />
                   <Line
                     type="monotone"
@@ -200,7 +200,7 @@ export default function DataVisualization() {
         ))
       ) : (
         <p className="font-sans-heading text-muted-foreground sm:text-sm md:text-base">
-          Carregando...
+          Loading...
         </p>
       )}
     </div>

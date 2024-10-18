@@ -24,6 +24,13 @@ const nextConfig = {
         permanent: false // as we might change it
       }
     ]
+  },
+  images: {
+    remotePatterns: [
+      {
+        hostname: 'github.com'
+      }
+    ]
   }
 }
 

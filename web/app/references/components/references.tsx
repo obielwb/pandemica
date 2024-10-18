@@ -20,7 +20,7 @@ export default async function References() {
               className="dark:border-muted bg-background dark:bg-muted/50 flex h-9 items-center justify-start gap-x-2 rounded-full border border-neutral-200"
               variant={'secondary'}
             >
-              <ChevronLeft className="-ml-1" height={16} width={16} /> Artigo
+              <ChevronLeft className="-ml-1" height={16} width={16} /> Paper
             </Button>
           </Link>
           <div className="flex flex-col items-center justify-start gap-y-10 sm:gap-y-20">
@@ -28,12 +28,12 @@ export default async function References() {
               <article className="flex w-full flex-col items-center gap-y-10 pb-10 md:w-[40rem] lg:w-[50rem]">
                 <div className="flex flex-col gap-y-2">
                   <h2 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-2xl font-semibold tracking-tighter text-transparent sm:text-3xl xl:text-4xl/none">
-                    Referências
+                    References
                   </h2>
                   <p className="text-muted-foreground text-sm md:text-base">
-                    Abaixo, estão descritas todas as{' '}
-                    {(references?.body.match(/Acesso/g) || []).length} referências que foram
-                    utilizadas na concepção, idealização e materialização do modelo Pandemica.
+                    Below, all of the {(references?.body.match(/Available/g) || []).length + 1}{' '}
+                    references that were used in the conception, conceptualization, and
+                    materialization of the Pandemica model are described.
                   </p>
                 </div>
                 {references && <MarkdownContent>{references?.body}</MarkdownContent>}

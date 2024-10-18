@@ -87,11 +87,11 @@ export default function ModelConfiguration() {
               name="city"
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-y-1">
-                  <FormLabel className="font-normal">Cidade</FormLabel>
+                  <FormLabel className="font-normal">City</FormLabel>
                   <FormControl>
                     <Combobox
                       attributes={cities}
-                      attributeName="cidade"
+                      attributeName="city"
                       value={field.value}
                       onChange={(value) => field.onChange(value)}
                       disabled={submitted}
@@ -99,7 +99,7 @@ export default function ModelConfiguration() {
                     />
                   </FormControl>
                   <FormMessage className="text-muted-foreground font-normal">
-                    Atualmente, apenas a cidade de Campinas está disponível.
+                    Currently, only Campinas is available.
                   </FormMessage>
                 </FormItem>
               )}
@@ -109,11 +109,11 @@ export default function ModelConfiguration() {
               name="patology"
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-y-1">
-                  <FormLabel className="font-normal">Patologia</FormLabel>
+                  <FormLabel className="font-normal">Patology</FormLabel>
                   <FormControl>
                     <Combobox
                       attributes={patologies}
-                      attributeName="patologia"
+                      attributeName="patology"
                       value={field.value}
                       onChange={(value) => field.onChange(value)}
                       disabled={submitted}
@@ -122,7 +122,7 @@ export default function ModelConfiguration() {
                   </FormControl>
                   <FormMessage className="text-muted-foreground font-normal">
                     {/* Fluxo Cerebino Tropical é uma patologia de teste. */}
-                    Atualmente, apenas a patologia do COVID-19 está disponível.
+                    Currently, only COVID-19 is available.
                   </FormMessage>
                 </FormItem>
               )}
@@ -134,7 +134,7 @@ export default function ModelConfiguration() {
                 type="submit"
                 className="bg-pandemica-blue/70 dark:bg-pandemica-blue/50 dark:hover:bg-pandemica-blue border-pandemica-blue hover:bg-pandemica-blue dark:text-primary flex h-9 w-24 flex-row gap-x-0.5 rounded-full border py-2 text-white"
               >
-                Simular
+                Simulate
               </Button>
             </div>
           </div>

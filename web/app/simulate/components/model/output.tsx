@@ -13,17 +13,33 @@ type ModelOutputProps = {
 export default function Output({ configuration }: ModelOutputProps) {
   const [output, setOutput] = useState(['runId'])
 
+  const getRealAndSimulatedCases = () => {
+    return `209,500 - 289,943`
+  }
+
+  const getRealAndSimulatedDeaths = () => {
+    return `5,360 - 7,752`
+  }
+
   return (
     <Tabs defaultValue="results" className="w-full">
       <TabsList className="w-full">
         <TabsTrigger className="w-auto" value="results">
-          Resultados
+          Results
         </TabsTrigger>
-        <TabsTrigger className="w-auto" value="city">
-          Cidade
+        <TabsTrigger
+          className="w-auto cursor-not-allowed disabled:hover:cursor-not-allowed"
+          value="city"
+          disabled
+        >
+          City
         </TabsTrigger>
-        <TabsTrigger className="w-auto" value="patology">
-          Patologia
+        <TabsTrigger
+          className="w-auto cursor-not-allowed disabled:hover:cursor-not-allowed"
+          value="patology"
+          disabled
+        >
+          Patology
         </TabsTrigger>
         {/* <TabsTrigger className="w-auto" value="logs">
           Logs
@@ -64,33 +80,44 @@ export default function Output({ configuration }: ModelOutputProps) {
                     </div>
                   </section>
                 </div> */}
-        <div className="flex flex-col w-full mt-2">
+        <div className="flex flex-col w-full mt-2 gap-y-4">
+          <div className="w-full flex items-center justify-center">
+            <section className="dark:border-muted bg-background dark:bg-muted/50 rounded px-4 pt-3 pb-4 border flex flex-col w-full">
+              <div className="flex flex-row justify-between">
+                <div>
+                  <span className="text-sm font-semibold tracking-tight">Simulation time</span>
+                  <p className="text-muted-foreground text-sm tracking-tight">~2 hours</p>
+                </div>
+                <div>
+                  {/* todo: fetch from csv */}
+                  <span className="text-sm font-semibold tracking-tight">Total days simulated</span>
+                  <p className="text-muted-foreground text-sm tracking-tight">1,020 (~3 years)</p>
+                </div>
+                <div>
+                  <span className="text-sm font-semibold tracking-tight">
+                    Total cases (real and simulated)
+                  </span>
+                  <p className="text-muted-foreground text-sm tracking-tight">
+                    {getRealAndSimulatedCases()}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-sm font-semibold tracking-tight">
+                    Total deaths (real and simulated)
+                  </span>
+                  <p className="text-muted-foreground text-sm tracking-tight">
+                    {getRealAndSimulatedDeaths()}
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
           <DataVisualization />
-        </div>
-        <div className="w-full flex items-center justify-center px-8">
-          <section className="dark:border-muted bg-background dark:bg-muted/50 rounded p-5 border-2 flex flex-col w-full md:w-fit">
-            <p className="text-sm tracking-tight text-pandemica-yellow">Dados técnicos</p>
-            <div className="grid grid-cols-2 grid-flow-rows md:grid-cols-3 md:grid-flow-col gap-4">
-              <div>
-                <span className="text-sm font-semibold tracking-tight">Linhas de código</span>
-                <p className="text-muted-foreground text-sm tracking-tight">+8 mil</p>
-              </div>
-              <div>
-                <span className="text-sm font-semibold tracking-tight">Tempo de simulação</span>
-                <p className="text-muted-foreground text-sm tracking-tight">2 horas</p>
-              </div>
-              <div>
-                {/* todo: fetch from csv */}
-                <span className="text-sm font-semibold tracking-tight">Dias simulados</span>
-                <p className="text-muted-foreground text-sm tracking-tight">1.020</p>
-              </div>
-            </div>
-          </section>
         </div>
       </TabsContent>
       {/* todo?: perhaps remove the tabs bellow and focus only on the charts */}
-      <TabsContent value="city">Dados da cidade em questão.</TabsContent>
-      <TabsContent value="patology">Dados da patologia em questão.</TabsContent>
+      {/* <TabsContent value="city">Dados da cidade em questão.</TabsContent>
+      <TabsContent value="patology">Dados da patologia em questão.</TabsContent> */}
       {/* <TabsContent value="logs">
         <div className="bg-muted w-full rounded">
           <Textarea value={'A ser feito.'} readOnly />

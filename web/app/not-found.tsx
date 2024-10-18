@@ -15,15 +15,15 @@ export default function NotFoundPage() {
         <div className="flex flex-col text-center">
           <p className="text-pandemica-yellow text-base font-semibold">404</p>
           <h2 className="from-foreground to-muted-foreground mt-4 h-14 bg-gradient-to-r bg-clip-text text-3xl font-semibold tracking-tighter text-transparent sm:text-4xl xl:text-5xl/none">
-            Página não encontrada
+            Page not found
           </h2>
           <p className="text-muted-foreground mt-4 text-base leading-7">
-            <i>Perder-se também é caminho</i> - Clarice Lispector.
+            <i>Getting lost is also a path.</i> - Clarice Lispector.
           </p>
           <div className="mt-6 flex items-center justify-center gap-x-4">
             <Link href="/">
               <Button className="bg-pandemica-blue/70 dark:bg-pandemica-blue/50 dark:hover:bg-pandemica-blue border-pandemica-blue hover:bg-pandemica-blue dark:text-primary flex h-9 flex-row gap-x-1 rounded-full border text-white">
-                Voltar
+                Go back
               </Button>
             </Link>
             <Link href="/contact">
@@ -31,7 +31,7 @@ export default function NotFoundPage() {
                 className="dark:border-muted bg-background dark:bg-muted/50 h-9 rounded-full border border-neutral-200"
                 variant={'secondary'}
               >
-                Fale conosco
+                Contact us
               </Button>
             </Link>
           </div>

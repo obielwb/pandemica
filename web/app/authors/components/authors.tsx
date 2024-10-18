@@ -13,9 +13,9 @@ const authors = [
     picture: '/authors/gabriel.jpeg',
     bio: (
       <>
-        Técnico em Informática - Colégio Técnico de Campinas - Unicamp
+        Informatics Technician - Colégio Técnico de Campinas - Unicamp
         <br />
-        Engenheiro de Software - iFood
+        Software Engineer - iFood{' '}
       </>
     ),
     linkedin: 'https://www.linkedin.com/in/gabriel-bartmanovicz/',
@@ -23,16 +23,16 @@ const authors = [
   },
   {
     name: 'João Pedro F. Barbosa',
-    email: 'joao@pandemica.com.br',
-    picture: '/authors/joao.jpeg',
+    email: 'joaopedroferreirabarbosa6@gmail.com',
+    picture: 'https://github.com/ojpbarbosa.png',
     bio: (
       <>
-        Técnico em Informática - Colégio Técnico de Campinas - Unicamp
+        Informatics Technician - Colégio Técnico de Campinas - Unicamp
         <br />
-        Engenheiro de Software - iFood
+        Software Engineer - iFood
       </>
     ),
-    linkedin: 'https://www.linkedin.com/in/barbosa-jp/',
+    linkedin: 'https://www.linkedin.com/in/jpfbarbosa/',
     github: 'https://github.com/ojpbarbosa'
   }
 ]
@@ -50,7 +50,7 @@ export default function Authors() {
                     Autores
                   </h2>
                   <p className="text-muted-foreground text-sm tracking-normal md:text-base">
-                    Aqueles que tornaram o Pandemica realidade.
+                    The ones that made Pandemica a reality.
                   </p>
                 </div>
                 <div className="flex flex-col gap-x-8 gap-y-6 lg:flex-row">
