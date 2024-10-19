@@ -66,11 +66,15 @@ The specific objectives of this research are:
 
 Aiming to promote a better approach to pandemic simulation and, consequently, greater accuracy for the simulation, the system to be developed utilizes the union of various algorithms, concepts of theoretical computer science, and mathematical modeling of disease dissemination to achieve this goal. Therefore, it becomes crucial to understand, primarily, the studies of virus spread analysis, the characteristics of the virus that will be simulated (COVID-19), the field of cellular automata theory in conjunction with existing epidemiological approaches, and their mathematical basis.
 
-**Multi-Agent Systems**
+<details>
+<summary>**Multi-agent systems**</summary>
 
 Multi-agent systems are systems composed of intelligent agents that are situated in an environment and are capable of interacting to solve complex problems (WOOLDRIDGE, 2009). An agent can be seen as a computer system capable of responding to input stimuli (called perceptions), and through a process of reasoning and planning, generate an output in the form of actions in the environment (WOOLDRIDGE, 2009). The multi-agent system paradigm provides the benefits of: (i) enabling the resolution of complex problems in a distributed manner, without a central processing and failure point, where resources and capabilities are distributed across a network of interconnected agents; (ii) allowing the modeling of systems through the design of autonomous intelligent agents, capable of communicating, as the main component; and (iii) within the context of this work, enabling the simulation of behaviors of complex entities, such as human beings.
 
-**Mathematical Modeling in Disease Dissemination**
+</details>
+
+<details>
+<summary>**Mathematical modeling in disease dissemination**</summary>
 
 Although it was in Hippocrates' "Epidemics" that the quest for understanding the dynamics of epidemic spread began, Bernoulli is considered a pioneer in the field of mathematical modeling in epidemiology. In his 1760 work, he demonstrated the effectiveness of the variolation technique, which involved the inoculation of benign smallpox to prevent complications from the disease (BERNOULLI, 1760). However, it was in 1927 that Kermack and McKendrick proposed what can be seen as the starting point for the design of current mathematical models (KERMACK; MCKENDRICK, 1927); the SIR model. Different types of mathematical models can be taken into account, depending on the division of the population to be modeled. The mentioned SIR model segments individuals as (ALMEIDA, 2014):
 
@@ -82,7 +86,7 @@ Many infections have a time interval in which an individual has been infected bu
 
 Figure 1 - Visual representation of the SEIR model
 
-![](/paper/figure-2.jpeg)
+![](/paper/figure-2.png)
 
 Source: Own Authorship (2023)
 
@@ -98,253 +102,277 @@ E: Exposed (latent) humans
 
 / = γ − µ (4)
 
----
+Figure 3 - Epidemiological dynamics of the SEIR model
 
-Figure 3 - Dinâmica epidemiológica do modelo SEIR
-
-![](/paper/figure-3.jpeg)
+![](/paper/figure-3.png)
 
 Source: Own Authorship (2023)
 
-**Conceitos epidemiológicos pertinentes**
+</details>
 
-Os vírus estão "no precipício da vida e da morte" (ANDREWES, 1967). No microscópio, um vírus parece um cristal geométrico morto. Mas, quando faz de uma célula de um ser vivo seu hospedeiro, pode replicar-se rapidamente.
+<details>
+<summary>**Relevant epidemiological concepts**</summary>
 
-Um vírus é constituído por, basicamente, duas partes: material genético e cápsula proteica. De forma simplificada, depois de se infiltrar em uma célula, o vírus reescreve o DNA da célula e transforma-a para que produza centenas ou mesmo milhares de cópias de si próprio. Quando estas cópias do vírus deixam a célula afetada, ficam novamente sem vida até entrarem em outra célula e o ciclo é reiniciado. Os danos celulares causados pelo processo de reescrita genética causam a doença. A Figure 2 representa o processo infeccioso de doenças virais.
+Viruses are "on the brink of life and death" (ANDREWES, 1967). Under a microscope, a virus appears as a dead geometric crystal. However, when it makes a living cell its host, it can replicate rapidly.
 
-Figure 4 - A relação entre infecciosidade e sintomas do vírus
+A virus is essentially made up of two parts: genetic material and a protein capsule. In simplified terms, after infiltrating a cell, the virus rewrites the cell's DNA and transforms it so that it produces hundreds or even thousands of copies of itself. When these virus copies leave the affected cell, they become lifeless again until they enter another cell and the cycle is restarted. The cellular damage caused by the genetic rewriting process causes the disease. Figure 4 represents the infectious process of viral diseases.
 
-![](/paper/figure-4.jpeg)
+Figure 4 - The relationship between virus infectivity and symptoms
 
-Fonte: Rhodes (1996)
+![](/paper/figure-4.png)
 
-Os rótulos acima da linha na Figure 2 descrevem a infecciosidade do hospedeiro, enquanto os rótulos abaixo da linha descrevem a dinâmica da doença. Observe que o período infeccioso pode começar antes ou após o início dos sintomas.
+Source: Rhodes (1996)
 
-O objetivo de um vírus entrar em uma célula viva é se multiplicar; no entanto, quando o hospedeiro desenvolve anticorpos para combater a infecção, o vírus precisa encontrar outro hospedeiro. Como resultado de ser infectado, uma pessoa geralmente se torna infecciosa, isto é, capaz de infectar outras pessoas e manifestar sintomas de forma a ficar doente. Um hospedeiro infectado apresenta sintomas, que geralmente são métodos para ajudar o vírus a se propagar para novos hospedeiros, como tosse, por exemplo. Entretanto, a doença não pode ser muito debilitante porque o contágio cessa se o hospedeiro morrer. A Figure 2 mostra a ligação entre cada uma das fases da infecção, com cada fase detalhada abaixo.
+The labels above the line in Figure 4 describe the host's infectivity, while those below the line describe the disease dynamics. Note that the infectious period may begin before or after the onset of symptoms.
 
-Período latente: Este é o intervalo de tempo durante uma infecção no qual o vírus ainda não desenvolveu o potencial de transmissão para um novo hospedeiro.
+- Latent Period: This is the time interval during an infection in which the virus has not yet developed the potential to transmit to a new host.
 
-Período infeccioso: Durante esta fase, o vírus é contagioso e pode ser transmitido a outras pessoas usando mecanismos orgânicos de propagação.
+- Infectious Period: During this phase, the virus is contagious and can be transmitted to others using organic propagation mechanisms.
 
-Recuperados ou removidos: Se tratando de vírus, um hospedeiro que desenvolveu imunidade natural ou morreu não é mais capaz de contribuir para o processo de reprodução. O vírus, portanto, não pode se reproduzir em ambos os cenários.
+- Recovered or Removed: In terms of viruses, a host who has developed natural immunity or died is no longer capable of contributing to the reproduction process. The virus, therefore, cannot reproduce in either scenario.
 
-Período de incubação: No início de uma infecção, pode não haver indícios de infecção; esse é conhecido como o período de incubação. Os vírus se reproduzem mais durante a junção desta fase e o período infeccioso (RHODES, 1996). Isso se deve ao fato de que os hospedeiros desconhecem o fato de estarem infectados, mantendo interação normal com outros potenciais hospedeiros, até então saudáveis.
+- Incubation Period: At the beginning of an infection, there may be no signs of infection; this is known as the incubation period. Viruses reproduce most during the junction of this phase and the infectious period (RHODES, 1996). This is due to the fact that hosts are unaware they are infected, maintaining normal interaction with other potential hosts, who are still healthy.
 
-Sintomas: Este é o estágio da infecção quando há indicadores aparentes de infecção. O tratamento para infecções virais geralmente consiste no alívio dos sintomas e na separação de pessoas não contaminadas.
+- Symptoms: This is the stage of infection when there are apparent indicators of infection. Treatment for viral infections usually consists of relieving symptoms and separating uninfected people.
 
-**Achatamento da curva**
+</details>
 
-No contexto de surtos de doenças infecciosas, como pandemias, "achatar a curva" surgiu como uma técnica crítica para controlar e gerenciar a propagação de doenças. O objetivo de achatar a curva é diminuir a taxa de infecção, minimizar a pressão sobre os sistemas de saúde e, eventualmente, salvar vidas.
+<details>
+<summary>**Flattening the curve**</summary>
 
-A expressão "achatar a curva" refere-se a uma curva epidemiológica, frequentemente representada graficamente e que mostra o número de novos casos de uma doença infecciosa ao longo do tempo. Em um surto descontrolado, a curva apresenta uma elevação rápida e acentuada, indicando um aumento significativo no número de infecções em um curto período de tempo. Esta curva acentuada implica uma carga significativa nos sistemas de saúde, podendo sobrecarregar os hospitais e levando a um aumento da frequência de casos graves e de óbitos.
+In the context of infectious disease outbreaks, such as pandemics, "flattening the curve" has emerged as a critical technique for controlling and managing the spread of diseases. The goal of flattening the curve is to slow the rate of infection, minimize pressure on healthcare systems, and ultimately save lives.
 
-Figure 5 - Gráfico de achatamento da curva
+The phrase "flattening the curve" refers to an epidemiological curve, often graphically represented, which shows the number of new cases of an infectious disease over time. In an uncontrolled outbreak, the curve exhibits a rapid and sharp rise, indicating a significant increase in the number of infections in a short period of time. This sharp curve implies a significant burden on healthcare systems, potentially overwhelming hospitals and leading to an increase in severe cases and deaths.
 
-![](/paper/figure-5.jpeg)
+Figure 5 - Graph of flattening the curve
 
-Fonte: Daud (2022)
+![](/paper/figure-5.png)
 
-O achatamento da curva visa enfrentar os desafios colocados pela curva epidêmica acentuada. Os principais objetivos desta estratégia incluem:
+Source: Daud (2022)
 
-- Retardar a propagação: A curva pode ser achatada aplicando medidas para diminuir a taxa de transmissão, como distanciamento social, uso de máscaras e práticas de higiene. Retardar a propagação da doença permite que os sistemas de saúde gerenciem melhor o fluxo de casos, garantindo que aqueles que precisam de atenção médica recebam atendimento adequado.
-- Evitar a sobrecarga do sistema de saúde: Ao diminuir o número de novos casos por dia, a demanda por recursos de saúde, como leitos hospitalares, ventiladores e equipe médica, pode ser adiada por um período de tempo mais longo. Isso evita que os sistemas de saúde fiquem sobrecarregados, permitindo que eles ofereçam um melhor atendimento ao paciente e melhorem os resultados gerais.
+"Flattening the curve" aims to address the challenges posed by a sharp epidemiological curve. The main goals of this strategy include:
 
-**Prevalência e incidência**
+- Slowing the spread: The curve can be flattened by applying measures to reduce the rate of transmission, such as social distancing, wearing masks, and hygiene practices. Slowing the disease spread allows healthcare systems to better manage the flow of cases, ensuring that those who need medical attention receive adequate care.- Evitar a sobrecarga do sistema de saúde: Ao diminuir o número de novos casos por dia, a demanda por recursos de saúde, como leitos hospitalares, ventiladores e equipe médica, pode ser adiada por um período de tempo mais longo. Isso evita que os sistemas de saúde fiquem sobrecarregados, permitindo que eles ofereçam um melhor atendimento ao paciente e melhorem os resultados gerais.
+- Preventing healthcare system overload: By decreasing the number of new cases per day, the demand for healthcare resources, such as hospital beds, ventilators, and medical staff, can be spread over a longer period. This prevents healthcare systems from being overwhelmed, allowing them to provide better patient care and improve overall outcomes.
 
-Na epidemiologia, a prevalência é definida como a proporção da população com uma condição em um momento específico (prevalência pontual) ou durante um período de tempo (prevalência de período) (KIER, 2011). A prevalência aumenta quando novos casos de doenças são identificados (incidência) e diminui quando um paciente é curado ou morre. Muitas vezes, a prevalência de período fornecerá um quadro mais preciso da prevalência geral, pois a prevalência de período inclui todos os indivíduos com a doença entre duas datas: casos antigos e novos (incidentes), bem como aqueles que foram curados ou morreram durante o período (WHITING, 2015).
+</details>
 
-ê = ( ú ç ) /
+<details>
+<summary>**Prevalence and incidence**</summary>
 
-( çã ç )
+In epidemiology, prevalence is defined as the proportion of the population with a condition at a specific moment (point prevalence) or over a period (period prevalence) (KIER, 2011). Prevalence increases when new cases of disease are identified (incidence) and decreases when a patient is cured or dies. Often, period prevalence will provide a more accurate picture of overall prevalence because it includes all individuals with the disease between two dates: old and new (incident) cases, as well as those who were cured or died during the period (WHITING, 2015).
 
-**Análise do comportamento do vírus em diferentes ambientes**
+</details>
 
-Há diversos fatores que influenciam na disseminação do vírus em determinado ambiente, como por exemplo fatores sociais, econômicos, higiênicos e atmosféricos, além das próprias características do vírus. Para abordar o comportamento do COVID-19 primeiro precisamos obter o conhecimento de seu modelo de transmissão.
+<details>
+<summary>**Analysis of virus behavior in different environments**</summary>
 
-O COVID é transmitido principalmente por pequenas gotículas produzidas quando uma pessoa infectada fala, tosse ou espirra, muitas das quais podem permanecer suspensas no ar por minutos a horas. Tocar em superfícies ou objetos contaminados é possivelmente uma forma de propagação do COVID, porém o Centro de Controle e Prevenção de Doenças (_Centers for Disease Control and Prevention - CDC_), agência do Departamento de Saúde e Serviços Humanos dos Estados Unidos da América, acredita que a principal forma de propagação é de pessoa para pessoa por meio de gotículas respiratórias. Portanto, nesta pesquisa, focamos principalmente no risco de gotículas expelidas no ar.
+Various factors influence the spread of the virus in a particular environment, such as social, economic, hygienic, and atmospheric factors, in addition to the characteristics of the virus itself. To address the behavior of COVID-19, we first need to understand its transmission model.
 
-**Interação de referência**
+COVID is primarily transmitted by small droplets produced when an infected person talks, coughs, or sneezes, many of which can remain suspended in the air for minutes to hours. Touching contaminated surfaces or objects is possibly a way of spreading COVID, but the Centers for Disease Control and Prevention (CDC), an agency of the United States Department of Health and Human Services, believes that the main way of spread is from person to person through respiratory droplets. Therefore, in this research, we focus mainly on the risk of droplets expelled into the air.
 
-Começamos estimando o risco de interagir com uma única pessoa positiva para COVID-19 em ambientes fechados por 1 hora a uma distância de socialização normal de 1 metro durante uma conversa em volume normal.
+</details>
 
-_Risco da atividade: Falar com 1 pessoa com COVID-19, por 1 hora, dentro de casa, sem máscara, a 1 metro = 14%_
+<details>
+<summary>**Reference interaction**</summary>
 
-Para esta estimativa, foram combinados estudos de passageiros em trens (HU et al., 2021), modelos de transmissão de aerossol (JIMENEZ, 2022), que usam dados de rastreamento de contato, meta-análises (CHU et al., 2020) e estudos prospectivos (CHENG et al., 2020). Pode-se, a partir desta estimativa, multiplicar os 14% em 1,5x com base no aumento do contágio da variante B117 (DAVIES et al., 2013) e, novamente, em 1,5x, como consequência da variante Delta (DAVIES et al., 2013).
+We start by estimating the risk of interacting with a single COVID-19 positive person indoors for 1 hour at a normal socialization distance of 1 meter during a normal volume conversation.
 
-Assim é definido uma “interação de referência”, que será usada como ponto de partida para estimar o risco de outros tipos de interações.
+_Activity risk: Talking with 1 person with COVID-19, for 1 hour, indoors, without a mask, at 1 meter = 14%_
 
-**Modificadores**
+For this estimate, studies of passengers on trains (HU et al., 2021), aerosol transmission models (JIMENEZ, 2022), using contact tracing data, meta-analyses (CHU et al., 2020), and prospective studies (CHENG et al., 2020) were combined. From this estimate, the 14% can be multiplied by 1.5x based on the increased contagion of the B117 variant (DAVIES et al., 2013) and again by 1.5x as a consequence of the Delta variant (DAVIES et al., 2013).
 
-Há diversos modificadores para o risco da atividade, como o uso de máscara, ar livre, ventilação, distanciamento, entre outros. Esses fatores influenciam a probabilidade de disseminação do vírus e devem ser analisados.
+This defines a "reference interaction," which will be used as a starting point to estimate the risk of other types of interactions.
 
-Para estimar o risco de atividade de diferentes interações, modificamos nossa estimativa com base em como a interação em questão é diferente da interação de referência acima, com base nos seguintes fatores:
+</details>
 
-- Duração da interação
-- Máscaras
-- Localização (exterior ou interior)
-- Distância entre si
-- Volume da conversa
+<details>
+<summary>**Modifiers**</summary>
 
-As estimativas para esses modificadores são:
+There are various modifiers for the risk of activity, such as mask usage, being outdoors, ventilation, distancing, among others. These factors influence the probability of virus spread and must be analyzed.
 
-Quadro 1 - Modificadores no risco de contrair COVID-19
+To estimate the risk of activity from different interactions, we modify our estimate based on how the interaction in question differs from the reference interaction above, based on the following factors:
 
-| Modificador                                          | Mudança no risco de contrair COVID-19 |
-| ---------------------------------------------------- | ------------------------------------- |
-| Eu estou usando uma máscara cirúrgica                | / 2                                   |
-| Outra pessoa está usando uma máscara cirúrgica       | / 4                                   |
-| Ambiente externo                                     | / 20 ou mais                          |
-| 2 metros de distância                                | / 2                                   |
-| A cada 1 metro adicional de distância (até 4 metros) | / 2                                   |
-| Falar alto (gritar, falar sobre música, cantar)      | x 5                                   |
-| Não falar (como andar de trem)                       | / 5                                   |
+- Duration of the interaction
+- Masks
+- Location (outdoor or indoor)
+- Distance between individuals
+- Volume of conversation
 
-Fonte: Adaptado de Lindsley et al. (2020), van der Sande et al. (2008), Davies et al. (2013), Jimenez (2022), Chu et al. (2020), Hu et al. (2021), Hua et al. (2020), Lai et al. (2012), O'Kelly et al. (2020) e Steinhauer (2020)
+The estimates for these modifiers are:
 
-**Cálculos de exemplo**
+Table 1 - Modifiers in the risk of contracting COVID-19
 
-Para calcular o risco de atividade de almoçar no parque com um amigo, começa-se com 14% (o risco de atividade da interação de referência) e os modificadores são aplicados conforme necessário:
+| Modifier                                               | Change in the risk of contracting COVID-19 |
+| ------------------------------------------------------ | ------------------------------------------ |
+| I am wearing a surgical mask                           | / 2                                        |
+| Another person is wearing a surgical mask              | / 4                                        |
+| External environment                                   | / 20 or more                               |
+| 2 meters distance                                      | / 2                                        |
+| For each additional meter of distance (up to 4 meters) | / 2                                        |
+| Speaking loudly (yelling, talking over music, singing) | x 5                                        |
+| Not speaking (such as riding a train)                  | / 5                                        |
 
-14% \* 2 (ℎ𝑜𝑟𝑎𝑠) / 20 ( ) / 2 ( â 2 − 3 ) = 0, 7%
+Source: Adapted from Lindsley et al. (2020), van der Sande et al. (2008), Davies et al. (2013), Jimenez (2022), Chu et al. (2020), Hu et al. (2021), Hua et al. (2020), Lai et al. (2012), O'Kelly et al. (2020), and Steinhauer (2020)
 
-Como resultado, há 0,7% de chance de se contrair COVID-19 com essa única atividade se a outra pessoa estiver contaminada. Vale notar que não há modificador para máscaras ou volume porque a interação de referência já está contabilizada sem máscara e no volume normal. Para uma ocasião de jantar entre duas pessoas, considerando os seguintes fatores: 2 horas, dentro de casa, a uma distância de cerca de 1 metro, sem máscaras. Com a aplicação dos modificadores, 14% \* 2 (ℎ𝑜𝑟𝑎𝑠) = 28%. Como resultado, há 28% de chance de se contrair COVID-19 caso a outra pessoa esteja contaminada.
+</details>
 
-**Máscaras**
+<details>
+<summary>**Masks**</summary>
 
-A maioria das fontes é extraída de _An Evidence Review of Face Masks against COVID-19_ (HOWARD et al., 2021), que examina uma variedade de tipos de estudo, alguns específicos do COVID-19 e outros que estudam o filtro de partículas como uma propriedade do tecido ou para outros patógenos, como a gripe.
+Most sources are drawn from _An Evidence Review of Face Masks against COVID-19_ (HOWARD et al., 2021), which examines a variety of study types, some specific to COVID-19 and others that study particle filtering as a property of the fabric or for other pathogens, such as influenza.
 
-A estimativa se inicia com uma redução numérica na contaminação para cada aspecto de máscaras cirúrgicas. A tabela abaixo mostra os vários resultados desses estudos:
+The estimate begins with a numerical reduction in contamination for each aspect of surgical masks. The table below shows the various results of these studies:
 
-Quadro 2 - Características de máscaras cirúrgicas e a respectiva redução na contaminação de um patógeno
+Table 2 - Characteristics of surgical masks and the respective reduction in pathogen contamination
 
-| Medida                                                | Resultado                   |
-| ----------------------------------------------------- | --------------------------- |
-| Proporção de aerossol de tosse bloqueado              | 60% (redução de 1.7x)       |
-| Fator de proteção                                     | 2\.5x                       |
-| Redução de cópias virais                              | 3\.4x                       |
-| Redução de aerossóis "finos"                          | 2\.8x                       |
-| Redução de aerossóis "grossos"                        | 25x                         |
-| Redução de unidades formadoras de colônias            | 7x                          |
-| Proporção do fluxo de ar que vaza ao redor da máscara | 12% (Proteção máxima de 8x) |
-| Redução na contagem de gotículas de tosse             | 10x                         |
+| Measure                                       | Result                         |
+| --------------------------------------------- | ------------------------------ |
+| Proportion of cough aerosol blocked           | 60% (1.7x reduction)           |
+| Protection factor                             | 2\.5x                          |
+| Reduction of viral copies                     | 3\.4x                          |
+| Reduction of "fine" aerosols                  | 2\.8x                          |
+| Reduction of "coarse" aerosols                | 25x                            |
+| Reduction of colony-forming units             | 7x                             |
+| Proportion of airflow leakage around the mask | 12% (Maximum protection of 8x) |
+| Reduction in cough droplet count              | 10x                            |
 
-Fonte: Adaptado de Lindsley et al. (2020), van der Sande et al. (2008), Milton et al. (2013), Davies et al. (2013), Kumar et al. (2005) e Fischer et al. (2020)
+Source: Adapted from Lindsley et al. (2020), van der Sande et al. (2008), Milton et al. (2013), Davies et al. (2013), Kumar et al. (2005), and Fischer et al. (2020)
 
-Conclui-se que as máscaras cirúrgicas são substancialmente melhores para bloquear partículas grandes (25x) do que partículas pequenas (2,8x) (MILTON et al., 2013). A tosse parece ser filtrada de forma extremamente eficiente (DAVIES et al., 2013) e (FISCHER et al., 2020), o que implica que são principalmente partículas grandes. Como resultado, é definido um número um pouco maior do que o valor total citado em _Influenza Virus Aerosols in Human Exhaled Breath: Particle Size, Culturability, and Effect of Surgical Masks_ (MILTON et al., 2013), (3,4x), que é 1/4.
+It is concluded that surgical masks are substantially better at blocking large particles (25x) than small particles (2.8x) (MILTON et al., 2013). Coughing seems to be filtered extremely efficiently (DAVIES et al., 2013) and (FISCHER et al., 2020), which implies that they are mainly large particles. As a result, a slightly higher number than the total value cited in _Influenza Virus Aerosols in Human Exhaled Breath: Particle Size, Culturability, and Effect of Surgical Masks_ (MILTON et al., 2013), (3.4x), is set at 1/4.
 
-Obtém-se as estimativas para máscaras de algodão finas e grossas que oferecem menos proteção a outras, comparando-as com máscaras cirúrgicas e entre si. Um "lenço" é aproximadamente 56-65% tão protetor quanto uma máscara cirúrgica, enquanto uma "mistura de algodão" é aproximadamente 70-78% tão protetora (DAVIES et al., 2013)
+Estimates are obtained for thin and thick cotton masks which offer less protection to others, comparing them with surgical masks and among themselves. A "scarf" is approximately 56-65% as protective as a surgical mask, while a "cotton blend" is approximately 70-78% as protective (DAVIES et al., 2013)
 
-A máscara caseira é aproximadamente 92% tão eficaz quanto a máscara cirúrgica no bloqueio de unidades formadoras de colônias (DAVIES et al., 2013). No geral, uma máscara de algodão grossa e bem ajustada é cerca de 80% a 90% tão eficaz quanto uma máscara cirúrgica (que de acordo com as estimativas reduz a exposição em 4x), resultando em 2,5x-3x proteção, que arredondamos para 3x (multiplicador de 1/3) para máscaras de algodão grosso. Como resultado, uma máscara caseira mais fina ou de pior ajuste parece ser pelo menos 50% tão eficaz quanto uma máscara cirúrgica, que arredondamos para 2x (1/2 multiplicador).
+A homemade mask is approximately 92% as effective as a surgical mask in blocking colony-forming units (DAVIES et al., 2013). Overall, a thick, well-fitting cotton mask is about 80% to 90% as effective as a surgical mask (which according to estimates reduces exposure by 4x), resulting in 2.5x-3x protection, which we round up to 3x (1/3 multiplier) for thick cotton masks. As a result, a thinner or poorly fitting homemade mask appears to be at least 50% as effective as a surgical mask, which we round to 2x (1/2 multiplier).
 
-**Vacinação**
+</details>
 
-Em uma população não vacinada, 17% dos casos nunca apresentam sintomas e esses indivíduos têm 42% mais chances de transmitir COVID do que indivíduos que eventualmente apresentam sintomas (BYAMBASUREN et al., 2020).
+<details>
+<summary>**Vaccination**</summary>
 
-A partir disso, calcula-se que, para cada infecção, há 0,83 infecções sintomáticas e 0,17 infecções assintomáticas ou, para cada infecção sintomática, há 0,17 / 0,83 ≈ 0,2 infecções assintomáticas. Serão estudadas apenas as marcas de vacinas aplicadas no Brasil, sendo elas a Astrazeneca, Pfizer, CoronaVac e Johnson & Johnson, e suas taxas de infecciosidade e eficácia.
+In an unvaccinated population, 17% of cases never show symptoms, and these individuals are 42% more likely to transmit COVID than those who eventually show symptoms (BYAMBASUREN et al., 2020).
 
-**Astrazeneca**
+From this, it is calculated that for every infection, there are 0.83 symptomatic infections and 0.17 asymptomatic infections, or for every symptomatic infection, there are approximately 0.2 asymptomatic infections. Only the vaccine brands administered in Brazil will be studied, including AstraZeneca, Pfizer, CoronaVac, and Johnson & Johnson, along with their infectivity rates and efficacy.
 
-O estudo de teste da AstraZeneca feito pela Universidade de Oxford em 2021 relatou que, entre os participantes totalmente vacinados, houve 57 casos assintomáticos e 84 casos sintomáticos, ou 0,68 casos assintomáticos por caso sintomático.
+<details>
+<summary>**AstraZeneca**</summary>
 
-Houve uma redução de 59,8% nos casos de COVID sintomático entre pessoas totalmente vacinadas com a vacina da AstraZeneca (BERNAL et al., 2021).
+The AstraZeneca trial study conducted by the University of Oxford in 2021 reported that among fully vaccinated participants, there were 57 asymptomatic cases and 84 symptomatic cases, or 0.68 asymptomatic cases per symptomatic case.
 
-Para cada caso sintomático entre pessoas não vacinadas, isso nos dá:
+There was a 59.8% reduction in symptomatic COVID cases among fully vaccinated individuals with the AstraZeneca vaccine (BERNAL et al., 2021).
 
-Quadro 3 - Análise da eficácia da vacina Astrazeneca
+For every symptomatic case among unvaccinated people, this gives us:
 
-|                      | Grupo de Controle | Grupo Vacinado   |
-| :------------------- | ----------------- | ---------------- |
-| Casos sintomáticos   | 1                 | 0,4              |
-| Casos assintomáticos | 0,2               | 0,4\*0,68 = 0,27 |
+Table 3 - Analysis of AstraZeneca vaccine efficacy
 
-Fonte: Adaptado de Byambasuren et al. (2020)
+|                    | Control Group | Vaccinated Group |
+| :----------------- | ------------- | ---------------- |
+| Symptomatic cases  | 1             | 0,4              |
+| Asymptomatic cases | 0,2           | 0,4\*0,68 = 0,27 |
 
-Tratando casos assintomáticos como 0,4 de infecciosidade relativa, isso dá uma taxa ajustada de infecciosidade de:
+Source: Adapted from Byambasuren et al. (2020)
+
+Treating asymptomatic cases as having 0.4 relative infectivity, this results in an adjusted infectivity rate of:
 
 (0, 4 + 0, 4 \* 0, 27) / (1 + 0 , 4 \* 0, 2) = 0, 47
 
-**Pfizer**
+</details>
 
-Pfizer mostrou 95% de redução em casos sintomáticos de COVID (POLACK et al., 2020). O CDC mostrou que houve uma redução de 90% em todos os casos (sintomáticos + assintomáticos) 14 ou mais dias depois dos participantes receberem a vacina da Pfizer (THOMPSON et al., 2021).
+<details>
+<summary>**Pfizer**</summary>
 
-Em seguida, calcula-se novamente o número de casos assintomáticos entre os indivíduos vacinados com base nestas pesquisas:
+Pfizer showed a 95% reduction in symptomatic COVID cases (POLACK et al., 2020). The CDC showed that there was a 90% reduction in all cases (symptomatic + asymptomatic) 14 or more days after participants received the Pfizer vaccine (THOMPSON et al., 2021).
 
-1. Para cada caso sintomático entre pessoas não vacinadas, há 0,2 casos assintomáticos, ou 1,2 casos no total (BYAMBASUREN et al., 2020)
-1. Para cada caso sintomático entre pessoas não vacinadas, há 0,05 casos sintomáticos entre vacinados.
-1. Para cada caso total entre pessoas não vacinadas, há 0,1 caso total entre pessoas vacinadas (CDC).
-1. Para cada caso sintomático entre pessoas não vacinadas, há 1,2 \* 0,1 = 0,12 casos no total.
-1. Para cada caso sintomático entre pessoas não vacinadas, há 0,12 - 0,05 = 0,07 casos assintomáticos entre pessoas vacinadas.
-1. Para cada caso sintomático entre pessoas vacinadas, existem 0,07 / 0,05 = 1,4 casos sintomáticos entre pessoas vacinadas.
+Then, the number of asymptomatic cases among vaccinated individuals is recalculated based on these studies:
 
-Em seguida, combinamos isso com o estudo de Bernal et al., que constatou que a vacina da Pfizer é 87,9% (intervalo de confiança de 95%: 78,2 a 93,2) eficaz na redução da chance de infecção sintomática pela variante Delta.
+1. For each symptomatic case among unvaccinated people, there are 0.2 asymptomatic cases, or 1.2 cases in total (BYAMBASUREN et al., 2020)
+2. For each symptomatic case among unvaccinated people, there are 0.05 symptomatic cases among vaccinated.
+3. For each total case among unvaccinated people, there are 0.1 total cases among vaccinated people (CDC).
+4. For each symptomatic case among unvaccinated people, there are 1.2 \* 0.1 = 0.12 total cases.
+5. For each symptomatic case among unvaccinated people, there are 0.12 - 0.05 = 0.07 asymptomatic cases among vaccinated people.
+6. For each symptomatic case among vaccinated people, there are 0.07 / 0.05 = 1.4 symptomatic cases among vaccinated people.
 
-Quadro 4 - Análise da eficácia da vacina Pfizer
+Then, this is combined with the study by Bernal et al., which found that the Pfizer vaccine is 87.9% (95% confidence interval: 78.2 to 93.2) effective in reducing the chance of symptomatic infection by the Delta variant.
 
-|                        | Grupo de Controle | Grupo Vacinado     |
-| :--------------------- | ----------------- | ------------------ |
-| Casos sintomáticos     | 1                 | 0,12               |
-| Casos não sintomáticos | 0,2               | 0,12 \* 1,4 = 0,17 |
+Table 4 - Analysis of Pfizer vaccine efficacy
 
-Fonte: Adaptado de Byambasuren et al. (2020) e Bernal et al. (2021)
+|                    | Control Group | Vaccinated Group   |
+| :----------------- | ------------- | ------------------ |
+| Symptomatic cases  | 1             | 0,12               |
+| Asymptomatic cases | 0,2           | 0,12 \* 1,4 = 0,17 |
 
-Tratando casos nunca sintomáticos como 0,4 de infecciosidade relativa, isso dá uma taxa ajustada de infecciosidade de:
+Source: Adapted from Byambasuren et al. (2020) and Bernal et al. (2021)
+
+Treating asymptomatic cases as having 0.4 relative infectivity, this results in an adjusted infectivity rate of:
 
 (0, 12 + 0, 4 \* 0, 17) / (1 + 0, 4 \* 0, 2) = 0, 17
 
-**CoronaVac**
+</details>
 
-Entre os participantes vacinados, 51 testaram positivo para SARS-CoV-2 durante o acompanhamento (41 antes e 10 após a segunda dose); 29 foram diagnosticados por triagem assintomática, nos dando 0,56 casos assintomáticos por caso sintomático (TANG et al., 2021).
+<details>
+<summary>**CoronaVac**</summary>
 
-Não houve casos positivos sintomáticos ou de exposição conhecida mais de 7 dias após a segunda dose. Os participantes não vacinados apresentaram maior incidência cumulativa de resultado positivo nos testes em comparação aos participantes vacinados e maior incidência de resultados positivos nos testes por triagem assintomática, para sintomas ou para exposição conhecida.
+Among vaccinated participants, 51 tested positive for SARS-CoV-2 during follow-up (41 before and 10 after the second dose); 29 were diagnosed through asymptomatic screening, giving us 0.56 asymptomatic cases per symptomatic case (TANG et al., 2021)
 
-Para cada caso sintomático entre pessoas não vacinadas, isso nos dá:
+No symptomatic positive cases or known exposure occurred more than 7 days after the second dose. Unvaccinated participants had a higher cumulative incidence of positive test results compared to vaccinated participants and a higher incidence of positive test results through asymptomatic screening, for symptoms or for known exposure.
 
-Quadro 5 - Análise da eficácia da vacina CoronaVac
+For each symptomatic case among unvaccinated people, this gives us:
 
-|                      | Grupo de Controle | Grupo Vacinado      |
-| :------------------- | ----------------- | ------------------- |
-| Casos sintomáticos   | 1                 | 0,4                 |
-| Casos assintomáticos | 0,2               | 0,4 \* 0,56 = 0,224 |
+Table 5 - Analysis of CoronaVac vaccine efficacy
 
-Fonte: Adaptado de Byambasuren et al. (2020)
+|                    | Control Group | Vaccinated Group    |
+| :----------------- | ------------- | ------------------- |
+| Symptomatic cases  | 1             | 0,4                 |
+| Asymptomatic cases | 0,2           | 0,4 \* 0,56 = 0,224 |
 
-Tratando casos assintomáticos como 0,4 de infecciosidade relativa, isso resulta em uma taxa ajustada de infecciosidade de:
+Source: Adapted from Byambasuren et al. (2020)
+
+Treating asymptomatic cases as having 0.4 relative infectivity, this results in an adjusted infectivity rate of:
 
 (0, 4 + 0, 4 \* 0, 224) / (1 + 0, 4 \* 0, 2) = 0, 45
 
-**Johnson & Johnson**
+</details>
 
-A Johnson & Johnson realizou testes sorológicos para anticorpos não relacionados à proteína spike nos dias 1, 29 e 71 para rastrear infecções assintomáticas. Eles também consideraram uma infecção assintomática caso um participante apresentasse um teste de PCR positivo, mas sem sintomas. Os casos sintomáticos foram contabilizados quando um paciente apresentava sintomas e testou positivo no PCR pelo menos 14 dias após a administração da vacina.
+<details>
+<summary>**Johnson & Johnson**</summary>
 
-Quadro 6 - Análise da eficácia da vacina Janssen
+Johnson & Johnson conducted serological tests for antibodies unrelated to the spike protein on days 1, 29, and 71 to track asymptomatic infections. They also considered an asymptomatic infection if a participant had a positive PCR test but no symptoms. Symptomatic cases were accounted for when a patient had symptoms and tested positive on the PCR at least 14 days after the administration of the vaccine.
 
-|                      | Grupo de Controle | Grupo Vacinado       |
-| :------------------- | ----------------- | -------------------- |
-| Casos sintomáticos   | 1                 | 0,36 (J&J Fase 3)    |
-| Casos assintomáticos | 0,2               | 0,36 \* 0,18 = 0,065 |
+Table 6 - Analysis of Janssen vaccine efficacy
 
-Fonte: Adaptado de Byambasuren et al. (2020)
+|                    | Control Group | Vaccinated Group     |
+| :----------------- | ------------- | -------------------- |
+| Symptomatic cases  | 1             | 0,36 (J&J Fase 3)    |
+| Asymptomatic cases | 0,2           | 0,36 \* 0,18 = 0,065 |
 
-Tratando casos assintomáticos como 0,4 de infecciosidade relativa, isso resulta em uma taxa ajustada de infecciosidade de:
+Source: Adapted from Byambasuren et al. (2020)
+
+Treating asymptomatic cases as having 0.4 relative infectivity, this results in an adjusted infectivity rate of:
 
 (0, 36 + 0, 4 \* 0, 065) / (1 + 0, 4 \* 0, 2) = 0, 36
 
-**Taxa de Hospitalização e Morte por grupo de idade**
+</details>
+</details>
 
-Em ordem de representar com maior acurácia a probabilidade de contaminação do COVID-19 na população, deve ser levado em consideração a susceptibilidade de cada indivíduo na contração da doença. Fatores como doenças crônicas/condições de saúde anteriores (diabetes, doenças cardíacas, doenças pulmonares, etc.), idade e gênero influenciam tanto na probabilidade de contração da doença como na taxa de hospitalização e morte (ASLANER, 2021).
+<details>
+<summary>**Hospitalization and death rate by age group**</summary>
 
-Quadro 7 - Taxa de hospitalização e morte por grupo de idade
+To more accurately represent the probability of COVID-19 contamination in the population, the susceptibility of each individual to contract the disease must be considered. Factors such as chronic health conditions/diseases (diabetes, heart diseases, lung diseases, etc.), age, and gender influence both the likelihood of contracting the disease and the rates of hospitalization and death (ASLANER, 2021).
 
-|            | Taxa de hospitalização (%) | Taxa de morte (%) |
-| :--------- | -------------------------- | ----------------- |
-| 0-17 anos  | 0\.8%                      | 0\.0015%          |
-| 18-49 anos | 2\.5%                      | 0\.07%            |
-| 50-64 anos | 7\.9%                      | 0\.7%             |
-| 65+ anos   | 5%                         | 6%                |
+Table 7 - Hospitalization and death rate by age group
 
-Fonte: Adaptado de Aslaner et al. (2021)
+|             | Hospitalization rate (%) | Death rate (%) |
+| :---------- | ------------------------ | -------------- |
+| 0-17 years  | 0\.8%                    | 0\.0015%       |
+| 18-49 years | 2\.5%                    | 0\.07%         |
+| 50-64 years | 7\.9%                    | 0\.7%          |
+| 65+ years   | 5%                       | 6%             |
 
-## Metodologia
+Source: Adapted from Aslaner et al. (2021)
+
+</details>
+
+## Methodology
 
 **Critérios do Produto**
 
@@ -390,85 +418,17 @@ Para a simulação, foi utilizada a linguagem de programação TypeScript, que p
 
 **Etapas**
 
-**Estudo da eficácia de performance entre diferentes linguagens de programação**
-
-Para alcançar a melhor performance durante a simulação, realizamos diferentes testes com diferentes linguagens de programação de alto nível para entender qual possui o melhor desempenho nas tarefas que terá que realizar. Quanto menor for o tempo de execução e uso de memória, mais viável será a eficiência, replicação e execução do programa.
-
-As linguagens testadas foram as seguintes:
-
-- TypeScript;
-- C++/C;
-- Fortran;
-- Go;
-- Julia;
-- Java;
-- Scala;
-- Rust;
-- Python.
-
-Elas foram escolhidas com base em sua facilidade no desenvolvimento, disponibilidade de bibliotecas, comunidade e performance (CASS, 2022). Para validar seu desempenho e definir a linguagem que será utilizada no desenvolvimento do modelo, propomos um caso teste que simula um cenário real no projeto: cada programa possui uma classe que representa um indivíduo, este indivíduo possui todas as propriedades que serão utilizadas durante o cálculo de disseminação do vírus de forma a emular o uso de memória. Para a disseminação, necessita-se que tenhamos acesso aos indivíduos na mesma localização, logo, é dado um vetor de todos os indivíduos instanciados com valores distintos ao algoritmo, que deve retornar os indivíduos em volta do atual. Vale ressaltar que todas as linguagens compiladas foram executadas por meio de linha de comando, sem a utilização de _softwares_ terceiros.
-
-Em cada linguagem foram desenvolvidos dois programas, um otimizado e outro não. Um programa otimizado significa que foram implementados algoritmos e estruturas de dados complexos como paralelismo, concorrência, _multithreading_ e semáforos, e algumas funcionalidades próprias da linguagem que podem ou não aumentar sua eficiência.
-
-Foram realizados testes iterativos para um conjunto de indivíduos com o tamanho da população de Campinas, cerca de 1 milhão e 100 mil habitantes, do programa em cada linguagem, com indivíduos e localizações aleatórias, a partir dos quais foram gerados os seguintes gráficos utilizando a biblioteca Matplotlib de Python em um Jupyter Notebook:
-
-Figure 6 - Gráfico de análise do uso de memória das linguagens
-
-![](/paper/figure-6.jpeg)
-
-Source: Own Authorship (2023)
-
-Figure 7 - Gráfico de análise do tempo de execução das linguagens
-
-![](/paper/figure-7.jpeg)
-
-Source: Own Authorship (2023)
-
-A partir da análise dos dados, foi decidido que a linguagem de programação que será utilizada no desenvolvimento do modelo será o TypeScript, que, sem otimização, apresentou ótimos resultados em ambos os testes, além de apresentar uma ampla gama de bibliotecas, ecossistema com comunidade bastante ativa e sintaxe produtiva. No futuro, pode-se, também, ser feito uma transpilação do código desenvolvido em TypeScript para JavaScript devido ao fato do primeiro ser um superconjunto do segundo, possibilitando, assim, uma exportação do modelo para uma versão web através de um site e/ou API REST, favorecendo a acessibilidade à pesquisa e ao modelo de simulação.
-
 **Representação da cidade virtualmente**
 
-Representar uma cidade de forma virtual, com acurácia e fidedignidade, é um desafio a ser considerado. Por isso, optamos por abstrair a dinâmica geral de uma cidade embasando-nos, para tanto, nos conceitos geográficos de fixos e fluxos. Os fixos referem-se aos elementos estáticos da cidade, como edifícios, estradas e outras infraestruturas. Estes são os componentes permanentes que formam o esqueleto físico da cidade. Por outro lado, os fluxos representam os elementos dinâmicos, como o movimento de pessoas, veículos e informações. Estes fluxos são cruciais para determinar o funcionamento de uma cidade no dia a dia (BARROS, 2020).
+Representing a city virtually with accuracy and reliability is a challenge. Therefore, we chose to abstract the general dynamics of a city, based on the geographical concepts of fixity and flows. Fixities refer to the static elements of the city, such as buildings, roads, and other infrastructures, which are the permanent components that form the physical skeleton of the city. On the other hand, flows represent dynamic elements like the movement of people, vehicles, and information. These flows are crucial for determining the daily functioning of a city (BARROS, 2020).
 
-Em nossa abordagem de modelagem, buscamos uma representação simplificada que captura a essência desses dois aspectos. Embora nos concentremos na infraestrutura básica e nos movimentos principais dentro da própria cidade, optamos por simplificar ou omitir certos aspectos mais complexos, como a locomoção de indivíduos entre cidades vizinhas. Essa simplificação ajuda a manter o modelo gerenciável e focado nos aspectos mais críticos da dinâmica urbana.
+In our modeling approach, we aim for a simplified representation that captures the essence of these two aspects. Although we focus on basic infrastructure and main movements within the city itself, we chose to simplify or omit certain more complex aspects, such as individual movements between neighboring cities. This simplification helps keep the model manageable and focused on the most critical aspects of urban dynamics.
 
-Na abstração da representação da cidade, uma das abordagens é criar uma matriz de a x b células, com cada célula equivalente a 1m² da cidade real sendo utilizada como localização geográfica do indivíduo. Decidimos por não utilizar desta abordagem pois ocorreria um desperdício de memória em um estado onde certa célula não está ocupada por nenhum indivíduo. Ao invés disso, cada indivíduo tem em seus atributos a abstração da localização, eles não possuem coordenadas definidas, mas sim um estado dizendo seu lugar. Por exemplo, imaginemos que em uma cidade há 30 mil pontos de trabalho, quando o indivíduo estiver trabalhando, ele não terá a coordenada exata de seu trabalho, e sim sua identificação, que é diferente dos outros 30 mil. Assim, quando formos realizar o cálculo de disseminação do vírus nesse ambiente, procuramos dentre o banco de indivíduos, todos que naquele momento possuem como identificação do ponto de trabalho o mesmo do indivíduo atual.
+In abstracting the city's representation, one approach is to create an a x b cell matrix, with each cell equivalent to 1m² of the actual city being used as the geographic location of an individual. We decided against this approach because it would waste memory in a state where a certain cell is not occupied by any individual. Instead, each individual has in their attributes the abstraction of location; they do not have defined coordinates but rather a state indicating their place. For example, in a city with 30,000 work points, when an individual is working, they do not have the exact coordinates of their job, but rather an identification, which is distinct from the other 30,000. Thus, when calculating virus spread in this environment, we look among the database of individuals for all those who, at that moment, have the same work point identification as the current individual.
 
-Para simular a cidade é necessário os censos sociais e universais do local para assim conseguir certas informações cruciais para o modelo. Essas informações são:
+To simulate the city, it is necessary to have the social and universal census of the place to obtain certain crucial information for the model. Due to the unavailability of recent data, the 2010 census from the Brazilian Institute of Geography and Statistics (IBGE) was used. We alert to the fact that, since the data refer to a city ten years in the past relative to the one that faced the COVID-19 pandemic, the results of deaths and cases may suffer minimal inconsistencies.
 
-- t
-
-Por questões de indisponibilidade de dados recentes, foi utilizado o censo de 2010 do Instituto Brasileiro de Geografia e Estatística (IBGE). Alertamos para o fato de que, devido aos dados se referirem a uma cidade dez anos no passado em relação a que encarou a pandemia do COVID-19, os resultados de mortes e casos podem sofrer incoerências mínimas.
-
-As informações solicitadas possuem importância na definição das características dos indivíduos, suas rotinas, taxa de disseminação do vírus. Pelo fato de que os dados obtidos pelo censo do IBGE de 2010 apresentaram pequenas incongruências entre si, foi necessário o desenvolvimento de um algoritmo de normalização dos dados.
-
-**Normalização**
-
-Devido a diversas incongruências encontradas nos dados do censo, bem como entre diferentes fontes de dados utilizadas, como o Ministério do Trabalho e Emprego (MTE), Relatórios de Informações Sociais do Município de Campinas e Boletins Epidemiológicos da Secretaria Municipal de Saúde de Campinas, foi necessária a implementação de um algoritmo, utilizando de relações matemáticas, para a normalização dos diversos dados.
-
-Dado um conjunto de valores totais para uma única categoria de um parâmetro a ser atribuído para uma população de indivíduos, a normalização dos conjunto de parâmetros será dada pela seguinte relação matemática:
-
-**REVER**
-
-- ∑ ( )
-
-=1
-
-1. % = ÷
-
-   2. = −
-
-1. = + % ×
-
-Para cada parâmetro , sua porcentagem de “contribuição”, % _,_ é calculada através da divisão da quantidade total de valores do parâmetro pela soma dos valores de todos os parâmetros de um conjunto _,_ denominada (1)_._ Com a porcentagem de “contribuição” de um parâmetro não normalizado, é atribuído ao seu correspondente normalizado o montante anterior, _,_ somado
-
-com o respectivo montante faltante, calculado pela porcentagem de “contribuição” de _,_ % _,_ multiplicada pelo número de indivíduos a serem normalizados, (3)_. ,_
-
-por sua vez, o número de indivíduos a serem normalizados, fora calculado através da diferença entre os indivíduos totais pela soma dos valores de todos os parâmetros de um conjunto _, ,_ (2)_._
-
-Após uma bateria de testes, comprovamos que a relação matemática acima descrita mantém a proporção original entre os diferentes parâmetros, sendo capaz de normalizar quaisquer parâmetros formatados, escalonando-os para cima ou para baixo.
-
-Dessa forma, fomos capazes de combinar conjuntos de dados de fontes diferentes com valores distintos mantendo a razão original dos mesmos, de forma a utilizarmos dados fidedignos e escalonados para nosso modelo.
+The requested information is important in defining the characteristics of individuals, their routines, and the rate of virus dissemination. Due to minor inconsistencies in the data obtained from the 2010 IBGE census, it was necessary to develop an algorithm to normalize the data.
 
 **Representação dos indivíduos na cidade**
 
@@ -657,6 +617,6 @@ Também vale ressaltar que propomos e implementamos com sucesso um simulador pan
 
 Portanto, a utilização de um _cluster,_ ou aglomerado, de diversos simuladores, cada um adequado para uma única cidade de acordo com os dados do censo, possibilita a simulação de escalas estaduais e nacionais constituídas, internamente, por estruturas mais específicas e direcionadas aos municípios, o que corrobora, por conseguinte, para simulações mais acuradas de forma geral.
 
-Assim, obtivemos, como produto da pesquisa que ainda está em andamento, um simulador pandêmico que não se restringe apenas ao caráter matemático da clássica modelagem epidemiológica, como visto em _Spreading phenomena on complex networks and social systems_ (COTA, 2020), incluindo uma vasta gama de parâmetros biológicos, geográficos e demográficos de forma pioneira. Constitui-se, portanto, um modelo que é capaz de simular e predizer o comportamento futuro de potenciais pandemias, principalmente de doenças respiratórias, que pode ser licenciado ou vendido como um _Software as a Service_ (SaaS) para secretarias municipais ou estaduais de saúde, assim como ministérios e organizações competentes, como o Ministério da Saúde e a Organização Mundial de Saúde (OMS), possibilitando ações preventivas a fim de reduzir os impactos humanos, sociais e econômicos de um surto. Além disso, institutos e empresas públicas e/ou privadas do setor farmacêutico também podem se beneficiar de testes em cenários pandêmicos virtualizados da eficácia de suas vacinas, como Pfizer, Johnson & Johnson, Astrazeneca e o Butantã.
+Assim, obtivemos, como produto da pesquisa que ainda está em andamento, um simulador pandêmico que não se restringe apenas ao caráter matemático da clássica modelagem epidemiológica, como visto em _Spreading phenomena on complex networks and social systems_ (COTA, 2020), incluindo uma vasta gama de parâmetros biológicos, geográficos e demográficos de forma pioneira. Constitui-se, portanto, um modelo que é capaz de simular e predizer o comportamento futuro de potenciais pandemias, principalmente de doenças respiratórias, que pode ser licenciado ou vendido como um _Software as a Service_ (SaaS) para secretarias municipais ou estaduais de saúde, assim como ministérios e organizações competentes, como o Ministério da Saúde e a Organização Mundial de Saúde (OMS), possibilitando ações preventivas a fim de reduzir os impactos humanos, sociais e econômicos de um surto. Além disso, institutos e empresas públicas e/ou privadas do setor farmacêutico também podem se beneficiar de testes em cenários pandêmicos virtualizados da eficácia de suas vacinas, como Pfizer, Johnson & Johnson, AstraZeneca e o Butantã.
 
 Por fim, esperamos que a mesma inspire trabalhos futuros a aprimorar os métodos que propusemos, bem como as técnicas existentes, com o objetivo de expandir ainda mais o domínio de novas bases teóricas no campo da simulação pandêmica computacional. Podendo contribuir para o desenvolvimento de estratégias mais eficazes de prevenção e resposta a pandemias no futuro, por exemplo, através do uso de aprendizado de máquina sobre os cenários simulados, elevando, ainda mais, as conclusões a serem tomadas sobre o decorrer de uma pandemia.
