@@ -17,6 +17,9 @@ import {
 import { DateTime } from 'luxon'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { TabsContent } from '@radix-ui/react-tabs'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { ChevronRight } from 'lucide-react'
 
 type DataItem = {
   date: string
@@ -240,6 +243,16 @@ export default function DataVisualization({ showVisualize = true }: { showVisual
             </TabsContent> */}
             </Tabs>
           ))}
+          <div className="flex flex-col items-center justify-center gap-y-4">
+            <p className="text-muted-foreground mx-auto max-w-[600px] text-xs sm:text-sm">
+              For the complete literature of the model, refer to the paper.
+            </p>
+            <Link href="/paper">
+              <Button className="bg-pandemica-blue/70 dark:bg-pandemica-blue/50 dark:hover:bg-pandemica-blue border-pandemica-blue hover:bg-pandemica-blue dark:text-primary flex h-9 flex-row gap-x-0.5 rounded-full border text-white">
+                Paper <ChevronRight className="-mr-1" height={16} width={16} />
+              </Button>
+            </Link>
+          </div>
         </>
       ) : (
         <p className="font-sans-heading text-muted-foreground sm:text-sm md:text-base">
