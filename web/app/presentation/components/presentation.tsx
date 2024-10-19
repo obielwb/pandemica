@@ -10,12 +10,12 @@ export default function Presentation() {
       <main className="bg-background min-h-[65vh] grid place-items-center px-6 py-24 sm:py-32 lg:px-8">
         <div className="flex flex-col text-center">
           <p className="text-pandemica-yellow text-base font-semibold">OOPS</p>
-          <h2 className="from-foreground to-muted-foreground mt-4 h-14 bg-gradient-to-r bg-clip-text text-3xl font-semibold tracking-tighter text-transparent sm:text-4xl xl:text-5xl/none">
-            The presentation isn{"'"}t currently available.
+          <h2 className="from-foreground to-muted-foreground mt-4 bg-gradient-to-r bg-clip-text text-3xl font-semibold tracking-tighter text-transparent sm:text-4xl xl:text-5xl">
+            The presentation isn{"'"}t currently available
           </h2>
           <p className="text-muted-foreground mt-4 text-base leading-7">
-            But since you{"'"}re here, why not check out the new entirely English paper or the
-            interactive simulation?
+            But since you{"'"}re here, why not explore our latest paper entirely in English or try
+            out the interactive simulation?
           </p>
           <div className="mt-6 flex items-center justify-center gap-x-4">
             <Link href="/paper">
