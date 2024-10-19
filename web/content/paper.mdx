@@ -1,142 +1,96 @@
-## Resumo
+## Abstract
 
-Testemunhamos um impacto global sem precedentes desde o início da pandemia de COVID-19 no final de 2019, resultando em milhões de mortes e crises econômicas, políticas e sociais sendo deflagradas em todo o mundo desde então. Diversas medidas de prevenção e contenção da propagação do vírus foram adotadas, como distanciamento social, quarentenas, _lockdowns_ e vacinação. À medida que novas doenças potencialmente pandêmicas continuam a surgir, como a recente varíola dos macacos, torna-se cada vez mais importante o desenvolvimento de métodos eficazes para prever potenciais disseminações globais, evitando e mitigando impactos humanos, econômicos e sociais oriundos de surtos epidemiológicos. Neste contexto, surge a possibilidade da implementação de um modelo de simulação utilizando autômatos celulares (ACs), conceito computacional que apresenta uma abordagem promissora para a modelagem da dinâmica epidêmica de forma virtual. Os ACs permitem simular grandes populações de indivíduos virtualmente vivos. Portanto, este estudo tem como objetivo propor um modelo para a simulação da disseminação de patologias potencialmente pandêmicas de forma eficaz, utilizando dados obtidos durante a pandemia de COVID-19 e características virais da doença, que servem como base do treinamento e validação do modelo. O modelo proposto é capaz de gerar relatórios epidemiológicos confiáveis de diferentes cenários hipotéticos e fornecer informações valiosas às autoridades de saúde pública referentes a quando e quais medidas devem ser tomadas para o combate à doença, considerando características geográficas, demográficas e variáveis como o uso de máscaras, vacinação e distanciamento social, incorporando conceitos matemáticos pertinentes, aspectos biológicos e tecnologias adequadas de forma a maximizar sua precisão e obter-se um modelo genérico de simulações pandêmicas.
+Since the outbreak of COVID-19 in late 2019, the world has witnessed unprecedented global impacts, resulting in millions of deaths and ongoing economic, political, and social crises. As new potentially pandemic diseases like monkeypox continue to emerge, the development of effective methods to predict and mitigate the impacts of epidemic outbreaks is increasingly crucial. This study introduces an innovative agent-based simulation model that leverages a neural network-like artificial intelligence algorithm to assign demographic and economic data to each agent, allowing for the simulation of individualized behavioral routines. This new approach enhances the accuracy of current epidemiological predictions by adapting to real-world data and scenarios on a local city scale.
 
-**Palavras-Chave:** Pandemia, COVID-19, Simulação.
+The model is designed to be open-source, highly accessible, and focused on local scopes within municipal health departments, requiring basic epidemiological knowledge for operation on standard computers. Users can input demographic data from censitary agencies, such as the Brazilian Institute of Geography and Statistics (IBGE), and specific disease characteristics, which the model uses to simulate disease spread tailored to individual cities. This flexibility allows public health officials to adjust parameters such as mask-wearing and vaccination rates to see their effects on disease dynamics, providing actionable, city-scale insights that can be quickly leveraged to minimize loss of life and optimize resource allocation.
 
-## Introdução
+By integrating mathematical, biological, and technological concepts, the proposed model serves as a generic tool for simulating the outspread of respiratory infectious diseases, offering reliable epidemiological reports across various hypothetical scenarios. Already being implemented by health secretariats in Campinas and Bragança Paulista, the model stands as an innovative, go-to tool for public health crisis management, aiming to identify the most efficient ways to navigate public health crises with minimal impact on human life and economic stability.
 
-O mundo vem sofrendo com as consequências da pandemia de COVID-19 desde o final de 2019, quando o vírus começou a ser disseminado a partir da cidade de Wuhan, província de Hubei, na República Popular da China. A Organização Mundial da Saúde (OMS), estima que o número total de mortes associadas direta e indiretamente à pandemia de COVID-19 (descrito como “excesso de mortalidade”) entre 1 de janeiro de 2020 e 31 de dezembro de 2021 foi de aproximadamente 14,9 milhões (intervalo entre 13,3 milhões e 16,6 milhões).
+## Introduction
 
-A nível global, diversas medidas de prevenção e contenção foram implementadas, como as medidas de isolamento social, quarentena, _lockdown_ e posterior vacinação (ARBEL; PLISKIN, 2022), mitigando significativamente a disseminação do vírus. Com a emergência de novas patologias potencialmente pandêmicas (JONES et al., 2008), como a recente varíola dos macacos (SOHAL et al., 2023), por exemplo, surge a oportunidade de utilizar tecnologia para implementação de modelos de simulação acurados (COSTA; PEIXOTO, 2020) para a descoberta de medidas preventivas e remediativas a fim de atenuar o impacto humano, econômico e social causado pelas pandemias (FU et al., 2021).
+The world has been suffering from the consequences of the COVID-19 pandemic since the end of 2019, when the virus began to spread from the city of Wuhan, Hubei province, in the People's Republic of China. The World Health Organization (WHO) estimates that the total number of deaths directly and indirectly associated with the COVID-19 pandemic (described as "excess mortality") between January 1, 2020, and December 31, 2021, was approximately 14.9 million (ranging between 13.3 million and 16.6 million).
 
-Países como a Coreia do Sul, por exemplo, integraram a tecnologia digital nos processos de contenção e mitigação coordenados pelo governo - incluindo vigilância, testes, rastreio de contaminações e quarentena rigorosa - que podem estar associadas ao achatamento precoce da curva de incidência de casos do COVID-19 no país (FERRETTI et al., 2020). É cada vez mais evidente o importante papel da implementação de tecnologias relacionadas à saúde pública e o notável descobrimento de estratégias e respostas a pandemias de forma inovadora (WHITELAW et al., 2020).
+Globally, various prevention and containment measures were implemented, such as social distancing, quarantine, lockdown, and subsequent vaccination (ARBEL; PLISKIN, 2022), significantly mitigating the spread of the virus. With the emergence of new potential pandemic pathologies (JONES et al., 2008), such as the recent monkeypox (SOHAL et al., 2023), for example, there is an opportunity to use technology to implement accurate simulation models (COSTA; PEIXOTO, 2020) to discover preventive and remedial measures to mitigate the human, economic, and social impact caused by pandemics (FU et al., 2021).
 
-Este projeto tem como objetivo propor um modelo de simulação embasando-se na teoria de autômatos celulares (ACs) combinada com matemática probabilística como meio para simular populações cujos indivíduos interagem entre si virtualmente, levando em consideração o aspecto de disseminação da doença. Para criar e validar esse modelo, propõe-se a utilização dos dados obtidos durante a pandemia do COVID-19 e das características virais da doença.
+Countries like South Korea, for example, integrated digital technology into government-coordinated containment and mitigation processes—including surveillance, testing, tracking of contaminations, and strict quarantine—that may be associated with the early flattening of the COVID-19 case incidence curve in the country (FERRETTI et al., 2020). It is increasingly evident the important role of implementing public health-related technologies and the remarkable discovery of strategies and responses to pandemics in innovative ways (WHITELAW et al., 2020).
 
-No modelo proposto, defendemos que é possível não somente simular o cenário pandêmico, prevendo número de casos e mortes, como também estudar diferentes parâmetros de contenção e mitigação, como diferentes usos de máscara, distanciamento social e vacinação, por exemplo. Dessa forma, é possível determinar como cada variável influencia o cenário pandêmico de forma geral, possibilitando que entidades competentes consigam saber como cada medida contribui para combate à doença emergente, e que a população compreenda de maneira mais clara como seus atos afetam a pandemia como um todo, de forma a melhor ponderá-los.
+This project aims to propose a simulation model based on the theory of cellular agents combined with probabilistic mathematics as a means to simulate populations whose individuals interact virtually, taking into account the aspect of disease spread. To create and validate this model, it is proposed to use the data obtained during the COVID-19 pandemic and the viral characteristics of the disease.
 
-## Problema de Pesquisa
+In the proposed model, we argue that it is not only possible to simulate the pandemic scenario, predicting the number of cases and deaths but also to study different containment and mitigation parameters, such as different uses of masks, social distancing, and vaccination, for example. In this way, it is possible to determine how each variable influences the overall pandemic scenario, allowing competent entities to know how each measure contributes to the fight against emerging diseases, and for the population to more clearly understand how their actions affect the pandemic as a whole, in order to better weigh them.
 
-Como propor um modelo de simulação pandêmica que seja confiável, incorporando características do vírus e sua disseminação dentre uma população, e que seja capaz de gerar diferentes cenários hipotéticos de acordo com mudanças nas variáveis de mitigação e combate do vírus?
+## Research Problem
 
-## Hipótese
+How to propose a reliable pandemic simulation, incorporating characteristics of the virus and its spread among a population, capable of generating different hypothetical scenarios based on changes in virus mitigation and combat variables, leveraging the most of city-scale data?
 
-A utilização de autômatos celulares tem grande potencial para simular grandes populações de indivíduos virtualmente vivos (WHITE, 2007), que possuem algum tipo de inteligência e, portanto, a modelagem de uma epidemia virtual é tecnicamente possível. Se adotadas as relacionadas e pertinentes relações matemáticas (WILLOX, 2003), características biológicas e boletins epidemiológicos, em conjunto com tecnologias adequadas, espera-se estabelecer um modelo de simulação eficaz, acurado e capacitado para gerar relatórios pandêmicos fidedignos aos números de casos e mortes nos diferentes cenários simulados, quando comparados com o cenário real.
+## Hypothesis
 
-## Justificativa
+The use of cellular agents has great potential for simulating large populations of virtually living individuals (WHITE, 2007), who possess some form of intelligence, making the modeling of a virtual epidemic technically feasible. By adopting relevant and pertinent mathematical relations (WILLOX, 2003), biological characteristics, and epidemiological bulletins, in conjunction with suitable technologies, it is expected to establish an effective, accurate simulation model capable of generating pandemic reports that are faithful to the numbers of cases and deaths in various simulated scenarios, compared to the real outspread of the disease within a city-level scope.
 
-A pandemia de COVID-19 tem causado um impacto significativo na saúde pública e na economia global desde de seu início, em 2019 (FU, 2021). Até o começo de 2023, a pandemia causou um prejuízo global estimado em U$D29.4 trilhões (VISCUSI, 2023), além dos impactos na saúde física e mental da população, e o aumento da geração de resíduos (orgânicos e inorgânicos), que possuem impactos diretos e indiretos no meio ambiente, como a poluição do ar, da água e do solo (ISLAM et al., 2016). Eventos como esses resultam em impactos significativamente negativos para a sociedade e seu meio. Nesse sentido, mostra-se extremamente necessário que medidas sejam tomadas para prevenir e conter a próxima grande pandemia.
+## Justification
 
-No entanto, por mais que haja uma vasta literatura na modelagem matemática do COVID-19, são escassos os estudos e modelos que investigam a simulação da disseminação de surtos epidemiológicos em nível local, considerando diversos fatores como características populacionais e físicas de uma dada cidade, conjugadas com dados gerais da doença, como características virais e comportamentais. Dessa forma, pode-se conter e mitigar em escalas estaduais, nacionais e internacionais o impacto de potenciais pandemias ao adereçar a disseminação e desenvolvimento de uma patologia a nível municipal. Nesse sentido, este estudo propõe o uso de conceitos de computação teórica e matemática, além de algoritmos e estruturas de dados, compondo um paradigma de simulação pandêmica simples porém robusto.
+The COVID-19 pandemic has caused significant impact on public health and the global economy since its onset in 2019 (FU, 2021). By the beginning of 2023, the pandemic had caused an estimated global loss of USD 29.4 trillion (VISCUSI, 2023), in addition to impacts on the physical and mental health of the population, and an increase in waste generation (organic and inorganic), which have direct and indirect impacts on the environment, such as air, water, and soil pollution (ISLAM et al., 2016). Events like these result in significantly negative impacts on society and its environment. In this sense, it is extremely necessary that measures be taken to prevent and contain the next major pandemic.
 
-Essa pesquisa é relevante pois poderá fornecer informações importantes para a tomada de decisões dos gestores públicos em relação ao combate a doenças emergentes. Além disso, pode contribuir para o desenvolvimento global de estratégias mais eficazes de controle de pandemias, considerando as particularidades virais, mas, principalmente, regionais.
+However, although there is extensive literature on the mathematical modeling of COVID-19, studies and models that investigate the simulation of the spread of epidemiological outbreaks at a local level are scarce, considering various factors such as the population and physical characteristics of a given city, combined with general disease data, such as viral and behavioral characteristics. In this way, the impact of potential pandemics can be contained and mitigated on state, national, and international scales by addressing the spread and development of a pathology at the municipal level. In this regard, this study proposes the use of concepts from theoretical computing and mathematics, as well as algorithms and data structures, composing a simple yet robust pandemic simulation paradigm.
 
-Por fim, a realização dessa pesquisa também é pertinente uma vez que amplia o conhecimento sobre a aplicação dos autômatos celulares na área de epidemiologia e fortalece a colaboração entre a instituição e outras organizações que trabalham com a temática pandêmica.
+This research is relevant as it can provide important information for public managers' decision-making regarding the fight against emerging diseases. Additionally, it can contribute to the global development of more effective pandemic control strategies, considering viral particularities, but mainly regional specifics.
 
-## Escopo
+Finally, conducting this research is also pertinent as it expands knowledge on the application of cellular agents in epidemiology and strengthens collaboration between the institution and other organizations working on pandemic themes.
 
-A modelagem do comportamento humano é um sistema extremamente complexo devido à diversidade e à variabilidade inerentes às suas ações e decisões. Os seres humanos respondem a estímulos de maneiras que são influenciadas por uma ampla gama de fatores, incluindo experiências passadas, contexto social, emoções e estados de saúde. Além disso, o comportamento humano é adaptativo, o que significa que as pessoas podem aprender e mudar seu comportamento ao longo do tempo. Modelar este sistema em sua totalidade é uma tarefa computacionalmente e matematicamente desafiadora.
+## Scope
 
-Assim, decidimos por abstrair e simplificar diversos fatores que envolvem essa simulação, como o comportamento dos indivíduos, que, ao invés de ser aleatório, será uma constante definida por um número fixo de limitadas atividades. Quanto à simulação da cidade, por também ser um sistema complexo, sua abstração também foi necessária. Portanto, não lidamos com um cenário 100% fiel ao real, tampouco com todas as diferentes atividades e lugares que podem existir. De qualquer forma, uma vasta gama de atividades foram criadas de forma a contemplar, em termos gerais, todas as principais ações que são feitas em um meio urbano no século XXI.
+Human behavior modeling is an extremely complex system due to the diversity and variability inherent in actions and decisions. Humans respond to stimuli influenced by a range of factors, including past experiences, social context, emotions, and health states. Human behavior is adaptive, meaning people can learn and change their behavior over time, making modeling this system in its entirety computationally and mathematically challenging.
 
-Para o desenvolvimento do projeto, escolhemos utilizar os dados do COVID-19 por ser o exemplo mais recente de uma patologia pandêmica, havendo grande disponibilidade de dados, facilitando, assim, testes e validação do modelo.
+Thus, we decided to abstract and simplify various factors in this simulation, such as individual behavior, which, instead of being random, will be a constant defined by a fixed number of limited activities. The city's simulation, also a complex system, required abstraction; therefore, we do not deal with a 100% accurate scenario or all the different activities and places that may exist. However, a wide range of activities has been created to generally encompass all the main actions performed in an urban environment in the 21st century.
 
-Para a cidade, foi escolhida Campinas, por ser a cidade em que nossa instituição de ensino está localizada, além de ser um importante polo industrial e populacional de São Paulo. Vale ressaltar que, havendo registros no Censo, qualquer cidade pode ser utilizada na simulação, uma vez que a entrada de dados se presta de forma genérica.
+We chose to use COVID-19 data for project development and validation as it is the most recent example of a pandemic pathology, with a large availability of data facilitating tests and model validation. Campinas was chosen for the city due to its location as our educational institution and its significance as a major industrial and population center in São Paulo. It's important to note that with census records, virtually any city in the world can be used in the simulation, as data entry is generic.
 
-## Objetivos
+## Objectives
 
-**Objetivo geral**
+**General objective**
 
-Criar um modelo de simulação pandêmica eficaz que seja capaz de minimizar o impacto de possíveis futuras pandemias ao criar diferentes cenários que atuam como conscientizadores para entidades competentes e para a população agir de forma preventiva em meio a uma potencial pandemia.
+Create an effective pandemic simulation model that can minimize the impact of potential future pandemics by creating different scenarios that act as awareness tools for competent entities and for the population to act preventively in the midst of a potential pandemic.
 
-**Objetivos específicos**
+**Specific objectives**
 
-Os objetivos específicos desta pesquisa são:
+The specific objectives of this research are:
 
-- Compreender o embasamento técnico e teórico da epidemiologia;
-- Analisar a base teórica e literatura das características virais do COVID-19;
-- Coletar dados geográficos e demográficos de Campinas, transpondo-os virtualmente;
-- Estudar e desenvolver algoritmos embasados no comportamento de autômatos celulares adequados para a simulação de indivíduos em meio pandêmico virtualizado;
-- Elaborar a implementação prática das bases teóricas da disseminação em um modelo computacional a partir de metodologias e técnicas sistêmicas, incorporando dados epidemiológicos;
-- Testar e avaliar a efetividade do sistema, embasando-se em dados reais coletados de boletins epidemiológicos, bancos de dados e relatórios disponibilizados pelo governo;
-- Estabelecer um modelo de simulação pandêmica genérico, capaz de simular
-- desenrolar de uma pandemia em qualquer cidade com dados no Censo e com patologia, principalmente, respiratória.
+- To incorporate the technical and theoretical foundation of epidemiology;
+- Analyze the theoretical base and literature on the viral characteristics of COVID-19;
+- Collect geographic and demographic data from Campinas, transposing it virtually;
+- Study and develop algorithms based on the behavior of agents suitable for simulating individuals in a virtualized pandemic environment;
+- Elaborate the practical implementation of the theoretical foundations of dissemination in a computational model using systemic methodologies and techniques, incorporating epidemiological data;
+- Test and evaluate the effectiveness of the system, based on real data collected from epidemiological bulletins, databases, and reports provided by the government;
+- Establish a generic pandemic simulation model, capable of simulating the unfolding of a pandemic in any city with Census data and mainly respiratory pathology.
 
-## Fundamentação Teórica
+## Background
 
-Visando promover uma melhor abordagem para a simulação de pandemias e, consequentemente, maior acurácia para a simulação, o sistema a ser desenvolvido utilizará a união de diversos algoritmos, conceitos de ciência da computação teórica e modelagem matemática da disseminação de doenças para alcançar tal objetivo. Portanto, torna-se crucial compreender, principalmente, os estudos de análise da disseminação do vírus, as características do vírus que será simulado (COVID-19), o campo de teoria dos autômatos celulares em conjunto com abordagens epidemiológicas existentes e seu embasamento matemático.
+Aiming to promote a better approach to pandemic simulation and, consequently, greater accuracy for the simulation, the system to be developed utilizes the union of various algorithms, concepts of theoretical computer science, and mathematical modeling of disease dissemination to achieve this goal. Therefore, it becomes crucial to understand, primarily, the studies of virus spread analysis, the characteristics of the virus that will be simulated (COVID-19), the field of cellular automata theory in conjunction with existing epidemiological approaches, and their mathematical basis.
 
-**Autômatos celulares**
+**Multi-Agent Systems**
 
-Os autômatos celulares (ACs) bidimensionais são sistemas dinâmicos discretos constituídos por células uniformemente distribuídas, que definem um número finito de linhas × colunas objectos idênticos. Cada célula tem um estado próprio que muda a cada geração de células de acordo com um conjunto de regras de transição local (de um conjunto limitado de estados ). Isto significa que a vizinhança, ou o estado de um grupo de células, no tempo − 1, determina o estado de uma dada célula no tempo . Mais especificamente, o conjunto de quatro elementos ( , , , ), no qual é o espaço celular, define um AC:
+Multi-agent systems are systems composed of intelligent agents that are situated in an environment and are capable of interacting to solve complex problems (WOOLDRIDGE, 2009). An agent can be seen as a computer system capable of responding to input stimuli (called perceptions), and through a process of reasoning and planning, generate an output in the form of actions in the environment (WOOLDRIDGE, 2009). The multi-agent system paradigm provides the benefits of: (i) enabling the resolution of complex problems in a distributed manner, without a central processing and failure point, where resources and capabilities are distributed across a network of interconnected agents; (ii) allowing the modeling of systems through the design of autonomous intelligent agents, capable of communicating, as the main component; and (iii) within the context of this work, enabling the simulation of behaviors of complex entities, such as human beings.
 
-- \{( , ), 1 \<= \<= , 1 \<= \<= \}
+**Mathematical Modeling in Disease Dissemination**
 
-define o conjunto total e finito com todos os estados possíveis para uma célula. = \{(α , β ), 1 \<= \<= \} ⊂ × , é o conjunto total de índices que definem a vizinhança de cada célula, de tal forma que a vizinhança da célula ( , ) é dada por:
+Although it was in Hippocrates' "Epidemics" that the quest for understanding the dynamics of epidemic spread began, Bernoulli is considered a pioneer in the field of mathematical modeling in epidemiology. In his 1760 work, he demonstrated the effectiveness of the variolation technique, which involved the inoculation of benign smallpox to prevent complications from the disease (BERNOULLI, 1760). However, it was in 1927 that Kermack and McKendrick proposed what can be seen as the starting point for the design of current mathematical models (KERMACK; MCKENDRICK, 1927); the SIR model. Different types of mathematical models can be taken into account, depending on the division of the population to be modeled. The mentioned SIR model segments individuals as (ALMEIDA, 2014):
 
-- \{( + 𝛼1, + 𝛽1), …, ( + , + )\}
+- Susceptible: Individuals who have not yet developed immunity against the infection, meaning they can become infected if exposed to it.
+- Infected: Individuals who have contracted the disease and have the capacity to transmit it to susceptible people.
+- Recovered: Individuals who have recovered from the infection and acquired immunity, therefore, do not contribute to the spread of the disease.
 
-Além disso, = − {(0, 0)}. Por fim, a função f é a função de transição local
+Many infections have a time interval in which an individual has been infected but does not yet show symptoms or presents an asymptomatic condition; during this time, the epidemiological process is called incubation (ALENE, 2021), the individual is considered exposed. In this case, the SEIR model presents a new class of individuals, characterized by the letter "E" for exposed, in the acronym. Some infections, such as those caused by the coronaviruses responsible for the common cold, do not confer lasting immunity, lacking a defined recovery phase (EDRIDGE, 2020). Therefore, after an infection, individuals become susceptible again. In this case, the SIS models are configured. From the exposed models, there are other derivations, such as SIRS or SEIRS. According to the characteristics of COVID-19, the SEIR model is found to be the most appropriate to be incorporated into the simulation.
 
-\*
-
-(WHITE, 2007):
-
-- ( − 1𝑖 + 𝛼1, + 𝛽1, …, − 1𝑖 + , + ) ∈
-
-Em que representa o estado da célula ( , ) no tempo .
-
-Como mencionado, as células são representadas como zonas quadrangulares idênticas que constituem o espaço celular (Figura 1(a)). As duas variedades mais significativas de vizinhança são a vizinhança de von Neumann ( Figura 1(b)), formada pela célula individual e as quatro células situadas a norte, sul, leste e oeste, e a Vizinhança de Moore (Figura 1(c)), formada pela célula individual e as suas oito células mais próximas.
-
-Figura 1 - (a) Espaço celular retangular (b) Vizinhança de von Neumann (c) Vizinhança de Moore
-
-![](/paper/figure-1.png)
-
-Fonte: Autoria própria (2023)
-
-O conjunto de índices para as vizinhanças de von Neumann é o seguinte:
-
-- \{(0, 0), (− 1, 0), (0, 1), (1, 0), (0, − 1)}
-
-Enquanto que, para as vizinhanças de Moore, V é definido da seguinte forma:
-
-- \{(0, 0), (− 1, 0), (− 1, 1), (0, 1), (1, 1), (1, 0), (1, − 1), (0, − 1), (− 1, − 1)}
-
-Como já mencionado, um AC evolui deterministicamente em etapas de tempo discretas, alterando os estados das células por meio da função de transição local . Como o espaço celular é considerado finito, as condições de limite devem ser consideradas para garantir uma dinâmica bem definida do AC. Essas condições de contorno dependem do processo a ser simulado.
-
-**Sistemas multiagentes**
-
-Sistemas multiagentes são sistemas compostos por agentes (inteligentes) que estão situados em um ambiente e são capazes de interagir para resolver problemas complexos (WOOLDRIDGE, 2009). Um agente pode ser visto como um sistema de computador capaz de responder a estímulos de entrada (chamadas percepções), e por meio de um processo de raciocínio e planejamento, gerar uma saída no formato de ações no ambiente (WOOLDRIDGE, 2009). O paradigma de sistemas multiagentes fornece os benefícios de: (i) possibilitar resolver problemas complexos de forma distribuída, sem ponto central de processamento e falha, onde recursos e capacidades são distribuídos pela rede de agentes interconectados; (ii) permitir a modelagem de sistemas através da concepção de agentes autônomos inteligentes, capazes de se comunicar, como principal componente; e (iii) dentro do contexto deste trabalho, permitir a simulação de comportamentos de entidades complexas, como seres humanos.
-
-**Modelagem matemática na disseminação de doenças**
-
-Embora tenha sido nas "Epidemias" de Hipócrates que a busca pela compreensão da dinâmica da disseminação das epidemias começou, Bernoulli é considerado o pioneiro no domínio da modelagem matemática na área da epidemiologia. Em seu trabalho de 1760, o mesmo demonstrou a eficácia da técnica de variolização, que consistia na inoculação de varíola benigna a fim de evitar complicações da doença (BERNOULLI, 1760). No entanto, foi em 1927 que Kermack e McKendrick propuseram o que pode ser visto como o ponto de partida para o projeto dos modelos matemáticos atuais (KERMACK; MCKENDRICK, 1927);
-
-- modelo SIR. É possível levar em conta diferentes tipos de modelos matemáticos, a depender da divisão da população a ser modelada. O referido modelo SIR segmenta os indivíduos como (ALMEIDA, 2014):
-- Suscetíveis: Indivíduos que ainda não desenvolveram imunidade contra a infecção, o que significa que podem se tornar infectadas se expostas a ela.
-- Infectados: Indivíduos que contraíram a doença e têm a capacidade de transmiti-la para pessoas suscetíveis.
-- Recuperados: Indivíduos que se recuperaram da infecção e adquiriram imunidade, portanto não contribuem para a propagação da doença.
-
-Muitas infecções têm um intervalo de tempo no qual um indivíduo foi infectado, mas ainda não apresenta sintomas ou apresenta quadro assintomático; nesse momento, cujo processo epidemiológico é denominado incubação (ALENE, 2021), o indivíduo é considerado exposto. Neste caso, o modelo SEIR apresenta uma nova classe de indivíduos, caracterizando a letra “E”, de exposto, na sigla.
-
-Algumas infecções, como as infecções causadas pelos coronavírus
-
-responsáveis pelo resfriado comum, não conferem imunidade duradoura, ausentes de uma fase definida de recuperação (EDRIDGE, 2020). Portanto, após uma infecção, os indivíduos tornam-se novamente suscetíveis. Nesse caso, configuram-se os modelos SIS. A partir dos modelos expostos, existem outras derivações, como SIRS ou SEIRS.
-
-De acordo com as características do COVID-19, o modelo SEIR se encontra como o mais apropriado para ser incorporado na simulação.
-
-Figura 2 - Representação visual do modelo SEIR
+Figure 1 - Visual representation of the SEIR model
 
 ![](/paper/figure-2.jpeg)
 
-Fonte: Autoria Própria (2023)
+Source: Own Authorship (2023)
 
-Além disso, o modelo SEIR pode ser implementado de forma analítica por meio das equações diferenciais apresentadas nas equações (1), (2), (3) e (4). Em todas as equações apresentadas, 𝑡se refere ao tempo em dias.
+In addition, the SEIR model can be implemented analytically through differential equations presented in equations (1), (2), (3), and (4). In all the presented equations, 𝑡 refers to time in days.
 
-E: Humanos expostos (latentes)
+E: Exposed (latent) humans
 
-ε: Taxa per capita de progressão para estado infeccioso
+ε: Per capita rate of progression to infectious state
 
 / = Λ − β − µ γ − µ . (1) / = β − ε (2)
 
@@ -144,31 +98,29 @@ E: Humanos expostos (latentes)
 
 / = γ − µ (4)
 
-Com
-
 ---
 
-Figura 3 - Dinâmica epidemiológica do modelo SEIR
+Figure 3 - Dinâmica epidemiológica do modelo SEIR
 
 ![](/paper/figure-3.jpeg)
 
-Fonte: Autoria Própria (2023)
+Source: Own Authorship (2023)
 
 **Conceitos epidemiológicos pertinentes**
 
 Os vírus estão "no precipício da vida e da morte" (ANDREWES, 1967). No microscópio, um vírus parece um cristal geométrico morto. Mas, quando faz de uma célula de um ser vivo seu hospedeiro, pode replicar-se rapidamente.
 
-Um vírus é constituído por, basicamente, duas partes: material genético e cápsula proteica. De forma simplificada, depois de se infiltrar em uma célula, o vírus reescreve o DNA da célula e transforma-a para que produza centenas ou mesmo milhares de cópias de si próprio. Quando estas cópias do vírus deixam a célula afetada, ficam novamente sem vida até entrarem em outra célula e o ciclo é reiniciado. Os danos celulares causados pelo processo de reescrita genética causam a doença. A Figura 2 representa o processo infeccioso de doenças virais.
+Um vírus é constituído por, basicamente, duas partes: material genético e cápsula proteica. De forma simplificada, depois de se infiltrar em uma célula, o vírus reescreve o DNA da célula e transforma-a para que produza centenas ou mesmo milhares de cópias de si próprio. Quando estas cópias do vírus deixam a célula afetada, ficam novamente sem vida até entrarem em outra célula e o ciclo é reiniciado. Os danos celulares causados pelo processo de reescrita genética causam a doença. A Figure 2 representa o processo infeccioso de doenças virais.
 
-Figura 4 - A relação entre infecciosidade e sintomas do vírus
+Figure 4 - A relação entre infecciosidade e sintomas do vírus
 
 ![](/paper/figure-4.jpeg)
 
 Fonte: Rhodes (1996)
 
-Os rótulos acima da linha na Figura 2 descrevem a infecciosidade do hospedeiro, enquanto os rótulos abaixo da linha descrevem a dinâmica da doença. Observe que o período infeccioso pode começar antes ou após o início dos sintomas.
+Os rótulos acima da linha na Figure 2 descrevem a infecciosidade do hospedeiro, enquanto os rótulos abaixo da linha descrevem a dinâmica da doença. Observe que o período infeccioso pode começar antes ou após o início dos sintomas.
 
-O objetivo de um vírus entrar em uma célula viva é se multiplicar; no entanto, quando o hospedeiro desenvolve anticorpos para combater a infecção, o vírus precisa encontrar outro hospedeiro. Como resultado de ser infectado, uma pessoa geralmente se torna infecciosa, isto é, capaz de infectar outras pessoas e manifestar sintomas de forma a ficar doente. Um hospedeiro infectado apresenta sintomas, que geralmente são métodos para ajudar o vírus a se propagar para novos hospedeiros, como tosse, por exemplo. Entretanto, a doença não pode ser muito debilitante porque o contágio cessa se o hospedeiro morrer. A Figura 2 mostra a ligação entre cada uma das fases da infecção, com cada fase detalhada abaixo.
+O objetivo de um vírus entrar em uma célula viva é se multiplicar; no entanto, quando o hospedeiro desenvolve anticorpos para combater a infecção, o vírus precisa encontrar outro hospedeiro. Como resultado de ser infectado, uma pessoa geralmente se torna infecciosa, isto é, capaz de infectar outras pessoas e manifestar sintomas de forma a ficar doente. Um hospedeiro infectado apresenta sintomas, que geralmente são métodos para ajudar o vírus a se propagar para novos hospedeiros, como tosse, por exemplo. Entretanto, a doença não pode ser muito debilitante porque o contágio cessa se o hospedeiro morrer. A Figure 2 mostra a ligação entre cada uma das fases da infecção, com cada fase detalhada abaixo.
 
 Período latente: Este é o intervalo de tempo durante uma infecção no qual o vírus ainda não desenvolveu o potencial de transmissão para um novo hospedeiro.
 
@@ -186,7 +138,7 @@ No contexto de surtos de doenças infecciosas, como pandemias, "achatar a curva"
 
 A expressão "achatar a curva" refere-se a uma curva epidemiológica, frequentemente representada graficamente e que mostra o número de novos casos de uma doença infecciosa ao longo do tempo. Em um surto descontrolado, a curva apresenta uma elevação rápida e acentuada, indicando um aumento significativo no número de infecções em um curto período de tempo. Esta curva acentuada implica uma carga significativa nos sistemas de saúde, podendo sobrecarregar os hospitais e levando a um aumento da frequência de casos graves e de óbitos.
 
-Figura 5 - Gráfico de achatamento da curva
+Figure 5 - Gráfico de achatamento da curva
 
 ![](/paper/figure-5.jpeg)
 
@@ -460,17 +412,17 @@ Em cada linguagem foram desenvolvidos dois programas, um otimizado e outro não.
 
 Foram realizados testes iterativos para um conjunto de indivíduos com o tamanho da população de Campinas, cerca de 1 milhão e 100 mil habitantes, do programa em cada linguagem, com indivíduos e localizações aleatórias, a partir dos quais foram gerados os seguintes gráficos utilizando a biblioteca Matplotlib de Python em um Jupyter Notebook:
 
-Figura 6 - Gráfico de análise do uso de memória das linguagens
+Figure 6 - Gráfico de análise do uso de memória das linguagens
 
 ![](/paper/figure-6.jpeg)
 
-Fonte: Autoria própria (2023)
+Source: Own Authorship (2023)
 
-Figura 7 - Gráfico de análise do tempo de execução das linguagens
+Figure 7 - Gráfico de análise do tempo de execução das linguagens
 
 ![](/paper/figure-7.jpeg)
 
-Fonte: Autoria própria (2023)
+Source: Own Authorship (2023)
 
 A partir da análise dos dados, foi decidido que a linguagem de programação que será utilizada no desenvolvimento do modelo será o TypeScript, que, sem otimização, apresentou ótimos resultados em ambos os testes, além de apresentar uma ampla gama de bibliotecas, ecossistema com comunidade bastante ativa e sintaxe produtiva. No futuro, pode-se, também, ser feito uma transpilação do código desenvolvido em TypeScript para JavaScript devido ao fato do primeiro ser um superconjunto do segundo, possibilitando, assim, uma exportação do modelo para uma versão web através de um site e/ou API REST, favorecendo a acessibilidade à pesquisa e ao modelo de simulação.
 
@@ -598,11 +550,11 @@ O algoritmo de disseminação é acionado apenas uma vez para cada atividade. A 
 
 Para escolher qual algoritmo de ordenação será utilizado no vetor de atividades, realizamos diversos testes com diferentes algoritmos. A seguir está o gráfico mostrando a relação de tempo de execução, em segundos, por interação, mostrando a performance de cada algoritmo na ordenação de um milhão de atividades de duração aleatória, que simboliza o pior cenário possível onde cada indivíduo está em uma atividade diferente.
 
-Figura 8 - Gráfico de análise dos algoritmos de ordenação
+Figure 8 - Gráfico de análise dos algoritmos de ordenação
 
 ![](/paper/figure-8.jpeg)
 
-Fonte: Autoria própria (2023)
+Source: Own Authorship (2023)
 
 A partir das análises dos dados, foi escolhido o algoritmo de _Quick Sort_ para ser utilizado no processo de ordenação das atividades, o que condiz com o fato de ser um dos mais eficientes e rápidos dentre todos os outros (XIANG, 2011), e ter complexidade temporal e espacial de ( ) nos melhores casos, proporcionando ótima performance.
 
@@ -612,21 +564,21 @@ A disseminação é uma abstração do conceito de autômatos celulares na Vizin
 
 Esse fluxo é realizado, portanto, como uma linha de produção. De forma iterativa, o algoritmo extrai todas as informações começando a partir de cada característica e estado de saúde dos indivíduos, bem como características da atividade, ambiente virtual, parâmetros globais acerca do vírus, seu comportamento e probabilidades dos modificadores anteriormente definidos, como o tipo de máscara e vacina. Desse modo, é determinada a probabilidade de disseminação da doença utilizando as taxas de risco da atividade, risco individual de cada indivíduo e prevalência de casos na região. Todos os valores dos modificadores e exemplos de cálculos são mostrados durante a fundamentação teórica. Se esta probabilidade for maior que um limiar mínimo ainda a ser estipulado, é considerado que o indivíduo contraiu a doença.
 
-Figura 9 - Fluxograma simplificado do funcionamento do projeto
+Figure 9 - Fluxograma simplificado do funcionamento do projeto
 
 ![](/paper/figure-9.jpeg)
 
-Fonte: Autoria própria (2023)
+Source: Own Authorship (2023)
 
 **Validação do modelo de disseminação utilizando o COVID-19**
 
 Para simular diferentes cenários com diferentes configurações de uso de máscaras, distanciamento social e tráfego de pessoas, precisamos primeiro ter um modelo capaz de gerar o mesmo números de mortes e casos nas condições exatas do cenário real da pandemia. Desenvolvemos a seguinte metodologia para a validação do modelo:
 
-Figura 10 - Metodologia para validação do modelo de disseminação
+Figure 10 - Metodologia para validação do modelo de disseminação
 
 ![](/paper/figure-10.png)
 
-Fonte: Autoria própria (2023)
+Source: Own Authorship (2023)
 
 Antes de testarmos o modelo para a simulação de cenários dado características de doenças potencialmente epidêmicas recentes, precisamos primeiro validar utilizando dados de uma pandemia que já aconteceu, como a do COVID-19, pois senão não saberemos se os cenários simulados são verdadeiros ou não.
 
@@ -642,50 +594,50 @@ Além disso, nossa pesquisa comprovou, até o presente momento, que é computaci
 
 Como resultado parcial desta pesquisa, foram simulados, seguindo o embasamento bibliográfico, teórico e metodológico estabelecido, 3 anos da pandemia de COVID-19 em Campinas: de 2020 a 2023. Os gráficos abaixo representam, de forma ilustrativa, os resultados obtidos a partir da modelagem com a respectiva acurácia quando comparados com os dados reais.
 
-Figura 11: Gráfico comparativo de casos totais ao longo do tempo
+Figure 11: Gráfico comparativo de casos totais ao longo do tempo
 
 ![](/paper/figure-11.jpeg)
 
-Fonte: Autoria própria (2023)
+Source: Own Authorship (2023)
 
-Figura 12: Gráfico comparativo da distribuição de casos totais
+Figure 12: Gráfico comparativo da distribuição de casos totais
 
 ![](/paper/figure-12.jpeg)
 
-Figura 13: Gráfico comparativo de novos casos ao longo do tempo
+Figure 13: Gráfico comparativo de novos casos ao longo do tempo
 
 ![](/paper/figure-13.jpeg)
 
-Fonte: Autoria própria (2023)
+Source: Own Authorship (2023)
 
-Figura 14: Gráfico comparativo de mortes ao longo do tempo
+Figure 14: Gráfico comparativo de mortes ao longo do tempo
 
 ![](/paper/figure-14.jpeg)
 
-Figura 15: Gráfico comparativo da distribuição de mortes
+Figure 15: Gráfico comparativo da distribuição de mortes
 
 ![](/paper/figure-15.jpeg)
 
-Fonte: Autoria própria (2023)
+Source: Own Authorship (2023)
 
-Figura 16: Gráfico comparativo de novas mortes ao longo do tempo
+Figure 16: Gráfico comparativo de novas mortes ao longo do tempo
 
 ![](/paper/figure-16.jpeg)
 
-Fonte: Autoria própria (2023)
+Source: Own Authorship (2023)
 46
 
-Figura 17: Gráfico comparativo de mortes por total de casos ao longo do tempo
+Figure 17: Gráfico comparativo de mortes por total de casos ao longo do tempo
 
 ![](/paper/figure-17.jpeg)
 
-Fonte: Autoria própria (2023)
+Source: Own Authorship (2023)
 
-Figura 18: Gráfico comparativo de mortes por total de casos ao longo do tempo
+Figure 18: Gráfico comparativo de mortes por total de casos ao longo do tempo
 
 ![](/paper/figure-18.jpeg)
 
-Fonte: Autoria própria (2023)
+Source: Own Authorship (2023)
 
 O cenário simulado reflete o uso de máscaras e a vacinação da população análogo ao que ocorreu de fato durante a pandemia. Os dados simulados, no entanto, mostram um número inflacionado de casos e mortes em comparação com os dados reais observados em Campinas durante o mesmo período. Especificamente, a simulação resultou em aproximadamente 720 mil casos e 20 mil mortes, enquanto em Campinas foram registrados cerca de 200 mil casos e 5 mil mortes.
 
