@@ -97,6 +97,14 @@ export default function DataVisualization() {
     metrics.reduce((acc, metric) => ({ ...acc, [metric]: 'line' }), {})
   )
 
+  const getRealAndSimulatedCases = () => {
+    return `209,500 - 289,943`
+  }
+
+  const getRealAndSimulatedDeaths = () => {
+    return `5,360 - 7,752`
+  }
+
   useEffect(() => {
     Papa.parse<DataItem>(REAL_DATA_SOURCE, {
       download: true,
@@ -112,7 +120,7 @@ export default function DataVisualization() {
       dynamicTyping: true,
       complete: (result) => {
         setSimulatedData(result.data)
-        setLoaded(true)
+        setTimeout(() => setLoaded(true), 1000)
       }
     })
   }, [])
@@ -129,58 +137,88 @@ export default function DataVisualization() {
   }
 
   return (
-    <div className="w-full flex flex-col gap-y-4">
-      <h4 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-lg font-semibold tracking-tighter text-transparent sm:text-xl xl:text-2xl/none">
-        Visualization
-      </h4>
+    <div className="w-full flex flex-col gap-y-6">
       {loaded ? (
-        metrics.map((metric, i) => (
-          <Tabs key={`result-data-${i}`} defaultValue="line" className="flex flex-col gap-y-4">
-            <div className="flex flex-row justify-between items-center">
-              <p className="font-sans-heading sm:text-sm md:text-base from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text">
-                {metricLabels[metric as Metric]}
-              </p>
-              <TabsList>
-                <TabsTrigger className="w-auto" value="line">
-                  Line chart
-                </TabsTrigger>
-                {/* <TabsTrigger className="w-auto" value="bar">
+        <>
+          <div className="w-full flex items-center justify-center border border-muted px-4 p-2 rounded-md">
+            <div className="flex md:flex-row flex-col gap-y-4 justify-between w-full">
+              <div>
+                <span className="text-sm font-semibold tracking-tight">Simulation time</span>
+                <p className="text-muted-foreground text-sm tracking-tight">~2 hours</p>
+              </div>
+              <div>
+                {/* todo: fetch from csv */}
+                <span className="text-sm font-semibold tracking-tight">Total days simulated</span>
+                <p className="text-muted-foreground text-sm tracking-tight">1,020 (~3 years)</p>
+              </div>
+              <div>
+                <span className="text-sm font-semibold tracking-tight">
+                  Total cases (real - simulated)
+                </span>
+                <p className="text-muted-foreground text-sm tracking-tight">
+                  {getRealAndSimulatedCases()}
+                </p>
+              </div>
+              <div>
+                <span className="text-sm font-semibold tracking-tight">
+                  Total deaths (real - simulated)
+                </span>
+                <p className="text-muted-foreground text-sm tracking-tight">
+                  {getRealAndSimulatedDeaths()}
+                </p>
+              </div>
+            </div>
+          </div>
+          <h4 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-lg font-semibold tracking-tighter text-transparent sm:text-xl xl:text-2xl/none">
+            Visualization
+          </h4>
+          {metrics.map((metric, i) => (
+            <Tabs key={`result-data-${i}`} defaultValue="line" className="flex flex-col gap-y-4">
+              <div className="flex flex-row justify-between items-center">
+                <p className="font-sans-heading sm:text-sm md:text-base from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text">
+                  {metricLabels[metric as Metric]}
+                </p>
+                <TabsList>
+                  <TabsTrigger className="w-auto" value="line">
+                    Line chart
+                  </TabsTrigger>
+                  {/* <TabsTrigger className="w-auto" value="bar">
                   Barra
                 </TabsTrigger> */}
-              </TabsList>
-            </div>
+                </TabsList>
+              </div>
 
-            <TabsContent value="line">
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart
-                  data={mergeData(realData, simulatedData, metric)}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="simulated"
-                    stroke="#FFD200"
-                    dot={false}
-                    activeDot={{ r: 5 }}
-                    name={'Simulated'}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="real"
-                    stroke="#0018FF"
-                    dot={false}
-                    activeDot={{ r: 5 }}
-                    name={'Real'}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </TabsContent>
-            {/* <TabsContent value="bar">
+              <TabsContent value="line">
+                <ResponsiveContainer width="100%" height={400}>
+                  <LineChart
+                    data={mergeData(realData, simulatedData, metric)}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="simulated"
+                      stroke="#FFD200"
+                      dot={false}
+                      activeDot={{ r: 5 }}
+                      name={'Simulated'}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="real"
+                      stroke="#0018FF"
+                      dot={false}
+                      activeDot={{ r: 5 }}
+                      name={'Real'}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </TabsContent>
+              {/* <TabsContent value="bar">
               <ResponsiveContainer width="100%" height={400}>
                 <BarChart
                   data={mergeData(realData, simulatedData, metric)}
@@ -196,8 +234,9 @@ export default function DataVisualization() {
                 </BarChart>
               </ResponsiveContainer>
             </TabsContent> */}
-          </Tabs>
-        ))
+            </Tabs>
+          ))}
+        </>
       ) : (
         <p className="font-sans-heading text-muted-foreground sm:text-sm md:text-base">
           Loading...

@@ -13,14 +13,6 @@ type ModelOutputProps = {
 export default function Output({ configuration }: ModelOutputProps) {
   const [output, setOutput] = useState(['runId'])
 
-  const getRealAndSimulatedCases = () => {
-    return `209,500 - 289,943`
-  }
-
-  const getRealAndSimulatedDeaths = () => {
-    return `5,360 - 7,752`
-  }
-
   return (
     <Tabs defaultValue="results" className="w-full">
       <TabsList className="w-full">
@@ -81,37 +73,6 @@ export default function Output({ configuration }: ModelOutputProps) {
                   </section>
                 </div> */}
         <div className="flex flex-col w-full mt-2 gap-y-4">
-          <div className="w-full flex items-center justify-center">
-            <section className="dark:border-muted bg-background dark:bg-muted/50 rounded px-4 pt-3 pb-4 border flex flex-col w-full">
-              <div className="flex flex-row justify-between">
-                <div>
-                  <span className="text-sm font-semibold tracking-tight">Simulation time</span>
-                  <p className="text-muted-foreground text-sm tracking-tight">~2 hours</p>
-                </div>
-                <div>
-                  {/* todo: fetch from csv */}
-                  <span className="text-sm font-semibold tracking-tight">Total days simulated</span>
-                  <p className="text-muted-foreground text-sm tracking-tight">1,020 (~3 years)</p>
-                </div>
-                <div>
-                  <span className="text-sm font-semibold tracking-tight">
-                    Total cases (real and simulated)
-                  </span>
-                  <p className="text-muted-foreground text-sm tracking-tight">
-                    {getRealAndSimulatedCases()}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-sm font-semibold tracking-tight">
-                    Total deaths (real and simulated)
-                  </span>
-                  <p className="text-muted-foreground text-sm tracking-tight">
-                    {getRealAndSimulatedDeaths()}
-                  </p>
-                </div>
-              </div>
-            </section>
-          </div>
           <DataVisualization />
         </div>
       </TabsContent>
