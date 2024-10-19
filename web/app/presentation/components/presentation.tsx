@@ -11,10 +11,10 @@ export default function Presentation() {
         <div className="flex flex-col text-center">
           <p className="text-pandemica-yellow text-base font-semibold">OOPS</p>
           <h2 className="from-foreground to-muted-foreground mt-4 h-14 bg-gradient-to-r bg-clip-text text-3xl font-semibold tracking-tighter text-transparent sm:text-4xl xl:text-5xl/none">
-            Presentation isn{"'"}t currently available.
+            The presentation isn{"'"}t currently available.
           </h2>
           <p className="text-muted-foreground mt-4 text-base leading-7">
-            But since you{"'"}re here, why not check out our new English full paper or our
+            But since you{"'"}re here, why not check out the new entirely English paper or the
             interactive simulation?
           </p>
           <div className="mt-6 flex items-center justify-center gap-x-4">

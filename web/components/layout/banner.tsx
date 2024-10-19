@@ -19,7 +19,7 @@ export default function Banner() {
       )}
     >
       <p className="sm:text-sm text-xs sm:p-0 p-5 text-center">
-        <b>New ✨</b> Paper is now fully available in English.{' '}
+        <b>New ✨</b> From Oct. 19, the paper will be fully available in English.{' '}
         <Link href="/paper" className="underline underline-offset-2">
           Check it out →
         </Link>

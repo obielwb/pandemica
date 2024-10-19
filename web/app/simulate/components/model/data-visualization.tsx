@@ -165,17 +165,13 @@ export default function DataVisualization({ showVisualize = true }: { showVisual
                   </div>
                   <div>
                     <span className="text-sm font-semibold tracking-tight">
-                      Total deaths (real - simulated)
+                      Deaths (real - simulated)
                     </span>
                     <p className="text-muted-foreground text-sm tracking-tight">
                       {getRealAndSimulatedDeaths()}
                     </p>
                   </div>
                 </div>
-
-                <h4 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-lg font-semibold tracking-tighter text-transparent sm:text-xl xl:text-2xl/none">
-                  Visualization
-                </h4>
               </>
             )}
           </div>
