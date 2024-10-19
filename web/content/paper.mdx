@@ -18,15 +18,22 @@ This project aims to propose a simulation model based on the theory of cellular 
 
 In the proposed model, we argue that it is not only possible to simulate the pandemic scenario, predicting the number of cases and deaths but also to study different containment and mitigation parameters, such as different uses of masks, social distancing, and vaccination, for example. In this way, it is possible to determine how each variable influences the overall pandemic scenario, allowing competent entities to know how each measure contributes to the fight against emerging diseases, and for the population to more clearly understand how their actions affect the pandemic as a whole, in order to better weigh them.
 
-## Research Problem
+<details>
+<summary>**Research problem**</summary>
 
 How to propose a reliable pandemic simulation, incorporating characteristics of the virus and its spread among a population, capable of generating different hypothetical scenarios based on changes in virus mitigation and combat variables, leveraging the most of city-scale data?
 
-## Hypothesis
+</details>
+
+<details>
+<summary>**Hypothesis**</summary>
 
 The use of cellular agents has great potential for simulating large populations of virtually living individuals (WHITE, 2007), who possess some form of intelligence, making the modeling of a virtual epidemic technically feasible. By adopting relevant and pertinent mathematical relations (WILLOX, 2003), biological characteristics, and epidemiological bulletins, in conjunction with suitable technologies, it is expected to establish an effective, accurate simulation model capable of generating pandemic reports that are faithful to the numbers of cases and deaths in various simulated scenarios, compared to the real outspread of the disease within a city-level scope.
 
-## Justification
+</details>
+
+<details>
+<summary>**Justification**</summary>
 
 The COVID-19 pandemic has caused significant impact on public health and the global economy since its onset in 2019 (FU, 2021). By the beginning of 2023, the pandemic had caused an estimated global loss of USD 29.4 trillion (VISCUSI, 2023), in addition to impacts on the physical and mental health of the population, and an increase in waste generation (organic and inorganic), which have direct and indirect impacts on the environment, such as air, water, and soil pollution (ISLAM et al., 2016). Events like these result in significantly negative impacts on society and its environment. In this sense, it is extremely necessary that measures be taken to prevent and contain the next major pandemic.
 
@@ -35,6 +42,8 @@ However, although there is extensive literature on the mathematical modeling of 
 This research is relevant as it can provide important information for public managers' decision-making regarding the fight against emerging diseases. Additionally, it can contribute to the global development of more effective pandemic control strategies, considering viral particularities, but mainly regional specifics.
 
 Finally, conducting this research is also pertinent as it expands knowledge on the application of cellular agents in epidemiology and strengthens collaboration between the institution and other organizations working on pandemic themes.
+
+</details>
 
 ## Scope
 
@@ -374,51 +383,56 @@ Source: Adapted from Aslaner et al. (2021)
 
 ## Methodology
 
-**Critérios do Produto**
+**Procut criteria**
 
-- Características da população, cidade e atividades que compõem as rotinas dos indivíduos podem ser alteradas, excluídas ou adicionadas;
-- Cada indivíduo tem suas próprias características que os diferenciam dos demais, como idade, sexo, casa, escola e/ou trabalho, que são definidas a partir do senso da cidade a ser simulada;
-- Algoritmo que distribua estas características únicas a todos os indivíduos na simulação;
-- Algoritmo de disseminação do vírus que consiga, a partir do estado dos indivíduos, seu ambiente e características da doença determinar uma probabilidade de infecção;
-- Todos os indivíduos possuem sua própria rotina com uma série de atividades pré definidas com base em suas características;
-- É possível alterar variáveis de combate à doença, resultando assim em diferentes cenários pandêmicos.
+- The characteristics of the population, city, and activities that make up individuals' routines can be altered, deleted, or added to the simulation by a user-friendly interface;
+- Each individual has their own characteristics that differentiate them from others, such as age, sex, home, school, and/or work, which are defined from the census of the city to be simulated;
+- A neural network-like algorithm that distributes these unique characteristics to all individuals in the simulation intelligently;
+- A virus dissemination algorithm that can determine a probability of infection based on the state of individuals, their environment, and disease characteristics;
+- All individuals have their own routine with a series of pre-defined activities based on their characteristics;
+- It is possible to change disease combat variables, thus resulting in different pandemic scenarios.
 
-**Materiais e softwares utilizados**
+**Materials used**
 
-Para a análise exploratória dos dados e criação dos gráficos foram utilizadas bibliotecas da linguagem de programação Python em conjunto com Jupyter Notebook, devido ao seu fácil uso e uma gama de funcionalidades bastante acessíveis.
+For exploratory data analysis and graph creation, libraries from the Python programming language were used in conjunction with Jupyter Notebook, due to its easy use and a range of quite accessible functionalities.
 
-Para a simulação, foi utilizada a linguagem de programação TypeScript, que possui um ecossistema bastante popular, cuja comunidade e bibliotecas servem como facilitadoras do processo de desenvolvimento. Além disso, por ser derivada de JavaScript, a simulação pode ser convertida de forma a poder ser feita em qualquer website sem maiores complicações.
+For the simulation, the TypeScript programming language was used, which has a very popular ecosystem, whose community and libraries serve as facilitators of the development process. Moreover, since it is derived from JavaScript, the simulation can be converted so that it can be performed on any website without major complications.
 
-- Desenvolvimento:
-  - Ambiente de desenvolvimento integrado (IDE);
-  - Bibliotecas de processamento de matrizes e vetores Numpy e Pandas;
-  - Bibliotecas de criação de gráficos e visualização de dados Matplotlib e Plotly;
-  - Motor de execução Bun.
-- Os computadores utilizados para realizar esta pesquisa possuem as seguintes especificações de _hardware_:
-- Computador pessoal 1
-  - Processador AMD Ryzen 5 5ª geração;
-  - 24 GB de memória RAM;
+<details>
+<summary>**Software**</summary>
+- Integrated Development Environment (IDE);
+- Numpy and Pandas matrix and vector processing libraries;
+- Matplotlib and Plotly data visualization and graph creation libraries;
+- Bun execution engine.
+
+</details>
+<details>
+<summary>**Hardware**</summary>
+- Personal computer 1
+  - AMD Ryzen 5 5th generation processor;
+  - 24 GB of RAM;
   - Windows 11;
-  - Armazenamento em disco de SSD M.2 NVMe 512 GB + HD 1TB.
-- Computador pessoal 2
-- Processador Intel i5 8ª geração;
-- 8 GB de memória RAM;
+  - Storage on 512 GB M.2 NVMe SSD + 1TB HD.
+- Personal computer 2
+  - Intel i5 8th generation processor;
+  - 8 GB of RAM;
   - Windows 11;
-  - Armazenamento em disco de SSD SATA 480 GB.
-- Computador pessoal 3
-  - Processador Intel i7 10ª geração;
-  - 8 GB de memória RAM;
+  - Storage on 480 GB SATA SSD.
+- Personal computer 3
+  - Intel i7 10th generation processor;
+  - 8 GB of RAM;
   - Windows 11;
-  - Armazenamento em disco de SSD PCLe 256 GB.
-- Computador institucional
-  - Processador Apple M1;
-  - 16 GB de memória RAM;
+  - Storage on 256 GB PCLe SSD.
+- Institutional computer
+  - Apple M1 processor;
+  - 16 GB of RAM;
   - macOS Ventura;
-  - Armazenamento em disco de SSD M.2 NVMe 512 GB.
+  - Storage on 512 GB M.2 NVMe SSD.
+</details>
 
-**Etapas**
+### Steps
 
-**Representação da cidade virtualmente**
+**Virtual representation of the city**
 
 Representing a city virtually with accuracy and reliability is a challenge. Therefore, we chose to abstract the general dynamics of a city, based on the geographical concepts of fixity and flows. Fixities refer to the static elements of the city, such as buildings, roads, and other infrastructures, which are the permanent components that form the physical skeleton of the city. On the other hand, flows represent dynamic elements like the movement of people, vehicles, and information. These flows are crucial for determining the daily functioning of a city (BARROS, 2020).
 
@@ -430,47 +444,55 @@ To simulate the city, it is necessary to have the social and universal census of
 
 The requested information is important in defining the characteristics of individuals, their routines, and the rate of virus dissemination. Due to minor inconsistencies in the data obtained from the 2010 IBGE census, it was necessary to develop an algorithm to normalize the data.
 
-**Representação dos indivíduos na cidade**
+**Virtual representation of the city population**
 
-São atribuídas a cada indivíduo dentro da cidade certas atividades de forma aleatória com base em suas características definidas de acordo com os dados sociodemográficos. Estas atividades envolvem locomoção e encontro com outros indivíduos, que podem categorizar cenários de lazer, trabalho, ou estudo, e representam a rotina deste indivíduo na cidade.
+Each individual within the city is assigned certain activities at random based on their defined sociodemographic characteristics. These activities involve movement and interaction with other individuals and may categorize scenarios of leisure, work, or study, representing the daily routine of the individual in the city.
 
-Além das rotinas e suas próprias características, foi necessário distribuir a população em suas respectivas residências a fim de obter-se uma rotina de trabalho-casa ou escola-casa.
+In addition to routines and their own characteristics, it was necessary to distribute the population across their respective residences to establish work-home or school-home routines.
 
-As residências foram distribuídas com base nos dados do IBGE, bem como a quantidade de indivíduos por residência. A idade destes indivíduos também foi levada em consideração nesta distribuição, uma vez que existem parâmetros relacionados. Por exemplo, é improvável um cenário no qual um indivíduo de zero a quatro anos mora em uma residência sozinho.
+Residences were allocated based on IBGE data as well as the number of individuals per residence. The age of these individuals was also considered in this distribution since there are related parameters. For example, it is unlikely that a scenario in which an individual aged zero to four years lives alone in a residence.
 
-Portanto, a população virtual modelada apresenta características detalhadas análogas à vida real. Dessa forma, cada indivíduo possui os seguintes atributos devidamente distribuídos de acordo com os dados disponíveis, de forma coerente e pertinente:
+Thus, the virtually modeled population reflects detailed characteristics analogous to real life. Therefore, each individual possesses the following attributes properly distributed according to available data, in a coherent and relevant manner:
 
-- Identificação;
-- Sexo;
-- Faixa etária;
-- Status educacional;
-- Residência:
-  - Identificação;
-  - Região;
-  - Número de residentes;
-  - Residentes (demais indivíduos).
-- Renda;
-- Meio de transporte (público ou privado);
-- Tipos de ocupação (trabalho e/ou estudo);
-- Ocupações:
-  - Identificação;
-  - Tipo (trabalho e estudo);
-  - Número de indivíduos.
-- Vacina:
-  - Tipo;
+- Identification;
+- Gender;
+- Age range;
+- Educational status;
+- Residence:
+  - Identification;
+  - Region;
+  - Number of residents;
+  - Other residents.
+- Income;
+- Transportation means (public or private);
+- Types of occupation (work and/or study);
+- Occupations:
+  - Identification;
+  - Type (work and/or study);
+  - Number of individuals.
+- Vaccine:
+  - Type;
   - Doses.
-- Máscara;
-- Está hospitalizado?;
-- Está morto?;
-- Está com COVID?;
-- Já teve COVID?;
-- Rotina - conjunto de atividades compostas por:
-- Identificação;
-- Categoria (lazer, afazeres, trabalho, transporte, estudo, etc);
-- Duração;
-- Distância entre indivíduos;
-- Volume da voz dos indivíduos;
-- Ambiente (fechado ou aberto).
+- Mask wearing;
+- Hospitalized?;
+- Deceased?;
+- Current COVID status?;
+- Past COVID infection?;
+- Routine - a set of activities consisting of:
+  - Identification;
+  - Category (leisure, chores, work, transport, study, etc.);
+  - Duration;
+  - Distance between individuals;
+  - Volume of individuals' voices;
+  - Environment (indoor or outdoor).
+
+**Neural network for pertinent demographics and activity assignment**
+
+In the virtual city simulation, a neural network is employed to assign both demographic characteristics and daily activities to each individual, ensuring a high degree of realism that mirrors actual population dynamics. This network uses a comprehensive set of input data, including sociodemographic profiles described above, to facilitate precise modeling of urban demographics.
+
+The neural network responsible for distributing the characteristics and routines of the population is a feedforward type with a single hidden layer. It employs the backpropagation algorithm for training. The architecture consists of an input layer with 10 neurons, reflecting the various sociodemographic attributes like age, sex, income, etc. The hidden layer contains 20 neurons, enabling the network to capture complex patterns and interdependencies among the input data. The output layer comprises 10 neurons, each corresponding to specific attributes or activities, such as type of employment, educational activities, or leisure actions.
+
+This approach enables the simulation to assign realistic attributes and behaviors to the virtual population with a fidelity that closely replicates real-world dynamics. By leveraging this high-resolution demographic and behavioral data, the simulation can provide actionable insights into how different demographic groups interact within urban settings. This high level of detail can be pivotal in public health crisis management, as it allows for the precise targeting of interventions and resources to specific neighborhoods or demographic groups based on simulated outcomes. Such targeted strategies are not widely implemented in current models, making this approach particularly innovative and valuable for planning and response activities in real-time scenarios.
 
 **Sincronização das atividades na simulação**
 
@@ -505,18 +527,6 @@ Nos inspiramos neste algoritmo para propor a lógica de abordagem da sincroniza�
 Toda vez que uma nova atividade se inicia, é adicionada ao vetor e será acionado o algoritmo de disseminação para ela de acordo com suas características e de seus indivíduos, mudando seus estados de acordo com o resultado da disseminação.
 
 O algoritmo de disseminação é acionado apenas uma vez para cada atividade. A cada momento, as atividades do início do vetor são computadas, seu tempo é adicionado ao tempo global da simulação e ela é removida do vetor, esse tempo é removido de todas as outras atividades acontecendo no momento. Após isso, é feita uma busca por todos os indivíduos para ver se a atividade em que estavam já acabou e se começam uma nova naquele tempo da simulação, e assim o vetor é ordenado novamente. Optamos por esta estratégia pois o tempo de execução do programa depende inteiramente da velocidade dos algoritmos de disseminação, ordenação e procura, e não há a necessidade de um gargalo proposital para alterar o tempo da simulação de acordo com um tempo real.
-
-**Análise da eficácia de diferentes algoritmos de ordenação**
-
-Para escolher qual algoritmo de ordenação será utilizado no vetor de atividades, realizamos diversos testes com diferentes algoritmos. A seguir está o gráfico mostrando a relação de tempo de execução, em segundos, por interação, mostrando a performance de cada algoritmo na ordenação de um milhão de atividades de duração aleatória, que simboliza o pior cenário possível onde cada indivíduo está em uma atividade diferente.
-
-Figure 8 - Gráfico de análise dos algoritmos de ordenação
-
-![](/paper/figure-8.jpeg)
-
-Source: Own Authorship (2023)
-
-A partir das análises dos dados, foi escolhido o algoritmo de _Quick Sort_ para ser utilizado no processo de ordenação das atividades, o que condiz com o fato de ser um dos mais eficientes e rápidos dentre todos os outros (XIANG, 2011), e ter complexidade temporal e espacial de ( ) nos melhores casos, proporcionando ótima performance.
 
 **Utilização da fundamentação teórica para cálculo da probabilidade de disseminação da doença**
 
