@@ -95,7 +95,7 @@ Many infections have a time interval in which an individual has been infected bu
 
 Figure 1 - Visual representation of the SEIR model
 
-![](/paper/figure-2.png)
+![](/paper/figure-1.png)
 
 Source: Own Authorship (2023)
 
@@ -105,15 +105,17 @@ E: Exposed (latent) humans
 
 ε: Per capita rate of progression to infectious state
 
-/ = Λ − β − µ γ − µ . (1) / = β − ε (2)
+1. / = Λ − β − µ γ − µ
 
-/ = ε − γ − µ (3)
+2. / = β − ε
 
-/ = γ − µ (4)
+3. / = ε − γ − µ
 
-Figure 3 - Epidemiological dynamics of the SEIR model
+4. / = γ − µ
 
-![](/paper/figure-3.png)
+Figure 2 - Epidemiological dynamics of the SEIR model
+
+![](/paper/figure-2.png)
 
 Source: Own Authorship (2023)
 
@@ -126,9 +128,9 @@ Viruses are "on the brink of life and death" (ANDREWES, 1967). Under a microscop
 
 A virus is essentially made up of two parts: genetic material and a protein capsule. In simplified terms, after infiltrating a cell, the virus rewrites the cell's DNA and transforms it so that it produces hundreds or even thousands of copies of itself. When these virus copies leave the affected cell, they become lifeless again until they enter another cell and the cycle is restarted. The cellular damage caused by the genetic rewriting process causes the disease. Figure 4 represents the infectious process of viral diseases.
 
-Figure 4 - The relationship between virus infectivity and symptoms
+Figure 3 - The relationship between virus infectivity and symptoms
 
-![](/paper/figure-4.png)
+![](/paper/figure-3.png)
 
 Source: Rhodes (1996)
 
@@ -153,9 +155,9 @@ In the context of infectious disease outbreaks, such as pandemics, "flattening t
 
 The phrase "flattening the curve" refers to an epidemiological curve, often graphically represented, which shows the number of new cases of an infectious disease over time. In an uncontrolled outbreak, the curve exhibits a rapid and sharp rise, indicating a significant increase in the number of infections in a short period of time. This sharp curve implies a significant burden on healthcare systems, potentially overwhelming hospitals and leading to an increase in severe cases and deaths.
 
-Figure 5 - Graph of flattening the curve
+Figure 4 - Graph of flattening the curve
 
-![](/paper/figure-5.png)
+![](/paper/figure-4.png)
 
 Source: Daud (2022)
 
@@ -454,6 +456,9 @@ Residences were allocated based on IBGE data as well as the number of individual
 
 Thus, the virtually modeled population reflects detailed characteristics analogous to real life. Therefore, each individual possesses the following attributes properly distributed according to available data, in a coherent and relevant manner:
 
+<details>
+<summary>**Individual attributes**</summary>
+
 - Identification;
 - Gender;
 - Age range;
@@ -486,6 +491,8 @@ Thus, the virtually modeled population reflects detailed characteristics analogo
   - Volume of individuals' voices;
   - Environment (indoor or outdoor).
 
+</details>
+
 **Neural network for pertinent demographics and activity assignment**
 
 In the virtual city simulation, a neural network is employed to assign both demographic characteristics and daily activities to each individual, ensuring a high degree of realism that mirrors actual population dynamics. This network uses a comprehensive set of input data, including sociodemographic profiles described above, to facilitate precise modeling of urban demographics.
@@ -494,139 +501,104 @@ The neural network responsible for distributing the characteristics and routines
 
 This approach enables the simulation to assign realistic attributes and behaviors to the virtual population with a fidelity that closely replicates real-world dynamics. By leveraging this high-resolution demographic and behavioral data, the simulation can provide actionable insights into how different demographic groups interact within urban settings. This high level of detail can be pivotal in public health crisis management, as it allows for the precise targeting of interventions and resources to specific neighborhoods or demographic groups based on simulated outcomes. Such targeted strategies are not widely implemented in current models, making this approach particularly innovative and valuable for planning and response activities in real-time scenarios.
 
-**Sincronização das atividades na simulação**
+**Activity synchronization in the simulation**
 
-Para realizar a simulação de forma que as atividades sejam executadas no tempo certo, e que atividades futuras sejam apenas executadas quando as atuais terminarem, preservando a lógica do indivíduo não poder estar em diferentes lugares ao mesmo tempo, surge a necessidade da implementação de um algoritmo de sincronização destas atividades. Portanto, foram pesquisadas diferentes técnicas computacionais e teóricas para abordar o problema.
+To ensure that activities in the simulation are executed at the correct times, and that future activities only begin once current ones have finished—preserving the logic that an individual cannot be in different places simultaneously—there is a need to implement a synchronization algorithm for these activities. Therefore, various computational and theoretical techniques have been explored to address this problem.
 
-**NP-Hard e Algoritmo de Johnson**
+<details>
+<summary>**NP-hard and Johnson's algorithm**</summary>
 
-Um problema é atribuído à classe NP (tempo polinomial não determinístico) se for solucionável em tempo polinomial por uma máquina de Turing não determinística (BORWEIN, 1987). Problemas NP-hard podem ser de qualquer tipo: problemas de decisão, problemas de pesquisa ou problemas de otimização.
+A problem is assigned to the NP (nondeterministic polynomial time) class if it can be solved in polynomial time by a nondeterministic Turing machine (BORWEIN, 1987). NP-hard problems can include decision problems, search problems, or optimization problems.
 
-O _Job-Shop Scheduling Problem_ (JSSP) é um problema de otimização combinatória, NP-hard. O objetivo do problema é encontrar a programação ideal para alocar recursos compartilhados ao longo do tempo para atividades concorrentes a fim de reduzir o tempo total necessário para concluir todas as atividades.
+The _Job-Shop Scheduling Problem_ (JSSP) is an NP-hard combinatorial optimization problem. The goal is to find the optimal schedule for allocating shared resources over time to concurrent activities in order to minimize the total time required to complete all activities.
 
-Em um JSSP, há um número de trabalhos ( 1, 2, ..., ), que precisarão ser concluídos usando um número de recursos compartilhados, mais comumente denotados como máquinas ( 1, 2, ..., ). Cada trabalho terá operações ( ) que precisarão ser concluídas em uma ordem específica para que o trabalho seja concluído. As operações devem ser concluídas em máquinas específicas e exigem um tempo de processamento ( ) nessa máquina (YAMADA, 1997).
+In a JSSP, there are N jobs (J1, J2, ..., Jn) that need to be completed using a number of shared resources, commonly denoted as machines (M1, M2, ..., Mm). Each job has operations (o) that need to be completed in a specific order for the job to be finished. Operations must be completed on specific machines and require a processing time (p) on that machine (YAMADA, 1997).
 
-O algoritmo heurístico de S. M. Johnson, ou simplesmente Algoritmo de Johnson é uma das soluções para o JSSP e se comporta da seguinte maneira:
+S. M. Johnson's heuristic algorithm, or simply Johnson's Algorithm, is one of the solutions for the JSSP and operates as follows:
 
-O trabalho tem duas operações, de duração 1 e 2, a serem realizadas nas máquinas 1 e 2 nessa sequência.
+The job Pi has two operations, of durations Pi1 and Pi2, to be performed on machines M1 and M2 in that sequence.
 
-1. Lista = \{ 1, 2, ..., }, Lista 1 = {}, Lista 2 = {}.
-2. De todas as durações de operação disponíveis, escolha a mínima.
+1. List = \{ 1, 2, ..., N }, List L1 = {}, List L2 = {}.
+2. Of all the available operation durations, choose the minimum.
 
-   Se o mínimo pertencer a 1,
+   If the minimum belongs to Pk1,
 
-   Remova da lista . Adicione ao final da lista 1. Se o mínimo pertencer a 2,
+   Remove K from List A. Add K to the end of List L1.
 
-   Remova da lista . Adicione ao início da lista 2.
+   If the minimum belongs to Pk2,
 
-3. Repita a etapa 2 até que a Lista A esteja vazia.
-4. Junte a Lista L1 e a Lista L2. Essa é a sequência ideal.
+   Remove K from List A. Add K to the start of List L2.
 
-Nos inspiramos neste algoritmo para propor a lógica de abordagem da sincronização. Todas as atividades que estão acontecendo em determinado momento ficarão em um vetor (arranjo) ordenado de forma crescente de acordo com o tempo das atividades, ou seja, os primeiros índices do vetor conterão as atividades que estão acontecendo agora e que possuem o menor tempo dentre todas as outras.
+3. Repeat step 2 until List A is empty.
+4. Combine List L1 and List L2. This is the optimal sequence.
 
-Toda vez que uma nova atividade se inicia, é adicionada ao vetor e será acionado o algoritmo de disseminação para ela de acordo com suas características e de seus indivíduos, mudando seus estados de acordo com o resultado da disseminação.
+This algorithm inspired the approach logic for synchronization. All activities occurring at a given moment are in an ordered array (arrangement) sorted by the duration of the activities; i.e., the first indices of the array contain activities happening now and have the shortest duration among all others.
 
-O algoritmo de disseminação é acionado apenas uma vez para cada atividade. A cada momento, as atividades do início do vetor são computadas, seu tempo é adicionado ao tempo global da simulação e ela é removida do vetor, esse tempo é removido de todas as outras atividades acontecendo no momento. Após isso, é feita uma busca por todos os indivíduos para ver se a atividade em que estavam já acabou e se começam uma nova naquele tempo da simulação, e assim o vetor é ordenado novamente. Optamos por esta estratégia pois o tempo de execução do programa depende inteiramente da velocidade dos algoritmos de disseminação, ordenação e procura, e não há a necessidade de um gargalo proposital para alterar o tempo da simulação de acordo com um tempo real.
+Whenever a new activity starts, it is added to the array and triggers the dissemination algorithm for it according to its characteristics and those of its individuals, changing their states according to the results of the dissemination.
 
-**Utilização da fundamentação teórica para cálculo da probabilidade de disseminação da doença**
+The dissemination algorithm is triggered only once for each activity. At each moment, the activities at the beginning of the array are computed, their duration is added to the global simulation time, and they are removed from the array; this time is subtracted from all other ongoing activities. After this, a search is performed for all individuals to see if the activity they were involved in has finished and if they start a new one at that simulation time, and thus the array is sorted again. This strategy was chosen because the execution time of the program depends entirely on the speed of the dissemination, sorting, and search algorithms, and there is no need for an intentional bottleneck to alter the simulation time according to real time.
 
-A disseminação é uma abstração do conceito de autômatos celulares na Vizinhança de Moore: o estado de saúde de cada indivíduo é alterado com base nos dados dos indivíduos virtualmente próximos a ele, dada uma regra fixa. Essa regra fixa é o fluxo de cálculo da probabilidade de disseminação da doença.
+</details>
 
-Esse fluxo é realizado, portanto, como uma linha de produção. De forma iterativa, o algoritmo extrai todas as informações começando a partir de cada característica e estado de saúde dos indivíduos, bem como características da atividade, ambiente virtual, parâmetros globais acerca do vírus, seu comportamento e probabilidades dos modificadores anteriormente definidos, como o tipo de máscara e vacina. Desse modo, é determinada a probabilidade de disseminação da doença utilizando as taxas de risco da atividade, risco individual de cada indivíduo e prevalência de casos na região. Todos os valores dos modificadores e exemplos de cálculos são mostrados durante a fundamentação teórica. Se esta probabilidade for maior que um limiar mínimo ainda a ser estipulado, é considerado que o indivíduo contraiu a doença.
+**Use of theoretical foundations for calculating the probability of disease spread**
 
-Figure 9 - Fluxograma simplificado do funcionamento do projeto
+The spread is an abstraction of the concept of cellular automata in Moore's Neighborhood: the health status of each individual is altered based on the data from virtually nearby individuals, given a fixed rule. This fixed rule is the calculation flow of the probability of disease spread.
 
-![](/paper/figure-9.jpeg)
+This flow is thus carried out like a production line. Iteratively, the algorithm extracts all information starting from each characteristic and health status of the individuals, as well as characteristics of the activity, virtual environment, global parameters about the virus, its behavior, and probabilities of previously defined modifiers, such as the type of mask and vaccine. In this way, the probability of disease spread is determined using the activity risk rates, individual risk of each individual, and prevalence of cases in the region. All modifier values and examples of calculations are shown during the theoretical foundation. If this probability exceeds a minimum threshold yet to be stipulated, it is considered that the individual has contracted the disease.
 
-Source: Own Authorship (2023)
+Figure 5 - Simplified flowchart of the Pandemica's operation
 
-**Validação do modelo de disseminação utilizando o COVID-19**
-
-Para simular diferentes cenários com diferentes configurações de uso de máscaras, distanciamento social e tráfego de pessoas, precisamos primeiro ter um modelo capaz de gerar o mesmo números de mortes e casos nas condições exatas do cenário real da pandemia. Desenvolvemos a seguinte metodologia para a validação do modelo:
-
-Figure 10 - Metodologia para validação do modelo de disseminação
-
-![](/paper/figure-10.png)
+![](/paper/figure-5.png)
 
 Source: Own Authorship (2023)
 
-Antes de testarmos o modelo para a simulação de cenários dado características de doenças potencialmente epidêmicas recentes, precisamos primeiro validar utilizando dados de uma pandemia que já aconteceu, como a do COVID-19, pois senão não saberemos se os cenários simulados são verdadeiros ou não.
+<details>
+<summary>**Model validation using COVID-19 data**</summary>
 
-Para a validação, utilizamos o método de _Hold-out Validation_, que consiste em dividir os conjuntos de dados de boletins epidemiológicos dos anos 2020 a 2021 entre treinamento e teste, utilizando uma proporção de 80/20. Os 20% dos dados representam os primeiros meses da pandemia em 2020 e é utilizado para treinar o modelo, o qual com base nesses dados define variáveis de prevalência do vírus, taxa de aumento de casos, entre outros.
+To simulate different scenarios with varying configurations of mask usage, social distancing, and people traffic, we first need a model capable of replicating the actual numbers of deaths and cases under the exact conditions of the real pandemic scenario. We developed the following methodology for model validation:
 
-Após a incorporação dos dados iniciais o modelo se torna autossuficiente, mudando suas taxas e variáveis com base nos casos que ele mesmo gera. Ao final da simulação do período desejado, utilizamos os 80% dos dados restantes para validar a acurácia das predições.
+Figure 6 - Methodology for dissemination model validation
 
-## Resultados
-
-No estágio atual de desenvolvimento da pesquisa, foi demonstrada na teoria e confirmada na prática a viabilidade computacional de modelagem de uma população virtual com atributos, características e rotinas análogas às de indivíduos em uma população real, com embasamento em dados geográficos e demográficos. No entanto, a implementação desse modelo provou ser desafiadora, exigindo a consideração de uma ampla gama de parâmetros para criar uma população virtual que seja minimamente relacionada à real.
-
-Além disso, nossa pesquisa comprovou, até o presente momento, que é computacionalmente viável simular uma pandemia por meio de autômatos celulares que representam os indivíduos em uma cidade abstrata virtualizada. Essa abordagem tem o potencial de fornecer percepções valiosas sobre como as doenças infecciosas se disseminam e o quão eficaz cada tipo de intervenção é.
-
-Como resultado parcial desta pesquisa, foram simulados, seguindo o embasamento bibliográfico, teórico e metodológico estabelecido, 3 anos da pandemia de COVID-19 em Campinas: de 2020 a 2023. Os gráficos abaixo representam, de forma ilustrativa, os resultados obtidos a partir da modelagem com a respectiva acurácia quando comparados com os dados reais.
-
-Figure 11: Gráfico comparativo de casos totais ao longo do tempo
-
-![](/paper/figure-11.jpeg)
+![](/paper/figure-6.png)
 
 Source: Own Authorship (2023)
 
-Figure 12: Gráfico comparativo da distribuição de casos totais
+Before testing the model for simulating scenarios based on characteristics of potentially epidemic recent diseases, we first need to validate it using data from a past pandemic, such as COVID-19. Without this step, we cannot be certain if the simulated scenarios are accurate or not.
 
-![](/paper/figure-12.jpeg)
+For validation, we use the Hold-out Validation method, which involves dividing the epidemiological bulletin datasets from 2020 to 2021 into training and testing sets, using an 80/20 ratio. The 20% of the data represents the first months of the pandemic in 2020 and is used to train the model, which then sets virus prevalence variables, case increase rates, among others, based on this data.
 
-Figure 13: Gráfico comparativo de novos casos ao longo do tempo
+After incorporating the initial data, the model becomes self-sufficient, adjusting its rates and variables based on the cases it generates. At the end of the desired simulation period, we use the remaining 80% of the data to validate the accuracy of the predictions.
 
-![](/paper/figure-13.jpeg)
+</details>
 
-Source: Own Authorship (2023)
+## Results and Discussion
 
-Figure 14: Gráfico comparativo de mortes ao longo do tempo
+At the current stage of research development, the computational feasibility of modeling a virtual population with attributes, characteristics, and routines analogous to those of individuals in a real population has been demonstrated in theory and confirmed in practice, based on geographical and demographic data. However, implementing this model has proven to be challenging, requiring the consideration of a wide range of parameters to create a virtual population that is minimally related to the real one.
 
-![](/paper/figure-14.jpeg)
+Moreover, our research has proven, to date, that it is computationally feasible to simulate a pandemic using cellular automata that represent individuals in a virtualized abstract city. This approach has the potential to provide valuable insights into how infectious diseases spread and how effective each type of intervention is.
 
-Figure 15: Gráfico comparativo da distribuição de mortes
+As a partial result of this research, three years of the COVID-19 pandemic in Campinas from 2020 to 2023 were simulated, following the established bibliographic, theoretical, and methodological foundation. The charts bellow illustratively represent the results obtained from the modeling with the respective accuracy when compared to the actual data.
 
-![](/paper/figure-15.jpeg)
+<DataVisualization />
 
-Source: Own Authorship (2023)
+The simulated scenario reflects the use of masks and vaccination of the population similar to what actually occurred during the pandemic. However, the simulated data shows an inflated number of cases and deaths compared to the actual data observed in Campinas during the same period. Specifically, the simulation resulted in 289,943 cases and 7,752 deaths, while in Campinas, about 209,500 cases and 5,360 deaths were recorded.
 
-Figure 16: Gráfico comparativo de novas mortes ao longo do tempo
+This discrepancy suggests the need for more testing and refinement of the model to increase its accuracy. It is important to improve the model not only in technical terms but also by exploring and better utilizing the attributes of each individual. After implementing such modifications and improvements, we expect to reduce the total number of cases predicted by the simulation, avoiding the virtual hyper-contamination that did not occur in reality.
 
-![](/paper/figure-16.jpeg)
+Although the current model needs improvements, it already demonstrates potential to predict the behavior of new diseases and future epidemic scenarios. The focus should be on enhancing and polishing the model to ensure it can more accurately simulate the impacts of public health interventions, such as vaccination and mask usage, in different epidemic scenarios. As a final result, it is expected that the model will achieve an accuracy of 50% to 60%, surpassing current models that operate in the range of 30% to 40%.
 
-Source: Own Authorship (2023)
-46
+## Conclusions
 
-Figure 17: Gráfico comparativo de mortes por total de casos ao longo do tempo
+From the initial goal of creating a model capable of simulating potentially pandemic diseases in any virtual scenario, the use of diverse data sources, mathematical grounding, theoretical computational concepts, and methods was proposed to achieve an accurate and reliable simulation model. Throughout this work, every aspect of the simulation, its feasibility, relation to interdisciplinary concepts, and the best way to implement it was thoroughly studied.
 
-![](/paper/figure-17.jpeg)
+The conceptualization of such methods and their theoretical validation were completed, making it possible to establish a model theoretically capable of simulating a pandemic on a local scale, thus mitigating and reducing the impacts of a pandemic.
 
-Source: Own Authorship (2023)
+We attest to the fact that although the project deals with the characteristics of the COVID-19 virus in Campinas, the theoretical and methodological bases can and should be implemented and adapted to other diseases, mainly respiratory ones, and in any city that has some kind of geographic and demographic census.
 
-Figure 18: Gráfico comparativo de mortes por total de casos ao longo do tempo
+It is also worth noting that we successfully proposed and implemented a pandemic simulator that appropriates a population with detailed municipal-level attributes, differing from more general national or state-level implementations, such as in _"Outbreak diversity in epidemic waves propagating through distinct geographical scales"_ (COSTA; COTA; FERREIRA, 2020), and even municipal adaptations like the one proposed in _"Modeling the Spatiotemporal Epidemic Spreading of COVID-19 and the Impact of Mobility and Social Distancing Interventions"_ (ARENAS et al., 2020), due to the novelty of a model aimed exclusively at the local scale with enriched demographic insights. Thus, the collection and use of regional data instead of macroscopic abstractions resulted in a more accurate and reliable model, with low computational power requirements.
 
-![](/paper/figure-18.jpeg)
+Therefore, the use of a cluster of various simulators, each suitable for a single city according to census data, enables the simulation of state and national scales made up internally of structures more specific and directed to municipalities, which corroborates, consequently, for more accurate simulations in general.
 
-Source: Own Authorship (2023)
+As a result, from the ongoing research, we obtained a pandemic simulator that is not limited to the mathematical character of classic epidemiological modeling as seen in _"Spreading phenomena on complex networks and social systems"_ (COTA, 2020), including a wide range of biological, geographical, and demographic parameters in a pioneering way. Thus, it constitutes a model that is capable of simulating and predicting the future behavior of potential pandemics, especially respiratory diseases, which can freely licensed and distributed to municipal or state health departments, as well as ministries and competent organizations, such as the Ministry of Health and the World Health Organization (WHO), enabling preventive actions to reduce the human, social, and economic impacts of an outbreak. In addition, public and/or private pharmaceutical sector companies can also benefit from testing the efficacy of their vaccines in virtualized pandemic scenarios, such as Pfizer, Johnson & Johnson, AstraZeneca, and Butantan.
 
-O cenário simulado reflete o uso de máscaras e a vacinação da população análogo ao que ocorreu de fato durante a pandemia. Os dados simulados, no entanto, mostram um número inflacionado de casos e mortes em comparação com os dados reais observados em Campinas durante o mesmo período. Especificamente, a simulação resultou em aproximadamente 720 mil casos e 20 mil mortes, enquanto em Campinas foram registrados cerca de 200 mil casos e 5 mil mortes.
-
-Essa discrepância sugere a necessidade de mais testes e refinamento do modelo para aumentar sua acurácia. É importante melhorar o modelo não só em termos técnicos, mas também explorando e utilizando melhor os atributos de cada indivíduo. Após implementarmos tais modificações e melhorias, esperamos reduzir o número total de casos previstos pela simulação, evitando a hiper contaminação virtual que não ocorreu na realidade.
-
-Embora o modelo atual precise de aprimoramentos, ele já demonstra potencial para prever o comportamento de novas doenças e cenários epidêmicos futuros. A ênfase deve ser colocada no aprimoramento e polimento do modelo para garantir que ele possa simular com mais precisão os impactos de intervenções de saúde pública, como vacinação e uso de máscaras, em diferentes cenários epidêmicos. Espera-se, como resultado final, que o modelo atinja uma acurácia de 50% a 60%, superando os atuais modelos, que atuam na faixa de 30% a 40%.
-
-## Conclusões
-
-A partir do objetivo inicial de criar um modelo capaz de simular doenças potencialmente pandêmicas em qualquer cenário virtual, foi proposta a utilização conjunta de diversas fontes de dados, embasamento matemático, conceitos computacionais teóricos e métodos a fim de se obter como produto um modelo de simulação acurado e confiável. Durante o trabalho, foi estudado a fundo cada aspecto da simulação, sua viabilidade, relação com conceitos interdisciplinares e a melhor maneira para ser implementado.
-
-A idealização de tais métodos e sua validação teórica foi concluída, sendo possível estabelecer um modelo teoricamente capaz de simular uma pandemia em escala local, para, dessa forma, mitigar e reduzir os impactos de uma pandemia.
-
-Atestamos para o fato de que embora o projeto esteja lidando com as características do vírus COVID-19 em Campinas, as bases teóricas e metodológicas podem e devem ser implementadas e adaptadas a outras doenças, principalmente respiratórias, e em qualquer cidade que disponha de algum tipo de censo geográfico e demográfico.
-
-Também vale ressaltar que propomos e implementamos com sucesso um simulador pandêmico que se apropria de uma população com atributos detalhados a nível municipal, diferindo de implementações mais gerais, a nível nacional ou estadual, como em _Outbreak diversity in epidemic waves propagating through distinct geographical scales_ (COSTA; COTA; FERREIRA, 2020), e até mesmo adaptações municipais, como a implementação proposta em _Modeling the Spatiotemporal Epidemic Spreading of COVID-19 and the Impact of Mobility and Social Distancing Interventions_ (ARENAS et al., 2020), devido ao ineditismo de uma modelagem que direcionada exclusivamente à escala local. Dessa forma, a coleta e utilização de dados regionais em detrimento de abstrações macroscópicas resultaram em um modelo mais acurado e fidedigno, com baixos requisitos de poder computacional.
-
-Portanto, a utilização de um _cluster,_ ou aglomerado, de diversos simuladores, cada um adequado para uma única cidade de acordo com os dados do censo, possibilita a simulação de escalas estaduais e nacionais constituídas, internamente, por estruturas mais específicas e direcionadas aos municípios, o que corrobora, por conseguinte, para simulações mais acuradas de forma geral.
-
-Assim, obtivemos, como produto da pesquisa que ainda está em andamento, um simulador pandêmico que não se restringe apenas ao caráter matemático da clássica modelagem epidemiológica, como visto em _Spreading phenomena on complex networks and social systems_ (COTA, 2020), incluindo uma vasta gama de parâmetros biológicos, geográficos e demográficos de forma pioneira. Constitui-se, portanto, um modelo que é capaz de simular e predizer o comportamento futuro de potenciais pandemias, principalmente de doenças respiratórias, que pode ser licenciado ou vendido como um _Software as a Service_ (SaaS) para secretarias municipais ou estaduais de saúde, assim como ministérios e organizações competentes, como o Ministério da Saúde e a Organização Mundial de Saúde (OMS), possibilitando ações preventivas a fim de reduzir os impactos humanos, sociais e econômicos de um surto. Além disso, institutos e empresas públicas e/ou privadas do setor farmacêutico também podem se beneficiar de testes em cenários pandêmicos virtualizados da eficácia de suas vacinas, como Pfizer, Johnson & Johnson, AstraZeneca e o Butantã.
-
-Por fim, esperamos que a mesma inspire trabalhos futuros a aprimorar os métodos que propusemos, bem como as técnicas existentes, com o objetivo de expandir ainda mais o domínio de novas bases teóricas no campo da simulação pandêmica computacional. Podendo contribuir para o desenvolvimento de estratégias mais eficazes de prevenção e resposta a pandemias no futuro, por exemplo, através do uso de aprendizado de máquina sobre os cenários simulados, elevando, ainda mais, as conclusões a serem tomadas sobre o decorrer de uma pandemia.
+Finally, we hope that this work inspires future efforts to refine the methods we proposed, as well as existing techniques, with the aim of further expanding the domain of new theoretical bases in the field of computational pandemic simulation. It may contribute to the development of more effective strategies for preventing and responding to pandemics in the future, for example, through machine learning on simulated scenarios, further elevating the conclusions to be made about the course of a pandemic.

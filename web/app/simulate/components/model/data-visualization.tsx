@@ -89,7 +89,7 @@ const metricLabels: { [key in Metric]: string } = {
   deaths_by_totalCases: 'Deaths per total cases'
 }
 
-export default function DataVisualization() {
+export default function DataVisualization({ showVisualize = true }: { showVisualize?: boolean }) {
   const [realData, setRealData] = useState<DataItem[]>([])
   const [simulatedData, setSimulatedData] = useState<DataItem[]>([])
   const [loaded, setLoaded] = useState(false)
@@ -141,37 +141,45 @@ export default function DataVisualization() {
       {loaded ? (
         <>
           <div className="w-full flex items-center justify-center border border-muted px-4 p-2 rounded-md">
-            <div className="flex md:flex-row flex-col gap-y-4 justify-between w-full">
-              <div>
-                <span className="text-sm font-semibold tracking-tight">Simulation time</span>
-                <p className="text-muted-foreground text-sm tracking-tight">~2 hours</p>
-              </div>
-              <div>
-                {/* todo: fetch from csv */}
-                <span className="text-sm font-semibold tracking-tight">Total days simulated</span>
-                <p className="text-muted-foreground text-sm tracking-tight">1,020 (~3 years)</p>
-              </div>
-              <div>
-                <span className="text-sm font-semibold tracking-tight">
-                  Total cases (real - simulated)
-                </span>
-                <p className="text-muted-foreground text-sm tracking-tight">
-                  {getRealAndSimulatedCases()}
-                </p>
-              </div>
-              <div>
-                <span className="text-sm font-semibold tracking-tight">
-                  Total deaths (real - simulated)
-                </span>
-                <p className="text-muted-foreground text-sm tracking-tight">
-                  {getRealAndSimulatedDeaths()}
-                </p>
-              </div>
-            </div>
+            {showVisualize && (
+              <>
+                <div className="flex md:flex-row flex-col gap-y-4 justify-between w-full">
+                  <div>
+                    <span className="text-sm font-semibold tracking-tight">Simulation time</span>
+                    <p className="text-muted-foreground text-sm tracking-tight">~2 hours</p>
+                  </div>
+                  <div>
+                    {/* todo: fetch from csv */}
+                    <span className="text-sm font-semibold tracking-tight">
+                      Total days simulated
+                    </span>
+                    <p className="text-muted-foreground text-sm tracking-tight">1,020 (~3 years)</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-semibold tracking-tight">
+                      Total cases (real - simulated)
+                    </span>
+                    <p className="text-muted-foreground text-sm tracking-tight">
+                      {getRealAndSimulatedCases()}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-semibold tracking-tight">
+                      Total deaths (real - simulated)
+                    </span>
+                    <p className="text-muted-foreground text-sm tracking-tight">
+                      {getRealAndSimulatedDeaths()}
+                    </p>
+                  </div>
+                </div>
+
+                <h4 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-lg font-semibold tracking-tighter text-transparent sm:text-xl xl:text-2xl/none">
+                  Visualization
+                </h4>
+              </>
+            )}
           </div>
-          <h4 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-lg font-semibold tracking-tighter text-transparent sm:text-xl xl:text-2xl/none">
-            Visualization
-          </h4>
+
           {metrics.map((metric, i) => (
             <Tabs key={`result-data-${i}`} defaultValue="line" className="flex flex-col gap-y-4">
               <div className="flex flex-row justify-between items-center">
