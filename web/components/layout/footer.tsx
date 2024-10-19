@@ -103,9 +103,9 @@ export default function Footer() {
             </div>
             <div className="flex flex-col gap-y-3">
               <h4 className="font-sans-heading text-sm font-medium">Theme</h4>
-              {theme && (
+              {mounted && (
                 <Select value={mounted ? theme : ''} onValueChange={(value) => setTheme(value)}>
-                  <SelectTrigger className="w-32 h-9">
+                  <SelectTrigger className="w-32 h-9 outline-none ring-0 active:outline-none active:ring-0">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

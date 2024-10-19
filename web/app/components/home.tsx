@@ -20,39 +20,39 @@ import { GoogleGeminiEffect } from '@/components/ui/google-gemini-effect'
 const details = [
   {
     icon: Globe,
-    title: 'Previsão de Disseminações Globais em Escala Municipal',
+    title: 'Prediction of Global Spread at Municipal Level',
     description:
-      'Capacidade de antecipar a propagação de doenças de magnitude mundial em escala local, auxiliando na preparação e resposta eficaz a pandemias emergentes por entidades locais.'
+      'Ability to anticipate the spread of diseases of global magnitude at a local level, assisting local entities in the preparation and effective response to emerging pandemics.'
   },
   {
     icon: ShieldCheck,
-    title: 'Estratégias de Mitigação',
+    title: 'Mitigation Strategies',
     description:
-      'Desenvolvimento de estratégias baseadas em dados para mitigar impactos humanos, econômicos e sociais de surtos epidemiológicos.'
+      'Development of data-driven strategies to mitigate the human, economic, and social impacts of epidemiological outbreaks.'
   },
   {
     icon: Users,
-    title: 'Simulação de Grandes Populações',
+    title: 'Simulation of Large Populations',
     description:
-      'Utilização de conceitos computacionais avançados para modelar interações em grandes populações virtuais.'
+      'Utilization of advanced computational concepts to model interactions in large virtual populations.'
   },
   {
     icon: FileText,
-    title: 'Geração de Relatórios Epidemiológicos',
+    title: 'Generation of Epidemiological Reports',
     description:
-      'Produção de análises detalhadas e relatórios confiáveis para orientar decisões de saúde pública em cenários hipotéticos.'
+      'Production of detailed analyses and reliable reports to guide public health decisions in hypothetical scenarios.'
   },
   {
     icon: UserCheck,
-    title: 'Diretrizes para Ação Pública',
+    title: 'Guidelines for Public Action',
     description:
-      'Fornecimento de informações críticas para autoridades de saúde sobre medidas preventivas efetivas, incluindo vacinação e uso de máscaras.'
+      'Providing critical information to health authorities on effective preventive measures, including vaccination and mask usage.'
   },
   {
     icon: Settings,
-    title: 'Adaptação e Precisão',
+    title: 'Adaptation and Precision',
     description:
-      'Modelo ajustável que incorpora variáveis demográficas e geográficas, maximizando a precisão das simulações de doenças pandêmicas.'
+      'Adjustable model that incorporates demographic and geographic variables, maximizing the accuracy of pandemic disease simulations.'
   }
 ]
 
@@ -77,11 +77,8 @@ export default function Home() {
       >
         <div className="dark:bg-background pointer-events-none fixed  inset-0 z-20 flex h-screen items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
         <GoogleGeminiEffect
-          title="Prever, Prevenir, Proteger."
-          description="Diante de desafios globais inéditos, Pandemica surge como uma ferramenta
-          essencial para a compreensão e enfrentamento de pandemias. Através de
-          uma metodologia própria, oferecemos insights críticos para a
-          prevenção e mitigação de crises sanitárias futuras."
+          title="Predict, Prevent, Protect."
+          description="In the face of unprecedented global challenges, Pandemica emerges as an essential tool for understanding and combating pandemics. Through a proprietary methodology, we offer critical insights for the prevention and mitigation of future health crises."
           pathLengths={[
             pathLengthFirst,
             pathLengthSecond,
@@ -102,20 +99,19 @@ export default function Home() {
                       Pandemica
                     </h1>
                     <p className="text-muted-foreground mx-auto max-w-[600px] text-sm sm:text-base md:text-lg">
-                      Modele cenários pandêmicos, ajude autoridades a agir com base em dados
-                      confiáveis e cenários simulados e minimize impactos humanos, econômicos e
-                      sociais.
+                      Model pandemic scenarios, help authorities act based on reliable data and
+                      simulated scenarios, and minimize human, economic, and social impacts.
                     </p>
                     <Link href="/simulate">
                       <Button className="bg-pandemica-blue/70 dark:bg-pandemica-blue/50 dark:hover:bg-pandemica-blue border-pandemica-blue hover:bg-pandemica-blue dark:text-primary flex h-9 flex-row gap-x-0.5 rounded-full border text-white">
-                        Simulação <ChevronRight className="-mr-1" height={16} width={16} />
+                        Simulation <ChevronRight className="-mr-1" height={16} width={16} />
                       </Button>
                     </Link>
                   </div>
                 </div>
                 <div className="mx-auto w-full max-w-full space-y-4">
                   <p className="text-muted-foreground mx-auto max-w-[600px] text-xs sm:text-sm">
-                    Funcionalidades a um click.
+                    Built-in features to help you understand and combat pandemics.
                   </p>
                   <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
                     {details.map((detail, i) => (
@@ -138,11 +134,11 @@ export default function Home() {
                 </div>
                 <div className="flex flex-col items-center justify-center gap-y-4">
                   <p className="text-muted-foreground mx-auto max-w-[600px] text-xs sm:text-sm">
-                    Para a literatura completa do modelo desenvolvido, veja o artigo.
+                    For the complete literature of the developed model, see the paper.
                   </p>
                   <Link href="/paper">
                     <Button className="bg-pandemica-blue/70 dark:bg-pandemica-blue/50 dark:hover:bg-pandemica-blue border-pandemica-blue hover:bg-pandemica-blue dark:text-primary flex h-9 flex-row gap-x-0.5 rounded-full border text-white">
-                      Artigo <ChevronRight className="-mr-1" height={16} width={16} />
+                      Paper <ChevronRight className="-mr-1" height={16} width={16} />
                     </Button>
                   </Link>
                 </div>

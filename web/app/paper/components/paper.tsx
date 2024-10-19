@@ -39,7 +39,7 @@ export default async function Paper() {
             <div className="flex h-full w-full flex-col items-center justify-start gap-y-1 px-8 md:max-w-lg lg:max-w-2xl">
               <article className="flex w-full flex-col items-center gap-y-4 pb-10 md:w-[40rem] lg:w-[50rem]">
                 <div className="flex flex-col gap-y-2">
-                  <h2 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-2xl font-semibold tracking-tighter text-transparent sm:text-3xl xl:text-4xl/none">
+                  <h2 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-2xl font-semibold tracking-tighter text-transparent sm:text-3xl xl:text-4xl">
                     Pandemica: Agent-Based Pandemic Simulation for Optimal Public Health Crisis
                     Management Using Adaptive Demographic Modeling with AI
                   </h2>

@@ -67,31 +67,17 @@ export default function Header() {
                   <Link
                     key={`header-ref-${i}`}
                     className="text-muted-foreground hover:text-foreground flex h-0 items-center text-sm font-normal transition-colors duration-200"
-                    href={
-                      link.url === '/paper' ? (pathname === '/' ? link.url : '/simulate') : link.url
-                    }
+                    href={link.url}
                   >
-                    {link.label === 'Paper'
-                      ? pathname === '/'
-                        ? link.label
-                        : 'Simulation'
-                      : link.label}
+                    {link.label}
                   </Link>
                 )
               })}
             </div>
             <div className="hidden flex-row items-center gap-x-4 md:flex">
-              <Link
-                href={
-                  pathname === '/' || pathname === '/paper' || pathname === '/references'
-                    ? '/simulate'
-                    : '/paper'
-                }
-              >
+              <Link href={pathname !== '/simulate' ? '/simulate' : '/paper'}>
                 <Button className="flex h-9 items-center gap-x-0.5 rounded-full font-medium">
-                  {pathname === '/' || pathname === '/paper' || pathname === '/references'
-                    ? 'Simulation'
-                    : 'Paper'}
+                  {pathname !== '/simulate' ? 'Simulation' : 'Paper'}
                   <ChevronRight className="-mr-1" height={16} width={16} />
                 </Button>
               </Link>
@@ -116,19 +102,9 @@ export default function Header() {
               <Link
                 key={`header-ref-${i}`}
                 className="text-foreground-muted hover:text-foreground flex h-0 items-center text-sm font-normal transition-colors duration-200"
-                href={
-                  link.url === '/paper'
-                    ? pathname === '/' || pathname === '/simulate'
-                      ? link.url
-                      : '/simulate'
-                    : link.url
-                }
+                href={link.url}
               >
-                {link.label === 'Paper'
-                  ? pathname === '/' || pathname === '/simulate'
-                    ? link.label
-                    : 'Simulation'
-                  : link.label}
+                {link.label}
               </Link>
             )
           })}

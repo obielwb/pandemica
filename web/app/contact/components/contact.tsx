@@ -22,35 +22,26 @@ const formSchema = z.object({
   firstName: z
     .string()
     .min(2, {
-      message: 'Nome deve ter no mínimo 2 caracteres'
+      message: 'First name must be at least 2 characters long'
     })
     .max(100, {
-      message: 'Nome deve ter no máxmimo 100 caracteres'
+      message: 'First name must be at most 100 characters long'
     }),
   lastName: z
     .string()
     .min(2, {
-      message: 'Sobrenome deve ter no mínimo 2 caracteres'
+      message: 'Last name must be at least 2 characters long'
     })
     .max(100, {
-      message: 'Sobrenome deve ter no máxmimo 100 caracteres'
-    }),
-  email: z
-    .string()
-    .email()
-    .min(2, {
-      message: 'Email deve ter no mínimo 2 caracteres'
-    })
-    .max(254, {
-      message: 'Email deve ter no máxmimo 254 caracteres'
+      message: 'Last name must be at most 100 characters long'
     }),
   message: z
     .string()
     .min(10, {
-      message: 'Mensagem deve ter no mínimo 10 caracteres'
+      message: 'Message must be at least 10 characters long'
     })
     .max(1000, {
-      message: 'Mensagem deve ter no máximo 1000 caracteres'
+      message: 'Message must be at most 1000 characters long'
     })
 })
 
@@ -61,7 +52,6 @@ export default function Contact() {
     defaultValues: {
       firstName: '',
       lastName: '',
-      email: '',
       message: ''
     }
   })
@@ -69,22 +59,23 @@ export default function Contact() {
   const { isValid } = useFormState({ control: form.control })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    window.open(
+      `mailto:joaopedroferreirabarbosa6@gmail.com?subject=Contact About Pandemica&body=Hi! My name is ${values.firstName} ${values.lastName} and ${values.message}`
+    )
   }
 
   return (
-    <Layout className="justify-between">
+    <Layout className="justify-start">
       <div className="flex h-full w-full items-center justify-center py-20">
-        <main className="flex w-full flex-col gap-y-4 px-8 md:w-auto md:max-w-4xl">
+        <main className="flex w-full flex-col gap-y-4 px-8 md:w-auto md:max-w-4xl pb-32">
           <h4 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-lg font-semibold tracking-tighter text-transparent sm:text-xl xl:text-2xl/none">
-            Fale conosco
+            Contact us
           </h4>
           <div className="flex flex-col gap-y-4 md:flex-row md:justify-evenly md:gap-x-10">
             <div className="flex flex-col space-y-4">
               <div className="w-full min-w-64 space-y-2 md:w-96">
                 <p className="text-muted-foreground text-sm">
-                  Preencha o formulário abaixo e entraremos em contato com você o mais breve
-                  possível.
+                  Fill out the form below and we will get back to you as soon as possible.
                 </p>
               </div>
               <Form {...form}>
@@ -98,7 +89,7 @@ export default function Contact() {
                       name="firstName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-normal">Nome</FormLabel>
+                          <FormLabel className="font-normal">First name</FormLabel>
                           <FormControl>
                             <Input
                               type="text"
@@ -116,7 +107,7 @@ export default function Contact() {
                       name="lastName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-normal">Sobrenome</FormLabel>
+                          <FormLabel className="font-normal">Last name</FormLabel>
                           <FormControl>
                             <Input
                               type="text"
@@ -132,31 +123,13 @@ export default function Contact() {
                   </div>
                   <FormField
                     control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-normal">Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            className="h-9"
-                            placeholder="john@doe.com"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="font-normal" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
                     name="message"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-normal">Mensagem</FormLabel>
+                        <FormLabel className="font-normal">Message</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Oi! Eu tenho uma dúvida sobre o..."
+                            placeholder="Hi, I would like to know more about..."
                             {...field}
                           ></Textarea>
                         </FormControl>
@@ -169,7 +142,7 @@ export default function Contact() {
                     type="submit"
                     className="bg-pandemica-blue/70 dark:bg-pandemica-blue/50 dark:hover:bg-pandemica-blue border-pandemica-blue hover:bg-pandemica-blue dark:text-primary flex h-9 w-24 flex-row gap-x-0.5 rounded-full border text-white"
                   >
-                    Enviar
+                    Send
                   </Button>
                 </form>
               </Form>
@@ -177,7 +150,7 @@ export default function Contact() {
             <div className="flex flex-col space-y-4 pt-10 md:pt-0">
               <div className="w-full min-w-64 space-y-4 md:w-96">
                 <p className="text-muted-foreground text-sm">
-                  Se você tem dúvidas específicas, por favor se dirija a um dos emails abaixo.
+                  If you have specific questions, please refer to one of the emails below.
                 </p>
                 <ul className="space-y-6 md:space-y-10">
                   <li>
