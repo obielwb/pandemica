@@ -39,7 +39,7 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <dl className="text-sm md:text-base rounded p-2 bg-background/60 backdrop-blur filter text-foreground border justify-between border-border transition-colors duration-200">
-        <dt className="font-semibold">
+        <dt className="font-semibold text-primary">
           {DateTime.fromISO(label!, {
             zone: 'UTC'
           })
@@ -140,8 +140,8 @@ export default function DataVisualization({ showVisualize = true }: { showVisual
     <div className="w-full flex flex-col gap-y-6">
       {loaded ? (
         <>
-          <div className="w-full flex items-center justify-center border border-muted px-4 p-2 rounded-md">
-            {showVisualize && (
+          {showVisualize && (
+            <div className="w-full flex items-center justify-center border border-muted px-4 p-2 rounded-md">
               <>
                 <div className="flex md:flex-row flex-col gap-y-4 justify-between w-full">
                   <div>
@@ -173,8 +173,8 @@ export default function DataVisualization({ showVisualize = true }: { showVisual
                   </div>
                 </div>
               </>
-            )}
-          </div>
+            </div>
+          )}
 
           {metrics.map((metric, i) => (
             <Tabs key={`result-data-${i}`} defaultValue="line" className="flex flex-col gap-y-4">
