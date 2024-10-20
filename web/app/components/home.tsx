@@ -78,7 +78,7 @@ export default function Home() {
         <div className="dark:bg-background pointer-events-none fixed  inset-0 z-20 flex h-screen items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
         <GoogleGeminiEffect
           title="Predict, Prevent, Protect."
-          description="In the face of unprecedented global challenges, Pandemica emerges as an essential tool for understanding and combating pandemics. Through a proprietary methodology, we offer critical insights for the prevention and mitigation of future health crises."
+          description="In the face of unprecedented global challenges, Pandemica emerges as an essential tool for understanding and combating pandemics. Through an innovative methodology, we offer critical insights for the prevention and mitigation of future health crises."
           pathLengths={[
             pathLengthFirst,
             pathLengthSecond,

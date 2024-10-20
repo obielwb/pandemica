@@ -18,7 +18,7 @@ export default function Layout({
 }) {
   return (
     <div className={cn('bg-background flex min-h-screen flex-col', className)}>
-      <Banner />
+      {/* <Banner /> */}
       {header && <Header />}
       {children}
       {footer && <Footer />}

@@ -41,7 +41,7 @@ export default async function Paper() {
                 <div className="flex flex-col gap-y-2">
                   <h2 className="font-sans-heading from-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-2xl font-semibold tracking-tighter text-transparent sm:text-3xl xl:text-4xl">
                     Pandemica: Agent-Based Pandemic Simulation for Optimal Public Health Crisis
-                    Management Using Adaptive Demographic Modeling with AI
+                    Management Using Adaptive Demographic Modeling
                   </h2>
                   <p className="text-muted-foreground text-sm tracking-tight md:text-base">
                     Departament of Data Processing - Colégio Técnico de Campinas - Universidade
