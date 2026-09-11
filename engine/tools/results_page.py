@@ -149,9 +149,19 @@ def main():
             abl.append({"label": label, "beta": sm["params"]["Beta"], "deaths": sm["totals"]["deaths"], "cases": sm["totals"]["cases"],
                         "home": shares(sm).get("home", 0), "hospital": shares(sm).get("hospital", 0),
                         "turned": sm.get("beds", {}).get("turnedAway"), "curve": sm["test"]["curveAccuracy"], "final": final})
+        def seeds(dirpath, names):
+            out = []
+            for nm in names:
+                f = os.path.join(dirpath, nm + ".json")
+                if os.path.exists(f):
+                    sm = json.load(open(f))
+                    out.append({"deaths": sm["totals"]["deaths"], "curve": sm["test"]["curveAccuracy"]})
+            return out
+        seedv1 = seeds(RES, ["compliance-fit", "compliance-fit-seed2", "compliance-fit-seed3"])
+        seedv2 = seeds(V2, [v2name, v2name + "-seed2", v2name + "-seed3"])
         acts = v2["summary"].get("infectionsByActivity", {})
         atot = sum(acts.values()) or 1
-        data["v2"] = {"deaths": col(v2["rows"], "deaths"), "v1shares": shares(head["summary"]), "v2shares": shares(v2["summary"]), "abl": abl,
+        data["v2"] = {"deaths": col(v2["rows"], "deaths"), "v1shares": shares(head["summary"]), "v2shares": shares(v2["summary"]), "abl": abl, "seedv1": seedv1, "seedv2": seedv2,
                       "pharmacy": acts.get("pharmacy", 0) / atot,
                       "wards": (acts.get("hospital_shift", 0) + acts.get("hospitalized", 0)) / atot}
     page = TEMPLATE.replace("/*DATA*/", json.dumps(data, separators=(",", ":"), ensure_ascii=False))
@@ -252,6 +262,7 @@ table.abl th{font:500 12.5px var(--sans);color:var(--ink-3)}
 table.abl td{font-family:var(--mono);font-size:13.5px}
 table.abl th:first-child,table.abl td:first-child{text-align:left;font-family:var(--sans);font-size:14px}
 table.abl tr.v2 td:first-child{font-weight:650}
+.seedline{font-size:15px;margin:14px 0 0;max-width:70ch}
 .cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px}
 .cols>figure{border-bottom:0;padding-bottom:32px}
 .row2{border-bottom:1px solid var(--rule)}
@@ -369,6 +380,7 @@ footer .mono{color:var(--ink-2)}
 <figure>
   <div class="fighead"><h2><span class="fig">Table 1</span>What each v2 change does</h2></div>
   <div class="tablewrap"><table class="abl" id="t1"></table></div>
+  <p class="seedline" id="s1"></p>
   <figcaption>Every row recalibrates from scratch (R0 2.8, compliance fitted on 2020 deaths). The first v2 row has all four changes with 1 COVID bed per 1,000 people; each row below removes one. Curve score is on the held-out 80%.</figcaption>
 </figure>
 </section>
@@ -708,7 +720,15 @@ function table1() {
   $("t1").innerHTML = `<thead><tr><th>Run</th><th>β for R0 2.8</th><th>Deaths</th><th>Cases</th><th>Home</th><th>Hospital</th><th>Turned away</th><th>Curve score, test</th></tr></thead><tbody>` +
     D.v2.abl.map((r, k) => `<tr class="${r.final ? "v2" : ""}"><td>${r.label}</td><td>${dec(r.beta, 3)}</td><td>${fmt(r.deaths)}</td><td>${fmt(r.cases)}</td><td>${pct(r.home)}</td><td>${pct(r.hospital)}</td><td>${r.turned == null ? "–" : fmt(r.turned)}</td><td>${dec(r.curve, 1)}%</td></tr>`).join("") + `</tbody>`;
 }
-function drawAll() { fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8(); if (D.v2) { fig10(); fig11(); table1(); } else { $("v2sec").hidden = true; } }
+function seedLine() {
+  const a = D.v2.seedv1, b = D.v2.seedv2;
+  if (!a || !b || a.length < 2 || b.length < 2) { $("s1").hidden = true; return; }
+  const rng = (xs, k, f) => { const v = xs.map(x => x[k]); return f(Math.min(...v)) + "–" + f(Math.max(...v)); };
+  const mean = (xs, k) => xs.reduce((s, x) => s + x[k], 0) / xs.length;
+  const pc = (v) => dec(v, 1) + "%";
+  $("s1").innerHTML = `Across ${a.length} seeds, the held-out curve score is <b class="num">${rng(a, "curve", pc)}</b> for v1 (mean <b class="num">${pc(mean(a, "curve"))}</b>) and <b class="num">${rng(b, "curve", pc)}</b> for v2 final (mean <b class="num">${pc(mean(b, "curve"))}</b>); deaths are <b class="num">${rng(a, "deaths", fmt)}</b> and <b class="num">${rng(b, "deaths", fmt)}</b>. The table shows seed 1, where v2 happens to look better.`;
+}
+function drawAll() { fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8(); if (D.v2) { fig10(); fig11(); table1(); seedLine(); } else { $("v2sec").hidden = true; } }
 drawAll();
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 120); });
 if (document.fonts) document.fonts.ready.then(drawAll);

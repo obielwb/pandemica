@@ -59,6 +59,18 @@ What the ablation shows:
   1,000 people the model turns away ~14,000 severe cases and overshoots deaths by
   64%; the repository has no bed counts, so v2 final leaves beds unlimited and
   keeps the limit as a what-if flag.
-* **v2 final beats v1 on the day-by-day curve** (45.0% vs 39.3% on the held-out
-  80%) and on cases (521,511 vs 657,300), but ends further from the real death
-  total (+29% vs +15%).
+* **Across three seeds, v2 final does not beat v1.** Seed 1 alone suggested it
+  did (45.0% vs 39.3% held-out curve score), but seeds 2 and 3 reverse it. The
+  bedroom rule, hospitals and sick routines make the model more faithful to the
+  original design, not more accurate against Campinas.
+
+| Seed | v1 deaths | v1 curve (test) | v2 final deaths | v2 final curve (test) |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 6,188 | 39.3% | 6,914 | 45.0% |
+| 2 | 6,027 | 48.1% | 6,904 | 33.4% |
+| 3 | 6,119 | 55.7% | 6,869 | 29.8% |
+| mean | 6,111 (+14%) | 47.7% | 6,896 (+29%) | 36.1% |
+
+Counterfactuals with the v2 final calibration (`-from results/v2-final.json`):
+no lockdown, masks or school closures gives 11,243 deaths (+63% vs 6,914);
+no vaccines gives 17,938 (+159%). v1 gave +66% and +158%.
