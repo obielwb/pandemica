@@ -78,5 +78,24 @@
    "note": "\u2248 fit on 2020 deaths"
   }
  ],
- "counterfactuals": []
+ "counterfactuals": [
+  {
+   "label": "As it happened (headline run)",
+   "infections": 5295682,
+   "deaths": 6188,
+   "delta": "\u2013"
+  },
+  {
+   "label": "No lockdown, no masks, no school closures",
+   "infections": 6359102,
+   "deaths": 10244,
+   "delta": "+4,056 (+66%)"
+  },
+  {
+   "label": "No vaccines",
+   "infections": 6585550,
+   "deaths": 15972,
+   "delta": "+9,784 (+158%)"
+  }
+ ]
 }

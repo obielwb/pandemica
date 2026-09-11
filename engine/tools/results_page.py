@@ -143,7 +143,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:16px;font-si
 
 <section>
   <h2>Cumulative reported cases</h2>
-  <div class="seg" role="group" aria-label="Scale"><button id="lin" aria-pressed="true">Linear</button><button id="log" aria-pressed="false">Log</button></div>
+  <div class="seg" role="group" aria-label="Scale"><button id="lin" aria-pressed="false">Linear</button><button id="log" aria-pressed="true">Log</button></div>
   <div class="chart" id="c-cases"></div>
 </section>
 
@@ -155,7 +155,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:16px;font-si
 
 <section>
   <h2>Weekly new cases</h2>
-  <p class="muted">Real weekly cases against the headline run's reported cases and its true, mostly unreported, infections.</p>
+  <p class="muted">Real weekly cases against the headline run's reported cases. Behind every simulated case sit about eight infections that were never reported; they peak above 300,000 a week during Omicron.</p>
   <div class="chart" id="c-weekly"></div>
 </section>
 
@@ -208,8 +208,8 @@ if (H) {
   const s = H.summary, t = s.test, f = s.full;
   const ever = s.totals.everInfected, inf = s.totals.infections;
   const tiles = [
-    [pct(f.paperAccuracy), "paper-style accuracy, headline run (paper: 58.48%)"],
-    [fmt(f.simDeaths), "simulated deaths vs " + fmt(f.realDeaths) + " real"],
+    [fmt(f.simDeaths), "simulated deaths vs " + fmt(f.realDeaths) + " real (paper run: 7,752)"],
+    [fmt(f.simCases), "simulated reported cases vs " + fmt(f.realCases) + " real"],
     [(inf / N).toFixed(1), "infections per person over three years"],
     [Math.round(s.simSeconds / 60 * 10) / 10 + " min", "to simulate 1,019 days for " + fmt(N) + " people"],
   ];
@@ -287,17 +287,16 @@ function casesSeries(key) {
   D.runs.forEach((r, k) => s.push({ name: r.label, dates: r.dates, values: r[key], color: css(COLORS[k % COLORS.length]) }));
   return s;
 }
-let logScale = false;
+let logScale = true;
 function drawAll() {
   lineChart($("c-cases"), casesSeries("cases"), { log: logScale, label: "Cumulative reported cases" });
   lineChart($("c-deaths"), casesSeries("deaths"), { label: "Cumulative deaths" });
   if (H) {
     const wk = (dates, cum) => { const d = [], v = []; for (let i = 7; i < cum.length; i += 7) { d.push(dates[i]); v.push(cum[i] - cum[i - 7]); } return { d, v }; };
-    const r = wk(D.real.dates, D.real.cases), c = wk(H.dates, H.cases), inf = wk(H.dates, H.infections);
+    const r = wk(D.real.dates, D.real.cases), c = wk(H.dates, H.cases);
     lineChart($("c-weekly"), [
       { name: "Real weekly cases", dates: r.d, values: r.v, color: css("--blue"), width: 3 },
       { name: H.label + ": reported cases", dates: c.d, values: c.v, color: css(COLORS[0]) },
-      { name: H.label + ": all infections", dates: inf.d, values: inf.v, color: css("--grey"), dash: true },
     ], { label: "Weekly new cases" });
   }
 }

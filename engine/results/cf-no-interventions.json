@@ -1,0 +1,90 @@
+{
+  "name": "cf-no-interventions",
+  "params": {
+    "Beta": 0.07162829849202249,
+    "DetectSymptomatic": 0.14634000377485304,
+    "DetectAsymptomatic": 0.03658500094371326,
+    "CloseContacts": 10,
+    "HomeContact": 0.5,
+    "OccupationContact": 0.5,
+    "Workers": 10,
+    "Seed": 1
+  },
+  "build": {
+    "population": 1164099,
+    "houses": 377690,
+    "workSites": 136776,
+    "workTeams": 136776,
+    "schools": 1194,
+    "classes": 7675,
+    "locations": 154150,
+    "routineActivities": 70261868,
+    "indexEntries": 35114351,
+    "nnLoss": 2.082693751620895,
+    "buildSeconds": 1.785126291,
+    "heapMB": 673.5858154296875
+  },
+  "trainDays": 204,
+  "trainEnd": "2020-10-07",
+  "calibrated": false,
+  "fit": "",
+  "compliance": 0,
+  "r0": 0,
+  "simSeconds": 108.343761375,
+  "train": {
+    "from": "2020-03-18",
+    "to": "2020-10-07",
+    "paperAccuracy": -265.86,
+    "curveAccuracy": -621.44,
+    "cumulativeCasesMAPE": 766.8,
+    "cumulativeDeathsMAPE": 676.07,
+    "weeklyCasesMAPE": 669.68,
+    "weeklyDeathsMAPE": 592.35,
+    "realCases": 31789,
+    "simCases": 136251,
+    "realDeaths": 1253,
+    "simDeaths": 6304
+  },
+  "test": {
+    "from": "2020-10-08",
+    "to": "2022-12-31",
+    "paperAccuracy": -83.23,
+    "curveAccuracy": -82.38,
+    "cumulativeCasesMAPE": 212.48,
+    "cumulativeDeathsMAPE": 152.27,
+    "weeklyCasesMAPE": 985.4,
+    "weeklyDeathsMAPE": 194.31,
+    "realCases": 209500,
+    "simCases": 786344,
+    "realDeaths": 5360,
+    "simDeaths": 10244
+  },
+  "full": {
+    "from": "2020-03-18",
+    "to": "2022-12-31",
+    "paperAccuracy": -83.23,
+    "curveAccuracy": -187.59,
+    "cumulativeCasesMAPE": 323.45,
+    "cumulativeDeathsMAPE": 251.72,
+    "weeklyCasesMAPE": 1113.58,
+    "weeklyDeathsMAPE": 285.26,
+    "realCases": 209500,
+    "simCases": 786344,
+    "realDeaths": 5360,
+    "simDeaths": 10244
+  },
+  "totals": {
+    "cases": 786344,
+    "deaths": 10244,
+    "everInfected": 1163896,
+    "infections": 6359102
+  },
+  "infectionsBySetting": {
+    "home": 2742421,
+    "imported": 251,
+    "school": 424938,
+    "transport": 25110,
+    "venue": 2842790,
+    "work": 323592
+  }
+}
