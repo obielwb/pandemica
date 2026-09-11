@@ -120,6 +120,34 @@ def main():
         m["r0"] = r0_at(m["beta"])
         m["extrap"] = not (lo_b <= m["beta"] <= hi_b)
     data["r0marks"] = [m for m in marks if m["r0"] is not None]
+    # v2 comparison (engine-v2/results), shown only when present
+    V2 = os.path.join(ROOT, "engine-v2", "results")
+    def run2(name):
+        p = os.path.join(V2, name + ".csv")
+        if not os.path.exists(p):
+            return None
+        return {"rows": rows(p), "summary": json.load(open(os.path.join(V2, name + ".json")))}
+    v2name = next((n for n in ("v2-final", "abl-all", "v2-attempt1") if os.path.exists(os.path.join(V2, n + ".json"))), None)
+    if v2name:
+        v2 = run2(v2name)
+        def shares(summ):
+            st = summ["infectionsBySetting"]
+            tot = sum(st.values()) or 1
+            return {k: v / tot for k, v in st.items()}
+        abl = []
+        ref = head["summary"]
+        abl.append({"label": "v1 (reference)", "beta": ref["params"]["Beta"], "deaths": ref["totals"]["deaths"], "cases": ref["totals"]["cases"],
+                    "home": shares(ref).get("home", 0), "hospital": shares(ref).get("hospital", 0), "turned": None, "curve": ref["full"]["curveAccuracy"]})
+        for label, name in (("v2, all changes", v2name), ("v2 without sick routine", "abl-no-sick"), ("v2 without bedroom rule", "abl-no-sleep-pairs"),
+                            ("v2 without bed limit", "abl-no-capacity"), ("v2 without hospitals", "abl-no-hospitals")):
+            r = run2(name)
+            if not r:
+                continue
+            sm = r["summary"]
+            abl.append({"label": label, "beta": sm["params"]["Beta"], "deaths": sm["totals"]["deaths"], "cases": sm["totals"]["cases"],
+                        "home": shares(sm).get("home", 0), "hospital": shares(sm).get("hospital", 0),
+                        "turned": sm.get("beds", {}).get("turnedAway"), "curve": sm["full"]["curveAccuracy"]})
+        data["v2"] = {"deaths": col(v2["rows"], "deaths"), "v1shares": shares(head["summary"]), "v2shares": shares(v2["summary"]), "abl": abl}
     page = TEMPLATE.replace("/*DATA*/", json.dumps(data, separators=(",", ":"), ensure_ascii=False))
     open(out, "w").write(page)
     print("wrote", out, f"{len(page) / 1024:.0f} KB")
@@ -142,6 +170,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   --paper:#ffffff; --plate:#f6f7fb; --ink:#0b0e2a; --ink-2:#4d5275; --ink-3:#5f6488; --rule:#dfe2ee; --rule-2:#c6cadc;
   --ref:#0019f0; --ref-tint:#e8eaff; --inst:#0b0e2a; --tol:#f4de02; --tol-soft:rgba(244,222,2,.34);
   --pass:#0a7a4b; --pass-tint:#e3f4ec; --fail:#c8102e; --fail-tint:#fbe7ea;
+  --v2:#d4262b; --hospital:#0e9aa7;
   --home:#0019f0; --venue:#f0c800; --school:#7c4dff; --work:#f08a24; --transport:#aab0c8;
   --sans:"Archivo",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -210,6 +239,13 @@ figcaption{font-size:14.5px;color:var(--ink-2);max-width:62ch;margin-top:10px}
 .sw.line{height:0;border-top:2.5px solid;border-radius:0}
 .sw.dash{height:0;border-top:2px dashed;border-radius:0}
 
+.tablewrap{overflow-x:auto}
+table.abl{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+table.abl th,table.abl td{padding:9px 12px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+table.abl th{font:500 12.5px var(--sans);color:var(--ink-3)}
+table.abl td{font-family:var(--mono);font-size:13.5px}
+table.abl th:first-child,table.abl td:first-child{text-align:left;font-family:var(--sans);font-size:14px}
+table.abl tr.v2 td:first-child{font-weight:650}
 .cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px}
 .cols>figure{border-bottom:0;padding-bottom:32px}
 .row2{border-bottom:1px solid var(--rule)}
@@ -311,6 +347,25 @@ footer .mono{color:var(--ink-2)}
   <div class="plot" id="f7"></div>
   <figcaption>Same calibrated model and seed, one intervention removed.</figcaption>
 </figure>
+
+<section id="v2sec" aria-label="v2 comparison">
+<figure>
+  <div class="fighead"><h2><span class="fig">Fig. 10</span>v2, closer to the original design</h2>
+    <div class="key"><span><i class="sw line" style="border-color:var(--ref)"></i>bulletin</span><span><i class="sw line" style="border-color:var(--inst)"></i>v1</span><span><i class="sw line" style="border-color:var(--v2)"></i>v2</span></div></div>
+  <div class="plot" id="f10"></div>
+  <figcaption>Cumulative deaths. v2 adds hospitals, sick routines, bedrooms and a bed limit; both engines use the same calibration and seed.</figcaption>
+</figure>
+<figure>
+  <div class="fighead"><h2><span class="fig">Fig. 11</span>Where infections happen, v1 and v2</h2><div class="key" id="k11"></div></div>
+  <div class="plot" id="f11"></div>
+  <figcaption>Share of all infections by place.</figcaption>
+</figure>
+<figure>
+  <div class="fighead"><h2><span class="fig">Table 1</span>What each v2 change does</h2></div>
+  <div class="tablewrap"><table class="abl" id="t1"></table></div>
+  <figcaption>Each row recalibrates from scratch (R0 2.8, compliance fitted on 2020 deaths). Removing one change at a time shows its effect.</figcaption>
+</figure>
+</section>
 
 <section class="notes" aria-label="Method">
   <div><h3>Hold-out</h3><p>Only data up to 7 Oct 2020 (the first 20% of days) was used to calibrate. Everything after is a prediction.</p></div>
@@ -602,7 +657,50 @@ function fig8() {
   el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="R0 by transmission scale">${g}</svg>`;
 }
 
-function drawAll() { fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8(); }
+function fig10() {
+  const el = $("f10"); const { w, h } = sizeOf(el, 0.34, 240, 380); const narrow = w < 640;
+  const L = narrow ? 44 : 60, R = narrow ? 12 : 130, Tp = 12, B = 30;
+  const ts = D.dates.map(T), t0 = ts[0], t1 = ts[n];
+  const series = [{ t: "Bulletin", v: D.real.deaths, c: "var(--ref)", w: 3 }, { t: "v1", v: D.head.deaths, c: "var(--inst)", w: 2.2 }, { t: "v2", v: D.v2.deaths, c: "var(--v2)", w: 2.4 }];
+  const vmax = Math.max(...series.flatMap(s => s.v)) * 1.05;
+  const x = (t) => L + (t - t0) / (t1 - t0) * (w - L - R);
+  const y = (v) => Tp + (1 - v / vmax) * (h - Tp - B);
+  const xs = ts.map(x);
+  let g = ""; const step = niceStep(vmax / 4);
+  for (let v = 0; v <= vmax; v += step) g += `<line class="grid" x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${short(v)}</text>`;
+  g += yearTicks(t0, t1, x, Tp, B, h);
+  for (const s of series) g += `<path d="${pathOf(xs, s.v.map(y))}" fill="none" stroke="${s.c}" stroke-width="${s.w}"/>`;
+  if (!narrow) for (const l of spread(series.map(s => ({ y: y(s.v[n]), c: s.c, t: s.t, v: fmt(s.v[n]) })), 30, Tp + 8, h - B - 6))
+    g += `<text class="lbl" x="${w - R + 12}" y="${l.y}" fill="${l.c}">${l.t}</text><text class="lblv" x="${w - R + 12}" y="${l.y + 14}" fill="var(--ink-2)">${l.v}</text>`;
+  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Cumulative deaths, bulletin, v1 and v2">${g}</svg>`;
+}
+function fig11() {
+  const el = $("f11"); const w = Math.max(280, el.clientWidth); const narrow = w < 640;
+  const order = ["home", "venue", "school", "work", "transport", "hospital"];
+  const names = { home: "home", venue: "leisure & shops", school: "school", work: "work", transport: "transport", hospital: "hospital" };
+  const rows = [["v1", D.v2.v1shares], ["v2", D.v2.v2shares]];
+  const L = narrow ? 30 : 44, R = 8, rowH = 44, h = rows.length * rowH + 8;
+  let g = "";
+  rows.forEach(([lab, sh], k) => {
+    let x0 = L; const yy = 4 + k * rowH;
+    g += `<text class="lbl" x="0" y="${yy + 22}" fill="var(--ink)">${lab}</text>`;
+    for (const key of order) {
+      const v = sh[key] || 0; const wd = v * (w - L - R);
+      if (wd <= 0) continue;
+      g += `<rect x="${x0}" y="${yy}" width="${wd}" height="32" fill="var(--${key})"><title>${names[key]} ${(v * 100).toFixed(1)}%</title></rect>`;
+      if (wd > 44) g += `<text class="lblv" x="${x0 + 6}" y="${yy + 21}" fill="${key === "venue" || key === "transport" ? "var(--ink)" : "#fff"}">${Math.round(v * 100)}%</text>`;
+      x0 += wd;
+    }
+  });
+  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Share of infections by place, v1 and v2">${g}</svg>`;
+  $("k11").innerHTML = order.map(k => `<span><i class="sw" style="background:var(--${k})"></i>${names[k]}</span>`).join("");
+}
+function table1() {
+  const pct = (v) => (v * 100).toFixed(1).replace(/\.0$/, "") + "%";
+  $("t1").innerHTML = `<thead><tr><th>Run</th><th>β for R0 2.8</th><th>Deaths</th><th>Cases</th><th>Home</th><th>Hospital</th><th>Turned away</th><th>Curve score</th></tr></thead><tbody>` +
+    D.v2.abl.map((r, k) => `<tr class="${k ? "v2" : ""}"><td>${r.label}</td><td>${dec(r.beta, 3)}</td><td>${fmt(r.deaths)}</td><td>${fmt(r.cases)}</td><td>${pct(r.home)}</td><td>${pct(r.hospital)}</td><td>${r.turned == null ? "–" : fmt(r.turned)}</td><td>${dec(r.curve, 1)}%</td></tr>`).join("") + `</tbody>`;
+}
+function drawAll() { fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8(); if (D.v2) { fig10(); fig11(); table1(); } else { $("v2sec").hidden = true; } }
 drawAll();
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 120); });
 if (document.fonts) document.fonts.ready.then(drawAll);
