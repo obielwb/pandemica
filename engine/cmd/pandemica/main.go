@@ -199,6 +199,7 @@ func cmdRun(args []string) {
 	root := fs.String("root", "..", "repository root (for model/data and web/public)")
 	scPath := fs.String("scenario", "scenarios/campinas.json", "scenario timeline")
 	beta := fs.Float64("beta", 0, "transmission scale; 0 = calibrate on the training window")
+	from := fs.String("from", "", "reuse beta and reporting rates from a previous run's JSON summary (for counterfactual scenarios)")
 	fit := fs.String("fit", "deaths", "calibration target: deaths (fit beta on training deaths, then the reporting rate on training cases) or cases (paper: every infection is a case)")
 	train := fs.Float64("train", 0.2, "hold-out training fraction (paper: first 20%)")
 	detSym := fs.Float64("detect-sym", 1, "probability a symptomatic infection is reported (paper: 1)")
@@ -242,7 +243,16 @@ func cmdRun(args []string) {
 	target := float64(trainEnd.TotalCases) * scale
 	sum := runSummary{Name: *name, Build: info, TrainDays: trainDays, TrainEnd: trainEnd.Date.Format(scenario.DateLayout)}
 
-	if *beta > 0 {
+	if *from != "" {
+		b, err := os.ReadFile(*from)
+		check(err)
+		var prev runSummary
+		check(json.Unmarshal(b, &prev))
+		par.Beta = prev.Params.Beta
+		par.DetectSymptomatic, par.DetectAsymptomatic = prev.Params.DetectSymptomatic, prev.Params.DetectAsymptomatic
+		par.CloseContacts, par.HomeContact, par.OccupationContact = prev.Params.CloseContacts, prev.Params.HomeContact, prev.Params.OccupationContact
+		logf("parameters from %s: beta %.5f, detection %.3f/%.3f", *from, par.Beta, par.DetectSymptomatic, par.DetectAsymptomatic)
+	} else if *beta > 0 {
 		par.Beta = *beta
 	} else {
 		sum.Calibrated = true

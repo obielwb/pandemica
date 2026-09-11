@@ -431,53 +431,66 @@ func (s *Sim) transmit(day, weekday int, r *rng.Stream, st *DayStats) {
 			s.infectors = append(s.infectors, int32(k))
 		}
 	}
+	// Infectors are processed in batches of chunks: every chunk of a batch is
+	// computed in parallel, then the batch is merged in chunk order. Memory
+	// stays bounded by one batch and the result is deterministic.
 	const chunk = 128
+	const batchChunks = 64
 	nChunks := (len(s.infectors) + chunk - 1) / chunk
-	for len(s.chunks) < nChunks {
-		s.chunks = append(s.chunks, nil)
+	if len(s.chunks) < batchChunks {
+		s.chunks = make([][]contribution, batchChunks)
 	}
-	var wg sync.WaitGroup
-	work := make(chan int, nChunks)
-	for c := 0; c < nChunks; c++ {
-		work <- c
-	}
-	close(work)
-	workers := s.Par.Workers
-	if workers > nChunks {
-		workers = nChunks
-	}
-	for w := 0; w < workers; w++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			var bi, bj []seg
-			for c := range work {
-				out := s.chunks[c][:0]
-				lo, hi := c*chunk, (c+1)*chunk
-				if hi > len(s.infectors) {
-					hi = len(s.infectors)
-				}
-				for _, k := range s.infectors[lo:hi] {
-					out, bi, bj = s.spread(&s.active[k], day, weekday, out, bi, bj)
-				}
-				s.chunks[c] = out
-			}
-		}()
-	}
-	wg.Wait()
-
 	s.touched = s.touched[:0]
-	for c := 0; c < nChunks; c++ {
-		for _, ct := range s.chunks[c] {
-			j := ct.j
-			if s.mark[j] != int32(day) {
-				s.mark[j] = int32(day)
-				s.touched = append(s.touched, j)
+	for b0 := 0; b0 < nChunks; b0 += batchChunks {
+		b1 := b0 + batchChunks
+		if b1 > nChunks {
+			b1 = nChunks
+		}
+		var wg sync.WaitGroup
+		work := make(chan int, b1-b0)
+		for c := b0; c < b1; c++ {
+			work <- c
+		}
+		close(work)
+		workers := s.Par.Workers
+		if workers > b1-b0 {
+			workers = b1 - b0
+		}
+		for w := 0; w < workers; w++ {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				var bi, bj []seg
+				for c := range work {
+					slot := c - b0
+					out := s.chunks[slot][:0]
+					lo, hi := c*chunk, (c+1)*chunk
+					if hi > len(s.infectors) {
+						hi = len(s.infectors)
+					}
+					for _, k := range s.infectors[lo:hi] {
+						out, bi, bj = s.spread(&s.active[k], day, weekday, out, bi, bj)
+					}
+					s.chunks[slot] = out
+				}
+			}()
+		}
+		wg.Wait()
+		for slot := 0; slot < b1-b0; slot++ {
+			for _, ct := range s.chunks[slot] {
+				j := ct.j
+				if s.mark[j] != int32(day) {
+					s.mark[j] = int32(day)
+					s.touched = append(s.touched, j)
+				}
+				s.hz[ct.v][j] += ct.h
+				if ct.h > s.best[j] {
+					s.best[j] = ct.h
+					s.bestSet[j] = ct.set
+				}
 			}
-			s.hz[ct.v][j] += ct.h
-			if ct.h > s.best[j] {
-				s.best[j] = ct.h
-				s.bestSet[j] = ct.set
+			if cap(s.chunks[slot]) > 1<<20 { // release unusually large buffers
+				s.chunks[slot] = nil
 			}
 		}
 	}
