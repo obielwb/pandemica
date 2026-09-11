@@ -48,3 +48,36 @@ reported cases; the paper counts every infection), `-no-vaccines`,
 * Each day only infectious people are visited; their contacts are found in the
   index and hazard contributions are accumulated in parallel, then merged in a
   fixed order so runs are reproducible for a given seed.
+
+## Results (Campinas, 2020-03-18 to 2022-12-31, seed 1)
+
+Real bulletin: 209,500 cases and 5,360 deaths. The paper's TypeScript run:
+289,943 cases and 7,752 deaths (58.48% by the paper's metric).
+
+| Run | Calibration (first 20% of days only) | Cases | Deaths | Paper metric (full) | Curve score (test 80%) |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `paper-mode` | beta fit on training cases, every infection is a case | 12,535,612 | 10,265 | -2,887.6% | -1,099.6% |
+| `beta-fit-deaths` | beta fit on training deaths, reporting rate on training cases | 1,852,812 | 11,387 | -348.4% | -88.5% |
+| `compliance-fit` (headline) | beta from R0 = 2.8, intervention compliance fit on training deaths (0.40), reporting rate on training cases (14.6%) | 657,300 | 6,188 | -14.6% | 39.3% |
+
+Paper metric = 100 - mean(|error of final cases|, |error of final deaths|) in %.
+Curve score = 100 - mean(MAPE of cumulative cases, MAPE of cumulative deaths)
+over every day of the window.
+
+What this says:
+
+* **Counting every infection as a case (the paper's setup) cannot work.** Fitting
+  2020 cases forces an ancestral-strain R0 of about 6.7 (`pandemica r0`), yet it
+  still produces a ninth of the deaths observed by October 2020. The real
+  epidemic had roughly seven infections per reported case.
+* **Fitting transmission to 2020 deaths alone is a knife edge.** Beta 0.20 gives
+  30k cases by October 2020, beta 0.24 gives 343k. The fit lands on R0 ~7.5,
+  and once restrictions ease every later wave explodes.
+* **Pinning R0 to the literature and fitting how strongly people followed the
+  measures works for deaths.** Final deaths are 15% high and the 2021-2022
+  cumulative curve stays close to the real one. Cases stay about 3x high
+  because the reporting rate fitted on 2020 (14.6%) is held fixed, while
+  real testing fell sharply in the Omicron era.
+* **The 2020 wave comes late.** The model peaks in October-December 2020
+  instead of July-August, so deaths are over-predicted at the end of 2020.
+  The intervention timeline in `scenarios/campinas.json` is the weakest input.
