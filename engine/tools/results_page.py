@@ -1,338 +1,574 @@
 #!/usr/bin/env python3
-"""Build the single-page results report from engine/results/*.json|csv.
+"""Build the Pandemica validation report (single HTML page) from real run outputs.
 
-usage: results_page.py OUT.html verdict.html run1=Label1 run2=Label2 ...
-The first run is treated as the headline model. Runs whose JSON is missing are
-skipped. Also reads the real bulletin and the paper's TypeScript v1 results.
+usage: results_page.py OUT.html
+Reads engine/results/*.json|csv, the real Campinas bulletin, the paper's
+TypeScript v1 results and scenarios/campinas.json. Every number shown comes
+from these files.
 """
-import csv, json, os, sys, html
+import csv, json, os, sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RES = os.path.join(ROOT, "engine", "results")
 
-def load_series(path, date_key="date"):
-    rows = list(csv.DictReader(open(path)))
-    return {
-        "dates": [r[date_key] for r in rows],
-        "cases": [int(float(r["totalCases"])) for r in rows],
-        "deaths": [int(float(r["deaths"])) for r in rows],
-        "infections": [int(float(r["totalInfections"])) for r in rows] if "totalInfections" in rows[0] else None,
-        "settings": {k[len("infections_"):]: sum(int(r[k]) for r in rows) for k in rows[0] if k.startswith("infections_")},
-        "reinf": sum(int(r.get("newReinfections", 0) or 0) for r in rows),
-    }
+def rows(path):
+    return list(csv.DictReader(open(path)))
+
+def col(rs, key):
+    return [int(float(r[key])) for r in rs]
+
+def weekly(cum):
+    return [cum[i] - cum[i - 7] for i in range(7, len(cum), 7)]
+
+def wdates(dates):
+    return [dates[i] for i in range(7, len(dates), 7)]
+
+def run(name):
+    p = os.path.join(RES, name + ".csv")
+    if not os.path.exists(p):
+        return None
+    rs = rows(p)
+    return {"rows": rs, "summary": json.load(open(os.path.join(RES, name + ".json")))}
 
 def main():
-    out, verdict_path = sys.argv[1], sys.argv[2]
-    runs = []
-    for arg in sys.argv[3:]:
-        name, label = arg.split("=", 1)
-        j = os.path.join(RES, name + ".json")
-        if not os.path.exists(j):
-            print("skip", name); continue
-        summ = json.load(open(j))
-        ser = load_series(os.path.join(RES, name + ".csv"))
-        runs.append({"name": name, "label": label, "summary": summ, "series": ser})
-    real = load_series(os.path.join(ROOT, "model/data/covid19/campinas_2020_2021_2022_cases.csv"))
-    paper = load_series(os.path.join(ROOT, "web/public/simulation/results/campinas/v1.csv"))
-    verdict = open(verdict_path).read()
-    extra = {}
-    xp = os.path.join(RES, "extras.json")
-    if os.path.exists(xp):
-        extra = json.load(open(xp))
-    data = {
-        "real": {k: real[k] for k in ("dates", "cases", "deaths")},
-        "paper": {k: paper[k] for k in ("dates", "cases", "deaths")},
-        "runs": [{"label": r["label"], "name": r["name"], "dates": r["series"]["dates"], "cases": r["series"]["cases"],
-                  "deaths": r["series"]["deaths"], "infections": r["series"]["infections"],
-                  "settings": r["series"]["settings"], "reinf": r["series"]["reinf"], "summary": r["summary"]} for r in runs],
-        "extra": extra,
-    }
-    page = TEMPLATE.replace("/*DATA*/", json.dumps(data, separators=(",", ":"))).replace("<!--VERDICT-->", verdict)
-    open(out, "w").write(page)
-    print("wrote", out, f"{len(page)/1024:.0f} KB")
+    out = sys.argv[1]
+    real = rows(os.path.join(ROOT, "model/data/covid19/campinas_2020_2021_2022_cases.csv"))
+    ts = rows(os.path.join(ROOT, "web/public/simulation/results/campinas/v1.csv"))
+    dates = [r["date"] for r in real]
+    head = run("compliance-fit")
+    seeds = [x for x in (head, run("compliance-fit-seed2"), run("compliance-fit-seed3")) if x]
+    pm, bf = run("paper-mode"), run("beta-fit-deaths")
+    cfi, cfv = run("cf-no-interventions"), run("cf-no-vaccines")
+    sc = json.load(open(os.path.join(ROOT, "engine/scenarios/campinas.json")))
+    extras = json.load(open(os.path.join(RES, "extras.json")))
+    hr = head["rows"]
+    N = head["summary"]["build"]["population"]
 
-TEMPLATE = r"""<title>Pandemica vs. Campinas</title>
+    real_deaths, real_cases = col(real, "deaths"), col(real, "totalCases")
+    head_deaths = col(hr, "deaths")
+    seed_deaths = [col(s["rows"], "deaths") for s in seeds]
+    band_lo = [min(v[i] for v in seed_deaths) for i in range(len(dates))]
+    band_hi = [max(v[i] for v in seed_deaths) for i in range(len(dates))]
+
+    settings = ["home", "venue", "school", "work", "transport"]
+    set_weekly = {}
+    for s in settings:
+        daily = col(hr, "infections_" + s)
+        cum, c = [], 0
+        for v in daily:
+            c += v
+            cum.append(c)
+        set_weekly[s] = weekly(cum)
+
+    def final(rs, key):
+        return int(float(rs[-1][key]))
+
+    ruler = [{"label": "Paper, TypeScript (2023)", "cases": final(ts, "totalCases"), "deaths": final(ts, "deaths")}]
+    for label, r in (("Go · paper setup", pm), ("Go · fit on 2020 deaths", bf)):
+        if r:
+            ruler.append({"label": label, "cases": final(r["rows"], "totalCases"), "deaths": final(r["rows"], "deaths")})
+    for k, s in enumerate(seeds):
+        ruler.append({"label": "Go · headline" + ("" if k == 0 else f" (seed {k + 1})"), "cases": final(s["rows"], "totalCases"),
+                      "deaths": final(s["rows"], "deaths"), "headline": True, "seed": k > 0})
+
+    data = {
+        "N": N,
+        "dates": dates,
+        "real": {"deaths": real_deaths, "cases": real_cases},
+        "ts": {"deaths": col(ts, "deaths"), "cases": col(ts, "totalCases")},
+        "head": {"deaths": head_deaths, "cases": col(hr, "totalCases"), "infections": final(hr, "totalInfections"),
+                 "simSeconds": head["summary"]["simSeconds"], "build": head["summary"]["build"],
+                 "compliance": head["summary"].get("compliance"), "r0": head["summary"].get("r0"),
+                 "detect": head["summary"]["params"]["DetectSymptomatic"], "beta": head["summary"]["params"]["Beta"],
+                 "trainEnd": head["summary"]["trainEnd"]},
+        "band": {"lo": band_lo, "hi": band_hi, "n": len(seeds)},
+        "weekly": {"dates": wdates(dates), "real": weekly(real_deaths), "head": weekly(head_deaths)},
+        "settings": {"dates": wdates(dates), "order": settings, "values": set_weekly},
+        "doses": {"d1": col(hr, "dose1")[-1], "d2": col(hr, "dose2")[-1], "d3": col(hr, "dose3")[-1]},
+        "variants": [{"date": v["date"], "name": v["variant"]} for v in sc["variants"]],
+        "ruler": ruler,
+        "calib": {
+            "beta": [{"x": c["beta"], "cases": c["cases"], "deaths": c["deaths"]} for c in (pm["summary"]["calibration"] if pm else [])],
+            "betaTarget": 31789,
+            "comp": [{"x": c["beta"], "deaths": c["deaths"]} for c in head["summary"].get("calibration", [])],
+            "compTarget": 1253,
+        },
+        "r0": extras.get("r0", []),
+        "scen": [{"label": "As it happened", "deaths": head_deaths}]
+                + ([{"label": "No lockdown, masks or school closures", "deaths": col(cfi["rows"], "deaths")}] if cfi else [])
+                + ([{"label": "No vaccines", "deaths": col(cfv["rows"], "deaths")}] if cfv else []),
+    }
+    page = TEMPLATE.replace("/*DATA*/", json.dumps(data, separators=(",", ":")))
+    open(out, "w").write(page)
+    print("wrote", out, f"{len(page) / 1024:.0f} KB")
+
+TEMPLATE = r"""<!--
+THESIS: A calibration certificate. The model is the instrument under test, the Campinas bulletin the reference standard; every figure is a reading checked against a tolerance band. Refuses the dark data-dashboard of tiles and the editorial long-read.
+OWN-WORLD: White ground, blue-black ink, hairline rules, Pandemica blue for the reference, ink for the instrument, Pandemica yellow only as the tolerance band, PASS green and FAIL red as verdict marks. Archivo upright at varied widths; Geist Mono for readings.
+STORY: Deaths pass tolerance and cases fail, visible in one screen; the figures show why; scenario deltas close.
+FIRST VIEWPORT: Title and spec grid; two verdict readings; Fig. 1 cumulative deaths full width with an instrument readout that follows the cursor.
+FORM: Calibration certificate, grounded list position 7, seed key 2cf38d65.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+-->
+<title>Pandemica vs. Campinas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,600&family=Space+Grotesk:wght@500&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=Geist+Mono:wght@400;500;600&display=swap">
 <style>
 :root{
-  --ground:#f7f8fc; --surface:#ffffff; --ink:#0d1030; --ink-2:#4a4f72; --rule:#dfe2f0;
-  --blue:#0019f0; --yellow-mark:#b89a00; --yellow-fill:#f4de02; --grey:#8b90ad; --red:#c2273d; --teal:#0f8a7e;
-  --good:#11845b; --bad:#c2273d;
+  color-scheme: light;
+  --paper:#ffffff; --plate:#f6f7fb; --ink:#0b0e2a; --ink-2:#4d5275; --ink-3:#7a7fa0; --rule:#dfe2ee; --rule-2:#c6cadc;
+  --ref:#0019f0; --ref-tint:#e8eaff; --inst:#0b0e2a; --tol:#f4de02; --tol-soft:rgba(244,222,2,.34);
+  --pass:#0a7a4b; --pass-tint:#e3f4ec; --fail:#c8102e; --fail-tint:#fbe7ea;
+  --home:#0019f0; --venue:#e0c400; --school:#7d8bff; --work:#0b0e2a; --transport:#b3b8d0;
+  --sans:"Archivo",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --ground:#0a0b1a; --surface:#12142a; --ink:#eef0ff; --ink-2:#a8acd0; --rule:#262a4a;
-  --blue:#6f7dff; --yellow-mark:#f4de02; --yellow-fill:#f4de02; --grey:#7d82a6; --red:#ff6b81; --teal:#3cc7b8;
-  --good:#3ecf8e; --bad:#ff6b81;}}
-:root[data-theme="dark"]{
-  --ground:#0a0b1a; --surface:#12142a; --ink:#eef0ff; --ink-2:#a8acd0; --rule:#262a4a;
-  --blue:#6f7dff; --yellow-mark:#f4de02; --yellow-fill:#f4de02; --grey:#7d82a6; --red:#ff6b81; --teal:#3cc7b8;
-  --good:#3ecf8e; --bad:#ff6b81;}
 *{box-sizing:border-box}
-body{margin:0;background:var(--ground);color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;padding-inline:16px;padding-block:0 64px}
-main{max-width:980px;margin:0 auto}
-header{padding-block:48px 24px;border-bottom:1px solid var(--rule)}
-.kicker{font:500 12px/1 "Space Grotesk",ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
-h1{font:italic 600 clamp(34px,6vw,58px)/1.02 Newsreader,Georgia,serif;margin:12px 0 16px;text-wrap:balance;letter-spacing:-.01em}
-h1 em{font-style:italic;color:var(--blue)}
-h2{font:italic 600 28px/1.15 Newsreader,Georgia,serif;margin:0 0 8px;text-wrap:balance}
-h3{font:600 15px/1.3 Inter,system-ui,sans-serif;margin:0 0 4px}
-p{max-width:68ch;margin:0 0 12px}
-.lede{font-size:18px;color:var(--ink)}
-.muted{color:var(--ink-2)}
-section{padding-block:36px 8px}
-.verdict{display:grid;gap:12px;margin-top:8px}
-.verdict p{margin:0}
-.scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin:20px 0 0}
-.score{background:var(--surface);padding:16px 18px;display:grid;gap:4px}
-.score .v{font:500 30px/1.1 "Space Grotesk",ui-monospace,monospace;font-variant-numeric:tabular-nums}
-.score .l{font-size:13px;color:var(--ink-2)}
-.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface);margin-top:12px}
-table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
-th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--rule);white-space:nowrap}
-th{font:500 11.5px/1.2 "Space Grotesk",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:transparent}
-td:first-child,th:first-child{text-align:left}
-tr:last-child td{border-bottom:0}
-.pos{color:var(--good)}.neg{color:var(--bad)}
-.chart{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 14px 8px;margin-top:12px;position:relative}
-.chart svg{display:block;width:100%;height:auto;overflow:visible}
-.chart .ax{font:11px "Space Grotesk",ui-monospace,monospace;fill:var(--ink-2)}
-.chart .grid{stroke:var(--rule);stroke-width:1}
-.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-2);margin:4px 2px 6px}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.legend i{width:16px;height:0;border-top:2.5px solid currentColor;display:inline-block}
-.legend i.dash{border-top-style:dashed}
-.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;font-size:12.5px;box-shadow:0 6px 24px rgba(0,0,0,.12);display:none;min-width:190px;font-variant-numeric:tabular-nums}
-.tip b{font-weight:600}
-.tip .row{display:flex;justify-content:space-between;gap:12px}
-.bars{display:grid;gap:8px;margin-top:12px}
-.bar{display:grid;grid-template-columns:110px 1fr 64px;gap:10px;align-items:center;font-size:13.5px}
-.bar .track{height:12px;background:var(--rule);border-radius:3px;overflow:hidden}
-.bar .fill{height:100%;background:var(--blue)}
-.bar .num{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-2)}
-.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
-ul.plain{padding-left:18px;margin:0;max-width:68ch}
-ul.plain li{margin-bottom:6px}
-code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--rule);padding:1px 5px;border-radius:4px}
-pre{font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;overflow-x:auto}
-.seg{display:inline-flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;margin-top:10px}
-.seg button{font:500 12.5px Inter,system-ui,sans-serif;background:var(--surface);color:var(--ink-2);border:0;padding:6px 12px;cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--blue);color:#fff}
-.seg button:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
-footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:16px;font-size:13px;color:var(--ink-2)}
-@media (max-width:520px){.bar{grid-template-columns:84px 1fr 52px}}
+html{background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.55 var(--sans);font-stretch:100%;padding-inline:clamp(16px,4vw,48px);padding-block:0 72px;-webkit-font-smoothing:antialiased}
+::selection{background:var(--tol);color:var(--ink)}
+a{color:var(--ref);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--ref);outline-offset:2px}
+main{max-width:1180px;margin:0 auto}
+.num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+/* certificate head */
+.cert{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px 48px;padding-block:44px 32px;border-bottom:2px solid var(--ink);align-items:end}
+h1{font:760 clamp(44px,7.4vw,96px)/.9 var(--sans);font-stretch:78%;letter-spacing:-.035em;margin:0;text-wrap:balance}
+h1 .vs{font-weight:300;font-stretch:100%;color:var(--ink-3)}
+.sub{font:420 18px/1.45 var(--sans);color:var(--ink-2);max-width:40ch;margin:16px 0 0}
+.spec{display:grid;grid-template-columns:auto 1fr;margin:0;border-top:1px solid var(--rule)}
+.spec dt,.spec dd{margin:0;padding:7px 0;border-bottom:1px solid var(--rule);font-size:13.5px}
+.spec dt{color:var(--ink-3);padding-right:18px;font-stretch:90%;font-weight:500}
+.spec dd{font-family:var(--mono);font-size:13px;text-align:right}
+
+/* verdict readings */
+.readings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--rule)}
+.reading{padding:22px 24px 22px 0;display:grid;gap:6px;align-content:start}
+.reading+.reading{padding-left:24px;border-left:1px solid var(--rule)}
+.reading .q{font:600 15px/1.2 var(--sans);font-stretch:88%}
+.reading .v{font:500 clamp(30px,4vw,44px)/1 var(--mono);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.reading .ref{font-size:13.5px;color:var(--ink-2)}
+.mark{justify-self:start;display:inline-flex;align-items:center;gap:7px;font:600 12px/1 var(--mono);letter-spacing:.06em;padding:6px 9px;border-radius:3px;border:1.5px solid currentColor}
+.mark svg{width:13px;height:13px}
+.mark.pass{color:var(--pass);background:var(--pass-tint)}
+.mark.fail{color:var(--fail);background:var(--fail-tint)}
+.mark.info{color:var(--ink-2);background:var(--plate)}
+
+/* figures */
+figure{margin:0;padding-block:40px 8px;border-bottom:1px solid var(--rule)}
+.fighead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 24px;margin-bottom:14px}
+h2{font:700 clamp(22px,2.6vw,30px)/1.1 var(--sans);font-stretch:84%;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2 .fig{font:500 13px/1 var(--mono);color:var(--ink-3);letter-spacing:0;margin-right:12px;vertical-align:4px}
+figcaption{font-size:14.5px;color:var(--ink-2);max-width:62ch;margin-top:10px}
+.plot{position:relative;width:100%}
+.plot svg{display:block;width:100%;overflow:visible}
+.ax{font:11.5px var(--mono);fill:var(--ink-3)}
+.axl{font:600 12px var(--sans);fill:var(--ink-2)}
+.grid{stroke:var(--rule);stroke-width:1;shape-rendering:crispEdges}
+.lbl{font:600 12.5px var(--sans);font-stretch:88%}
+.lblv{font:500 12px var(--mono)}
+.readout{position:absolute;top:8px;left:72px;background:rgba(255,255,255,.94);border:1px solid var(--rule-2);border-radius:4px;padding:10px 12px;display:grid;grid-template-columns:auto auto;gap:3px 16px;font-size:12.5px;pointer-events:none;box-shadow:0 6px 18px rgba(11,14,42,.08)}
+.readout .d{grid-column:1/-1;font:600 12px var(--mono);color:var(--ink);margin-bottom:4px}
+.readout span:nth-child(even){font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink-2);margin:0 0 6px}
+.key span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:18px;height:10px;border-radius:2px;display:inline-block}
+.sw.line{height:0;border-top:2.5px solid;border-radius:0}
+.sw.dash{height:0;border-top:2px dashed;border-radius:0}
+
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px}
+.cols>figure{border-bottom:0;padding-bottom:32px}
+.row2{border-bottom:1px solid var(--rule)}
+.tri{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.tri .yr{font:600 13px var(--mono);color:var(--ink-2);margin:0 0 2px}
+.waffle{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center}
+.waffle .big{font:500 56px/1 var(--mono);letter-spacing:-.04em}
+.waffle p{margin:6px 0 0;color:var(--ink-2);font-size:14.5px;max-width:34ch}
+.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;padding-block:36px 0}
+.notes h3{font:650 15px/1.25 var(--sans);font-stretch:88%;margin:0 0 6px}
+.notes p{margin:0;font-size:14px;color:var(--ink-2)}
+pre{font:12.5px/1.6 var(--mono);background:var(--plate);border:1px solid var(--rule);border-radius:4px;padding:14px 16px;overflow-x:auto;margin:0}
+footer{margin-top:40px;padding-top:14px;border-top:2px solid var(--ink);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;font-size:12.5px;color:var(--ink-3)}
+footer .mono{color:var(--ink-2)}
+
+@media (max-width:860px){
+  .cert{grid-template-columns:1fr}
+  .readings{grid-template-columns:1fr}
+  .reading,.reading+.reading{padding:18px 0;border-left:0}
+  .reading+.reading{border-top:1px solid var(--rule)}
+  .cols,.notes{grid-template-columns:1fr}
+  .tri{grid-template-columns:1fr}
+  .readout{left:8px;top:4px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.4s cubic-bezier(.16,1,.3,1) .15s forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+}
 </style>
 <main>
-<header>
-  <div class="kicker">Capstone check-in · Campinas, SP · 18 Mar 2020 – 31 Dec 2022</div>
-  <h1>Pandemica vs. <em>Campinas</em></h1>
-  <p class="lede">We finished the model we described in the paper, rewrote it in Go, and ran it against three years of the real epidemic in Campinas. This page shows what came out.</p>
-  <div class="scores" id="scores"></div>
-</header>
-
-<section>
-  <h2>The verdict</h2>
-  <div class="verdict"><!--VERDICT--></div>
-</section>
-
-<section>
-  <h2>Every run against the bulletin</h2>
-  <p class="muted">Accuracy uses the paper's own definition: 100 minus the mean absolute percentage error of the final case and death totals. It reproduces the 58.48% the paper reports for the TypeScript run. The curve score is stricter: it averages the error on every day, not just the last one. Negative means the error is larger than the real value itself.</p>
-  <div class="tablewrap"><table id="scoreboard"></table></div>
-</section>
-
-<section>
-  <h2>Cumulative reported cases</h2>
-  <div class="seg" role="group" aria-label="Scale"><button id="lin" aria-pressed="false">Linear</button><button id="log" aria-pressed="true">Log</button></div>
-  <div class="chart" id="c-cases"></div>
-</section>
-
-<section>
-  <h2>Cumulative deaths</h2>
-  <p class="muted">Deaths are the fairer yardstick: nearly all of them were counted, while most infections never became a reported case.</p>
-  <div class="chart" id="c-deaths"></div>
-</section>
-
-<section>
-  <h2>Weekly new cases</h2>
-  <p class="muted">Real weekly cases against the headline run's reported cases. Behind every simulated case sit about eight infections that were never reported; they peak above 300,000 a week during Omicron.</p>
-  <div class="chart" id="c-weekly"></div>
-</section>
-
-<section class="two">
+<section class="cert" aria-label="Report header">
   <div>
-    <h2>Where people got infected</h2>
-    <p class="muted">Headline run, share of all infections by the place they happened.</p>
-    <div class="bars" id="settings"></div>
+    <h1>Pandemica <span class="vs">vs.</span> Campinas</h1>
+    <p class="sub">The finished model, rewritten in Go, checked against three years of the real epidemic.</p>
   </div>
-  <div>
-    <h2>How contagious is the model?</h2>
-    <p class="muted">R0 of the ancestral strain measured from early growth, for each transmission scale. The literature puts it near 2.5–3.</p>
-    <div class="tablewrap"><table id="r0"></table></div>
-  </div>
+  <dl class="spec" id="spec"></dl>
 </section>
 
-<section id="cf-sec">
-  <h2>What if Campinas had done nothing?</h2>
-  <p class="muted">The paper's promise was scenario testing. Same calibrated model, same seed, one lever changed.</p>
-  <div class="tablewrap"><table id="cf"></table></div>
-</section>
+<section class="readings" id="readings" aria-label="Verdict"></section>
 
-<section>
-  <h2>What was built</h2>
-  <div class="two">
-    <ul class="plain" id="built"></ul>
-    <pre>cd engine
-go test ./...
+<figure>
+  <div class="fighead"><h2><span class="fig">Fig. 1</span>Deaths stay inside tolerance</h2>
+    <div class="key" id="k1"></div></div>
+  <div class="plot" id="f1"></div>
+  <figcaption>Cumulative deaths. Yellow band: ±30% around the bulletin, the paper's own 70–80% accuracy goal. Grey band: three seeds of the headline run.</figcaption>
+</figure>
+
+<figure>
+  <div class="fighead"><h2><span class="fig">Fig. 2</span>How far off each run lands</h2>
+    <div class="key"><span><i class="sw" style="background:var(--ink)"></i>deaths</span><span><i class="sw" style="background:#fff;border:2px solid var(--ink)"></i>cases</span><span><i class="sw" style="background:var(--tol-soft)"></i>±30% tolerance</span></div></div>
+  <div class="plot" id="f2"></div>
+  <figcaption>Final total ÷ real total, 31 Dec 2022, log scale. 1× is a perfect reading.</figcaption>
+</figure>
+
+<figure>
+  <div class="fighead"><h2><span class="fig">Fig. 3</span>Waves, week by week</h2>
+    <div class="key"><span><i class="sw line" style="border-color:var(--ref)"></i>bulletin</span><span><i class="sw line" style="border-color:var(--inst)"></i>model</span></div></div>
+  <div class="tri" id="f3"></div>
+  <figcaption>Weekly new deaths. Ticks mark when each variant was seeded. The 2020 wave arrives about three months late; 2021 and 2022 line up.</figcaption>
+</figure>
+
+<div class="cols row2">
+  <figure>
+    <div class="fighead"><h2><span class="fig">Fig. 4</span>The knife edge</h2></div>
+    <div class="plot" id="f4a"></div>
+    <figcaption>Paper setup: fitting 2020 cases by transmission scale. A 20% nudge moves the result tenfold.</figcaption>
+  </figure>
+  <figure>
+    <div class="fighead"><h2><span class="fig">Fig. 5</span>The fix</h2></div>
+    <div class="plot" id="f4b"></div>
+    <figcaption>Headline setup: R0 pinned at 2.8, fitting how closely people followed the measures to 2020 deaths.</figcaption>
+  </figure>
+</div>
+
+<div class="cols row2">
+  <figure>
+    <div class="fighead"><h2><span class="fig">Fig. 6</span>The hidden epidemic</h2></div>
+    <div class="waffle"><div class="plot" id="f5" style="width:220px"></div><div id="f5t"></div></div>
+  </figure>
+  <figure>
+    <div class="fighead"><h2><span class="fig">Fig. 7</span>Where infections happened</h2></div>
+    <div class="key" id="k6"></div>
+    <div class="plot" id="f6"></div>
+    <figcaption>Weekly infections in the headline run, stacked by place.</figcaption>
+  </figure>
+</div>
+
+<figure>
+  <div class="fighead"><h2><span class="fig">Fig. 8</span>One lever at a time</h2></div>
+  <div class="plot" id="f7"></div>
+  <figcaption>Same calibrated model and seed, one intervention removed.</figcaption>
+</figure>
+
+<figure>
+  <div class="fighead"><h2><span class="fig">Fig. 9</span>How contagious the fit makes the virus</h2>
+    <div class="key"><span><i class="sw" style="background:var(--tol-soft)"></i>literature R0 2.5–3</span></div></div>
+  <div class="plot" id="f8"></div>
+  <figcaption>R0 of the ancestral strain measured from early growth for each transmission scale. The paper setup needs R0 ≈ 6.7.</figcaption>
+</figure>
+
+<section class="notes" aria-label="Method">
+  <div><h3>Hold-out</h3><p>Only data up to 7 Oct 2020 (the first 20% of days) was used to calibrate. Everything after is a prediction.</p></div>
+  <div><h3>Why cases miss</h3><p>The reporting rate fitted in 2020 stays fixed. Real testing collapsed in the Omicron era, so the model over-reports cases while deaths hold.</p></div>
+  <div><h3>Run it</h3><pre>cd engine && go test ./...
 go build -o bin/pandemica ./cmd/pandemica
-./bin/pandemica run -fit compliance   # headline
-./bin/pandemica run -fit cases -detect-sym 1 -detect-asym 1   # paper-faithful
-./bin/pandemica r0                    # contagiousness sweep</pre>
-  </div>
+./bin/pandemica run -fit compliance</pre></div>
 </section>
 
-<footer>Real data: Campinas epidemiological bulletin (brasil.io) and the vaccination registry in <code>model/data/covid19</code>. Census: IBGE 2010. Branch <code>feat/go-engine</code>.</footer>
+<footer><span>Reference: Campinas epidemiological bulletin · vaccination registry · IBGE 2010 census</span><span class="mono">branch feat/go-engine</span></footer>
 </main>
 
 <script>
 const D = /*DATA*/;
 const $ = (id) => document.getElementById(id);
+const fmt = (v) => Math.round(v).toLocaleString("en-US");
+const T = (s) => Date.parse(s + "T00:00:00Z");
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-const fmt = (v) => v == null || isNaN(v) ? "–" : Math.round(v).toLocaleString("en-US");
-const pct = (v) => v == null || v === -1 || isNaN(v) ? "–" : v.toFixed(1) + "%";
-const H = D.runs[0];
-const N = H ? H.summary.build.population : 1164099;
+const n = D.dates.length - 1;
+const short = (v) => v >= 1e6 ? (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "M" : v >= 1e3 ? (v / 1e3).toFixed(v >= 1e4 ? 0 : 1).replace(/\.0$/, "") + "k" : String(Math.round(v));
+const pctErr = (sim, real) => (sim / real - 1) * 100;
+const signed = (v) => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(v >= 100 || v <= -100 ? 0 : 1) + "%";
+const TOL = 30;
+const ICON = {
+  pass: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg>',
+  fail: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+  info: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="5.5"/><path d="M8 7.2v4M8 4.8v.2" stroke-linecap="round"/></svg>',
+};
 
-// scores
-if (H) {
-  const s = H.summary, t = s.test, f = s.full;
-  const ever = s.totals.everInfected, inf = s.totals.infections;
-  const tiles = [
-    [fmt(f.simDeaths), "simulated deaths vs " + fmt(f.realDeaths) + " real (paper run: 7,752)"],
-    [fmt(f.simCases), "simulated reported cases vs " + fmt(f.realCases) + " real"],
-    [(inf / N).toFixed(1), "infections per person over three years"],
-    [Math.round(s.simSeconds / 60 * 10) / 10 + " min", "to simulate 1,019 days for " + fmt(N) + " people"],
-  ];
-  $("scores").innerHTML = tiles.map(([v, l]) => `<div class="score"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
-}
-
-// scoreboard
+// header
 (() => {
-  const cls = (v) => v >= 50 ? "pos" : v < 0 ? "neg" : "";
-  let h = "<tr><th>Run</th><th>Cases</th><th>Deaths</th><th>Accuracy (full)</th><th>Accuracy (test 80%)</th><th>Curve score</th></tr>";
-  const real = D.real, n = real.cases.length - 1;
-  h += `<tr><td>Real bulletin</td><td>${fmt(real.cases[n])}</td><td>${fmt(real.deaths[n])}</td><td>–</td><td>–</td><td>–</td></tr>`;
-  const pa = D.paper, pn = pa.cases.length - 1;
-  const ape = (a, b) => Math.abs(a - b) / b * 100;
-  const pacc = 100 - (ape(pa.cases[pn], real.cases[n]) + ape(pa.deaths[pn], real.deaths[n])) / 2;
-  h += `<tr><td>Paper, TypeScript v1 (2023)</td><td>${fmt(pa.cases[pn])}</td><td>${fmt(pa.deaths[pn])}</td><td class="${cls(pacc)}">${pct(pacc)}</td><td>–</td><td>–</td></tr>`;
-  for (const r of D.runs) {
-    const s = r.summary;
-    h += `<tr><td>${r.label}</td><td>${fmt(s.full.simCases)}</td><td>${fmt(s.full.simDeaths)}</td><td class="${cls(s.full.paperAccuracy)}">${pct(s.full.paperAccuracy)}</td><td class="${cls(s.test.paperAccuracy)}">${pct(s.test.paperAccuracy)}</td><td class="${cls(s.full.curveAccuracy)}">${pct(s.full.curveAccuracy)}</td></tr>`;
-  }
-  $("scoreboard").innerHTML = h;
+  const b = D.head.build;
+  const spec = [
+    ["Instrument", "Pandemica Go engine"],
+    ["Reference", "Campinas bulletin, SP"],
+    ["Period", "18 Mar 2020 – 31 Dec 2022"],
+    ["Agents", fmt(b.population)],
+    ["Calibration window", "to " + new Date(T(D.head.trainEnd)).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })],
+    ["Runtime, 1,019 days", (D.head.simSeconds / 60).toFixed(1) + " min, M4 laptop"],
+  ];
+  $("spec").innerHTML = spec.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+  const rd = D.real.deaths[n], md = D.head.deaths[n], rc = D.real.cases[n], mc = D.head.cases[n];
+  const tsd = D.ts.deaths[n];
+  const ed = pctErr(md, rd), ec = pctErr(mc, rc), et = pctErr(tsd, rd);
+  const mark = (ok, text) => `<span class="mark ${ok}">${ICON[ok]}${text}</span>`;
+  const items = [
+    ["Deaths", signed(ed), `${fmt(md)} simulated · ${fmt(rd)} real`, Math.abs(ed) <= TOL ? mark("pass", "WITHIN ±30%") : mark("fail", "OUT OF TOLERANCE")],
+    ["Reported cases", signed(ec), `${fmt(mc)} simulated · ${fmt(rc)} real`, Math.abs(ec) <= TOL ? mark("pass", "WITHIN ±30%") : mark("fail", "OUT OF TOLERANCE")],
+    ["Paper run, deaths", signed(et), `${fmt(tsd)} in the 2023 TypeScript run`, mark("info", "PREVIOUS INSTRUMENT")],
+  ];
+  $("readings").innerHTML = items.map(([q, v, r, m]) => `<div class="reading"><div class="q">${q}</div><div class="v">${v}</div><div class="ref">${r}</div>${m}</div>`).join("");
 })();
 
-// line chart
-const COLORS = ["--yellow-mark", "--red", "--teal", "--grey"];
-function lineChart(el, series, opts = {}) {
-  const W = 940, Hh = 330, L = 64, R = 12, T = 12, B = 28;
-  const all = series.flatMap(s => s.values.filter(v => v != null));
-  const toT = (d) => Date.parse(d + "T00:00:00Z");
-  const t0 = Math.min(...series.map(s => toT(s.dates[0]))), t1 = Math.max(...series.map(s => toT(s.dates[s.dates.length - 1])));
-  const log = !!opts.log;
-  let vmax = Math.max(...all) * 1.04, vmin = log ? 10 : 0;
-  const ly = (v) => Math.log10(Math.max(v, vmin));
-  const x = (d) => L + (toT(d) - t0) / (t1 - t0) * (W - L - R);
-  const y = (v) => log ? T + (1 - (ly(v) - ly(vmin)) / (ly(vmax) - ly(vmin))) * (Hh - T - B) : T + (1 - v / vmax) * (Hh - T - B);
-  let g = "";
-  const ticks = [];
-  if (log) { for (let p = 1; Math.pow(10, p) <= vmax; p++) ticks.push(Math.pow(10, p)); }
-  else { const step = niceStep(vmax / 4); for (let v = 0; v <= vmax; v += step) ticks.push(v); }
-  for (const v of ticks) g += `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${short(v)}</text>`;
-  for (const yr of [2020, 2021, 2022, 2023]) {
-    const d = `${yr}-01-01`; const tt = toT(d); if (tt < t0 || tt > t1) continue;
-    g += `<line class="grid" x1="${x(d)}" x2="${x(d)}" y1="${T}" y2="${Hh - B}"/><text class="ax" x="${x(d) + 4}" y="${Hh - 8}">${yr}</text>`;
-  }
-  for (const s of series) {
-    let dpath = ""; let pen = false;
-    s.dates.forEach((d, i) => { const v = s.values[i]; if (v == null || (log && v <= 0)) { pen = false; return; } dpath += (pen ? "L" : "M") + x(d).toFixed(1) + "," + y(v).toFixed(1); pen = true; });
-    g += `<path d="${dpath}" fill="none" stroke="${s.color}" stroke-width="${s.width || 2.2}" ${s.dash ? 'stroke-dasharray="6 5"' : ""} stroke-linejoin="round"/>`;
-  }
-  g += `<line id="${el.id}-x" class="grid" x1="0" x2="0" y1="${T}" y2="${Hh - B}" style="display:none;stroke:var(--ink-2)"/>`;
-  el.innerHTML = `<div class="legend">${series.map(s => `<span style="color:${s.color}"><i class="${s.dash ? "dash" : ""}"></i><span style="color:var(--ink-2)">${s.name}</span></span>`).join("")}</div>
-  <svg viewBox="0 0 ${W} ${Hh}" role="img" aria-label="${opts.label || ""}">${g}</svg><div class="tip"></div>`;
-  const svg = el.querySelector("svg"), tip = el.querySelector(".tip"), cross = el.querySelector(`#${el.id}-x`);
-  const idx = series.map(s => new Map(s.dates.map((d, i) => [d, i])));
-  svg.addEventListener("mousemove", (ev) => {
-    const r = svg.getBoundingClientRect(); const px = (ev.clientX - r.left) / r.width * W;
-    if (px < L || px > W - R) { tip.style.display = "none"; cross.style.display = "none"; return; }
-    const tt = t0 + (px - L) / (W - L - R) * (t1 - t0);
-    const d = new Date(tt).toISOString().slice(0, 10);
-    const rows = series.map((s, k) => { let i = idx[k].get(d); if (i == null) return ""; return `<div class="row"><span style="color:${s.color}">${s.name}</span><b>${fmt(s.values[i])}</b></div>`; }).join("");
-    if (!rows) return;
-    cross.setAttribute("x1", x(d)); cross.setAttribute("x2", x(d)); cross.style.display = "";
-    tip.innerHTML = `<div class="muted" style="margin-bottom:4px">${new Date(tt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })}</div>${rows}`;
-    tip.style.display = "block";
-    const left = (ev.clientX - r.left) + 16; tip.style.left = Math.min(left, r.width - 210) + "px"; tip.style.top = "40px";
-  });
-  svg.addEventListener("mouseleave", () => { tip.style.display = "none"; cross.style.display = "none"; });
+// ---------- chart core ----------
+function sizeOf(el, ratio, min, max) {
+  const w = Math.max(280, el.clientWidth || 800);
+  const h = Math.max(min, Math.min(max, Math.round(w * ratio)));
+  return { w, h };
 }
 function niceStep(raw) { const p = Math.pow(10, Math.floor(Math.log10(raw))); const m = raw / p; return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p; }
-function short(v) { return v >= 1e6 ? (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "M" : v >= 1e3 ? (v / 1e3).toFixed(0) + "k" : String(Math.round(v)); }
-
-function casesSeries(key) {
-  const s = [{ name: "Real bulletin", dates: D.real.dates, values: D.real[key], color: css("--blue"), width: 3 },
-             { name: "Paper, TypeScript v1", dates: D.paper.dates, values: D.paper[key], color: css("--grey"), dash: true }];
-  D.runs.forEach((r, k) => s.push({ name: r.label, dates: r.dates, values: r[key], color: css(COLORS[k % COLORS.length]) }));
-  return s;
+function pathOf(xs, ys) { let d = ""; for (let i = 0; i < xs.length; i++) d += (i ? "L" : "M") + xs[i].toFixed(1) + "," + ys[i].toFixed(1); return d; }
+function areaOf(xs, lo, hi) { let d = "M" + xs[0].toFixed(1) + "," + hi[0].toFixed(1); for (let i = 1; i < xs.length; i++) d += "L" + xs[i].toFixed(1) + "," + hi[i].toFixed(1); for (let i = xs.length - 1; i >= 0; i--) d += "L" + xs[i].toFixed(1) + "," + lo[i].toFixed(1); return d + "Z"; }
+function spread(labels, minGap, top, bottom) {
+  labels.sort((a, b) => a.y - b.y);
+  for (let i = 1; i < labels.length; i++) if (labels[i].y - labels[i - 1].y < minGap) labels[i].y = labels[i - 1].y + minGap;
+  const over = labels.length ? labels[labels.length - 1].y - bottom : 0;
+  if (over > 0) for (const l of labels) l.y -= over;
+  for (let i = labels.length - 2; i >= 0; i--) if (labels[i + 1].y - labels[i].y < minGap) labels[i].y = labels[i + 1].y - minGap;
+  for (const l of labels) l.y = Math.max(top, l.y);
+  return labels;
 }
-let logScale = true;
-function drawAll() {
-  lineChart($("c-cases"), casesSeries("cases"), { log: logScale, label: "Cumulative reported cases" });
-  lineChart($("c-deaths"), casesSeries("deaths"), { label: "Cumulative deaths" });
-  if (H) {
-    const wk = (dates, cum) => { const d = [], v = []; for (let i = 7; i < cum.length; i += 7) { d.push(dates[i]); v.push(cum[i] - cum[i - 7]); } return { d, v }; };
-    const r = wk(D.real.dates, D.real.cases), c = wk(H.dates, H.cases);
-    lineChart($("c-weekly"), [
-      { name: "Real weekly cases", dates: r.d, values: r.v, color: css("--blue"), width: 3 },
-      { name: H.label + ": reported cases", dates: c.d, values: c.v, color: css(COLORS[0]) },
-    ], { label: "Weekly new cases" });
+function yearTicks(t0, t1, x, T0, B, H) {
+  let g = "";
+  for (let yr = 2020; yr <= 2023; yr++) {
+    const t = Date.UTC(yr, 0, 1); if (t < t0 || t > t1) continue;
+    g += `<line class="grid" x1="${x(t)}" x2="${x(t)}" y1="${T0}" y2="${H - B}"/><text class="ax" x="${x(t) + 5}" y="${H - B + 17}">${yr}</text>`;
+  }
+  return g;
+}
+
+// ---------- Fig 1: cumulative deaths with tolerance, seed band, readout ----------
+function fig1() {
+  const el = $("f1"); const { w, h } = sizeOf(el, 0.44, 300, 480);
+  const narrow = w < 640;
+  const L = narrow ? 44 : 60, R = narrow ? 12 : 150, Tp = 14, B = 30;
+  const ts = D.dates.map(T), t0 = ts[0], t1 = ts[n];
+  const rd = D.real.deaths, md = D.head.deaths;
+  const vmax = Math.max(...md, ...D.ts.deaths, ...D.band.hi, ...rd.map(v => v * 1.3)) * 1.03;
+  const x = (t) => L + (t - t0) / (t1 - t0) * (w - L - R);
+  const y = (v) => Tp + (1 - v / vmax) * (h - Tp - B);
+  const xs = ts.map(x);
+  let g = "";
+  const step = niceStep(vmax / 5);
+  for (let v = 0; v <= vmax; v += step) g += `<line class="grid" x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${short(v)}</text>`;
+  g += yearTicks(t0, t1, x, Tp, B, h);
+  g += `<path d="${areaOf(xs, rd.map(v => y(v * 0.7)), rd.map(v => y(v * 1.3)))}" fill="var(--tol-soft)"/>`;
+  g += `<path d="${areaOf(xs, D.band.lo.map(y), D.band.hi.map(y))}" fill="rgba(11,14,42,.14)"/>`;
+  g += `<path d="${pathOf(xs, D.ts.deaths.map(y))}" fill="none" stroke="var(--ink-3)" stroke-width="1.6" stroke-dasharray="5 4"/>`;
+  g += `<path class="draw" d="${pathOf(xs, rd.map(y))}" fill="none" stroke="var(--ref)" stroke-width="3" stroke-linejoin="round"/>`;
+  g += `<path class="draw" d="${pathOf(xs, md.map(y))}" fill="none" stroke="var(--inst)" stroke-width="2.2" stroke-linejoin="round"/>`;
+  if (!narrow) {
+    const labels = spread([
+      { y: y(rd[n]), c: "var(--ref)", t: "Bulletin", v: fmt(rd[n]) },
+      { y: y(md[n]), c: "var(--inst)", t: "Model", v: fmt(md[n]) },
+      { y: y(D.ts.deaths[n]), c: "var(--ink-3)", t: "Paper run", v: fmt(D.ts.deaths[n]) },
+    ], 30, Tp + 8, h - B - 6);
+    for (const l of labels) g += `<text class="lbl" x="${w - R + 12}" y="${l.y}" fill="${l.c}">${l.t}</text><text class="lblv" x="${w - R + 12}" y="${l.y + 14}" fill="var(--ink-2)">${l.v}</text>`;
+  }
+  const tv = T(D.head.trainEnd);
+  g += `<line x1="${x(tv)}" x2="${x(tv)}" y1="${Tp}" y2="${h - B}" stroke="var(--ink)" stroke-width="1" stroke-dasharray="2 3"/><text class="axl" x="${x(tv) + 6}" y="${Tp + 12}">calibration ends</text>`;
+  g += `<line id="f1x" x1="0" x2="0" y1="${Tp}" y2="${h - B}" stroke="var(--ink)" stroke-width="1" style="display:none"/>`;
+  g += `<circle id="f1r" r="4.5" fill="var(--ref)" stroke="#fff" stroke-width="2" style="display:none"/><circle id="f1m" r="4.5" fill="var(--inst)" stroke="#fff" stroke-width="2" style="display:none"/>`;
+  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Cumulative deaths, bulletin versus model, 2020 to 2022">${g}</svg><div class="readout" id="f1ro" aria-live="polite"></div>`;
+  el.querySelectorAll(".draw").forEach(p => p.style.setProperty("--len", Math.ceil(p.getTotalLength())));
+  const ro = $("f1ro"), cx = $("f1x"), cr = $("f1r"), cm = $("f1m");
+  const show = (i) => {
+    const e = pctErr(md[i], rd[i]); const inside = Math.abs(e) <= TOL;
+    ro.innerHTML = `<span class="d">${new Date(ts[i]).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}</span>
+      <span style="color:var(--ref)">Bulletin</span><span>${fmt(rd[i])}</span>
+      <span>Model</span><span>${fmt(md[i])}</span>
+      <span>Error</span><span style="color:${inside ? "var(--pass)" : "var(--fail)"}">${rd[i] > 20 ? signed(e) : "–"}</span>`;
+  };
+  show(n);
+  const svg = el.querySelector("svg");
+  const move = (clientX) => {
+    const r = svg.getBoundingClientRect(); const px = (clientX - r.left) / r.width * w;
+    const t = t0 + (px - L) / (w - L - R) * (t1 - t0); let i = Math.round((t - t0) / 864e5); i = Math.max(0, Math.min(n, i));
+    cx.setAttribute("x1", xs[i]); cx.setAttribute("x2", xs[i]); cx.style.display = "";
+    cr.setAttribute("cx", xs[i]); cr.setAttribute("cy", y(rd[i])); cr.style.display = "";
+    cm.setAttribute("cx", xs[i]); cm.setAttribute("cy", y(md[i])); cm.style.display = "";
+    show(i);
+  };
+  svg.addEventListener("pointermove", (e) => move(e.clientX));
+  svg.addEventListener("pointerleave", () => { cx.style.display = cr.style.display = cm.style.display = "none"; show(n); });
+  $("k1").innerHTML = `<span><i class="sw line" style="border-color:var(--ref)"></i>bulletin</span><span><i class="sw line" style="border-color:var(--inst)"></i>model</span><span><i class="sw dash" style="border-color:var(--ink-3)"></i>paper run</span><span><i class="sw" style="background:var(--tol-soft)"></i>±30%</span><span><i class="sw" style="background:rgba(11,14,42,.14)"></i>${D.band.n} seeds</span>`;
+}
+
+// ---------- Fig 2: error ruler ----------
+function fig2() {
+  const el = $("f2"); const w = Math.max(300, el.clientWidth); const narrow = w < 640;
+  const rows = D.ruler; const rowH = narrow ? 44 : 38; const Tp = 26, B = 8;
+  const L = narrow ? 8 : 230, R = 20; const h = Tp + rows.length * rowH + B;
+  const lo = Math.log10(0.5), hi = Math.log10(100);
+  const x = (r) => L + (Math.log10(r) - lo) / (hi - lo) * (w - L - R);
+  let g = `<rect x="${x(0.7)}" y="${Tp - 6}" width="${x(1.3) - x(0.7)}" height="${h - Tp - B + 6}" fill="var(--tol-soft)"/>`;
+  for (const t of [0.5, 1, 2, 5, 10, 20, 50, 100]) g += `<line class="grid" x1="${x(t)}" x2="${x(t)}" y1="${Tp - 6}" y2="${h - B}"/><text class="ax" x="${x(t)}" y="${Tp - 12}" text-anchor="middle">${t}×</text>`;
+  g += `<line x1="${x(1)}" x2="${x(1)}" y1="${Tp - 6}" y2="${h - B}" stroke="var(--ref)" stroke-width="2"/>`;
+  rows.forEach((r, k) => {
+    const yy = Tp + k * rowH + rowH / 2 + (narrow ? 8 : 0);
+    const rc = r.cases / D.real.cases[n], rdd = r.deaths / D.real.deaths[n];
+    const col = r.headline ? "var(--ink)" : "var(--ink-3)"; const op = r.seed ? 0.55 : 1;
+    g += `<line x1="${L}" x2="${w - R}" y1="${yy}" y2="${yy}" stroke="var(--rule)"/>`;
+    g += narrow ? `<text class="lbl" x="${L}" y="${yy - 13}" fill="${col}">${r.label}</text>` : `<text class="lbl" x="${L - 14}" y="${yy + 4}" text-anchor="end" fill="${col}" opacity="${op}">${r.label}</text>`;
+    g += `<line x1="${x(Math.min(rc, rdd))}" x2="${x(Math.max(rc, rdd))}" y1="${yy}" y2="${yy}" stroke="${col}" stroke-width="2" opacity="${op * 0.5}"/>`;
+    g += `<circle cx="${x(rdd)}" cy="${yy}" r="6" fill="${col}" opacity="${op}"><title>deaths ${rdd.toFixed(2)}×</title></circle>`;
+    g += `<rect x="${x(rc) - 5.5}" y="${yy - 5.5}" width="11" height="11" fill="#fff" stroke="${col}" stroke-width="2" opacity="${op}"><title>cases ${rc.toFixed(2)}×</title></rect>`;
+    if (!r.seed) g += `<text class="lblv" x="${x(Math.max(rc, rdd)) + 12}" y="${yy + 4}" fill="var(--ink-2)">${rc >= 10 ? rc.toFixed(0) : rc.toFixed(1)}× cases</text>`;
+  });
+  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Ratio of simulated to real totals for every run">${g}</svg>`;
+}
+
+// ---------- Fig 3: weekly deaths small multiples ----------
+function fig3() {
+  const wrap = $("f3"); wrap.innerHTML = "";
+  const W = D.weekly; const vmax = Math.max(...W.real, ...W.head) * 1.08;
+  for (const yr of [2020, 2021, 2022]) {
+    const idx = W.dates.map((d, i) => [d, i]).filter(([d]) => d.startsWith(String(yr))).map(([, i]) => i);
+    const box = document.createElement("div"); box.innerHTML = `<div class="yr">${yr}</div><div class="plot"></div>`; wrap.appendChild(box);
+    const el = box.querySelector(".plot"); const w = Math.max(260, el.clientWidth || 360), h = 190;
+    const L = 38, R = 8, Tp = 8, B = 26;
+    const t0 = Date.UTC(yr, 0, 1), t1 = Date.UTC(yr, 11, 31);
+    const x = (t) => L + (t - t0) / (t1 - t0) * (w - L - R);
+    const y = (v) => Tp + (1 - v / vmax) * (h - Tp - B);
+    let g = "";
+    const step = niceStep(vmax / 3);
+    for (let v = 0; v <= vmax; v += step) g += `<line class="grid" x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${short(v)}</text>`;
+    for (const m of [0, 3, 6, 9]) { const t = Date.UTC(yr, m, 1); g += `<text class="ax" x="${x(t)}" y="${h - 8}">${["Jan", "Apr", "Jul", "Oct"][m / 3]}</text>`; }
+    for (const v of D.variants) { const t = T(v.date); if (t >= t0 && t <= t1) { const nearEnd = x(t) > w - R - 60; g += `<line x1="${x(t)}" x2="${x(t)}" y1="${h - B}" y2="${h - B - 8}" stroke="var(--ink)" stroke-width="2"/><text class="axl" x="${nearEnd ? x(t) - 4 : x(t) + 4}" text-anchor="${nearEnd ? "end" : "start"}" y="${h - B - 10}" style="font-size:11px">${v.name === "ba5" ? "BA.5" : v.name === "bq1" ? "BQ.1" : v.name[0].toUpperCase() + v.name.slice(1)}</text>`; } }
+    const xs = idx.map(i => x(T(W.dates[i])));
+    if (xs.length) {
+      g += `<path d="${areaOf(xs, idx.map(() => y(0)), idx.map(i => y(W.real[i])))}" fill="var(--ref-tint)"/>`;
+      g += `<path d="${pathOf(xs, idx.map(i => y(W.real[i])))}" fill="none" stroke="var(--ref)" stroke-width="2.6"/>`;
+      g += `<path d="${pathOf(xs, idx.map(i => y(W.head[i])))}" fill="none" stroke="var(--inst)" stroke-width="1.8"/>`;
+    }
+    el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Weekly deaths in ${yr}">${g}</svg>`;
   }
 }
-drawAll();
-$("lin").onclick = () => { logScale = false; $("lin").setAttribute("aria-pressed", "true"); $("log").setAttribute("aria-pressed", "false"); drawAll(); };
-$("log").onclick = () => { logScale = true; $("log").setAttribute("aria-pressed", "true"); $("lin").setAttribute("aria-pressed", "false"); drawAll(); };
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", drawAll);
-new MutationObserver(drawAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-// settings
-if (H) {
-  const st = H.settings; const tot = Object.values(st).reduce((a, b) => a + b, 0);
-  const names = { home: "Home", venue: "Leisure & shops", school: "School", work: "Work", transport: "Transport", imported: "Imported" };
-  $("settings").innerHTML = Object.entries(st).sort((a, b) => b[1] - a[1]).map(([k, v]) =>
-    `<div class="bar"><span>${names[k] || k}</span><div class="track"><div class="fill" style="width:${(v / tot * 100).toFixed(1)}%"></div></div><span class="num">${(v / tot * 100).toFixed(1)}%</span></div>`).join("");
+// ---------- Fig 4/5: calibration traces ----------
+function scatter(el, pts, key, target, opts) {
+  const w = Math.max(280, el.clientWidth), h = Math.round(Math.min(300, Math.max(230, w * 0.56)));
+  const L = 52, R = 14, Tp = 14, B = 38;
+  const xs = pts.map(p => p.x), ys = pts.map(p => p[key]);
+  const x0 = opts.x0, x1 = opts.x1;
+  const logy = opts.log; const ylo = logy ? 100 : 0, yhi = Math.max(...ys, target) * (logy ? 2 : 1.1);
+  const x = (v) => L + (v - x0) / (x1 - x0) * (w - L - R);
+  const y = (v) => logy ? Tp + (1 - (Math.log10(Math.max(v, ylo)) - Math.log10(ylo)) / (Math.log10(yhi) - Math.log10(ylo))) * (h - Tp - B) : Tp + (1 - v / yhi) * (h - Tp - B);
+  let g = "";
+  const yt = logy ? [100, 1e3, 1e4, 1e5, 1e6] : (() => { const s = niceStep(yhi / 4), a = []; for (let v = 0; v <= yhi; v += s) a.push(v); return a; })();
+  for (const v of yt) if (v <= yhi) g += `<line class="grid" x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${short(v)}</text>`;
+  for (const v of opts.xt) g += `<text class="ax" x="${x(v)}" y="${h - B + 16}" text-anchor="middle">${opts.xf(v)}</text>`;
+  g += `<text class="axl" x="${(L + w - R) / 2}" y="${h - 4}" text-anchor="middle">${opts.xlabel}</text>`;
+  if (opts.band) g += `<rect x="${x(opts.band[0])}" y="${Tp}" width="${Math.max(2, x(opts.band[1]) - x(opts.band[0]))}" height="${h - Tp - B}" fill="var(--tol-soft)"/>`;
+  g += `<line x1="${L}" x2="${w - R}" y1="${y(target)}" y2="${y(target)}" stroke="var(--ref)" stroke-width="2"/><text class="axl" x="${w - R}" y="${y(target) - 7}" text-anchor="end" fill="var(--ref)" style="fill:var(--ref)">2020 target ${fmt(target)}</text>`;
+  const sorted = pts.map((p, i) => ({ ...p, i })).sort((a, b) => a.x - b.x);
+  g += `<path d="${pathOf(sorted.map(p => x(p.x)), sorted.map(p => y(p[key])))}" fill="none" stroke="var(--ink-3)" stroke-width="1.2"/>`;
+  pts.forEach((p, i) => { const last = i === pts.length - 1; g += `<circle cx="${x(p.x)}" cy="${y(p[key])}" r="${last ? 6 : 4}" fill="${last ? "var(--ink)" : "#fff"}" stroke="var(--ink)" stroke-width="1.6"><title>${opts.xf(p.x)} → ${fmt(p[key])}</title></circle>`; });
+  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${opts.aria}">${g}</svg>`;
 }
-// r0 table
-if (D.extra.r0) {
-  $("r0").innerHTML = "<tr><th>Scale β</th><th>Doubling</th><th>R0</th></tr>" + D.extra.r0.map(r => `<tr><td>${r.beta.toFixed(3)}${r.note ? " · " + r.note : ""}</td><td>${r.doubling.toFixed(1)} d</td><td>${r.r0.toFixed(2)}</td></tr>`).join("");
+function fig4() {
+  const c = D.calib;
+  if (c.beta.length) scatter($("f4a"), c.beta, "cases", c.betaTarget, { x0: 0.05, x1: 0.52, log: true, xt: [0.1, 0.2, 0.3, 0.4, 0.5], xf: (v) => v.toFixed(2), xlabel: "transmission scale β", aria: "Training cases by transmission scale" });
+  if (c.comp.length) scatter($("f4b"), c.comp, "deaths", c.compTarget, { x0: 0, x1: 1, log: false, xt: [0, 0.25, 0.5, 0.75, 1], xf: (v) => Math.round(v * 100) + "%", xlabel: "compliance with measures", aria: "Training deaths by compliance" });
 }
-// counterfactuals
-if (D.extra.counterfactuals && D.extra.counterfactuals.length) {
-  $("cf").innerHTML = "<tr><th>Scenario</th><th>Infections</th><th>Deaths</th><th>Deaths vs. baseline</th></tr>" + D.extra.counterfactuals.map(c =>
-    `<tr><td>${c.label}</td><td>${fmt(c.infections)}</td><td>${fmt(c.deaths)}</td><td>${c.delta}</td></tr>`).join("");
-} else { $("cf-sec").style.display = "none"; }
-// built
-if (H) {
-  const b = H.summary.build;
-  $("built").innerHTML = [
-    `${fmt(b.population)} agents in ${fmt(b.houses)} houses, ${fmt(b.workSites)} workplaces and ${fmt(b.schools)} schools, from IBGE 2010.`,
-    `${fmt(b.routineActivities)} weekly activities; a 10-20-10 network trained by backpropagation picks everyone's leisure.`,
-    `${fmt(b.indexEntries)} weekly presences indexed, so contacts are exact to the minute.`,
-    `City built in ${b.buildSeconds.toFixed(1)} s with a ${Math.round(b.heapMB)} MB heap; the whole 2020–2022 run takes about ${Math.round(H.summary.simSeconds / 60)} minutes on an M4 MacBook.`,
-    `Real vaccination registry replayed dose by dose; five variants seeded on their arrival dates.`,
-  ].map(t => `<li>${t}</li>`).join("");
+
+// ---------- Fig 6: waffle ----------
+function fig5() {
+  const share = D.head.cases[n] / D.head.infections; const k = Math.round(share * 100);
+  const s = 20, gap = 2; let g = "";
+  for (let i = 0; i < 100; i++) { const r = Math.floor(i / 10), c = i % 10; const on = i < k; g += `<rect x="${c * (s + gap)}" y="${r * (s + gap)}" width="${s}" height="${s}" rx="2" fill="${on ? "var(--ref)" : "#fff"}" stroke="${on ? "var(--ref)" : "var(--rule-2)"}" stroke-width="1.2"/>`; }
+  const W = 10 * (s + gap) - gap;
+  $("f5").innerHTML = `<svg width="${W}" height="${W}" viewBox="0 0 ${W} ${W}" role="img" aria-label="${k} of every 100 infections reported">${g}</svg>`;
+  $("f5t").innerHTML = `<div class="big">${k}<span style="font-size:24px;color:var(--ink-3)">/100</span></div><p>infections become a reported case. The model infects ${fmt(D.head.infections)} times over three years; only ${fmt(D.head.cases[n])} are reported.</p>`;
 }
+
+// ---------- Fig 7: stacked settings ----------
+function fig6() {
+  const el = $("f6"); const S = D.settings; const w = Math.max(280, el.clientWidth), h = Math.round(Math.min(280, Math.max(220, w * 0.5)));
+  const L = 44, R = 8, Tp = 8, B = 26;
+  const ts = S.dates.map(T), t0 = ts[0], t1 = ts[ts.length - 1];
+  const stack = []; let acc = S.dates.map(() => 0);
+  for (const k of S.order) { const lo = acc.slice(); acc = acc.map((v, i) => v + S.values[k][i]); stack.push({ k, lo, hi: acc.slice() }); }
+  const vmax = Math.max(...acc) * 1.05;
+  const x = (t) => L + (t - t0) / (t1 - t0) * (w - L - R);
+  const y = (v) => Tp + (1 - v / vmax) * (h - Tp - B);
+  const xs = ts.map(x);
+  let g = ""; const step = niceStep(vmax / 4);
+  for (let v = 0; v <= vmax; v += step) g += `<line class="grid" x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${short(v)}</text>`;
+  g += yearTicks(t0, t1, x, Tp, B, h);
+  for (const s of stack) g += `<path d="${areaOf(xs, s.lo.map(y), s.hi.map(y))}" fill="var(--${s.k})"/>`;
+  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Weekly infections by setting">${g}</svg>`;
+  const tot = {}; let all = 0; for (const k of S.order) { tot[k] = S.values[k].reduce((a, b) => a + b, 0); all += tot[k]; }
+  const names = { home: "home", venue: "leisure & shops", school: "school", work: "work", transport: "transport" };
+  $("k6").innerHTML = S.order.map(k => `<span><i class="sw" style="background:var(--${k})"></i>${names[k]} <b class="num" style="font-weight:500;color:var(--ink)">${(tot[k] / all * 100).toFixed(0)}%</b></span>`).join("");
+}
+
+// ---------- Fig 8: scenarios ----------
+function fig7() {
+  const el = $("f7"); const { w, h } = sizeOf(el, 0.36, 260, 400); const narrow = w < 640;
+  const L = narrow ? 44 : 60, R = narrow ? 12 : 250, Tp = 12, B = 30;
+  const ts = D.dates.map(T), t0 = ts[0], t1 = ts[n];
+  const sc = D.scen; const vmax = Math.max(...sc.flatMap(s => s.deaths)) * 1.05;
+  const x = (t) => L + (t - t0) / (t1 - t0) * (w - L - R);
+  const y = (v) => Tp + (1 - v / vmax) * (h - Tp - B);
+  const xs = ts.map(x);
+  const cols = ["var(--inst)", "var(--fail)", "#8a5a00"];
+  let g = ""; const step = niceStep(vmax / 4);
+  for (let v = 0; v <= vmax; v += step) g += `<line class="grid" x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${short(v)}</text>`;
+  g += yearTicks(t0, t1, x, Tp, B, h);
+  g += `<path d="${pathOf(xs, D.real.deaths.map(y))}" fill="none" stroke="var(--ref)" stroke-width="1.6" stroke-dasharray="4 3" opacity=".7"/>`;
+  sc.forEach((s, k) => { g += `<path d="${pathOf(xs, s.deaths.map(y))}" fill="none" stroke="${cols[k]}" stroke-width="${k ? 2.4 : 2.2}"/>`; });
+  const base = sc[0].deaths[n];
+  const labels = spread(sc.map((s, k) => ({ y: y(s.deaths[n]), c: cols[k], t: s.label, v: fmt(s.deaths[n]) + (k ? `  (+${fmt(s.deaths[n] - base)})` : " deaths") })), 32, Tp + 8, h - B - 4);
+  if (!narrow) for (const l of labels) g += `<text class="lbl" x="${w - R + 12}" y="${l.y}" fill="${l.c}">${l.t}</text><text class="lblv" x="${w - R + 12}" y="${l.y + 15}" fill="var(--ink-2)">${l.v}</text>`;
+  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Cumulative deaths under three scenarios">${g}</svg>` + (narrow ? `<div class="key" style="margin-top:8px">${sc.map((s, k) => `<span><i class="sw line" style="border-color:${cols[k]}"></i>${s.label}: <b class="num" style="font-weight:500">${fmt(s.deaths[n])}</b></span>`).join("")}</div>` : "");
+}
+
+// ---------- Fig 9: R0 sweep ----------
+function fig8() {
+  const el = $("f8"); const w = Math.max(280, el.clientWidth), h = Math.round(Math.min(300, Math.max(220, w * 0.3)));
+  const L = 44, R = 16, Tp = 12, B = 38;
+  const pts = D.r0; const x0 = 0.02, x1 = 0.25, ymax = 8;
+  const x = (v) => L + (v - x0) / (x1 - x0) * (w - L - R);
+  const y = (v) => Tp + (1 - v / ymax) * (h - Tp - B);
+  let g = `<rect x="${L}" y="${y(3)}" width="${w - L - R}" height="${y(2.5) - y(3)}" fill="var(--tol-soft)"/>`;
+  for (let v = 0; v <= ymax; v += 2) g += `<line class="grid" x1="${L}" x2="${w - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  for (const v of [0.05, 0.1, 0.15, 0.2, 0.25]) g += `<text class="ax" x="${x(v)}" y="${h - B + 16}" text-anchor="middle">${v.toFixed(2)}</text>`;
+  g += `<text class="axl" x="${(L + w - R) / 2}" y="${h - 4}" text-anchor="middle">transmission scale β</text>`;
+  g += `<path d="${pathOf(pts.map(p => x(p.beta)), pts.map(p => y(p.r0)))}" fill="none" stroke="var(--ink)" stroke-width="2"/>`;
+  for (const p of pts) g += `<circle cx="${x(p.beta)}" cy="${y(p.r0)}" r="3.5" fill="#fff" stroke="var(--ink)" stroke-width="1.6"/>`;
+  const marks = [
+    { b: D.head.beta, r: D.head.r0 || 2.8, t: "headline · R0 2.8", c: "var(--pass)", dx: 0, dy: -16, a: "middle" },
+    { b: 0.2026, r: 6.69, t: "paper setup · 6.7", c: "var(--fail)", dx: 0, dy: 24, a: "middle" },
+    { b: 0.2333, r: 7.46, t: "fit on deaths · 7.5", c: "var(--fail)", dx: -12, dy: -12, a: "end" }];
+  for (const m of marks) g += `<circle cx="${x(m.b)}" cy="${y(m.r)}" r="7" fill="none" stroke="${m.c}" stroke-width="2.4"/><text class="lbl" x="${x(m.b) + m.dx}" y="${y(m.r) + m.dy}" text-anchor="${m.a}" fill="${m.c}">${m.t}</text>`;
+  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="R0 by transmission scale">${g}</svg>`;
+}
+
+function drawAll() { fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8(); }
+drawAll();
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 120); });
+if (document.fonts) document.fonts.ready.then(drawAll);
 </script>
 """
 
