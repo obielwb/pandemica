@@ -126,7 +126,7 @@ PAIRS = [
     ("Cumulative deaths. v2.1 adds hospitals, sick routines, bedrooms and adaptive behaviour, and is fitted to the whole training curve; the bed limit is off because the repository has no bed data. Same seed as v1.",
      "Óbitos acumulados. A v2.1 adiciona hospitais, rotina de doentes, quartos e comportamento adaptativo, e é ajustada à curva de treino inteira; o limite de leitos fica desligado porque o repositório não tem dados de leitos. Mesma semente da v1."),
     ("></i>v1</span>", "></i>v1</span>"),
-    ("Where infections happen, v1 and v2", "Onde as infecções acontecem, v1 e v2"),
+    ("Where infections happen, v1 and v2.1", "Onde as infecções acontecem, v1 e v2.1"),
     ("Share of all infections by place. In v2.1, hospital wards carry <b class=\"num\" id=\"w11\"></b> of infections and pharmacies <b class=\"num\" id=\"p11\"></b>, too thin to see as bars.",
      "Parcela de todas as infecções por local. Na v2.1, as enfermarias ficam com <b class=\"num\" id=\"w11\"></b> das infecções e as farmácias com <b class=\"num\" id=\"p11\"></b>, finas demais para aparecer nas barras."),
     ("What each v2 change does", "O que cada mudança da v2 faz"),
