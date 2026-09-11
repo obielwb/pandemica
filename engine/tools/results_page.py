@@ -127,7 +127,7 @@ def main():
         if not os.path.exists(p):
             return None
         return {"rows": rows(p), "summary": json.load(open(os.path.join(V2, name + ".json")))}
-    v2name = next((n for n in ("v2-final", "abl-all", "v2-attempt1") if os.path.exists(os.path.join(V2, n + ".json"))), None)
+    v2name = next((n for n in ("v21-seed1", "v2-final", "abl-all", "v2-attempt1") if os.path.exists(os.path.join(V2, n + ".json"))), None)
     if v2name:
         v2 = run2(v2name)
         def shares(summ):
@@ -140,8 +140,10 @@ def main():
                     "home": shares(ref).get("home", 0), "hospital": shares(ref).get("hospital", 0), "turned": None,
                     "curve": ref["test"]["curveAccuracy"], "final": False})
         for label, name, final in (("v2, every change (1 bed per 1,000)", "abl-all", False), ("– without sick routine", "abl-no-sick", False),
-                                   ("– without bedroom rule", "abl-no-sleep-pairs", False), ("– without bed limit = v2 final", "abl-no-capacity", True),
-                                   ("– without hospitals", "abl-no-hospitals", False)):
+                                   ("– without bedroom rule", "abl-no-sleep-pairs", False), ("– without bed limit = v2 final", "abl-no-capacity", False),
+                                   ("– without hospitals", "abl-no-hospitals", False),
+                                   ("v2.1: v2 final + whole-curve fit + adaptive behaviour", "v21-seed1", True),
+                                   ("– without adaptive behaviour", "v21-noaware-seed1", False)):
             r = run2(name)
             if not r:
                 continue
@@ -158,7 +160,7 @@ def main():
                     out.append({"deaths": sm["totals"]["deaths"], "curve": sm["test"]["curveAccuracy"]})
             return out
         seedv1 = seeds(RES, ["compliance-fit", "compliance-fit-seed2", "compliance-fit-seed3"])
-        seedv2 = seeds(V2, [v2name, v2name + "-seed2", v2name + "-seed3"])
+        seedv2 = seeds(V2, ["v21-seed1", "v21-seed2", "v21-seed3"] if v2name == "v21-seed1" else [v2name, v2name + "-seed2", v2name + "-seed3"])
         acts = v2["summary"].get("infectionsByActivity", {})
         atot = sum(acts.values()) or 1
         data["v2"] = {"deaths": col(v2["rows"], "deaths"), "v1shares": shares(head["summary"]), "v2shares": shares(v2["summary"]), "abl": abl, "seedv1": seedv1, "seedv2": seedv2,

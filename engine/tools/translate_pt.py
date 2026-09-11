@@ -145,6 +145,8 @@ PAIRS = [
     ('"– without bedroom rule"', '"– sem regra de quartos"'),
     ('"– without bed limit = v2 final"', '"– sem limite de leitos = v2 final"'),
     ('"– without hospitals"', '"– sem hospitais"'),
+    ('"v2.1: v2 final + whole-curve fit + adaptive behaviour"', '"v2.1: v2 final + ajuste da curva inteira + comportamento adaptativo"'),
+    ('"– without adaptive behaviour"', '"– sem comportamento adaptativo"'),
     ("`Across ${a.length} seeds, the held-out curve score is <b class=\"num\">${rng(a, \"curve\", pc)}</b> for v1 (mean <b class=\"num\">${pc(mean(a, \"curve\"))}</b>) and <b class=\"num\">${rng(b, \"curve\", pc)}</b> for v2 final (mean <b class=\"num\">${pc(mean(b, \"curve\"))}</b>); deaths are <b class=\"num\">${rng(a, \"deaths\", fmt)}</b> and <b class=\"num\">${rng(b, \"deaths\", fmt)}</b>. The table shows seed 1, where v2 happens to look better.`",
      "`Em ${a.length} sementes, o escore da curva na validação fica entre <b class=\"num\">${rng(a, \"curve\", pc)}</b> na v1 (média <b class=\"num\">${pc(mean(a, \"curve\"))}</b>) e <b class=\"num\">${rng(b, \"curve\", pc)}</b> na v2 final (média <b class=\"num\">${pc(mean(b, \"curve\"))}</b>); os óbitos ficam entre <b class=\"num\">${rng(a, \"deaths\", fmt)}</b> e <b class=\"num\">${rng(b, \"deaths\", fmt)}</b>. A tabela mostra a semente 1, na qual a v2 parece melhor por acaso.`"),
     # embedded data labels
