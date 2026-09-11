@@ -69,16 +69,13 @@ PAIRS = [
     ('["Agents", ', '["Agentes", '),
     ('["Calibration window", "to " + ', '["Janela de calibração", "até " + '),
     ('["Runtime, 1,019 days", (D.head.simSeconds / 60).toFixed(1) + " min, M4 laptop"]', '["Execução, 1.019 dias", (D.head.simSeconds / 60).toFixed(1).replace(".", ",") + " min, notebook M4"]'),
-    # readings table
-    ('const rowsR = [["Deaths", rd, md, ed], ["Reported cases", rc, mc, ec]];', 'const rowsR = [["Óbitos", rd, md, ed], ["Casos notificados", rc, mc, ec]];'),
-    ("<span>Quantity</span><span>Reference</span><span>Measured</span><span>Error</span><span>Tolerance</span><span>Verdict</span>",
-     "<span>Grandeza</span><span>Referência</span><span>Medido</span><span>Erro</span><span>Tolerância</span><span>Veredito</span>"),
-    ('data-l="Reference"', 'data-l="Referência"'),
-    ('data-l="Measured"', 'data-l="Medido"'),
-    ('data-l="Error"', 'data-l="Erro"'),
-    ('data-l="Tolerance"', 'data-l="Tolerância"'),
-    ('mark("pass", "PASS")', 'mark("pass", "APROVADO")'),
-    ('mark("fail", "FAIL")', 'mark("fail", "REPROVADO")'),
+    # readings
+    ('["Deaths", signed(ed), `${fmt(md)} simulated · ${fmt(rd)} real`', '["Óbitos", signed(ed), `${fmt(md)} simulados · ${fmt(rd)} reais`'),
+    ('["Reported cases", signed(ec), `${fmt(mc)} simulated · ${fmt(rc)} real`', '["Casos notificados", signed(ec), `${fmt(mc)} simulados · ${fmt(rc)} reais`'),
+    ('mark("pass", "WITHIN ±30%")', 'mark("pass", "DENTRO DE ±30%")'),
+    ('mark("fail", "OUT OF TOLERANCE")', 'mark("fail", "FORA DA TOLERÂNCIA")'),
+    ('["Paper run, deaths", signed(et), `${fmt(tsd)} in the 2023 TypeScript run`, mark("info", "PREVIOUS INSTRUMENT")]',
+     '["Rodada do artigo, óbitos", signed(et), `${fmt(tsd)} na rodada em TypeScript de 2023`, mark("info", "INSTRUMENTO ANTERIOR")]'),
     ('const dec = (v, d) => v.toFixed(d);', 'const dec = (v, d) => v.toFixed(d).replace(".", ",");'),
     # fig 1
     ('t: "Bulletin"', 't: "Boletim"'),

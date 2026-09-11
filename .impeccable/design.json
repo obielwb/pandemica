@@ -1,0 +1,523 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-11T14:51:06+00:00",
+  "title": "Design System: Pandemica Results",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Certificate Paper",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c4c4c4",
+          "#eeeeee"
+        ]
+      },
+      "plate": {
+        "role": "neutral",
+        "displayName": "Plate",
+        "canonical": "oklch(97.7% 0.005 275.0)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232427",
+          "#3f4043",
+          "#5d5d61",
+          "#7c7d80",
+          "#9d9ea2",
+          "#c3c4c8",
+          "#edeef2"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Certificate Ink",
+        "canonical": "oklch(18.0% 0.056 274.7)",
+        "tonalRamp": [
+          "#060722",
+          "#1c213f",
+          "#373d5e",
+          "#545b7e",
+          "#737b9f",
+          "#949cc2",
+          "#b9c2e9",
+          "#e9eeff"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "oklch(44.9% 0.058 277.5)",
+        "tonalRamp": [
+          "#070723",
+          "#1e203f",
+          "#383d5e",
+          "#555b7e",
+          "#757aa0",
+          "#959cc3",
+          "#bac1ea",
+          "#eaedfe"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Slate",
+        "canonical": "oklch(51.3% 0.057 278.0)",
+        "tonalRamp": [
+          "#070722",
+          "#1e203f",
+          "#393d5e",
+          "#565b7e",
+          "#757aa0",
+          "#969bc2",
+          "#bbc1ea",
+          "#eaedfe"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(91.4% 0.017 274.8)",
+        "tonalRamp": [
+          "#090b12",
+          "#21242c",
+          "#3d3f49",
+          "#5b5d67",
+          "#7a7d87",
+          "#9b9ea9",
+          "#c1c3cf",
+          "#ebeefa"
+        ]
+      },
+      "rule-2": {
+        "role": "neutral",
+        "displayName": "Hairline Strong",
+        "canonical": "oklch(84.1% 0.025 275.9)",
+        "tonalRamp": [
+          "#080a16",
+          "#202330",
+          "#3c3f4d",
+          "#595d6c",
+          "#797c8d",
+          "#9a9daf",
+          "#bfc3d5",
+          "#eaeefe"
+        ]
+      },
+      "ref": {
+        "role": "primary",
+        "displayName": "Reference Blue",
+        "canonical": "oklch(44.3% 0.292 264.2)",
+        "tonalRamp": [
+          "#000035",
+          "#000278",
+          "#0013bc",
+          "#0130fe",
+          "#3970fa",
+          "#6f9bfa",
+          "#a9c4fc",
+          "#e7efff"
+        ]
+      },
+      "ref-tint": {
+        "role": "primary",
+        "displayName": "Reference Tint",
+        "canonical": "oklch(94.2% 0.028 281.5)",
+        "tonalRamp": [
+          "#090917",
+          "#222232",
+          "#3d3e4f",
+          "#5b5c6e",
+          "#7a7c8e",
+          "#9b9db0",
+          "#c0c2d7",
+          "#ebedff"
+        ]
+      },
+      "inst": {
+        "role": "neutral",
+        "displayName": "Instrument Ink (alias of ink)",
+        "canonical": "oklch(18.0% 0.056 274.7)",
+        "tonalRamp": [
+          "#060722",
+          "#1c213f",
+          "#373d5e",
+          "#545b7e",
+          "#737b9f",
+          "#949cc2",
+          "#b9c2e9",
+          "#e9eeff"
+        ]
+      },
+      "tol": {
+        "role": "secondary",
+        "displayName": "Tolerance Yellow",
+        "canonical": "oklch(89.1% 0.186 102.2)",
+        "tonalRamp": [
+          "#0e0b00",
+          "#292500",
+          "#484106",
+          "#695f00",
+          "#8c7f0b",
+          "#b1a106",
+          "#dac723",
+          "#fef28f"
+        ]
+      },
+      "tol-soft": {
+        "role": "secondary",
+        "displayName": "Tolerance Band (34% alpha)",
+        "canonical": "oklch(89.1% 0.186 102.2)",
+        "tonalRamp": [
+          "#0e0b00",
+          "#292500",
+          "#484106",
+          "#695f00",
+          "#8c7f0b",
+          "#b1a106",
+          "#dac723",
+          "#fef28f"
+        ]
+      },
+      "pass": {
+        "role": "tertiary",
+        "displayName": "Pass Green",
+        "canonical": "oklch(51.1% 0.118 157.6)",
+        "tonalRamp": [
+          "#001006",
+          "#022c18",
+          "#024d2d",
+          "#087044",
+          "#309261",
+          "#57b481",
+          "#7edba6",
+          "#c4ffdb"
+        ]
+      },
+      "pass-tint": {
+        "role": "tertiary",
+        "displayName": "Pass Tint",
+        "canonical": "oklch(95.2% 0.021 166.1)",
+        "tonalRamp": [
+          "#040e09",
+          "#1a2722",
+          "#36433d",
+          "#53625b",
+          "#72817a",
+          "#93a39b",
+          "#b8c9c1",
+          "#e2f3eb"
+        ]
+      },
+      "fail": {
+        "role": "tertiary",
+        "displayName": "Fail Red",
+        "canonical": "oklch(53.0% 0.207 22.3)",
+        "tonalRamp": [
+          "#1f0002",
+          "#4b0009",
+          "#7a0819",
+          "#ad1429",
+          "#de3040",
+          "#fc6668",
+          "#feaba7",
+          "#fee9e7"
+        ]
+      },
+      "fail-tint": {
+        "role": "tertiary",
+        "displayName": "Fail Tint",
+        "canonical": "oklch(94.5% 0.022 7.2)",
+        "tonalRamp": [
+          "#130709",
+          "#2e2022",
+          "#4b3b3e",
+          "#69595b",
+          "#8a787b",
+          "#ab999c",
+          "#d2bfc1",
+          "#fde9ec"
+        ]
+      },
+      "seed-band": {
+        "role": "neutral",
+        "displayName": "Seed Band (ink at 14%)",
+        "canonical": "oklch(18.0% 0.056 274.7)",
+        "tonalRamp": [
+          "#060722",
+          "#1c213f",
+          "#373d5e",
+          "#545b7e",
+          "#737b9f",
+          "#949cc2",
+          "#b9c2e9",
+          "#e9eeff"
+        ]
+      },
+      "place-home": {
+        "role": "neutral",
+        "displayName": "Place Ramp: Home",
+        "canonical": "oklch(18.0% 0.056 274.7)",
+        "tonalRamp": [
+          "#060722",
+          "#1c213f",
+          "#373d5e",
+          "#545b7e",
+          "#737b9f",
+          "#949cc2",
+          "#b9c2e9",
+          "#e9eeff"
+        ]
+      },
+      "place-venue": {
+        "role": "neutral",
+        "displayName": "Place Ramp: Leisure & Shops",
+        "canonical": "oklch(44.9% 0.058 277.5)",
+        "tonalRamp": [
+          "#070723",
+          "#1e203f",
+          "#383d5e",
+          "#555b7e",
+          "#757aa0",
+          "#959cc3",
+          "#bac1ea",
+          "#eaedfe"
+        ]
+      },
+      "place-school": {
+        "role": "neutral",
+        "displayName": "Place Ramp: School",
+        "canonical": "oklch(65.8% 0.049 278.2)",
+        "tonalRamp": [
+          "#07081f",
+          "#1f213c",
+          "#3a3d5a",
+          "#575b7a",
+          "#767b9b",
+          "#979cbd",
+          "#bcc2e5",
+          "#eaedff"
+        ]
+      },
+      "place-work": {
+        "role": "neutral",
+        "displayName": "Place Ramp: Work",
+        "canonical": "oklch(80.3% 0.033 277.8)",
+        "tonalRamp": [
+          "#080919",
+          "#202234",
+          "#3b3e51",
+          "#595c70",
+          "#787c91",
+          "#999db3",
+          "#bfc3da",
+          "#eaedfe"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Certificate title only; 'vs.' at 300 weight, 100% width, Slate."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Figure titles, preceded by a mono 'Fig. N'."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Readings-table quantities and method note headings (15px)."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "One-sentence statement under the title, 40ch max."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Figure captions and notes in Graphite, 62ch max."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Spec grid keys; table headers at 12.5px."
+      },
+      "reading-lg": {
+        "displayName": "Reading, large",
+        "purpose": "The error value in each readings row."
+      },
+      "reading": {
+        "displayName": "Reading",
+        "purpose": "Reference, measured and tolerance values."
+      },
+      "mono-label": {
+        "displayName": "Mono label",
+        "purpose": "Verdict mark text and readout date stamp."
+      },
+      "axis": {
+        "displayName": "Axis",
+        "purpose": "Chart ticks in Slate; code block at 12.5px."
+      }
+    },
+    "shadows": [
+      {
+        "name": "readout-lift",
+        "value": "0 6px 18px rgba(11,14,42,.08)",
+        "purpose": "Only the floating Fig. 1 readout; dropped when it sits in flow on narrow screens."
+      }
+    ],
+    "motion": [
+      {
+        "name": "line-draw",
+        "value": "stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1) .15s",
+        "purpose": "Fig. 1 reference and model lines draw in; only under prefers-reduced-motion: no-preference."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stack",
+        "value": "860px"
+      },
+      {
+        "name": "chart-narrow (plot width, JS)",
+        "value": "640px"
+      },
+      {
+        "name": "waffle-stack",
+        "value": "480px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Verdict Mark: Pass",
+      "kind": "chip",
+      "refersTo": "mark-pass",
+      "description": "Stamped verdict for a reading inside tolerance.",
+      "html": "<span class=\"ds-mark ds-mark-pass\"><svg viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 8.5l3.2 3L13 4.5\"/></svg>PASS</span>",
+      "css": ".ds-mark{display:inline-flex;align-items:center;gap:7px;font-family:\"Geist Mono\",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;font-weight:600;line-height:1;letter-spacing:.06em;padding:6px 9px;border-radius:3px;border:1.5px solid currentColor}.ds-mark-pass{color:#0a7a4b;background:#e3f4ec}"
+    },
+    {
+      "name": "Verdict Mark: Fail",
+      "kind": "chip",
+      "refersTo": "mark-fail",
+      "description": "Stamped verdict for a reading outside tolerance.",
+      "html": "<span class=\"ds-mark ds-mark-fail\"><svg viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\"><path d=\"M4 4l8 8M12 4l-8 8\"/></svg>FAIL</span>",
+      "css": ".ds-mark{display:inline-flex;align-items:center;gap:7px;font-family:\"Geist Mono\",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;font-weight:600;line-height:1;letter-spacing:.06em;padding:6px 9px;border-radius:3px;border:1.5px solid currentColor}.ds-mark-fail{color:#c8102e;background:#fbe7ea}"
+    },
+    {
+      "name": "Spec Grid",
+      "kind": "custom",
+      "refersTo": "spec-row",
+      "description": "Certificate label/value list under hairlines.",
+      "html": "<dl class=\"ds-spec\"><dt>Instrument</dt><dd>Pandemica Go engine</dd><dt>Reference</dt><dd>Campinas bulletin, SP</dd><dt>Agents</dt><dd>1,164,099</dd></dl>",
+      "css": ".ds-spec{display:grid;grid-template-columns:auto 1fr;margin:0;border-top:1px solid #dfe2ee;font-family:\"Archivo\",ui-sans-serif,system-ui,sans-serif;color:#0b0e2a;min-width:340px}.ds-spec dt,.ds-spec dd{margin:0;padding:7px 0;border-bottom:1px solid #dfe2ee;font-size:13.5px}.ds-spec dt{color:#5f6488;padding-right:18px;font-stretch:90%;font-weight:500}.ds-spec dd{text-align:right;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Readings Row",
+      "kind": "custom",
+      "refersTo": "readings-row",
+      "description": "One quantity checked against the reference: reference, measured, error, tolerance, verdict.",
+      "html": "<div class=\"ds-rt\"><span class=\"ds-q\">Deaths</span><span class=\"ds-n\">5,360</span><span class=\"ds-n\">6,188</span><span class=\"ds-v\">+15.4%</span><span class=\"ds-n\">±30%</span><span class=\"ds-mark ds-mark-pass\"><svg viewBox=\"0 0 16 16\" width=\"13\" height=\"13\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 8.5l3.2 3L13 4.5\"/></svg>PASS</span></div>",
+      "css": ".ds-mark{display:inline-flex;align-items:center;gap:7px;font-family:\"Geist Mono\",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;font-weight:600;line-height:1;letter-spacing:.06em;padding:6px 9px;border-radius:3px;border:1.5px solid currentColor}.ds-mark-pass{color:#0a7a4b;background:#e3f4ec}.ds-rt{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr .8fr auto;gap:8px 20px;align-items:center;padding:14px 0;border-top:1px solid #dfe2ee;border-bottom:1px solid #dfe2ee;color:#0b0e2a;min-width:620px}.ds-q{font-family:\"Archivo\",ui-sans-serif,system-ui,sans-serif;font-size:17px;font-weight:650;line-height:1.2;font-stretch:88%}.ds-n{font-family:\"Geist Mono\",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:15px;font-weight:500;font-variant-numeric:tabular-nums}.ds-v{font-family:\"Geist Mono\",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:34px;font-weight:500;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Figure Plate Head",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Numbered figure title with its key on the same baseline.",
+      "html": "<div class=\"ds-fighead\"><h2 class=\"ds-h2\"><span class=\"ds-fig\">Fig. 1</span>Deaths end inside tolerance</h2><div class=\"ds-key\"><span><i class=\"ds-sw ds-line\" style=\"border-color:#0019f0\"></i>bulletin</span><span><i class=\"ds-sw ds-line\" style=\"border-color:#0b0e2a\"></i>model</span><span><i class=\"ds-sw\" style=\"background:rgba(244,222,2,.34)\"></i>±30%</span></div></div>",
+      "css": ".ds-fighead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 24px;font-family:\"Archivo\",ui-sans-serif,system-ui,sans-serif;color:#0b0e2a;min-width:560px}.ds-h2{font-size:28px;font-weight:700;line-height:1.1;font-stretch:84%;letter-spacing:-.02em;margin:0}.ds-fig{font-family:\"Geist Mono\",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:500;color:#5f6488;margin-right:12px;vertical-align:4px;letter-spacing:0}.ds-key{display:flex;gap:6px 18px;font-size:13px;color:#4d5275}.ds-key span{display:inline-flex;align-items:center;gap:7px}.ds-sw{width:18px;height:10px;border-radius:2px;display:inline-block}.ds-line{height:0;border-top:2.5px solid;border-radius:0}"
+    },
+    {
+      "name": "Instrument Readout",
+      "kind": "custom",
+      "refersTo": "readout",
+      "description": "Cursor-tracking readout over Fig. 1; the only lifted object.",
+      "html": "<div class=\"ds-readout\"><span class=\"ds-d\">31 Dec 2022</span><span style=\"color:#0019f0\">Bulletin</span><span class=\"ds-r\">5,360</span><span>Model</span><span class=\"ds-r\">6,188</span><span>Error</span><span class=\"ds-r\" style=\"color:#0a7a4b\">+15.4%</span></div>",
+      "css": ".ds-readout{display:inline-grid;grid-template-columns:auto auto;gap:3px 16px;background:rgba(255,255,255,.94);border:1px solid #c6cadc;border-radius:4px;padding:10px 12px;font-family:\"Archivo\",ui-sans-serif,system-ui,sans-serif;font-size:12.5px;color:#0b0e2a;box-shadow:0 6px 18px rgba(11,14,42,.08)}.ds-d{grid-column:1/-1;font-family:\"Geist Mono\",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;font-weight:600;margin-bottom:4px}.ds-r{font-family:\"Geist Mono\",ui-monospace,SFMono-Regular,Menlo,monospace;text-align:right;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Code Block",
+      "kind": "card",
+      "refersTo": "code-block",
+      "description": "Run instructions on the only tinted surface.",
+      "html": "<pre class=\"ds-pre\">cd engine &amp;&amp; go test ./...\n./bin/pandemica run -fit compliance</pre>",
+      "css": ".ds-pre{font-family:\"Geist Mono\",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.6;color:#0b0e2a;background:#f6f7fb;border:1px solid #dfe2ee;border-radius:4px;padding:14px 16px;overflow-x:auto;margin:0}"
+    },
+    {
+      "name": "Link",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Inline link in Reference Blue with the shared focus outline.",
+      "html": "<p class=\"ds-p\">Paper at <a class=\"ds-a\" href=\"#\">web/content/paper.mdx</a>.</p>",
+      "css": ".ds-p{font-family:\"Archivo\",ui-sans-serif,system-ui,sans-serif;font-size:16px;line-height:1.55;color:#0b0e2a}.ds-a{color:#0019f0;text-underline-offset:3px}.ds-a:hover{text-decoration-thickness:2px}.ds-a:focus-visible{outline:2px solid #0019f0;outline-offset:2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Calibration Certificate",
+    "overview": "The report reads as a certificate issued by a test bench. The model is the instrument under test and the Campinas bulletin is the reference standard. Every figure is a reading checked against a tolerance band. The page is a single white sheet ruled with hairlines. A heavy ink rule opens it under the title block and closes it above the footer. Colors act as roles, not decoration: blue is the reference, ink is the instrument, yellow is the tolerance, and green and red are verdicts.\n\nThe page is dense in the way an instrument sheet is dense. It has a label/value spec grid, a readings table with Reference, Measured, Error, Tolerance and Verdict columns, then numbered figure plates with captions. Readings are mono and tabular. Words are set in Archivo, whose width narrows as the rank of a line rises. The system rejects the dark data-dashboard of tiles and the editorial long-read.",
+    "keyCharacteristics": [
+      "White paper, blue-black ink, 1px hairline rules, and a 2px ink rule at the head and foot of the sheet.",
+      "Color is a role: blue for the reference, ink for the instrument, yellow for tolerance, and green or red for verdicts.",
+      "Archivo at varied widths for words. Geist Mono with tabular figures for every reading.",
+      "Figures are numbered plates (\"Fig. N\") with a key and a caption. There are no cards and no tiles.",
+      "Flat throughout. The only lifted object is the cursor readout."
+    ],
+    "rules": [
+      {
+        "name": "The Reference-Is-Blue Rule",
+        "body": "Blue always means the bulletin, the reference standard. The model is always drawn in ink. Never swap them, and never use blue for a model series.",
+        "section": "colors"
+      },
+      {
+        "name": "The Yellow-Is-Tolerance Rule",
+        "body": "Yellow appears only as a translucent acceptance band behind data (plus the selection highlight). It is never used for text, fills of marks, or emphasis.",
+        "section": "colors"
+      },
+      {
+        "name": "The Verdict-Only Rule",
+        "body": "Green and red are judgments. They appear only where a reading has been compared with a tolerance.",
+        "section": "colors"
+      },
+      {
+        "name": "The Readings-Are-Mono Rule",
+        "body": "Any number that is a measurement, count, date stamp or tolerance is set in Geist Mono with tabular figures. Words are never set in mono, except figure numbers and the code block.",
+        "section": "typography"
+      },
+      {
+        "name": "The Width-Is-Rank Rule",
+        "body": "Higher rank means narrower Archivo: 78% for the title, 84% for figure titles, 88% for quantities and callouts, 90% for spec keys, and 100% for running text. Weight rises along with the narrowing.",
+        "section": "typography"
+      },
+      {
+        "name": "The Ruled-Not-Raised Rule",
+        "body": "Separation is always a hairline or an ink rule. Only an object that floats over data, like the readout, may cast a shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** draw every bulletin or reference series in Reference Blue (#0019f0) and every model series in Certificate Ink (#0b0e2a).",
+      "**Do** show tolerance as a translucent yellow band (`rgba(244,222,2,.34)`) behind the data, and state the band's source in the caption.",
+      "**Do** set every reading in Geist Mono with tabular figures, and right-align numeric columns.",
+      "**Do** open and close the sheet with a 2px ink rule, and divide everything in between with 1px Hairline (#dfe2ee).",
+      "**Do** number figures (\"Fig. N\", mono, Slate) and give each one a caption of at most 62ch.",
+      "**Do** use `ink-2` or `ink-3` for secondary text on white. Both clear 4.5:1."
+    ],
+    "donts": [
+      "**Don't** use green or red for anything that is not a verdict against a tolerance.",
+      "**Don't** use yellow for text, marks, strokes or emphasis.",
+      "**Don't** put readings in cards or tiles, and don't lift any surface except the floating readout.",
+      "**Don't** use a dark ground. This world has `color-scheme: light` only.",
+      "**Don't** pull the `web/` Tailwind tokens into this surface, or these tokens into `web/`.",
+      "**Don't** use a place-ramp step lighter than `place-work` (#b9bdd4) as a data fill on white. Lighter steps fall below 3:1."
+    ]
+  }
+}

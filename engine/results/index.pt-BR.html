@@ -16,7 +16,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   --paper:#ffffff; --plate:#f6f7fb; --ink:#0b0e2a; --ink-2:#4d5275; --ink-3:#5f6488; --rule:#dfe2ee; --rule-2:#c6cadc;
   --ref:#0019f0; --ref-tint:#e8eaff; --inst:#0b0e2a; --tol:#f4de02; --tol-soft:rgba(244,222,2,.34);
   --pass:#0a7a4b; --pass-tint:#e3f4ec; --fail:#c8102e; --fail-tint:#fbe7ea;
-  --home:#0b0e2a; --venue:#4d5275; --school:#8a8fb0; --work:#b9bdd4; --transport:#e1e3ee;
+  --home:#0019f0; --venue:#f0c800; --school:#7c4dff; --work:#f08a24; --transport:#aab0c8;
   --sans:"Archivo",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
@@ -40,7 +40,7 @@ h1 .vs{font-weight:300;font-stretch:100%;color:var(--ink-3)}
 .spec dd{font-size:13.5px;text-align:right;font-variant-numeric:tabular-nums}
 
 /* verdict readings */
-.readings{border-bottom:1px solid var(--rule)}
+.readings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--rule)}
 .rt{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr)) minmax(0,1.2fr) minmax(0,.8fr) minmax(0,auto);gap:8px 20px;align-items:center;padding:14px 0;border-bottom:1px solid var(--rule)}
 .rt:last-child{border-bottom:0}
 .rt.h{padding:10px 0;font:500 12.5px var(--sans);color:var(--ink-3)}
@@ -76,6 +76,10 @@ figcaption{font-size:14.5px;color:var(--ink-2);max-width:62ch;margin-top:10px}
 .readout span:nth-child(even){font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
 .key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink-2);margin:0 0 6px}
 .key span{display:inline-flex;align-items:center;gap:7px}
+.key.col{flex-direction:column;align-items:flex-start;gap:6px}
+.key.col>span{display:flex;align-items:center;gap:8px}
+.plot .key svg{width:24px;flex:none;display:inline-block}
+.key .kt{display:inline}
 .sw{width:18px;height:10px;border-radius:2px;display:inline-block}
 .sw.line{height:0;border-top:2.5px solid;border-radius:0}
 .sw.dash{height:0;border-top:2px dashed;border-radius:0}
@@ -228,9 +232,12 @@ const ICON = {
   const tsd = D.ts.deaths[n];
   const ed = pctErr(md, rd), ec = pctErr(mc, rc), et = pctErr(tsd, rd);
   const mark = (ok, text) => `<span class="mark ${ok}">${ICON[ok]}${text}</span>`;
-  const rowsR = [["Óbitos", rd, md, ed], ["Casos notificados", rc, mc, ec]];
-  $("readings").innerHTML = `<div class="rt h"><span>Grandeza</span><span>Referência</span><span>Medido</span><span>Erro</span><span>Tolerância</span><span>Veredito</span></div>` +
-    rowsR.map(([q, r, m, e]) => `<div class="rt"><span class="q">${q}</span><span class="num" data-l="Referência">${fmt(r)}</span><span class="num" data-l="Medido">${fmt(m)}</span><span class="v" data-l="Erro">${signed(e)}</span><span class="num" data-l="Tolerância">±${TOL}%</span>${Math.abs(e) <= TOL ? mark("pass", "APROVADO") : mark("fail", "REPROVADO")}</div>`).join("");
+  const items = [
+    ["Óbitos", signed(ed), `${fmt(md)} simulados · ${fmt(rd)} reais`, Math.abs(ed) <= TOL ? mark("pass", "DENTRO DE ±30%") : mark("fail", "FORA DA TOLERÂNCIA")],
+    ["Casos notificados", signed(ec), `${fmt(mc)} simulados · ${fmt(rc)} reais`, Math.abs(ec) <= TOL ? mark("pass", "DENTRO DE ±30%") : mark("fail", "FORA DA TOLERÂNCIA")],
+    ["Rodada do artigo, óbitos", signed(et), `${fmt(tsd)} na rodada em TypeScript de 2023`, mark("info", "INSTRUMENTO ANTERIOR")],
+  ];
+  $("readings").innerHTML = items.map(([q, v, r, m]) => `<div class="reading"><div class="q">${q}</div><div class="v">${v}</div><div class="ref">${r}</div>${m}</div>`).join("");
 })();
 
 // ---------- chart core ----------
@@ -446,7 +453,7 @@ function fig7() {
     { y: y(D.real.deaths[n]), c: "var(--ref)", t: "Boletim (real)", v: fmt(D.real.deaths[n]) }], 44, Tp + 8, h - B - 18);
   const wrap = (t) => { if (t.length <= 28) return [t]; const mid = t.lastIndexOf(" ", 28); return mid > 0 ? [t.slice(0, mid), t.slice(mid + 1)] : [t]; };
   if (!narrow) for (const l of labels) { const ls = wrap(l.t); g += `<text class="lbl" x="${w - R + 12}" y="${l.y}" fill="${l.c}">${ls.map((t, i) => `<tspan x="${w - R + 12}" dy="${i ? 14 : 0}">${t}</tspan>`).join("")}</text><text class="lblv" x="${w - R + 12}" y="${l.y + 15 + (ls.length - 1) * 14}" fill="var(--ink-2)">${l.v}</text>`; }
-  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Óbitos acumulados em três cenários">${g}</svg>` + (narrow ? `<div class="key" style="margin-top:8px">${[...sc.map((s, k) => ({ l: s.label, c: cols[k], d: dashes[k], w: k ? 2 : 2.8, v: s.deaths[n] })), { l: "Boletim (real)", c: "var(--ref)", d: "4 3", w: 1.6, v: D.real.deaths[n] }].map(e => `<span><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="${e.c}" stroke-width="${e.w}" ${e.d ? `stroke-dasharray="${e.d}"` : ""}/></svg>${e.l}: <b class="num" style="font-weight:500">${fmt(e.v)}</b></span>`).join("")}</div>` : "");
+  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Óbitos acumulados em três cenários">${g}</svg>` + (narrow ? `<div class="key col" style="margin-top:8px">${[...sc.map((s, k) => ({ l: s.label, c: cols[k], d: dashes[k], w: k ? 2 : 2.8, v: s.deaths[n] })), { l: "Boletim (real)", c: "var(--ref)", d: "4 3", w: 1.6, v: D.real.deaths[n] }].map(e => `<span><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="${e.c}" stroke-width="${e.w}" ${e.d ? `stroke-dasharray="${e.d}"` : ""}/></svg><span class="kt">${e.l}: <b class="num" style="font-weight:500">${fmt(e.v)}</b></span></span>`).join("")}</div>` : "");
 }
 
 // ---------- Fig 9: R0 sweep ----------
