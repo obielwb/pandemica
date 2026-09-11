@@ -122,6 +122,8 @@ PAIRS = [
     ('"label":"paper setup"', '"label":"config. do artigo"'),
     ('"label":"fit on deaths"', '"label":"ajuste nos óbitos"'),
     ('t: "Bulletin (real)"', 't: "Boletim (real)"'),
+    ('{ l: "Bulletin (real)"', '{ l: "Boletim (real)"'),
+    ('" (extrapolated)"', '" (extrapolado)"'),
     # embedded data labels
     ('"Paper, TypeScript (2023)"', '"Artigo, TypeScript (2023)"'),
     ('"Go · paper setup"', '"Go · config. do artigo"'),

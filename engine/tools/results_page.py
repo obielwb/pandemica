@@ -115,8 +115,10 @@ def main():
         marks.append({"label": "paper setup", "beta": pm["summary"]["params"]["Beta"], "ok": False})
     if bf:
         marks.append({"label": "fit on deaths", "beta": bf["summary"]["params"]["Beta"], "ok": False})
+    lo_b, hi_b = (sweep[0]["beta"], sweep[-1]["beta"]) if sweep else (0, 0)
     for m in marks:
         m["r0"] = r0_at(m["beta"])
+        m["extrap"] = not (lo_b <= m["beta"] <= hi_b)
     data["r0marks"] = [m for m in marks if m["r0"] is not None]
     page = TEMPLATE.replace("/*DATA*/", json.dumps(data, separators=(",", ":"), ensure_ascii=False))
     open(out, "w").write(page)
@@ -233,10 +235,7 @@ footer .mono{color:var(--ink-2)}
   .rt [data-l]::before{content:attr(data-l);display:block;font:500 11.5px var(--sans);color:var(--ink-3);margin-bottom:3px;letter-spacing:0}
 }
 @media (max-width:480px){.waffle{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:no-preference){
-  .draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.4s cubic-bezier(.16,1,.3,1) .15s forwards}
-  @keyframes draw{to{stroke-dashoffset:0}}
-}
+
 </style>
 <main>
 <section class="cert" aria-label="Report header">
@@ -404,8 +403,8 @@ function fig1() {
   g += `<path d="${areaOf(xs, rd.map(v => y(v * 0.7)), rd.map(v => y(v * 1.3)))}" fill="var(--tol-soft)"/>`;
   g += `<path d="${areaOf(xs, D.band.lo.map(y), D.band.hi.map(y))}" fill="rgba(11,14,42,.14)"/>`;
   g += `<path d="${pathOf(xs, D.ts.deaths.map(y))}" fill="none" stroke="var(--ink-3)" stroke-width="1.6" stroke-dasharray="5 4"/>`;
-  g += `<path class="draw" d="${pathOf(xs, rd.map(y))}" fill="none" stroke="var(--ref)" stroke-width="3" stroke-linejoin="round"/>`;
-  g += `<path class="draw" d="${pathOf(xs, md.map(y))}" fill="none" stroke="var(--inst)" stroke-width="2.2" stroke-linejoin="round"/>`;
+  g += `<path d="${pathOf(xs, rd.map(y))}" fill="none" stroke="var(--ref)" stroke-width="3" stroke-linejoin="round"/>`;
+  g += `<path d="${pathOf(xs, md.map(y))}" fill="none" stroke="var(--inst)" stroke-width="2.2" stroke-linejoin="round"/>`;
   if (!narrow) {
     const labels = spread([
       { y: y(rd[n]), c: "var(--ref)", t: "Bulletin", v: fmt(rd[n]) },
@@ -419,7 +418,6 @@ function fig1() {
   g += `<line id="f1x" x1="0" x2="0" y1="${Tp}" y2="${h - B}" stroke="var(--ink)" stroke-width="1" style="display:none"/>`;
   g += `<circle id="f1r" r="4.5" fill="var(--ref)" stroke="#fff" stroke-width="2" style="display:none"/><circle id="f1m" r="4.5" fill="var(--inst)" stroke="#fff" stroke-width="2" style="display:none"/>`;
   el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Cumulative deaths, bulletin versus model, 2020 to 2022">${g}</svg><div class="readout" id="f1ro" aria-live="polite"></div>`;
-  el.querySelectorAll(".draw").forEach(p => p.style.setProperty("--len", Math.ceil(p.getTotalLength())));
   const ro = $("f1ro"), cx = $("f1x"), cr = $("f1r"), cm = $("f1m");
   const show = (i) => {
     const e = pctErr(md[i], rd[i]); const inside = Math.abs(e) <= TOL;
@@ -450,14 +448,13 @@ function fig2() {
   const L = narrow ? 8 : 230, R = 20; const h = Tp + rows.length * rowH + B;
   const lo = Math.log10(0.5), hi = Math.log10(100);
   const x = (r) => L + (Math.log10(r) - lo) / (hi - lo) * (w - L - R);
-  let g = narrow ? "" : `<rect x="${x(0.7)}" y="${Tp - 6}" width="${x(1.3) - x(0.7)}" height="${h - Tp - B + 6}" fill="var(--tol-soft)"/>`;
+  let g = `<rect x="${x(0.7)}" y="${Tp - 6}" width="${x(1.3) - x(0.7)}" height="${h - Tp - B + 6}" fill="var(--tol-soft)"/>`;
   for (const t of [0.5, 1, 2, 5, 10, 20, 50, 100]) g += `<line class="grid" x1="${x(t)}" x2="${x(t)}" y1="${Tp - 6}" y2="${h - B}"/><text class="ax" x="${x(t)}" y="${Tp - 12}" text-anchor="middle">${t}×</text>`;
   g += `<line x1="${x(1)}" x2="${x(1)}" y1="${Tp - 6}" y2="${h - B}" stroke="var(--ref)" stroke-width="2"/>`;
   rows.forEach((r, k) => {
     const yy = Tp + k * rowH + rowH / 2 + (narrow ? 8 : 0);
     const rc = r.cases / D.real.cases[n], rdd = r.deaths / D.real.deaths[n];
     const col = r.headline ? "var(--ink)" : "var(--ink-3)"; const op = r.seed ? 0.55 : 1;
-    if (narrow) g += `<rect x="${x(0.7)}" y="${yy - 9}" width="${x(1.3) - x(0.7)}" height="18" fill="var(--tol-soft)"/>`;
     g += `<line x1="${L}" x2="${w - R}" y1="${yy}" y2="${yy}" stroke="var(--rule)"/>`;
     g += narrow ? `<text class="lbl" x="${L}" y="${yy - 16}" fill="${col}">${r.label}</text>` : `<text class="lbl" x="${L - 14}" y="${yy + 4}" text-anchor="end" fill="${col}" opacity="${op}">${r.label}</text>`;
     g += `<line x1="${x(Math.min(rc, rdd))}" x2="${x(Math.max(rc, rdd))}" y1="${yy}" y2="${yy}" stroke="${col}" stroke-width="2" opacity="${op * 0.5}"/>`;
@@ -574,7 +571,7 @@ function fig7() {
     { y: y(D.real.deaths[n]), c: "var(--ref)", t: "Bulletin (real)", v: fmt(D.real.deaths[n]) }], 44, Tp + 8, h - B - 18);
   const wrap = (t) => { if (t.length <= 28) return [t]; const mid = t.lastIndexOf(" ", 28); return mid > 0 ? [t.slice(0, mid), t.slice(mid + 1)] : [t]; };
   if (!narrow) for (const l of labels) { const ls = wrap(l.t); g += `<text class="lbl" x="${w - R + 12}" y="${l.y}" fill="${l.c}">${ls.map((t, i) => `<tspan x="${w - R + 12}" dy="${i ? 14 : 0}">${t}</tspan>`).join("")}</text><text class="lblv" x="${w - R + 12}" y="${l.y + 15 + (ls.length - 1) * 14}" fill="var(--ink-2)">${l.v}</text>`; }
-  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Cumulative deaths under three scenarios">${g}</svg>` + (narrow ? `<div class="key" style="margin-top:8px">${sc.map((s, k) => `<span><i class="sw ${dashes[k] ? "dash" : "line"}" style="border-color:${cols[k]}"></i>${s.label}: <b class="num" style="font-weight:500">${fmt(s.deaths[n])}</b></span>`).join("")}</div>` : "");
+  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Cumulative deaths under three scenarios">${g}</svg>` + (narrow ? `<div class="key" style="margin-top:8px">${[...sc.map((s, k) => ({ l: s.label, c: cols[k], d: dashes[k], w: k ? 2 : 2.8, v: s.deaths[n] })), { l: "Bulletin (real)", c: "var(--ref)", d: "4 3", w: 1.6, v: D.real.deaths[n] }].map(e => `<span><svg width="24" height="8" aria-hidden="true"><line x1="0" x2="24" y1="4" y2="4" stroke="${e.c}" stroke-width="${e.w}" ${e.d ? `stroke-dasharray="${e.d}"` : ""}/></svg>${e.l}: <b class="num" style="font-weight:500">${fmt(e.v)}</b></span>`).join("")}</div>` : "");
 }
 
 // ---------- Fig 9: R0 sweep ----------
@@ -591,7 +588,9 @@ function fig8() {
   g += `<path d="${pathOf(pts.map(p => x(p.beta)), pts.map(p => y(p.r0)))}" fill="none" stroke="var(--ink)" stroke-width="2"/>`;
   for (const p of pts) g += `<circle cx="${x(p.beta)}" cy="${y(p.r0)}" r="3.5" fill="#fff" stroke="var(--ink)" stroke-width="1.6"/>`;
   const place = [{ dx: 0, dy: -16, a: "middle" }, { dx: 0, dy: 26, a: "middle" }, { dx: -12, dy: -12, a: "end" }];
-  const marks = D.r0marks.map((m, k) => ({ b: m.beta, r: m.r0, t: `${m.label} · R0 ${dec(m.r0, 1)}`, c: m.ok ? "var(--pass)" : "var(--fail)", ...place[k % 3] }));
+  const marks = D.r0marks.map((m, k) => ({ b: m.beta, r: m.r0, x: m.extrap, t: `${m.label} · R0 ${m.extrap ? "≈" : ""}${dec(m.r0, 1)}${m.extrap ? " (extrapolated)" : ""}`, c: m.ok ? "var(--pass)" : "var(--fail)", ...place[k % 3] }));
+  const last = pts[pts.length - 1];
+  for (const m of marks) if (m.x) g += `<line x1="${x(last.beta)}" y1="${y(last.r0)}" x2="${x(m.b)}" y2="${y(m.r)}" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3"/>`;
   for (const m of marks) g += `<circle cx="${x(m.b)}" cy="${y(m.r)}" r="7" fill="none" stroke="${m.c}" stroke-width="2.4"/><text class="lbl" x="${x(m.b) + m.dx}" y="${y(m.r) + m.dy}" text-anchor="${m.a}" fill="${m.c}">${m.t}</text>`;
   el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="R0 by transmission scale">${g}</svg>`;
 }
