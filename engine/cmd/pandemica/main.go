@@ -327,7 +327,11 @@ func cmdRun(args []string) {
 		par.Beta = prev.Params.Beta
 		par.DetectSymptomatic, par.DetectAsymptomatic = prev.Params.DetectSymptomatic, prev.Params.DetectAsymptomatic
 		par.CloseContacts, par.HomeContact, par.OccupationContact = prev.Params.CloseContacts, prev.Params.HomeContact, prev.Params.OccupationContact
-		logf("parameters from %s: beta %.5f, detection %.3f/%.3f", *from, par.Beta, par.DetectSymptomatic, par.DetectAsymptomatic)
+		if prev.Compliance > 0 {
+			sc = sc.WithCompliance(prev.Compliance)
+			sum.Compliance = prev.Compliance
+		}
+		logf("parameters from %s: beta %.5f, detection %.3f/%.3f, compliance %.3f", *from, par.Beta, par.DetectSymptomatic, par.DetectAsymptomatic, prev.Compliance)
 	} else if *beta > 0 {
 		par.Beta = *beta
 	} else {
