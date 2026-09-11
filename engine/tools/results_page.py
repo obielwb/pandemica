@@ -137,16 +137,18 @@ def main():
         abl = []
         ref = head["summary"]
         abl.append({"label": "v1 (reference)", "beta": ref["params"]["Beta"], "deaths": ref["totals"]["deaths"], "cases": ref["totals"]["cases"],
-                    "home": shares(ref).get("home", 0), "hospital": shares(ref).get("hospital", 0), "turned": None, "curve": ref["full"]["curveAccuracy"]})
-        for label, name in (("v2, all changes", v2name), ("v2 without sick routine", "abl-no-sick"), ("v2 without bedroom rule", "abl-no-sleep-pairs"),
-                            ("v2 without bed limit", "abl-no-capacity"), ("v2 without hospitals", "abl-no-hospitals")):
+                    "home": shares(ref).get("home", 0), "hospital": shares(ref).get("hospital", 0), "turned": None,
+                    "curve": ref["test"]["curveAccuracy"], "final": False})
+        for label, name, final in (("v2, every change (1 bed per 1,000)", "abl-all", False), ("– without sick routine", "abl-no-sick", False),
+                                   ("– without bedroom rule", "abl-no-sleep-pairs", False), ("– without bed limit = v2 final", "abl-no-capacity", True),
+                                   ("– without hospitals", "abl-no-hospitals", False)):
             r = run2(name)
             if not r:
                 continue
             sm = r["summary"]
             abl.append({"label": label, "beta": sm["params"]["Beta"], "deaths": sm["totals"]["deaths"], "cases": sm["totals"]["cases"],
                         "home": shares(sm).get("home", 0), "hospital": shares(sm).get("hospital", 0),
-                        "turned": sm.get("beds", {}).get("turnedAway"), "curve": sm["full"]["curveAccuracy"]})
+                        "turned": sm.get("beds", {}).get("turnedAway"), "curve": sm["test"]["curveAccuracy"], "final": final})
         data["v2"] = {"deaths": col(v2["rows"], "deaths"), "v1shares": shares(head["summary"]), "v2shares": shares(v2["summary"]), "abl": abl}
     page = TEMPLATE.replace("/*DATA*/", json.dumps(data, separators=(",", ":"), ensure_ascii=False))
     open(out, "w").write(page)
@@ -353,7 +355,7 @@ footer .mono{color:var(--ink-2)}
   <div class="fighead"><h2><span class="fig">Fig. 10</span>v2, closer to the original design</h2>
     <div class="key"><span><i class="sw line" style="border-color:var(--ref)"></i>bulletin</span><span><i class="sw line" style="border-color:var(--inst)"></i>v1</span><span><i class="sw line" style="border-color:var(--v2)"></i>v2</span></div></div>
   <div class="plot" id="f10"></div>
-  <figcaption>Cumulative deaths. v2 adds hospitals, sick routines, bedrooms and a bed limit; both engines use the same calibration and seed.</figcaption>
+  <figcaption>Cumulative deaths. v2 final adds hospitals, sick routines and bedrooms; the bed limit is off because the repository has no bed data. Both engines use the same calibration and seed.</figcaption>
 </figure>
 <figure>
   <div class="fighead"><h2><span class="fig">Fig. 11</span>Where infections happen, v1 and v2</h2><div class="key" id="k11"></div></div>
@@ -363,7 +365,7 @@ footer .mono{color:var(--ink-2)}
 <figure>
   <div class="fighead"><h2><span class="fig">Table 1</span>What each v2 change does</h2></div>
   <div class="tablewrap"><table class="abl" id="t1"></table></div>
-  <figcaption>Each row recalibrates from scratch (R0 2.8, compliance fitted on 2020 deaths). Removing one change at a time shows its effect.</figcaption>
+  <figcaption>Every row recalibrates from scratch (R0 2.8, compliance fitted on 2020 deaths). The first v2 row has all four changes with 1 COVID bed per 1,000 people; each row below removes one. Curve score is on the held-out 80%.</figcaption>
 </figure>
 </section>
 
@@ -697,8 +699,8 @@ function fig11() {
 }
 function table1() {
   const pct = (v) => (v * 100).toFixed(1).replace(/\.0$/, "") + "%";
-  $("t1").innerHTML = `<thead><tr><th>Run</th><th>β for R0 2.8</th><th>Deaths</th><th>Cases</th><th>Home</th><th>Hospital</th><th>Turned away</th><th>Curve score</th></tr></thead><tbody>` +
-    D.v2.abl.map((r, k) => `<tr class="${k ? "v2" : ""}"><td>${r.label}</td><td>${dec(r.beta, 3)}</td><td>${fmt(r.deaths)}</td><td>${fmt(r.cases)}</td><td>${pct(r.home)}</td><td>${pct(r.hospital)}</td><td>${r.turned == null ? "–" : fmt(r.turned)}</td><td>${dec(r.curve, 1)}%</td></tr>`).join("") + `</tbody>`;
+  $("t1").innerHTML = `<thead><tr><th>Run</th><th>β for R0 2.8</th><th>Deaths</th><th>Cases</th><th>Home</th><th>Hospital</th><th>Turned away</th><th>Curve score, test</th></tr></thead><tbody>` +
+    D.v2.abl.map((r, k) => `<tr class="${r.final ? "v2" : ""}"><td>${r.label}</td><td>${dec(r.beta, 3)}</td><td>${fmt(r.deaths)}</td><td>${fmt(r.cases)}</td><td>${pct(r.home)}</td><td>${pct(r.hospital)}</td><td>${r.turned == null ? "–" : fmt(r.turned)}</td><td>${dec(r.curve, 1)}%</td></tr>`).join("") + `</tbody>`;
 }
 function drawAll() { fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8(); if (D.v2) { fig10(); fig11(); table1(); } else { $("v2sec").hidden = true; } }
 drawAll();

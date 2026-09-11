@@ -40,7 +40,7 @@ type Params struct {
 	Seed               uint64
 
 	// v2
-	CovidBedsPer1000       float64 // hospital beds available to COVID patients (assumption)
+	CovidBedsPer1000       float64 // hospital beds available to COVID patients; <= 0 means unlimited (no bed data in the repository)
 	CareSeeking            float64 // P(a symptomatic person visits a pharmacy at symptom onset) (assumption)
 	OverloadDeathFactor    float64 // death probability multiplier for severe cases turned away (assumption)
 	HospitalInfectiousDays int     // days a severe case keeps shedding after admission (assumption)
@@ -60,7 +60,7 @@ func DefaultParams() Params {
 		OccupationContact:      0.5,
 		Workers:                runtime.NumCPU(),
 		Seed:                   1,
-		CovidBedsPer1000:       1.0,
+		CovidBedsPer1000:       0,
 		CareSeeking:            0.6,
 		OverloadDeathFactor:    2,
 		HospitalInfectiousDays: 5,
@@ -211,12 +211,20 @@ func (s *Sim) setupBeds() {
 			staff += int(p.WorkGroupSize[g])
 		}
 	}
-	s.bedsTotal = int(math.Round(float64(p.N) / 1000 * s.Par.CovidBedsPer1000))
 	s.bedCap = make([]int32, len(s.wards))
 	s.bedUsed = make([]int32, len(s.wards))
-	if len(s.wards) == 0 || s.bedsTotal == 0 {
-		s.bedsTotal = 0
+	if len(s.wards) == 0 {
 		return
+	}
+	if s.Par.CovidBedsPer1000 <= 0 { // unlimited: every ward can always take one more
+		for k := range s.bedCap {
+			s.bedCap[k] = math.MaxInt32
+		}
+		return
+	}
+	s.bedsTotal = int(math.Round(float64(p.N) / 1000 * s.Par.CovidBedsPer1000))
+	if s.bedsTotal == 0 {
+		s.bedsTotal = 1
 	}
 	given := 0
 	for k, g := range s.wards {

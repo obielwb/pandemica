@@ -101,3 +101,18 @@ func TestSickScheduleDropsLeisureKeepsWork(t *testing.T) {
 		t.Fatal("nobody with leisure found")
 	}
 }
+
+func TestUnlimitedBedsNeverTurnAway(t *testing.T) {
+	par := DefaultParams()
+	par.Beta = 0.4
+	par.CovidBedsPer1000 = 0
+	s := New(world(t), baseScenario(), nil, par)
+	s.Run(120, func(d DayStats) {
+		if d.TurnedAway != 0 {
+			t.Fatalf("turned away %d with unlimited beds", d.TurnedAway)
+		}
+	})
+	if s.bedsUsed == 0 && s.Stats[len(s.Stats)-1].TotalDeaths == 0 {
+		t.Log("no admissions in the test window")
+	}
+}

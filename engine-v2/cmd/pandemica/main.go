@@ -288,7 +288,7 @@ func cmdRun(args []string) {
 	detAsym := fs.Float64("detect-asym", 1, "probability an asymptomatic infection is reported (paper: 1)")
 	contacts := fs.Float64("close-contacts", 10, "effective close contacts in a group")
 	home := fs.Float64("home", 1.0, "household contact intensity (v2: full reference interaction)")
-	beds := fs.Float64("covid-beds-per-1000", 1.0, "hospital beds available to COVID patients per 1,000 inhabitants (assumption)")
+	beds := fs.Float64("covid-beds-per-1000", 0, "hospital beds available to COVID patients per 1,000 inhabitants; 0 = unlimited (the repository has no bed data)")
 	care := fs.Float64("care-seeking", 0.6, "share of symptomatic people who visit a pharmacy at symptom onset (assumption)")
 	overload := fs.Float64("overload-death-factor", 2, "death probability multiplier for severe cases turned away (assumption)")
 	hospInf := fs.Int("hospital-infectious-days", 5, "days a severe case keeps shedding after admission (assumption)")
