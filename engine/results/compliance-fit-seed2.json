@@ -1,0 +1,147 @@
+{
+  "name": "compliance-fit-seed2",
+  "params": {
+    "Beta": 0.07162829849202249,
+    "DetectSymptomatic": 0.13577847636295295,
+    "DetectAsymptomatic": 0.03394461909073824,
+    "CloseContacts": 10,
+    "HomeContact": 0.5,
+    "OccupationContact": 0.5,
+    "Workers": 10,
+    "Seed": 2
+  },
+  "build": {
+    "population": 1164099,
+    "houses": 377690,
+    "workSites": 136776,
+    "workTeams": 136776,
+    "schools": 1194,
+    "classes": 7675,
+    "locations": 154123,
+    "routineActivities": 70257270,
+    "indexEntries": 35111183,
+    "nnLoss": 2.083155096502721,
+    "buildSeconds": 1.796031417,
+    "heapMB": 673.5485382080078
+  },
+  "trainDays": 204,
+  "trainEnd": "2020-10-07",
+  "calibrated": true,
+  "fit": "compliance",
+  "compliance": 0.4033203125,
+  "r0": 2.798346390835884,
+  "calibration": [
+    {
+      "beta": 1,
+      "cases": 331,
+      "deaths": 3
+    },
+    {
+      "beta": 0,
+      "cases": 862440,
+      "deaths": 5812
+    },
+    {
+      "beta": 0.5,
+      "cases": 11371,
+      "deaths": 73
+    },
+    {
+      "beta": 0.25,
+      "cases": 641407,
+      "deaths": 4315
+    },
+    {
+      "beta": 0.375,
+      "cases": 334980,
+      "deaths": 1962
+    },
+    {
+      "beta": 0.4375,
+      "cases": 89785,
+      "deaths": 456
+    },
+    {
+      "beta": 0.40625,
+      "cases": 198020,
+      "deaths": 1071
+    },
+    {
+      "beta": 0.390625,
+      "cases": 298329,
+      "deaths": 1637
+    },
+    {
+      "beta": 0.3984375,
+      "cases": 243653,
+      "deaths": 1371
+    },
+    {
+      "beta": 0.40234375,
+      "cases": 239667,
+      "deaths": 1362
+    },
+    {
+      "beta": 0.404296875,
+      "cases": 214075,
+      "deaths": 1150
+    }
+  ],
+  "simSeconds": 121.532514667,
+  "train": {
+    "from": "2020-03-18",
+    "to": "2020-10-07",
+    "paperAccuracy": 90.72,
+    "curveAccuracy": 31.19,
+    "cumulativeCasesMAPE": 64.08,
+    "cumulativeDeathsMAPE": 73.55,
+    "weeklyCasesMAPE": 135.39,
+    "weeklyDeathsMAPE": 129.43,
+    "realCases": 31789,
+    "simCases": 29747,
+    "realDeaths": 1253,
+    "simDeaths": 1101
+  },
+  "test": {
+    "from": "2020-10-08",
+    "to": "2022-12-31",
+    "paperAccuracy": -1.61,
+    "curveAccuracy": 48.11,
+    "cumulativeCasesMAPE": 70.23,
+    "cumulativeDeathsMAPE": 33.55,
+    "weeklyCasesMAPE": 804.31,
+    "weeklyDeathsMAPE": 342.96,
+    "realCases": 209500,
+    "simCases": 609162,
+    "realDeaths": 5360,
+    "simDeaths": 6027
+  },
+  "full": {
+    "from": "2020-03-18",
+    "to": "2022-12-31",
+    "paperAccuracy": -1.61,
+    "curveAccuracy": 44.93,
+    "cumulativeCasesMAPE": 69,
+    "cumulativeDeathsMAPE": 41.14,
+    "weeklyCasesMAPE": 769.75,
+    "weeklyDeathsMAPE": 307.95,
+    "realCases": 209500,
+    "simCases": 609162,
+    "realDeaths": 5360,
+    "simDeaths": 6027
+  },
+  "totals": {
+    "cases": 609162,
+    "deaths": 6027,
+    "everInfected": 1163602,
+    "infections": 5292997
+  },
+  "infectionsBySetting": {
+    "home": 2414551,
+    "imported": 238,
+    "school": 328842,
+    "transport": 26740,
+    "venue": 2267689,
+    "work": 254937
+  }
+}

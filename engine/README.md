@@ -81,3 +81,11 @@ What this says:
 * **The 2020 wave comes late.** The model peaks in October-December 2020
   instead of July-August, so deaths are over-predicted at the end of 2020.
   The intervention timeline in `scenarios/campinas.json` is the weakest input.
+
+Seed check (city rebuilt and recalibrated each time): seeds 1, 2 and 3 give
+6,188 / 6,027 / 6,119 deaths, 657,300 / 609,162 / 532,223 cases, and full-period
+curve scores of 38.8% / 44.9% / 50.1%.
+
+Counterfactuals with the headline calibration (`-from results/compliance-fit.json`):
+no lockdown, masks or school closures gives 10,244 deaths (+66%); no vaccines
+gives 15,972 deaths (+158%).
