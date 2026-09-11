@@ -119,6 +119,27 @@ func (s *Scenario) PhaseAt(t time.Time) Phase {
 	return cur
 }
 
+// WithCompliance returns a copy whose behavioural interventions (leisure
+// reduction, work from home, school closure, mask adherence) are multiplied by
+// c. Symptomatic isolation is left unchanged.
+func (s *Scenario) WithCompliance(c float64) *Scenario {
+	out := s.Clone()
+	clamp := func(v float64) float64 {
+		if v > 1 {
+			return 1
+		}
+		return v
+	}
+	for k := range out.Phases {
+		p := &out.Phases[k]
+		p.LeisureReduction = clamp(p.LeisureReduction * c)
+		p.WorkFromHome = clamp(p.WorkFromHome * c)
+		p.SchoolsClosed = clamp(p.SchoolsClosed * c)
+		p.MaskAdherence = clamp(p.MaskAdherence * c)
+	}
+	return out
+}
+
 // Clone deep-copies the scenario (so counterfactuals can edit phases).
 func (s *Scenario) Clone() *Scenario {
 	c := *s

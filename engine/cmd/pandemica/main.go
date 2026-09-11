@@ -39,6 +39,8 @@ func main() {
 		cmdPopulation(os.Args[2:])
 	case "run":
 		cmdRun(os.Args[2:])
+	case "r0":
+		cmdR0(os.Args[2:])
 	default:
 		usage()
 	}
@@ -97,6 +99,77 @@ func build(n int, seed uint64) (*sim.World, buildInfo) {
 	return w, info
 }
 
+// estimateR0 seeds an epidemic without interventions or vaccines and converts
+// the early exponential growth rate r into R0 = (1 + r*latent)(1 + r*infectious)
+// (SEIR with exponential stages; latent 3.5 d, infectious 7 d). The growth
+// rate is a log-linear fit of 7-day incidence from day 14 until 3% of the
+// population has been infected, before susceptible depletion bends the curve.
+func estimateR0(w *sim.World, par sim.Params, sc *scenario.Scenario) (float64, float64) {
+	nc := sc.Clone()
+	nc.VaccinesEnabled = false
+	nc.Variants = nil
+	nc.InitialInfections, nc.ImportDays = 100, 0
+	nc.Phases = []scenario.Phase{{Date: nc.Start, Isolation: sc.Phases[0].Isolation, MaskType: "cloth"}}
+	s := sim.New(w, nc, nil, par)
+	limit := 0.03 * float64(w.P.N)
+	var inf []float64
+	cum := 0.0
+	for s.Day() < 150 && cum < limit {
+		st := s.Step()
+		inf = append(inf, float64(st.NewInfections))
+		cum += float64(st.NewInfections)
+	}
+	var xs, ys []float64
+	for t := 14; t < len(inf); t++ {
+		w7 := 0.0
+		for _, v := range inf[t-6 : t+1] {
+			w7 += v
+		}
+		if w7 > 0 {
+			xs = append(xs, float64(t))
+			ys = append(ys, math.Log(w7))
+		}
+	}
+	if len(xs) < 3 {
+		return math.NaN(), math.NaN()
+	}
+	mx, my := 0.0, 0.0
+	for k := range xs {
+		mx += xs[k]
+		my += ys[k]
+	}
+	mx /= float64(len(xs))
+	my /= float64(len(xs))
+	num, den := 0.0, 0.0
+	for k := range xs {
+		num += (xs[k] - mx) * (ys[k] - my)
+		den += (xs[k] - mx) * (xs[k] - mx)
+	}
+	r := num / den
+	return r, (1 + r*3.5) * (1 + r*7)
+}
+
+func cmdR0(args []string) {
+	fs := flag.NewFlagSet("r0", flag.ExitOnError)
+	n := fs.Int("n", 300000, "population size")
+	seed := fs.Uint64("seed", 1, "random seed")
+	scPath := fs.String("scenario", "scenarios/campinas.json", "scenario (start date and isolation only)")
+	betas := fs.String("betas", "0.04,0.06,0.08,0.1,0.15,0.2,0.25", "comma-separated beta values")
+	fs.Parse(args)
+	sc, err := scenario.Load(*scPath)
+	check(err)
+	w, _ := build(*n, *seed)
+	par := sim.DefaultParams()
+	par.Seed = *seed
+	for _, b := range strings.Split(*betas, ",") {
+		var beta float64
+		fmt.Sscanf(b, "%g", &beta)
+		par.Beta = beta
+		r, r0 := estimateR0(w, par, sc)
+		fmt.Printf("beta %.4f  growth %.3f/day  doubling %.1f d  R0 %.2f\n", beta, r, math.Log(2)/r, r0)
+	}
+}
+
 func cmdPopulation(args []string) {
 	fs := flag.NewFlagSet("population", flag.ExitOnError)
 	n := fs.Int("n", census.PaperPopulation, "population size")
@@ -150,6 +223,8 @@ type runSummary struct {
 	TrainEnd    string            `json:"trainEnd"`
 	Calibrated  bool              `json:"calibrated"`
 	Fit         string            `json:"fit"`
+	Compliance  float64           `json:"compliance"`
+	R0          float64           `json:"r0"`
 	Calibration []calibrationStep `json:"calibration,omitempty"`
 	SimSeconds  float64           `json:"simSeconds"`
 	Train       metricsJSON       `json:"train"`
@@ -200,7 +275,8 @@ func cmdRun(args []string) {
 	scPath := fs.String("scenario", "scenarios/campinas.json", "scenario timeline")
 	beta := fs.Float64("beta", 0, "transmission scale; 0 = calibrate on the training window")
 	from := fs.String("from", "", "reuse beta and reporting rates from a previous run's JSON summary (for counterfactual scenarios)")
-	fit := fs.String("fit", "deaths", "calibration target: deaths (fit beta on training deaths, then the reporting rate on training cases) or cases (paper: every infection is a case)")
+	fit := fs.String("fit", "compliance", "calibration: compliance (beta from -r0, fit intervention compliance on training deaths, then the reporting rate on training cases), deaths (fit beta on training deaths, then the reporting rate), or cases (paper: fit beta on training cases, every infection is a case)")
+	r0 := fs.Float64("r0", 2.8, "ancestral-strain R0 used to set beta in -fit compliance")
 	train := fs.Float64("train", 0.2, "hold-out training fraction (paper: first 20%)")
 	detSym := fs.Float64("detect-sym", 1, "probability a symptomatic infection is reported (paper: 1)")
 	detAsym := fs.Float64("detect-asym", 1, "probability an asymptomatic infection is reported (paper: 1)")
@@ -259,50 +335,109 @@ func cmdRun(args []string) {
 		sum.Fit = *fit
 		targetDeaths := float64(trainEnd.Deaths) * scale
 		probePar := par
-		if *fit == "deaths" {
-			// the reporting rate does not affect the dynamics; count every
+		if *fit != "cases" {
+			// the reporting rate does not affect the dynamics: count every
 			// symptomatic infection and a quarter of asymptomatic ones while
-			// fitting beta, then scale detection to match training cases
+			// fitting, then scale detection to match training cases
 			probePar.DetectSymptomatic, probePar.DetectAsymptomatic = 1, 0.25
-			logf("calibrating beta on the first %d days (until %s): target %.0f cumulative deaths", trainDays, sum.TrainEnd, targetDeaths)
-		} else {
-			logf("calibrating beta on the first %d days (until %s): target %.0f cumulative cases", trainDays, sum.TrainEnd, target)
 		}
 		var lastCases int
-		probe := func(b float64) bool { // true when the probe is below target
-			p := probePar
-			p.Beta = b
-			s := sim.New(w, sc, vaccines, p)
+		runTrain := func(p sim.Params, scn *scenario.Scenario) (int, int) {
+			s := sim.New(w, scn, vaccines, p)
 			st := s.Run(trainDays, nil)
-			c, d := st[len(st)-1].TotalCases, st[len(st)-1].TotalDeaths
-			lastCases = c
-			sum.Calibration = append(sum.Calibration, calibrationStep{b, c, d})
-			logf("  beta %.5f -> %d cases, %d deaths", b, c, d)
-			if *fit == "deaths" {
-				return float64(d) < targetDeaths
+			return st[len(st)-1].TotalCases, st[len(st)-1].TotalDeaths
+		}
+		if *fit == "compliance" {
+			// beta from the literature R0 of the ancestral strain
+			lo, hi := 0.01, 0.5
+			for it := 0; it < 12; it++ {
+				mid := math.Sqrt(lo * hi)
+				p := probePar
+				p.Beta = mid
+				if _, r := estimateR0(w, p, sc); r < *r0 {
+					lo = mid
+				} else {
+					hi = mid
+				}
 			}
-			return float64(c) < target
-		}
-		lo, hi := 0.01, 0.5
-		for probe(hi) && hi < 16 {
-			lo = hi
-			hi *= 2
-		}
-		for it := 0; it < 14; it++ {
-			mid := math.Sqrt(lo * hi)
-			if probe(mid) {
-				lo = mid
+			probePar.Beta = math.Sqrt(lo * hi)
+			_, got := estimateR0(w, probePar, sc)
+			sum.R0 = got
+			logf("beta %.5f gives R0 %.2f for the ancestral strain (target %.2f)", probePar.Beta, got, *r0)
+			logf("calibrating intervention compliance on the first %d days (until %s): target %.0f cumulative deaths", trainDays, sum.TrainEnd, targetDeaths)
+			// more compliance -> fewer deaths (monotone decreasing)
+			cl, ch := 0.0, 1.0
+			probeC := func(c float64) int {
+				cc, d := runTrain(probePar, sc.WithCompliance(c))
+				lastCases = cc
+				sum.Calibration = append(sum.Calibration, calibrationStep{c, cc, d})
+				logf("  compliance %.4f -> %d cases, %d deaths", c, cc, d)
+				return d
+			}
+			if float64(probeC(ch)) > targetDeaths {
+				logf("  full compliance still overshoots; keeping compliance 1")
+				cl = 1
+			} else if float64(probeC(cl)) < targetDeaths {
+				logf("  no interventions still undershoot; keeping compliance 0")
+				ch = 0
 			} else {
-				hi = mid
+				for it := 0; it < 14 && ch-cl > 0.002; it++ {
+					mid := (cl + ch) / 2
+					if float64(probeC(mid)) > targetDeaths {
+						cl = mid
+					} else {
+						ch = mid
+					}
+				}
 			}
-			if hi/lo < 1.005 {
-				break
+			sum.Compliance = (cl + ch) / 2
+			sc = sc.WithCompliance(sum.Compliance)
+			par.Beta = probePar.Beta
+			lastCases, _ = runTrain(probePar, sc)
+			logf("calibrated compliance = %.3f", sum.Compliance)
+		} else {
+			target1 := target
+			if *fit == "deaths" {
+				target1 = targetDeaths
+			}
+			logf("calibrating beta on the first %d days (until %s): target %.0f cumulative %s", trainDays, sum.TrainEnd, target1, *fit)
+			probe := func(b float64) bool { // true when below target
+				p := probePar
+				p.Beta = b
+				c, d := runTrain(p, sc)
+				lastCases = c
+				sum.Calibration = append(sum.Calibration, calibrationStep{b, c, d})
+				logf("  beta %.5f -> %d cases, %d deaths", b, c, d)
+				if *fit == "deaths" {
+					return float64(d) < targetDeaths
+				}
+				return float64(c) < target
+			}
+			lo, hi := 0.01, 0.5
+			for probe(hi) && hi < 16 {
+				lo = hi
+				hi *= 2
+			}
+			for it := 0; it < 14; it++ {
+				mid := math.Sqrt(lo * hi)
+				if probe(mid) {
+					lo = mid
+				} else {
+					hi = mid
+				}
+				if hi/lo < 1.005 {
+					break
+				}
+			}
+			par.Beta = math.Sqrt(lo * hi)
+			logf("calibrated beta = %.5f", par.Beta)
+			if *fit == "deaths" {
+				p := probePar
+				p.Beta = par.Beta
+				lastCases, _ = runTrain(p, sc)
 			}
 		}
-		par.Beta = math.Sqrt(lo * hi)
-		logf("calibrated beta = %.5f", par.Beta)
-		if *fit == "deaths" {
-			probe(par.Beta)
+		if *fit != "cases" {
 			d := target / float64(lastCases)
 			if d > 1 {
 				d = 1

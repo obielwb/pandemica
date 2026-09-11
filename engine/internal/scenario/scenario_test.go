@@ -82,3 +82,19 @@ func TestShippedScenarioLoads(t *testing.T) {
 		t.Fatalf("days %d", s.Days())
 	}
 }
+
+func TestWithCompliance(t *testing.T) {
+	d := func(s string) Date { x, _ := time.Parse(DateLayout, s); return Date{x} }
+	s := &Scenario{Start: d("2020-01-01"), End: d("2020-02-01"), Phases: []Phase{{Date: d("2020-01-01"), LeisureReduction: 0.8, WorkFromHome: 0.4, SchoolsClosed: 1, MaskAdherence: 0.6, Isolation: 0.5}}}
+	h := s.WithCompliance(0.5)
+	p := h.Phases[0]
+	if p.LeisureReduction != 0.4 || p.WorkFromHome != 0.2 || p.SchoolsClosed != 0.5 || p.MaskAdherence != 0.3 || p.Isolation != 0.5 {
+		t.Fatalf("compliance scaling %+v", p)
+	}
+	if s.Phases[0].LeisureReduction != 0.8 {
+		t.Fatal("original modified")
+	}
+	if s.WithCompliance(2).Phases[0].SchoolsClosed != 1 {
+		t.Fatal("clamp")
+	}
+}
