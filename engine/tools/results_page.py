@@ -149,7 +149,11 @@ def main():
             abl.append({"label": label, "beta": sm["params"]["Beta"], "deaths": sm["totals"]["deaths"], "cases": sm["totals"]["cases"],
                         "home": shares(sm).get("home", 0), "hospital": shares(sm).get("hospital", 0),
                         "turned": sm.get("beds", {}).get("turnedAway"), "curve": sm["test"]["curveAccuracy"], "final": final})
-        data["v2"] = {"deaths": col(v2["rows"], "deaths"), "v1shares": shares(head["summary"]), "v2shares": shares(v2["summary"]), "abl": abl}
+        acts = v2["summary"].get("infectionsByActivity", {})
+        atot = sum(acts.values()) or 1
+        data["v2"] = {"deaths": col(v2["rows"], "deaths"), "v1shares": shares(head["summary"]), "v2shares": shares(v2["summary"]), "abl": abl,
+                      "pharmacy": acts.get("pharmacy", 0) / atot,
+                      "wards": (acts.get("hospital_shift", 0) + acts.get("hospitalized", 0)) / atot}
     page = TEMPLATE.replace("/*DATA*/", json.dumps(data, separators=(",", ":"), ensure_ascii=False))
     open(out, "w").write(page)
     print("wrote", out, f"{len(page) / 1024:.0f} KB")
@@ -360,7 +364,7 @@ footer .mono{color:var(--ink-2)}
 <figure>
   <div class="fighead"><h2><span class="fig">Fig. 11</span>Where infections happen, v1 and v2</h2><div class="key" id="k11"></div></div>
   <div class="plot" id="f11"></div>
-  <figcaption>Share of all infections by place.</figcaption>
+  <figcaption>Share of all infections by place. In v2, hospital wards carry <b class="num" id="w11"></b> of infections and pharmacies <b class="num" id="p11"></b>, too thin to see as bars.</figcaption>
 </figure>
 <figure>
   <div class="fighead"><h2><span class="fig">Table 1</span>What each v2 change does</h2></div>
@@ -695,10 +699,12 @@ function fig11() {
     }
   });
   el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Share of infections by place, v1 and v2">${g}</svg>`;
+  const small = (v) => dec(v * 100, v < 0.01 ? 2 : 1) + "%";
+  $("w11").textContent = small(D.v2.wards); $("p11").textContent = small(D.v2.pharmacy);
   $("k11").innerHTML = order.map(k => `<span><i class="sw" style="background:var(--${k})"></i>${names[k]}</span>`).join("");
 }
 function table1() {
-  const pct = (v) => (v * 100).toFixed(1).replace(/\.0$/, "") + "%";
+  const pct = (v) => v === 0 ? "0%" : dec(v * 100, v < 0.01 ? 2 : 1) + "%";
   $("t1").innerHTML = `<thead><tr><th>Run</th><th>β for R0 2.8</th><th>Deaths</th><th>Cases</th><th>Home</th><th>Hospital</th><th>Turned away</th><th>Curve score, test</th></tr></thead><tbody>` +
     D.v2.abl.map((r, k) => `<tr class="${r.final ? "v2" : ""}"><td>${r.label}</td><td>${dec(r.beta, 3)}</td><td>${fmt(r.deaths)}</td><td>${fmt(r.cases)}</td><td>${pct(r.home)}</td><td>${pct(r.hospital)}</td><td>${r.turned == null ? "–" : fmt(r.turned)}</td><td>${dec(r.curve, 1)}%</td></tr>`).join("") + `</tbody>`;
 }
