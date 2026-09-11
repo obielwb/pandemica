@@ -292,6 +292,9 @@ func cmdRun(args []string) {
 	care := fs.Float64("care-seeking", 0.6, "share of symptomatic people who visit a pharmacy at symptom onset (assumption)")
 	overload := fs.Float64("overload-death-factor", 2, "death probability multiplier for severe cases turned away (assumption)")
 	hospInf := fs.Int("hospital-infectious-days", 5, "days a severe case keeps shedding after admission (assumption)")
+	sickMask := fs.Float64("sick-mask", 0.5, "share of symptomatic, non-isolating people who mask up (TS useMask; assumption)")
+	sickDrop := fs.Float64("sick-leisure-drop", 0.5, "share of symptomatic, non-isolating people who drop leisure (TS interruptedActivities; assumption)")
+	sleepPairs := fs.Bool("sleep-pairs", true, "only bedroom partners share the night (TS sleep maxEngaged 2); false = whole household (v1)")
 	occ := fs.Float64("occupation", 0.5, "work/school contact intensity")
 	noVax := fs.Bool("no-vaccines", false, "disable the vaccine registry")
 	out := fs.String("out", "results", "output directory")
@@ -322,6 +325,7 @@ func cmdRun(args []string) {
 	par.DetectSymptomatic, par.DetectAsymptomatic = *detSym, *detAsym
 	par.CloseContacts, par.HomeContact, par.OccupationContact = *contacts, *home, *occ
 	par.CovidBedsPer1000, par.CareSeeking, par.OverloadDeathFactor, par.HospitalInfectiousDays = *beds, *care, *overload, *hospInf
+	par.SickMaskShare, par.SickLeisureDrop, par.SleepPairs = *sickMask, *sickDrop, *sleepPairs
 	par.Workers = *workers
 
 	trainDays := int(math.Ceil(float64(len(real)) * *train))
@@ -339,6 +343,7 @@ func cmdRun(args []string) {
 		par.DetectSymptomatic, par.DetectAsymptomatic = prev.Params.DetectSymptomatic, prev.Params.DetectAsymptomatic
 		par.CloseContacts, par.HomeContact, par.OccupationContact = prev.Params.CloseContacts, prev.Params.HomeContact, prev.Params.OccupationContact
 		par.CovidBedsPer1000, par.CareSeeking, par.OverloadDeathFactor, par.HospitalInfectiousDays = prev.Params.CovidBedsPer1000, prev.Params.CareSeeking, prev.Params.OverloadDeathFactor, prev.Params.HospitalInfectiousDays
+		par.SickMaskShare, par.SickLeisureDrop, par.SleepPairs = prev.Params.SickMaskShare, prev.Params.SickLeisureDrop, prev.Params.SleepPairs
 		if prev.Compliance > 0 {
 			sc = sc.WithCompliance(prev.Compliance)
 			sum.Compliance = prev.Compliance

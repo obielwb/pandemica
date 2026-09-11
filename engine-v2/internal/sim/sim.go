@@ -44,6 +44,9 @@ type Params struct {
 	CareSeeking            float64 // P(a symptomatic person visits a pharmacy at symptom onset) (assumption)
 	OverloadDeathFactor    float64 // death probability multiplier for severe cases turned away (assumption)
 	HospitalInfectiousDays int     // days a severe case keeps shedding after admission (assumption)
+	SickMaskShare          float64 // P(a symptomatic, non-isolating person masks up) (TS useMask; assumption)
+	SickLeisureDrop        float64 // P(a symptomatic, non-isolating person drops leisure) (TS interruptedActivities; assumption)
+	SleepPairs             bool    // only bedroom partners share the night (TS sleep maxEngaged 2)
 }
 
 // DefaultParams returns the baseline parameters.
@@ -61,6 +64,9 @@ func DefaultParams() Params {
 		CareSeeking:            0.6,
 		OverloadDeathFactor:    2,
 		HospitalInfectiousDays: 5,
+		SickMaskShare:          0.5,
+		SickLeisureDrop:        0.5,
+		SleepPairs:             true,
 	}
 }
 
@@ -91,6 +97,7 @@ type infection struct {
 	id                                          int32
 	variant                                     uint8
 	asym, isolates, care, turned                bool
+	sickMask, sickDrop                          bool
 	infectious, onset, report, hosp, death, end int16 // simulation days, -1 = none
 	infEnd                                      int16 // last infectious day (exclusive)
 	ward                                        int32 // ward index while admitted, -1 otherwise
@@ -365,6 +372,8 @@ func (s *Sim) infect(j int32, v, day, setting, label int, r *rng.Stream, st *Day
 		a.onset = a.infectious + disease.SymptomOnsetOffset
 		a.isolates = r.Bernoulli(s.phase.Isolation)
 		a.care = r.Bernoulli(s.Par.CareSeeking)
+		a.sickMask = r.Bernoulli(s.Par.SickMaskShare)
+		a.sickDrop = r.Bernoulli(s.Par.SickLeisureDrop)
 		if r.Bernoulli(s.Par.DetectSymptomatic) {
 			a.report = a.onset + 1
 		}
@@ -411,7 +420,9 @@ func (s *Sim) progress(day int, st *DayStats) {
 		if int(a.hosp) == day {
 			st.NewHospitalizations++
 			pD := float64(a.pD)
-			if w := s.admit(id); w >= 0 {
+			if len(s.wards) == 0 { // no hospitals modelled: v1 behaviour
+				s.State[id] = Hospitalized
+			} else if w := s.admit(id); w >= 0 {
 				a.ward = w
 				s.State[id] = Hospitalized
 			} else {
@@ -554,7 +565,7 @@ func (s *Sim) segments(j int32, day, weekday, mode int, buf []seg) []seg {
 // split into awake time and shared sleep. Following the TS catalog (sleep has
 // maxEngaged 2), only sleep partners share the night; someone asleep does not
 // interact with housemates who are awake.
-func homeOverlap(a, b []seg, partners bool) (awake, sleep float64) {
+func homeOverlap(a, b []seg, partners, v1 bool) (awake, sleep float64) {
 	i, k := 0, 0
 	for i < len(a) && k < len(b) {
 		x, y := a[i], b[k]
@@ -573,6 +584,8 @@ func homeOverlap(a, b []seg, partners bool) (awake, sleep float64) {
 				if partners {
 					sleep += hrs * disease.VoiceMultiplier[activity.Silent]
 				}
+			case (xs || ys) && v1: // v1: one asleep, one awake still share the home, silently
+				sleep += hrs * disease.VoiceMultiplier[activity.Silent]
 			case xs || ys:
 			default:
 				v := activity.Catalog[x.label].Voice
@@ -740,7 +753,7 @@ func (s *Sim) spread(a *infection, day, weekday int, out []contribution, bi, bj 
 	mode := modeNormal
 	if isolating {
 		mode = modeIsolating
-	} else if symptomatic {
+	} else if symptomatic && a.sickDrop {
 		mode = modeSick
 	}
 	bi = s.segments(i, day, weekday, mode, bi)
@@ -748,12 +761,15 @@ func (s *Sim) spread(a *infection, day, weekday int, out []contribution, bi, bj 
 	// household
 	p := s.P
 	partner := p.SleepPartnerOf(i)
+	if !s.Par.SleepPairs {
+		partner = -2 // everyone in the house shares the night (v1)
+	}
 	for _, j := range p.Housemates(p.House[i]) {
 		if j == i || (s.State[j] != Susceptible && s.State[j] != Recovered) {
 			continue
 		}
 		bj = s.segments(j, day, weekday, modeNormal, bj)
-		awake, sleep := homeOverlap(bi, bj, j == partner)
+		awake, sleep := homeOverlap(bi, bj, partner == -2 || j == partner, partner == -2)
 		if awake > 0 {
 			out = append(out, contribution{j, float32(base * s.Par.HomeContact * awake), a.variant, SetHome, uint8(activity.StayAtHome)})
 		}
@@ -766,7 +782,7 @@ func (s *Sim) spread(a *infection, day, weekday int, out []contribution, bi, bj 
 	if s.wearsMask(i) {
 		src = disease.SourceMask[s.mask]
 	}
-	if symptomatic && src == 1 { // TS useMask for infectious routines
+	if symptomatic && a.sickMask && src == 1 { // TS useMask for infectious routines
 		src = disease.SourceMask[s.sickMask()]
 	}
 

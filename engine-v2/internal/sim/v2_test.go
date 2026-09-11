@@ -67,7 +67,9 @@ func TestLabelAttributionSumsToInfections(t *testing.T) {
 }
 
 func TestSickScheduleDropsLeisureKeepsWork(t *testing.T) {
-	s := New(world(t), baseScenario(), nil, DefaultParams())
+	par := DefaultParams()
+	par.SickLeisureDrop = 1
+	s := New(world(t), baseScenario(), nil, par)
 	s.phase = s.Sc.Phases[0]
 	checked := 0
 	for j := int32(0); j < int32(s.P.N) && checked < 200; j++ {

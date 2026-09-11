@@ -1,0 +1,191 @@
+{
+  "name": "compliance-fit",
+  "params": {
+    "Beta": 0.22902407744242367,
+    "DetectSymptomatic": 0.14301009964684977,
+    "DetectAsymptomatic": 0.03575252491171244,
+    "CloseContacts": 10,
+    "HomeContact": 1,
+    "OccupationContact": 0.5,
+    "Workers": 10,
+    "Seed": 1,
+    "CovidBedsPer1000": 1,
+    "CareSeeking": 0.6,
+    "OverloadDeathFactor": 2,
+    "HospitalInfectiousDays": 5
+  },
+  "build": {
+    "population": 1164099,
+    "houses": 377690,
+    "workSites": 136818,
+    "workTeams": 137448,
+    "schools": 1194,
+    "classes": 7675,
+    "locations": 154809,
+    "routineActivities": 70206947,
+    "indexEntries": 35069640,
+    "nnLoss": 2.082693751620895,
+    "buildSeconds": 4.00739775,
+    "heapMB": 677.8143310546875
+  },
+  "trainDays": 204,
+  "trainEnd": "2020-10-07",
+  "calibrated": true,
+  "fit": "compliance",
+  "compliance": 0.5595703125,
+  "r0": 2.7980142741316527,
+  "calibration": [
+    {
+      "beta": 1,
+      "cases": 968,
+      "deaths": 2
+    },
+    {
+      "beta": 0,
+      "cases": 1136098,
+      "deaths": 12780
+    },
+    {
+      "beta": 0.5,
+      "cases": 515377,
+      "deaths": 4069
+    },
+    {
+      "beta": 0.75,
+      "cases": 6284,
+      "deaths": 34
+    },
+    {
+      "beta": 0.625,
+      "cases": 53702,
+      "deaths": 295
+    },
+    {
+      "beta": 0.5625,
+      "cases": 193804,
+      "deaths": 1026
+    },
+    {
+      "beta": 0.53125,
+      "cases": 337344,
+      "deaths": 2333
+    },
+    {
+      "beta": 0.546875,
+      "cases": 292077,
+      "deaths": 1774
+    },
+    {
+      "beta": 0.5546875,
+      "cases": 230236,
+      "deaths": 1285
+    },
+    {
+      "beta": 0.55859375,
+      "cases": 237519,
+      "deaths": 1335
+    },
+    {
+      "beta": 0.560546875,
+      "cases": 217945,
+      "deaths": 1186
+    }
+  ],
+  "simSeconds": 172.671411583,
+  "train": {
+    "from": "2020-03-18",
+    "to": "2020-10-07",
+    "paperAccuracy": 69.77,
+    "curveAccuracy": 49.13,
+    "cumulativeCasesMAPE": 41.6,
+    "cumulativeDeathsMAPE": 60.15,
+    "weeklyCasesMAPE": 139.15,
+    "weeklyDeathsMAPE": 173.28,
+    "realCases": 31789,
+    "simCases": 40355,
+    "realDeaths": 1253,
+    "simDeaths": 1673
+  },
+  "test": {
+    "from": "2020-10-08",
+    "to": "2022-12-31",
+    "paperAccuracy": -106.18,
+    "curveAccuracy": -26.71,
+    "cumulativeCasesMAPE": 143.54,
+    "cumulativeDeathsMAPE": 109.88,
+    "weeklyCasesMAPE": 1278.69,
+    "weeklyDeathsMAPE": 569.81,
+    "realCases": 209500,
+    "simCases": 915723,
+    "realDeaths": 5360,
+    "simDeaths": 9394
+  },
+  "full": {
+    "from": "2020-03-18",
+    "to": "2022-12-31",
+    "paperAccuracy": -106.18,
+    "curveAccuracy": -11.78,
+    "cumulativeCasesMAPE": 123.13,
+    "cumulativeDeathsMAPE": 100.43,
+    "weeklyCasesMAPE": 1284.23,
+    "weeklyDeathsMAPE": 502.86,
+    "realCases": 209500,
+    "simCases": 915723,
+    "realDeaths": 5360,
+    "simDeaths": 9394
+  },
+  "totals": {
+    "cases": 915723,
+    "deaths": 9394,
+    "everInfected": 1163230,
+    "infections": 7591171
+  },
+  "infectionsBySetting": {
+    "home": 5498847,
+    "hospital": 5825,
+    "imported": 254,
+    "school": 477319,
+    "transport": 31498,
+    "venue": 1236599,
+    "work": 340829
+  },
+  "infectionsByActivity": {
+    "bakery": 33024,
+    "bar": 73528,
+    "church": 7979,
+    "college": 86631,
+    "grocery": 40568,
+    "gym": 169020,
+    "high_school": 62202,
+    "hospital_shift": 1052,
+    "hospitalized": 4773,
+    "imported": 254,
+    "large_industry": 55397,
+    "mall": 662722,
+    "medium_commerce": 63373,
+    "medium_industry": 61702,
+    "micro_commerce": 18275,
+    "micro_industry": 3070,
+    "middle_school": 204563,
+    "park": 737,
+    "party_indoor": 122281,
+    "party_outdoor": 2611,
+    "pharmacy": 53118,
+    "preschool": 123414,
+    "public_transport_ride": 30849,
+    "public_transport_station": 649,
+    "restaurant_indoor": 70562,
+    "restaurant_outdoor": 449,
+    "school_lunch": 509,
+    "sleep_8h": 18759,
+    "small_commerce": 82129,
+    "small_industry": 56883,
+    "stay_at_home": 5480088
+  },
+  "beds": {
+    "admitted": 48247,
+    "peakUsed": 1164,
+    "total": 1164,
+    "turnedAway": 13335
+  }
+}
