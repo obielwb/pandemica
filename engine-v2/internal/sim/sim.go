@@ -47,6 +47,9 @@ type Params struct {
 	SickMaskShare          float64 // P(a symptomatic, non-isolating person masks up) (TS useMask; assumption)
 	SickLeisureDrop        float64 // P(a symptomatic, non-isolating person drops leisure) (TS interruptedActivities; assumption)
 	SleepPairs             bool    // only bedroom partners share the night (TS sleep maxEngaged 2)
+	// Awareness is how strongly people give up optional contacts when deaths
+	// rise (paper, Scope: human behaviour is adaptive); 0 = off.
+	Awareness float64
 }
 
 // DefaultParams returns the baseline parameters.
@@ -90,7 +93,8 @@ type DayStats struct {
 	Dose1, Dose2, Dose3 int // cumulative
 	BedsUsed            int
 	BedsTotal           int
-	TurnedAway          int // severe cases refused a bed today
+	TurnedAway          int     // severe cases refused a bed today
+	Awareness           float64 // share of optional contacts given up today in response to recent deaths
 }
 
 type infection struct {
@@ -269,6 +273,25 @@ func (s *Sim) isStaff(j int32) bool {
 	return g >= 0 && s.wardOf[g] >= 0
 }
 
+// awareness is the share of optional contacts (leisure, office work) people
+// give up in response to the deaths of the last two weeks, which they learn
+// about a week late, per 100,000 inhabitants. It uses the model's own deaths,
+// never the real series, so the hold-out stays clean.
+func (s *Sim) awareness(day int) float64 {
+	if s.Par.Awareness <= 0 {
+		return 0
+	}
+	const lag, window = 7, 14
+	deaths := 0
+	for d := day - lag - window; d < day-lag; d++ {
+		if d >= 0 && d < len(s.Stats) {
+			deaths += s.Stats[d].NewDeaths
+		}
+	}
+	per100k := float64(deaths) * 1e5 / float64(s.P.N)
+	return math.Min(0.8, 1-math.Exp(-s.Par.Awareness*per100k))
+}
+
 // Day returns the index of the next day to simulate.
 func (s *Sim) Day() int { return s.day }
 
@@ -304,9 +327,14 @@ func (s *Sim) Step() DayStats {
 	day := s.day
 	date := s.Sc.Start.AddDate(0, 0, day)
 	s.phase = s.Sc.PhaseAt(date)
+	aware := s.awareness(day)
+	if aware > 0 { // people add their own caution on top of the mandated measures
+		s.phase.LeisureReduction = 1 - (1-s.phase.LeisureReduction)*(1-aware)
+		s.phase.WorkFromHome = 1 - (1-s.phase.WorkFromHome)*(1-aware)
+	}
 	s.mask = disease.MaskByName(s.phase.MaskType)
 	weekday := int(date.Weekday())
-	st := DayStats{Date: date, BedsTotal: s.bedsTotal}
+	st := DayStats{Date: date, BedsTotal: s.bedsTotal, Awareness: aware}
 	r := rng.New(s.Par.Seed, 1<<40|uint64(day))
 
 	if day == 0 {

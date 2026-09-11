@@ -227,6 +227,8 @@ type runSummary struct {
 	Calibrated  bool              `json:"calibrated"`
 	Fit         string            `json:"fit"`
 	Compliance  float64           `json:"compliance"`
+	Awareness   float64           `json:"awareness"`
+	TrainMAPE   float64           `json:"trainMAPE"`
 	R0          float64           `json:"r0"`
 	Calibration []calibrationStep `json:"calibration,omitempty"`
 	SimSeconds  float64           `json:"simSeconds"`
@@ -281,7 +283,7 @@ func cmdRun(args []string) {
 	scPath := fs.String("scenario", "scenarios/campinas.json", "scenario timeline")
 	beta := fs.Float64("beta", 0, "transmission scale; 0 = calibrate on the training window")
 	from := fs.String("from", "", "reuse beta and reporting rates from a previous run's JSON summary (for counterfactual scenarios)")
-	fit := fs.String("fit", "compliance", "calibration: compliance (beta from -r0, fit intervention compliance on training deaths, then the reporting rate on training cases), deaths (fit beta on training deaths, then the reporting rate), or cases (paper: fit beta on training cases, every infection is a case)")
+	fit := fs.String("fit", "compliance", "calibration: trajectory (beta from -r0; fit awareness and compliance to the whole training curve of deaths, then the reporting rate), compliance (beta from -r0, fit intervention compliance on training deaths, then the reporting rate on training cases), deaths (fit beta on training deaths, then the reporting rate), or cases (paper: fit beta on training cases, every infection is a case)")
 	r0 := fs.Float64("r0", 2.8, "ancestral-strain R0 used to set beta in -fit compliance")
 	train := fs.Float64("train", 0.2, "hold-out training fraction (paper: first 20%)")
 	detSym := fs.Float64("detect-sym", 1, "probability a symptomatic infection is reported (paper: 1)")
@@ -294,6 +296,8 @@ func cmdRun(args []string) {
 	hospInf := fs.Int("hospital-infectious-days", 5, "days a severe case keeps shedding after admission (assumption)")
 	sickMask := fs.Float64("sick-mask", 0.5, "share of symptomatic, non-isolating people who mask up (TS useMask; assumption)")
 	sickDrop := fs.Float64("sick-leisure-drop", 0.5, "share of symptomatic, non-isolating people who drop leisure (TS interruptedActivities; assumption)")
+	awGrid := fs.String("awareness-grid", "0,0.02,0.05,0.1,0.2", "awareness strengths tried by -fit trajectory (\"0\" turns the behavioural response off)")
+	awareness := fs.Float64("awareness", 0, "strength of the behavioural response to recent deaths (0 = off; -fit trajectory fits it)")
 	sleepPairs := fs.Bool("sleep-pairs", true, "only bedroom partners share the night (TS sleep maxEngaged 2); false = whole household (v1)")
 	occ := fs.Float64("occupation", 0.5, "work/school contact intensity")
 	noVax := fs.Bool("no-vaccines", false, "disable the vaccine registry")
@@ -326,6 +330,7 @@ func cmdRun(args []string) {
 	par.CloseContacts, par.HomeContact, par.OccupationContact = *contacts, *home, *occ
 	par.CovidBedsPer1000, par.CareSeeking, par.OverloadDeathFactor, par.HospitalInfectiousDays = *beds, *care, *overload, *hospInf
 	par.SickMaskShare, par.SickLeisureDrop, par.SleepPairs = *sickMask, *sickDrop, *sleepPairs
+	par.Awareness = *awareness
 	par.Workers = *workers
 
 	trainDays := int(math.Ceil(float64(len(real)) * *train))
@@ -344,6 +349,7 @@ func cmdRun(args []string) {
 		par.CloseContacts, par.HomeContact, par.OccupationContact = prev.Params.CloseContacts, prev.Params.HomeContact, prev.Params.OccupationContact
 		par.CovidBedsPer1000, par.CareSeeking, par.OverloadDeathFactor, par.HospitalInfectiousDays = prev.Params.CovidBedsPer1000, prev.Params.CareSeeking, prev.Params.OverloadDeathFactor, prev.Params.HospitalInfectiousDays
 		par.SickMaskShare, par.SickLeisureDrop, par.SleepPairs = prev.Params.SickMaskShare, prev.Params.SickLeisureDrop, prev.Params.SleepPairs
+		par.Awareness = prev.Params.Awareness
 		if prev.Compliance > 0 {
 			sc = sc.WithCompliance(prev.Compliance)
 			sum.Compliance = prev.Compliance
@@ -368,7 +374,7 @@ func cmdRun(args []string) {
 			st := s.Run(trainDays, nil)
 			return st[len(st)-1].TotalCases, st[len(st)-1].TotalDeaths
 		}
-		if *fit == "compliance" {
+		if *fit == "compliance" || *fit == "trajectory" {
 			// beta from the literature R0 of the ancestral strain
 			lo, hi := 0.01, 0.5
 			for it := 0; it < 12; it++ {
@@ -385,35 +391,100 @@ func cmdRun(args []string) {
 			_, got := estimateR0(w, probePar, sc)
 			sum.R0 = got
 			logf("beta %.5f gives R0 %.2f for the ancestral strain (target %.2f)", probePar.Beta, got, *r0)
-			logf("calibrating intervention compliance on the first %d days (until %s): target %.0f cumulative deaths", trainDays, sum.TrainEnd, targetDeaths)
-			// more compliance -> fewer deaths (monotone decreasing)
-			cl, ch := 0.0, 1.0
-			probeC := func(c float64) int {
-				cc, d := runTrain(probePar, sc.WithCompliance(c))
-				lastCases = cc
-				sum.Calibration = append(sum.Calibration, calibrationStep{c, cc, d})
-				logf("  compliance %.4f -> %d cases, %d deaths", c, cc, d)
-				return d
-			}
-			if float64(probeC(ch)) > targetDeaths {
-				logf("  full compliance still overshoots; keeping compliance 1")
-				cl = 1
-			} else if float64(probeC(cl)) < targetDeaths {
-				logf("  no interventions still undershoot; keeping compliance 0")
-				ch = 0
+			var cl, ch float64
+			if *fit == "trajectory" {
+				// fit the whole training curve of cumulative deaths, not only its
+				// last day: a grid over the awareness strength, and a golden-section
+				// search over intervention compliance for each
+				mapeTrain := func(st []sim.DayStats) float64 {
+					total, k := 0.0, 0
+					for d := 0; d < trainDays && d < len(st); d++ {
+						rd := float64(real[d].Deaths) * scale
+						if rd < 20*scale {
+							continue
+						}
+						total += math.Abs(float64(st[d].TotalDeaths)-rd) / rd
+						k++
+					}
+					if k == 0 {
+						return math.Inf(1)
+					}
+					return 100 * total / float64(k)
+				}
+				logf("fitting the training curve of deaths (first %d days) over awareness and compliance", trainDays)
+				bestE, bestC, bestK := math.Inf(1), 0.5, 0.0
+				var grid []float64
+				for _, f := range strings.Split(*awGrid, ",") {
+					var v float64
+					if _, err := fmt.Sscanf(strings.TrimSpace(f), "%g", &v); err == nil {
+						grid = append(grid, v)
+					}
+				}
+				for _, k := range grid {
+					p := probePar
+					p.Awareness = k
+					eval := func(c float64) float64 {
+						st := sim.New(w, sc.WithCompliance(c), vaccines, p).Run(trainDays, nil)
+						e := mapeTrain(st)
+						last := st[len(st)-1]
+						sum.Calibration = append(sum.Calibration, calibrationStep{c, last.TotalCases, last.TotalDeaths})
+						logf("  awareness %.2f compliance %.4f -> %d deaths, training MAPE %.1f%%", k, c, last.TotalDeaths, e)
+						if e < bestE {
+							bestE, bestC, bestK = e, c, k
+						}
+						return e
+					}
+					lo, hi := 0.0, 1.0
+					g := (math.Sqrt(5) - 1) / 2
+					x1, x2 := hi-g*(hi-lo), lo+g*(hi-lo)
+					f1, f2 := eval(x1), eval(x2)
+					for it := 0; it < 8; it++ {
+						if f1 < f2 {
+							hi, x2, f2 = x2, x1, f1
+							x1 = hi - g*(hi-lo)
+							f1 = eval(x1)
+						} else {
+							lo, x1, f1 = x1, x2, f2
+							x2 = lo + g*(hi-lo)
+							f2 = eval(x2)
+						}
+					}
+				}
+				probePar.Awareness = bestK
+				sum.Awareness, sum.TrainMAPE = bestK, bestE
+				cl, ch = bestC, bestC
+				logf("best fit: awareness %.2f, compliance %.3f, training MAPE %.1f%%", bestK, bestC, bestE)
 			} else {
-				for it := 0; it < 14 && ch-cl > 0.002; it++ {
-					mid := (cl + ch) / 2
-					if float64(probeC(mid)) > targetDeaths {
-						cl = mid
-					} else {
-						ch = mid
+				logf("calibrating intervention compliance on the first %d days (until %s): target %.0f cumulative deaths", trainDays, sum.TrainEnd, targetDeaths)
+				// more compliance -> fewer deaths (monotone decreasing)
+				cl, ch = 0.0, 1.0
+				probeC := func(c float64) int {
+					cc, d := runTrain(probePar, sc.WithCompliance(c))
+					lastCases = cc
+					sum.Calibration = append(sum.Calibration, calibrationStep{c, cc, d})
+					logf("  compliance %.4f -> %d cases, %d deaths", c, cc, d)
+					return d
+				}
+				if float64(probeC(ch)) > targetDeaths {
+					logf("  full compliance still overshoots; keeping compliance 1")
+					cl = 1
+				} else if float64(probeC(cl)) < targetDeaths {
+					logf("  no interventions still undershoot; keeping compliance 0")
+					ch = 0
+				} else {
+					for it := 0; it < 14 && ch-cl > 0.002; it++ {
+						mid := (cl + ch) / 2
+						if float64(probeC(mid)) > targetDeaths {
+							cl = mid
+						} else {
+							ch = mid
+						}
 					}
 				}
 			}
 			sum.Compliance = (cl + ch) / 2
 			sc = sc.WithCompliance(sum.Compliance)
-			par.Beta = probePar.Beta
+			par.Beta, par.Awareness = probePar.Beta, probePar.Awareness
 			lastCases, _ = runTrain(probePar, sc)
 			logf("calibrated compliance = %.3f", sum.Compliance)
 		} else {

@@ -116,3 +116,26 @@ func TestUnlimitedBedsNeverTurnAway(t *testing.T) {
 		t.Log("no admissions in the test window")
 	}
 }
+
+func TestAwarenessCutsSpread(t *testing.T) {
+	par := DefaultParams()
+	par.Beta = 0.3
+	base := run(t, baseScenario(), par, 120)
+	par.Awareness = 1
+	aware := run(t, baseScenario(), par, 120)
+	if aware[len(aware)-1].TotalInfections >= base[len(base)-1].TotalInfections {
+		t.Fatalf("awareness did not cut spread: %d vs %d", aware[len(aware)-1].TotalInfections, base[len(base)-1].TotalInfections)
+	}
+	peak := 0.0
+	for k, d := range aware {
+		if d.Awareness > peak {
+			peak = d.Awareness
+		}
+		if k < 21 && d.Awareness != 0 {
+			t.Fatalf("awareness before any lagged deaths on day %d", k)
+		}
+	}
+	if peak <= 0 || peak > 0.8 {
+		t.Fatalf("awareness peak %v outside (0, 0.8]", peak)
+	}
+}
