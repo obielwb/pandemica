@@ -1,0 +1,48 @@
+{
+  "name": "campinas-no-interventions",
+  "start": "2020-03-18",
+  "end": "2022-12-31",
+  "initialInfections": 20,
+  "importDays": 30,
+  "importPerDay": 3,
+  "vaccinesEnabled": true,
+  "phases": [
+    {
+      "date": "2020-03-18",
+      "note": "no lockdown, no masks, symptomatic isolation only",
+      "leisureReduction": 0,
+      "workFromHome": 0,
+      "schoolsClosed": 0,
+      "maskAdherence": 0,
+      "maskType": "cloth",
+      "isolation": 0.5
+    }
+  ],
+  "variants": [
+    {
+      "date": "2020-12-20",
+      "variant": "gamma",
+      "seeds": 20
+    },
+    {
+      "date": "2021-06-20",
+      "variant": "delta",
+      "seeds": 20
+    },
+    {
+      "date": "2021-12-10",
+      "variant": "omicron",
+      "seeds": 30
+    },
+    {
+      "date": "2022-05-10",
+      "variant": "ba5",
+      "seeds": 30
+    },
+    {
+      "date": "2022-10-20",
+      "variant": "bq1",
+      "seeds": 30
+    }
+  ]
+}
