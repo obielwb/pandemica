@@ -106,6 +106,21 @@ func InfectionProtection(v Vaccine, doses uint8, daysSinceLastDose int) float64 
 	return eff * Waning(daysSinceLastDose)
 }
 
+// WaningInfection is the multiplier for infection-acquired protection: full for
+// 90 days, 60% at one year, 50% from two years on (it wanes slower than
+// vaccine protection against infection).
+func WaningInfection(days int) float64 {
+	switch {
+	case days <= 90:
+		return 1
+	case days <= 365:
+		return 1 - 0.4*float64(days-90)/float64(365-90)
+	case days <= 730:
+		return 0.6 - 0.1*float64(days-365)/365
+	}
+	return 0.5
+}
+
 // Waning multiplier for protection as a function of days since the last dose.
 func Waning(days int) float64 {
 	if days <= 90 {
@@ -165,25 +180,40 @@ func OutcomeForAge(age int) AgeOutcome {
 // Variant multipliers.
 type Variant struct {
 	Name             string
+	Family           int     // 0 = pre-Omicron lineages, 1 = Omicron sub-lineages
 	Transmissibility float64 // multiplier on the reference hazard
-	ImmuneEscape     float64 // fraction of prior-infection protection lost (vs older variants)
+	EscapeWithin     float64 // prior-infection protection lost vs older variants of the same family
+	EscapeCross      float64 // prior-infection protection lost vs variants of an older family
 	VaccineEscape    float64 // fraction of vaccine protection against infection lost
 	LatentDays       int
 	SeverityFactor   float64 // multiplier on hospitalization/death
 }
 
-// Transmissibility follows the paper (x1.5 for each variant of concern);
-// Omicron escape values follow published effectiveness estimates.
+// Transmissibility follows the paper for pre-Omicron variants (x1.5 for each
+// variant of concern). Omicron's advantage came mostly from immune escape, so
+// its intrinsic transmissibility is only modestly above Delta; its escape
+// values follow published protection estimates (prior pre-Omicron infection
+// ~40% protective against BA.1, BA.1 infection ~65% against BA.5).
 var (
-	Wildtype = Variant{"wildtype", 1.0, 0, 0, 3, 1.0}
-	Gamma    = Variant{"gamma", 1.5, 0.3, 0.1, 3, 1.2}
-	Delta    = Variant{"delta", 1.5 * 1.5, 0.3, 0.2, 3, 1.3}
-	Omicron  = Variant{"omicron", 1.5 * 1.5 * 1.5, 0.6, 0.5, 2, 0.4}
-	// BA5 and BQ1 are later Omicron sub-lineages: slightly more transmissible
-	// and escaping immunity from earlier Omicron infections.
-	BA5 = Variant{"ba5", 1.5 * 1.5 * 1.5 * 1.1, 0.65, 0.55, 2, 0.35}
-	BQ1 = Variant{"bq1", 1.5 * 1.5 * 1.5 * 1.2, 0.7, 0.6, 2, 0.3}
+	Wildtype = Variant{"wildtype", 0, 1.0, 0, 0, 0, 3, 1.0}
+	Gamma    = Variant{"gamma", 0, 1.5, 0.3, 0, 0.1, 3, 1.2}
+	Delta    = Variant{"delta", 0, 1.5 * 1.5, 0.2, 0, 0.2, 3, 1.3}
+	Omicron  = Variant{"omicron", 1, 1.5 * 1.5 * 1.2, 0, 0.55, 0.5, 2, 0.4}
+	BA5      = Variant{"ba5", 1, 1.5 * 1.5 * 1.2 * 1.1, 0.3, 0.6, 0.55, 2, 0.35}
+	BQ1      = Variant{"bq1", 1, 1.5 * 1.5 * 1.2 * 1.15, 0.35, 0.65, 0.6, 2, 0.3}
 )
+
+// PriorEscape returns the fraction of protection from a prior infection with
+// variant prior that is lost against variant v.
+func PriorEscape(prior, v int) float64 {
+	if prior >= v {
+		return 0
+	}
+	if Variants[prior].Family != Variants[v].Family {
+		return Variants[v].EscapeCross
+	}
+	return Variants[v].EscapeWithin
+}
 
 // Variants in order of emergence; index 0 is the ancestral strain.
 var Variants = []Variant{Wildtype, Gamma, Delta, Omicron, BA5, BQ1}

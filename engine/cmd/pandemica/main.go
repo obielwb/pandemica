@@ -149,6 +149,7 @@ type runSummary struct {
 	TrainDays   int               `json:"trainDays"`
 	TrainEnd    string            `json:"trainEnd"`
 	Calibrated  bool              `json:"calibrated"`
+	Fit         string            `json:"fit"`
 	Calibration []calibrationStep `json:"calibration,omitempty"`
 	SimSeconds  float64           `json:"simSeconds"`
 	Train       metricsJSON       `json:"train"`
@@ -159,8 +160,9 @@ type runSummary struct {
 }
 
 type calibrationStep struct {
-	Beta  float64 `json:"beta"`
-	Cases int     `json:"cases"`
+	Beta   float64 `json:"beta"`
+	Cases  int     `json:"cases"`
+	Deaths int     `json:"deaths"`
 }
 
 type metricsJSON struct {
@@ -197,6 +199,7 @@ func cmdRun(args []string) {
 	root := fs.String("root", "..", "repository root (for model/data and web/public)")
 	scPath := fs.String("scenario", "scenarios/campinas.json", "scenario timeline")
 	beta := fs.Float64("beta", 0, "transmission scale; 0 = calibrate on the training window")
+	fit := fs.String("fit", "deaths", "calibration target: deaths (fit beta on training deaths, then the reporting rate on training cases) or cases (paper: every infection is a case)")
 	train := fs.Float64("train", 0.2, "hold-out training fraction (paper: first 20%)")
 	detSym := fs.Float64("detect-sym", 1, "probability a symptomatic infection is reported (paper: 1)")
 	detAsym := fs.Float64("detect-asym", 1, "probability an asymptomatic infection is reported (paper: 1)")
@@ -243,35 +246,60 @@ func cmdRun(args []string) {
 		par.Beta = *beta
 	} else {
 		sum.Calibrated = true
-		logf("calibrating beta on the first %d days (until %s): target %.0f cumulative cases", trainDays, sum.TrainEnd, target)
-		probe := func(b float64) int {
-			p := par
+		sum.Fit = *fit
+		targetDeaths := float64(trainEnd.Deaths) * scale
+		probePar := par
+		if *fit == "deaths" {
+			// the reporting rate does not affect the dynamics; count every
+			// symptomatic infection and a quarter of asymptomatic ones while
+			// fitting beta, then scale detection to match training cases
+			probePar.DetectSymptomatic, probePar.DetectAsymptomatic = 1, 0.25
+			logf("calibrating beta on the first %d days (until %s): target %.0f cumulative deaths", trainDays, sum.TrainEnd, targetDeaths)
+		} else {
+			logf("calibrating beta on the first %d days (until %s): target %.0f cumulative cases", trainDays, sum.TrainEnd, target)
+		}
+		var lastCases int
+		probe := func(b float64) bool { // true when the probe is below target
+			p := probePar
 			p.Beta = b
 			s := sim.New(w, sc, vaccines, p)
 			st := s.Run(trainDays, nil)
-			c := st[len(st)-1].TotalCases
-			sum.Calibration = append(sum.Calibration, calibrationStep{b, c})
-			logf("  beta %.5f -> %d cases", b, c)
-			return c
+			c, d := st[len(st)-1].TotalCases, st[len(st)-1].TotalDeaths
+			lastCases = c
+			sum.Calibration = append(sum.Calibration, calibrationStep{b, c, d})
+			logf("  beta %.5f -> %d cases, %d deaths", b, c, d)
+			if *fit == "deaths" {
+				return float64(d) < targetDeaths
+			}
+			return float64(c) < target
 		}
 		lo, hi := 0.01, 0.5
-		for probe(hi) < int(target) && hi < 16 {
+		for probe(hi) && hi < 16 {
 			lo = hi
 			hi *= 2
 		}
-		for it := 0; it < 12; it++ {
+		for it := 0; it < 14; it++ {
 			mid := math.Sqrt(lo * hi)
-			if probe(mid) < int(target) {
+			if probe(mid) {
 				lo = mid
 			} else {
 				hi = mid
 			}
-			if hi/lo < 1.01 {
+			if hi/lo < 1.005 {
 				break
 			}
 		}
 		par.Beta = math.Sqrt(lo * hi)
 		logf("calibrated beta = %.5f", par.Beta)
+		if *fit == "deaths" {
+			probe(par.Beta)
+			d := target / float64(lastCases)
+			if d > 1 {
+				d = 1
+			}
+			par.DetectSymptomatic, par.DetectAsymptomatic = d, 0.25*d
+			logf("reporting rate fitted on training cases: %.1f%% of symptomatic, %.1f%% of asymptomatic infections", 100*d, 25*d)
+		}
 	}
 	sum.Params = par
 

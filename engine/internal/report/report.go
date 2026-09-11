@@ -26,7 +26,7 @@ func WriteCSV(path string, stats []sim.DayStats, population int) error {
 	defer f.Close()
 	w := bufio.NewWriter(f)
 	fmt.Fprint(w, "epi_week,date,state,city,ibgeID,newDeaths,deaths,newCases,totalCases,deaths_per_100k_inhabitants,totalCases_per_100k_inhabitants,deaths_by_totalCases")
-	fmt.Fprint(w, ",newInfections,totalInfections,everInfected,infectious,hospitalized,newHospitalizations,dose1,dose2,dose3")
+	fmt.Fprint(w, ",newInfections,newReinfections,totalInfections,everInfected,infectious,hospitalized,newHospitalizations,dose1,dose2,dose3")
 	for _, s := range sim.SettingNames {
 		fmt.Fprintf(w, ",infections_%s", s)
 	}
@@ -41,7 +41,7 @@ func WriteCSV(path string, stats []sim.DayStats, population int) error {
 		fmt.Fprintf(w, "%d,%s,SP,Campinas/SP,3509502,%d,%d,%d,%d,%.3f,%.3f,%.3f",
 			wk, d.Date.Format(scenario.DateLayout), d.NewDeaths, d.TotalDeaths, d.NewCases, d.TotalCases,
 			float64(d.TotalDeaths)*per100k, float64(d.TotalCases)*per100k, ratio)
-		fmt.Fprintf(w, ",%d,%d,%d,%d,%d,%d,%d,%d,%d", d.NewInfections, d.TotalInfections, d.EverInfected,
+		fmt.Fprintf(w, ",%d,%d,%d,%d,%d,%d,%d,%d,%d,%d", d.NewInfections, d.NewReinfections, d.TotalInfections, d.EverInfected,
 			d.Infectious, d.Hospitalized, d.NewHospitalizations, d.Dose1, d.Dose2, d.Dose3)
 		for _, v := range d.BySetting {
 			fmt.Fprintf(w, ",%d", v)

@@ -90,3 +90,34 @@ func TestVariantIndex(t *testing.T) {
 		t.Fatal("unknown variant must be -1")
 	}
 }
+
+func TestPriorEscape(t *testing.T) {
+	w, d, o, b := VariantIndex("wildtype"), VariantIndex("delta"), VariantIndex("omicron"), VariantIndex("ba5")
+	if PriorEscape(o, w) != 0 || PriorEscape(o, o) != 0 {
+		t.Fatal("no escape against older or same variant")
+	}
+	if PriorEscape(d, o) != Omicron.EscapeCross || PriorEscape(w, b) != BA5.EscapeCross {
+		t.Fatal("cross-family escape")
+	}
+	if PriorEscape(o, b) != BA5.EscapeWithin {
+		t.Fatal("within-family escape")
+	}
+	// protection of a pre-Omicron infection against Omicron ~40%
+	if p := PriorInfectionProtection * (1 - PriorEscape(d, o)); p < 0.35 || p > 0.45 {
+		t.Fatalf("pre-omicron prior vs omicron %v", p)
+	}
+}
+
+func TestWaningInfection(t *testing.T) {
+	if WaningInfection(0) != 1 || WaningInfection(365) != 0.6 || WaningInfection(2000) != 0.5 {
+		t.Fatal("waning endpoints")
+	}
+	for d := 0; d < 1000; d++ {
+		if WaningInfection(d+1) > WaningInfection(d) {
+			t.Fatalf("waning increases at %d", d)
+		}
+		if WaningInfection(d) < Waning(d) {
+			t.Fatalf("infection immunity should wane slower than vaccine protection (day %d)", d)
+		}
+	}
+}

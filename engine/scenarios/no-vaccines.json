@@ -1,0 +1,198 @@
+{
+  "name": "campinas-no-vaccines",
+  "start": "2020-03-18",
+  "end": "2022-12-31",
+  "initialInfections": 20,
+  "importDays": 30,
+  "importPerDay": 3,
+  "vaccinesEnabled": false,
+  "phases": [
+    {
+      "date": "2020-03-18",
+      "note": "first confirmed case",
+      "leisureReduction": 0.1,
+      "workFromHome": 0.05,
+      "schoolsClosed": 0.0,
+      "maskAdherence": 0.0,
+      "maskType": "cloth",
+      "isolation": 0.5
+    },
+    {
+      "date": "2020-03-23",
+      "note": "SP schools suspended",
+      "leisureReduction": 0.3,
+      "workFromHome": 0.15,
+      "schoolsClosed": 1.0,
+      "maskAdherence": 0.0,
+      "maskType": "cloth",
+      "isolation": 0.5
+    },
+    {
+      "date": "2020-03-24",
+      "note": "SP quarantine: non-essential commerce closed",
+      "leisureReduction": 0.7,
+      "workFromHome": 0.45,
+      "schoolsClosed": 1.0,
+      "maskAdherence": 0.05,
+      "maskType": "cloth",
+      "isolation": 0.6
+    },
+    {
+      "date": "2020-05-07",
+      "note": "masks mandatory in SP",
+      "leisureReduction": 0.65,
+      "workFromHome": 0.42,
+      "schoolsClosed": 1.0,
+      "maskAdherence": 0.7,
+      "maskType": "cloth",
+      "isolation": 0.6
+    },
+    {
+      "date": "2020-06-15",
+      "note": "Plano SP: first reopening (orange)",
+      "leisureReduction": 0.55,
+      "workFromHome": 0.38,
+      "schoolsClosed": 1.0,
+      "maskAdherence": 0.75,
+      "maskType": "cloth",
+      "isolation": 0.6
+    },
+    {
+      "date": "2020-08-10",
+      "note": "Plano SP: yellow phase",
+      "leisureReduction": 0.45,
+      "workFromHome": 0.32,
+      "schoolsClosed": 1.0,
+      "maskAdherence": 0.75,
+      "maskType": "cloth",
+      "isolation": 0.55
+    },
+    {
+      "date": "2020-10-10",
+      "note": "Plano SP: green phase",
+      "leisureReduction": 0.35,
+      "workFromHome": 0.28,
+      "schoolsClosed": 1.0,
+      "maskAdherence": 0.7,
+      "maskType": "cloth",
+      "isolation": 0.5
+    },
+    {
+      "date": "2020-12-01",
+      "note": "year-end gatherings",
+      "leisureReduction": 0.25,
+      "workFromHome": 0.25,
+      "schoolsClosed": 1.0,
+      "maskAdherence": 0.65,
+      "maskType": "cloth",
+      "isolation": 0.5
+    },
+    {
+      "date": "2021-02-08",
+      "note": "schools reopen at 35% capacity",
+      "leisureReduction": 0.3,
+      "workFromHome": 0.25,
+      "schoolsClosed": 0.65,
+      "maskAdherence": 0.7,
+      "maskType": "cloth",
+      "isolation": 0.5
+    },
+    {
+      "date": "2021-03-06",
+      "note": "SP red phase / emergency phase",
+      "leisureReduction": 0.6,
+      "workFromHome": 0.4,
+      "schoolsClosed": 0.9,
+      "maskAdherence": 0.8,
+      "maskType": "cloth",
+      "isolation": 0.6
+    },
+    {
+      "date": "2021-04-18",
+      "note": "transition phase",
+      "leisureReduction": 0.4,
+      "workFromHome": 0.33,
+      "schoolsClosed": 0.65,
+      "maskAdherence": 0.78,
+      "maskType": "cloth",
+      "isolation": 0.55
+    },
+    {
+      "date": "2021-08-17",
+      "note": "SP lifts capacity limits",
+      "leisureReduction": 0.15,
+      "workFromHome": 0.2,
+      "schoolsClosed": 0.3,
+      "maskAdherence": 0.72,
+      "maskType": "surgical",
+      "isolation": 0.5
+    },
+    {
+      "date": "2021-10-18",
+      "note": "in-person school mandatory",
+      "leisureReduction": 0.1,
+      "workFromHome": 0.15,
+      "schoolsClosed": 0.0,
+      "maskAdherence": 0.7,
+      "maskType": "surgical",
+      "isolation": 0.5
+    },
+    {
+      "date": "2021-12-11",
+      "note": "outdoor mask mandate ends",
+      "leisureReduction": 0.05,
+      "workFromHome": 0.12,
+      "schoolsClosed": 0.0,
+      "maskAdherence": 0.55,
+      "maskType": "surgical",
+      "isolation": 0.5
+    },
+    {
+      "date": "2022-03-17",
+      "note": "indoor mask mandate ends",
+      "leisureReduction": 0.0,
+      "workFromHome": 0.1,
+      "schoolsClosed": 0.0,
+      "maskAdherence": 0.2,
+      "maskType": "surgical",
+      "isolation": 0.45
+    },
+    {
+      "date": "2022-07-01",
+      "note": "post-pandemic normality",
+      "leisureReduction": 0.0,
+      "workFromHome": 0.08,
+      "schoolsClosed": 0.0,
+      "maskAdherence": 0.1,
+      "maskType": "surgical",
+      "isolation": 0.4
+    }
+  ],
+  "variants": [
+    {
+      "date": "2020-12-20",
+      "variant": "gamma",
+      "seeds": 20
+    },
+    {
+      "date": "2021-06-20",
+      "variant": "delta",
+      "seeds": 20
+    },
+    {
+      "date": "2021-12-10",
+      "variant": "omicron",
+      "seeds": 30
+    },
+    {
+      "date": "2022-05-10",
+      "variant": "ba5",
+      "seeds": 30
+    },
+    {
+      "date": "2022-10-20",
+      "variant": "bq1",
+      "seeds": 30
+    }
+  ]
+}

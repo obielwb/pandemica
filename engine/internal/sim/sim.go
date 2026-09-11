@@ -58,6 +58,7 @@ type DayStats struct {
 	NewCases            int
 	NewDeaths           int
 	NewHospitalizations int
+	NewReinfections     int
 	Infectious          int
 	Hospitalized        int
 	TotalInfections     int
@@ -275,6 +276,9 @@ func (s *Sim) infect(j int32, v, day, setting int, r *rng.Stream, st *DayStats) 
 			}
 		}
 	}
+	if s.everInfected[j] {
+		st.NewReinfections++
+	}
 	s.State[j] = Exposed
 	s.LastVariant[j] = uint8(v)
 	if !s.everInfected[j] {
@@ -485,7 +489,7 @@ func (s *Sim) transmit(day, weekday int, r *rng.Stream, st *DayStats) {
 			vacP := disease.InfectionProtection(disease.Vaccine(s.Vac[j]), s.Doses[j], day-int(s.LastDose[j]))
 			prior := 0.0
 			if s.LastRecovery[j] >= 0 {
-				prior = disease.PriorInfectionProtection * disease.Waning(day-int(s.LastRecovery[j]))
+				prior = disease.PriorInfectionProtection * disease.WaningInfection(day-int(s.LastRecovery[j]))
 			}
 			for v := range s.hz {
 				h := s.hz[v][j]
@@ -493,10 +497,7 @@ func (s *Sim) transmit(day, weekday int, r *rng.Stream, st *DayStats) {
 					continue
 				}
 				V := disease.Variants[v]
-				pp := prior
-				if int(s.LastVariant[j]) < v {
-					pp *= 1 - V.ImmuneEscape
-				}
+				pp := prior * (1 - disease.PriorEscape(int(s.LastVariant[j]), v))
 				susc := (1 - vacP*(1-V.VaccineEscape)) * (1 - pp)
 				w[v] = float64(h) * susc
 				total += w[v]
