@@ -370,14 +370,14 @@ footer .mono{color:var(--ink-2)}
 <section id="v2sec" aria-label="v2 comparison">
 <figure>
   <div class="fighead"><h2><span class="fig">Fig. 10</span>v2, closer to the original design</h2>
-    <div class="key"><span><i class="sw line" style="border-color:var(--ref)"></i>bulletin</span><span><i class="sw line" style="border-color:var(--inst)"></i>v1</span><span><i class="sw line" style="border-color:var(--v2)"></i>v2</span></div></div>
+    <div class="key"><span><i class="sw line" style="border-color:var(--ref)"></i>bulletin</span><span><i class="sw line" style="border-color:var(--inst)"></i>v1</span><span><i class="sw line" style="border-color:var(--v2)"></i>v2.1</span></div></div>
   <div class="plot" id="f10"></div>
-  <figcaption>Cumulative deaths. v2 final adds hospitals, sick routines and bedrooms; the bed limit is off because the repository has no bed data. Both engines use the same calibration and seed.</figcaption>
+  <figcaption>Cumulative deaths. v2.1 adds hospitals, sick routines, bedrooms and adaptive behaviour, and is fitted to the whole training curve; the bed limit is off because the repository has no bed data. Same seed as v1.</figcaption>
 </figure>
 <figure>
   <div class="fighead"><h2><span class="fig">Fig. 11</span>Where infections happen, v1 and v2</h2><div class="key" id="k11"></div></div>
   <div class="plot" id="f11"></div>
-  <figcaption>Share of all infections by place. In v2, hospital wards carry <b class="num" id="w11"></b> of infections and pharmacies <b class="num" id="p11"></b>, too thin to see as bars.</figcaption>
+  <figcaption>Share of all infections by place. In v2.1, hospital wards carry <b class="num" id="w11"></b> of infections and pharmacies <b class="num" id="p11"></b>, too thin to see as bars.</figcaption>
 </figure>
 <figure>
   <div class="fighead"><h2><span class="fig">Table 1</span>What each v2 change does</h2></div>
@@ -681,7 +681,7 @@ function fig10() {
   const el = $("f10"); const { w, h } = sizeOf(el, 0.34, 240, 380); const narrow = w < 640;
   const L = narrow ? 44 : 60, R = narrow ? 12 : 130, Tp = 12, B = 30;
   const ts = D.dates.map(T), t0 = ts[0], t1 = ts[n];
-  const series = [{ t: "Bulletin", v: D.real.deaths, c: "var(--ref)", w: 3 }, { t: "v1", v: D.head.deaths, c: "var(--inst)", w: 2.2 }, { t: "v2", v: D.v2.deaths, c: "var(--v2)", w: 2.4 }];
+  const series = [{ t: "Bulletin", v: D.real.deaths, c: "var(--ref)", w: 3 }, { t: "v1", v: D.head.deaths, c: "var(--inst)", w: 2.2 }, { t: "v2.1", v: D.v2.deaths, c: "var(--v2)", w: 2.4 }];
   const vmax = Math.max(...series.flatMap(s => s.v)) * 1.05;
   const x = (t) => L + (t - t0) / (t1 - t0) * (w - L - R);
   const y = (v) => Tp + (1 - v / vmax) * (h - Tp - B);
@@ -698,7 +698,7 @@ function fig11() {
   const el = $("f11"); const w = Math.max(280, el.clientWidth); const narrow = w < 640;
   const order = ["home", "venue", "school", "work", "transport", "hospital"];
   const names = { home: "home", venue: "leisure & shops", school: "school", work: "work", transport: "transport", hospital: "hospital" };
-  const rows = [["v1", D.v2.v1shares], ["v2", D.v2.v2shares]];
+  const rows = [["v1", D.v2.v1shares], ["v2.1", D.v2.v2shares]];
   const L = narrow ? 30 : 44, R = 8, rowH = 44, h = rows.length * rowH + 8;
   let g = "";
   rows.forEach(([lab, sh], k) => {
@@ -728,7 +728,7 @@ function seedLine() {
   const rng = (xs, k, f) => { const v = xs.map(x => x[k]); return f(Math.min(...v)) + "–" + f(Math.max(...v)); };
   const mean = (xs, k) => xs.reduce((s, x) => s + x[k], 0) / xs.length;
   const pc = (v) => dec(v, 1) + "%";
-  $("s1").innerHTML = `Across ${a.length} seeds, the held-out curve score is <b class="num">${rng(a, "curve", pc)}</b> for v1 (mean <b class="num">${pc(mean(a, "curve"))}</b>) and <b class="num">${rng(b, "curve", pc)}</b> for v2 final (mean <b class="num">${pc(mean(b, "curve"))}</b>); deaths are <b class="num">${rng(a, "deaths", fmt)}</b> and <b class="num">${rng(b, "deaths", fmt)}</b>. The table shows seed 1, where v2 happens to look better.`;
+  $("s1").innerHTML = `Across ${a.length} seeds, the held-out curve score is <b class="num">${rng(a, "curve", pc)}</b> for v1 (mean <b class="num">${pc(mean(a, "curve"))}</b>) and <b class="num">${rng(b, "curve", pc)}</b> for v2.1 (mean <b class="num">${pc(mean(b, "curve"))}</b>); deaths are <b class="num">${rng(a, "deaths", fmt)}</b> and <b class="num">${rng(b, "deaths", fmt)}</b>. The table shows seed 1.`;
 }
 function drawAll() { fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8(); if (D.v2) { fig10(); fig11(); table1(); seedLine(); } else { $("v2sec").hidden = true; } }
 drawAll();

@@ -74,3 +74,48 @@ What the ablation shows:
 Counterfactuals with the v2 final calibration (`-from results/v2-final.json`):
 no lockdown, masks or school closures gives 11,243 deaths (+63% vs 6,914);
 no vaccines gives 17,938 (+159%). v1 gave +66% and +158%.
+
+## v2.1: adaptive behaviour and a whole-curve fit
+
+Diagnosis of v1 and v2 final: both matched the cumulative deaths of 7 Oct 2020
+(the last training day) with the wrong shape. The 2020 wave peaked three months
+late (Oct–Nov instead of late July) and three times too tall, which then left
+too much immunity for the Gamma wave.
+
+v2.1 adds two things and changes nothing else:
+
+* **Adaptive behaviour** (paper, Scope: "human behaviour is adaptive"): people give
+  up optional contacts (leisure, office work) in proportion to the deaths of the
+  previous two weeks, which they learn about a week late. It reacts to the
+  model's own deaths, never the real series. Strength: `-awareness`.
+* **Whole-curve calibration** (`-fit trajectory`): awareness and compliance are
+  fitted to every day of the training window's cumulative deaths, not only the
+  last one. Still only the first 20% of days.
+
+| Seed | awareness | compliance | training MAPE | deaths (real 5,360) | cases | curve (test) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 0.05 | 0.297 | 12.9% | 5,298 | 726,336 | 55.0% |
+| 2 | 0.05 | 0.284 | 10.8% | 5,560 | 650,998 | 61.3% |
+| 3 | 0.05 | 0.326 | 10.5% | 5,120 | 749,693 | 52.7% |
+| mean | | | | 5,326 (−0.6%) | 709,009 | **56.3%** |
+| seed 1, without adaptive behaviour | 0 | 0.459 | 52.1% | 6,901 | 419,384 | 53.7% |
+
+Against v1 (mean held-out curve score 47.7%, deaths +12–15%) and v2 final
+(36.1%, +28–29%), v2.1 is the best of the three on every seed.
+
+Deaths added per period (seed 1 of each engine; real bulletin in the first column):
+
+| Period | real | v1 | v2 final | v2.1 |
+| --- | ---: | ---: | ---: | ---: |
+| training (to 7 Oct 2020) | 1,253 | 1,436 | 1,505 | 1,291 |
+| late 2020 | 221 | 2,504 | 3,077 | 741 |
+| Gamma wave (H1 2021) | 2,263 | 368 | 300 | 1,323 |
+| H2 2021 | 895 | 770 | 860 | 680 |
+| 2022 (Omicron) | 728 | 1,110 | 1,172 | 1,263 |
+
+2020 peak week: real 29 Jul (103 deaths); v1 4 Nov (296); v2 final 28 Oct (351);
+v2.1 8–15 Jul (106–155).
+
+What is still wrong: reported cases stay ~3x too high because the reporting rate
+fitted in 2020 is held fixed; the Gamma wave is about 57% of its real size; and
+Omicron-era deaths are overestimated.
