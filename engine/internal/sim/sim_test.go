@@ -206,3 +206,20 @@ func TestVariantSeeding(t *testing.T) {
 		t.Fatalf("omicron seeds %d", om)
 	}
 }
+
+func TestDeterministicAcrossWorkerCounts(t *testing.T) {
+	par := DefaultParams()
+	par.Beta = 0.3
+	par.Workers = 1
+	a := run(t, baseScenario(), par, 60)
+	par.Workers = 8
+	b := run(t, baseScenario(), par, 60)
+	for d := range a {
+		if a[d].TotalInfections != b[d].TotalInfections || a[d].TotalCases != b[d].TotalCases || a[d].TotalDeaths != b[d].TotalDeaths {
+			t.Fatalf("day %d differs between 1 and 8 workers: %d vs %d infections", d, a[d].TotalInfections, b[d].TotalInfections)
+		}
+	}
+	if a[len(a)-1].TotalInfections < 1000 {
+		t.Fatal("test needs an epidemic to be meaningful")
+	}
+}
