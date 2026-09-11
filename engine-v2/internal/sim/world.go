@@ -22,12 +22,13 @@ const (
 	SetSchool
 	SetVenue
 	SetTransport
+	SetHospital
 	SetImported
 	NumSettings
 )
 
 // SettingNames for reports.
-var SettingNames = [NumSettings]string{"home", "work", "school", "venue", "transport", "imported"}
+var SettingNames = [NumSettings]string{"home", "work", "school", "venue", "transport", "hospital", "imported"}
 
 // entry is one presence in the weekday index: individual ind is at the
 // location during [start, end) minutes doing label.
@@ -108,6 +109,9 @@ func NewWorld(p *population.Population, r *routine.Routines, seed uint64) *World
 	for g, s := range p.WorkGroupSize {
 		w.LocGroup[g] = float32(s)
 		w.LocSetting[g] = SetWork
+		if len(p.HospitalGroup) > g && p.HospitalGroup[g] {
+			w.LocSetting[g] = SetHospital
+		}
 	}
 	for c, s := range p.ClassSize {
 		w.LocGroup[w.classBase+int32(c)] = float32(s)
@@ -197,6 +201,16 @@ func (w *World) Loc(i int32, d int, l activity.Label, start int) int32 {
 		return w.venueBase[l][reg] + int32(h%uint64(n))
 	}
 	return -1
+}
+
+// VenueLoc picks an instance of venue label l in region reg for key (used for
+// visits outside the weekly routine, such as a sick person's pharmacy trip).
+func (w *World) VenueLoc(l activity.Label, reg uint8, key uint64) int32 {
+	n := w.venueCount[l][reg]
+	if n == 0 {
+		return -1
+	}
+	return w.venueBase[l][reg] + int32(rng.Hash(w.Seed, key, 99, uint64(l))%uint64(n))
 }
 
 // Entries returns everybody scheduled at loc on weekday d.

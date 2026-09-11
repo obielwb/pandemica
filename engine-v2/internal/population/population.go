@@ -66,6 +66,9 @@ type Population struct {
 	NumWorkGroups int
 	WorkGroupSize []int32
 
+	HospitalGroup []bool  // per work group: a hospital ward team (v2)
+	SleepPartner  []int32 // per individual: who shares their bedroom, or -1 (v2)
+
 	SchoolLabel []activity.Label
 	SchoolSize  []int32
 	NumClasses  int
@@ -93,6 +96,17 @@ func (p *Population) HasStudy(i int32) bool { return p.School[i] >= 0 }
 type Options struct {
 	N    int
 	Seed uint64
+	// HospitalStaffShare is the share of the census health workforce that
+	// works in hospital wards (v2 assumption); 0 builds no hospitals.
+	HospitalStaffShare float64
+}
+
+// SleepPartnerOf returns i's sleep partner or -1.
+func (p *Population) SleepPartnerOf(i int32) int32 {
+	if p.SleepPartner == nil {
+		return -1
+	}
+	return p.SleepPartner[i]
 }
 
 func scaleCount(v int, scale float64) int {
@@ -132,9 +146,10 @@ func Generate(opts Options) (*Population, error) {
 	}
 	assignSexAndAge(p, r)
 	assignHouses(p, r)
+	assignSleepPartners(p)
 	assignEducation(p, r)
 	assignSchools(p, r)
-	assignWork(p, r)
+	assignWork(p, r, opts.HospitalStaffShare)
 	assignIncome(p, r)
 	assignTransport(p, r)
 	return p, nil
@@ -358,7 +373,7 @@ func assignSchools(p *Population, r *rng.Stream) {
 // employed people (scaled) aged 20-64 get a job; every site first receives its
 // minimum staff, the rest are spread round-robin prioritizing micro sites (as
 // in the TypeScript model). Teams are chunks of MaxEngaged employees.
-func assignWork(p *Population, r *rng.Stream) {
+func assignWork(p *Population, r *rng.Stream, staffShare float64) {
 	scale := float64(p.N) / float64(census.PaperPopulation)
 	var candidates []int32
 	for i := 0; i < p.N; i++ {
@@ -371,6 +386,13 @@ func assignWork(p *Population, r *rng.Stream) {
 	if employed < len(candidates) {
 		candidates = candidates[:employed]
 	}
+	// v2: hospital staff come out of the employed total
+	nStaff := int(math.Round(float64(census.HealthWorkers2010) * float64(p.N) / float64(census.IBGE2010Population) * staffShare))
+	if nStaff > len(candidates) {
+		nStaff = len(candidates)
+	}
+	staff := candidates[:nStaff]
+	candidates = candidates[nStaff:]
 	type site struct {
 		cat     census.WorkCategory
 		members []int32
@@ -420,6 +442,76 @@ func assignWork(p *Population, r *rng.Stream) {
 			g := int32(base + k%nTeams)
 			p.WorkGroup[i] = g
 			p.WorkGroupSize[g]++
+		}
+	}
+	firstHospitalGroup := p.NumWorkGroups
+	if len(staff) > 0 {
+		// hospitals of about 400 staff, split into ward teams of MaxEngaged
+		nHosp := int(math.Round(float64(len(staff)) / 400))
+		if nHosp < 1 {
+			nHosp = 1
+		}
+		team := int(activity.Catalog[activity.HospitalShift].MaxEngaged)
+		for h := 0; h < nHosp; h++ {
+			var members []int32
+			for k := h; k < len(staff); k += nHosp {
+				members = append(members, staff[k])
+			}
+			if len(members) == 0 {
+				continue
+			}
+			p.WorkLabel = append(p.WorkLabel, activity.HospitalShift)
+			p.WorkSize = append(p.WorkSize, census.Large)
+			p.WorkEmployees = append(p.WorkEmployees, int32(len(members)))
+			sid := int32(len(p.WorkLabel) - 1)
+			nTeams := int(math.Ceil(float64(len(members)) / float64(team)))
+			base := p.NumWorkGroups
+			for t := 0; t < nTeams; t++ {
+				p.WorkGroupSize = append(p.WorkGroupSize, 0)
+			}
+			p.NumWorkGroups += nTeams
+			for k, i := range members {
+				p.Work[i] = sid
+				g := int32(base + k%nTeams)
+				p.WorkGroup[i] = g
+				p.WorkGroupSize[g]++
+			}
+		}
+	}
+	p.HospitalGroup = make([]bool, p.NumWorkGroups)
+	for g := firstHospitalGroup; g < p.NumWorkGroups; g++ {
+		p.HospitalGroup[g] = true
+	}
+}
+
+// assignSleepPartners pairs housemates into bedrooms of at most two (the TS
+// sleep activities have maxEngaged 2): the adults oldest first, then the
+// children; a leftover child sleeps with a leftover adult.
+func assignSleepPartners(p *Population) {
+	p.SleepPartner = make([]int32, p.N)
+	for i := range p.SleepPartner {
+		p.SleepPartner[i] = -1
+	}
+	for h := 0; h < p.NumHouses(); h++ {
+		members := append([]int32(nil), p.Housemates(int32(h))...)
+		sort.SliceStable(members, func(a, b int) bool { return p.Age[members[a]] > p.Age[members[b]] })
+		var adults, kids []int32
+		for _, m := range members {
+			if p.Age[m] >= 20 {
+				adults = append(adults, m)
+			} else {
+				kids = append(kids, m)
+			}
+		}
+		pair := func(a, b int32) { p.SleepPartner[a], p.SleepPartner[b] = b, a }
+		for k := 0; k+1 < len(adults); k += 2 {
+			pair(adults[k], adults[k+1])
+		}
+		for k := 0; k+1 < len(kids); k += 2 {
+			pair(kids[k], kids[k+1])
+		}
+		if len(adults)%2 == 1 && len(kids)%2 == 1 {
+			pair(adults[len(adults)-1], kids[len(kids)-1])
 		}
 	}
 }

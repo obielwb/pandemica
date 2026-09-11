@@ -3,6 +3,7 @@ package population
 import (
 	"testing"
 
+	"github.com/ojpbarbosa/pandemica/engine-v2/internal/activity"
 	"github.com/ojpbarbosa/pandemica/engine-v2/internal/census"
 )
 
@@ -128,6 +129,46 @@ func TestDeterministic(t *testing.T) {
 	for i := 0; i < a.N; i++ {
 		if a.Age[i] != b.Age[i] || a.House[i] != b.House[i] || a.Work[i] != b.Work[i] {
 			t.Fatal("generation not deterministic")
+		}
+	}
+}
+
+func TestSleepPartnersAndHospitalStaff(t *testing.T) {
+	p, err := Generate(Options{N: 60000, Seed: 4, HospitalStaffShare: 0.5})
+	if err != nil {
+		t.Fatal(err)
+	}
+	paired := 0
+	for i := int32(0); i < int32(p.N); i++ {
+		q := p.SleepPartner[i]
+		if q < 0 {
+			continue
+		}
+		paired++
+		if p.SleepPartner[q] != i || p.House[q] != p.House[i] || q == i {
+			t.Fatalf("bad sleep partner %d <-> %d", i, q)
+		}
+	}
+	if paired == 0 {
+		t.Fatal("nobody shares a bedroom")
+	}
+	staff := 0
+	for i := 0; i < p.N; i++ {
+		g := p.WorkGroup[i]
+		if g >= 0 && p.HospitalGroup[g] {
+			staff++
+			if p.WorkLabel[p.Work[i]] != activity.HospitalShift {
+				t.Fatalf("ward member %d not on hospital shift", i)
+			}
+		}
+	}
+	want := float64(census.HealthWorkers2010) * float64(p.N) / float64(census.IBGE2010Population) * 0.5
+	if float64(staff) < 0.98*want || float64(staff) > 1.02*want {
+		t.Fatalf("hospital staff %d want ~%v", staff, want)
+	}
+	for g, isWard := range p.HospitalGroup {
+		if isWard && p.WorkGroupSize[g] > 25 {
+			t.Fatalf("ward team %d has %d staff", g, p.WorkGroupSize[g])
 		}
 	}
 }

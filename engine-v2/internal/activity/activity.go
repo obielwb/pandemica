@@ -110,6 +110,9 @@ const (
 	WorkLunch
 	SchoolLunch
 
+	// HospitalShift is a 12-hour ward shift of hospital staff (v2).
+	HospitalShift
+
 	NumLabels
 )
 
@@ -185,6 +188,8 @@ var Catalog = [NumLabels]Spec{
 
 	WorkLunch:   {WorkLunch, "work_lunch", Errands, Indoor, 60, Normal, NormalVoice, 40},
 	SchoolLunch: {SchoolLunch, "school_lunch", Errands, Indoor, 60, Normal, NormalVoice, 40},
+
+	HospitalShift: {HospitalShift, "hospital_shift", Work, Indoor, 720, Normal, NormalVoice, 25},
 }
 
 // Get returns the spec for a label.
@@ -195,7 +200,7 @@ func IsSleep(l Label) bool { return l >= Sleep5h && l <= Sleep9h }
 
 // IsWorkInPerson reports whether the label is an in-person work activity.
 func IsWorkInPerson(l Label) bool {
-	return l >= MicroIndustryInPerson && l <= LargeIndustryInPerson || l >= MicroCommerceInPerson && l <= LargeCommerceInPerson
+	return l >= MicroIndustryInPerson && l <= LargeIndustryInPerson || l >= MicroCommerceInPerson && l <= LargeCommerceInPerson || l == HospitalShift
 }
 
 // IsStudyInPerson reports whether the label is an in-person study activity.

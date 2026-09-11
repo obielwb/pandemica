@@ -13,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"sort"
 	"strings"
 	"time"
 
@@ -72,10 +73,10 @@ type buildInfo struct {
 	HeapMB       float64 `json:"heapMB"`
 }
 
-func build(n int, seed uint64) (*sim.World, buildInfo) {
+func build(n int, seed uint64, staffShare float64) (*sim.World, buildInfo) {
 	t0 := time.Now()
 	logf("synthesizing %d individuals", n)
-	p, err := population.Generate(population.Options{N: n, Seed: seed})
+	p, err := population.Generate(population.Options{N: n, Seed: seed, HospitalStaffShare: staffShare})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -153,12 +154,13 @@ func cmdR0(args []string) {
 	fs := flag.NewFlagSet("r0", flag.ExitOnError)
 	n := fs.Int("n", 300000, "population size")
 	seed := fs.Uint64("seed", 1, "random seed")
+	staffShare := fs.Float64("hospital-staff-share", 0.5, "share of the census health workforce working in hospital wards (assumption)")
 	scPath := fs.String("scenario", "scenarios/campinas.json", "scenario (start date and isolation only)")
 	betas := fs.String("betas", "0.04,0.06,0.08,0.1,0.15,0.2,0.25", "comma-separated beta values")
 	fs.Parse(args)
 	sc, err := scenario.Load(*scPath)
 	check(err)
-	w, _ := build(*n, *seed)
+	w, _ := build(*n, *seed, *staffShare)
 	par := sim.DefaultParams()
 	par.Seed = *seed
 	for _, b := range strings.Split(*betas, ",") {
@@ -174,8 +176,9 @@ func cmdPopulation(args []string) {
 	fs := flag.NewFlagSet("population", flag.ExitOnError)
 	n := fs.Int("n", census.PaperPopulation, "population size")
 	seed := fs.Uint64("seed", 1, "random seed")
+	staffShare := fs.Float64("hospital-staff-share", 0.5, "share of the census health workforce working in hospital wards (assumption)")
 	fs.Parse(args)
-	w, info := build(*n, *seed)
+	w, info := build(*n, *seed, *staffShare)
 	p := w.P
 	b, _ := json.MarshalIndent(info, "", "  ")
 	fmt.Println(string(b))
@@ -232,6 +235,8 @@ type runSummary struct {
 	Full        metricsJSON       `json:"full"`
 	Totals      map[string]int    `json:"totals"`
 	BySetting   map[string]int    `json:"infectionsBySetting"`
+	ByActivity  map[string]int    `json:"infectionsByActivity"`
+	Beds        map[string]int    `json:"beds"`
 }
 
 type calibrationStep struct {
@@ -271,6 +276,7 @@ func cmdRun(args []string) {
 	fs := flag.NewFlagSet("run", flag.ExitOnError)
 	n := fs.Int("n", census.PaperPopulation, "population size")
 	seed := fs.Uint64("seed", 1, "random seed")
+	staffShare := fs.Float64("hospital-staff-share", 0.5, "share of the census health workforce working in hospital wards (assumption)")
 	root := fs.String("root", "..", "repository root (for model/data and web/public)")
 	scPath := fs.String("scenario", "scenarios/campinas.json", "scenario timeline")
 	beta := fs.Float64("beta", 0, "transmission scale; 0 = calibrate on the training window")
@@ -281,7 +287,11 @@ func cmdRun(args []string) {
 	detSym := fs.Float64("detect-sym", 1, "probability a symptomatic infection is reported (paper: 1)")
 	detAsym := fs.Float64("detect-asym", 1, "probability an asymptomatic infection is reported (paper: 1)")
 	contacts := fs.Float64("close-contacts", 10, "effective close contacts in a group")
-	home := fs.Float64("home", 0.5, "household contact intensity")
+	home := fs.Float64("home", 1.0, "household contact intensity (v2: full reference interaction)")
+	beds := fs.Float64("covid-beds-per-1000", 1.0, "hospital beds available to COVID patients per 1,000 inhabitants (assumption)")
+	care := fs.Float64("care-seeking", 0.6, "share of symptomatic people who visit a pharmacy at symptom onset (assumption)")
+	overload := fs.Float64("overload-death-factor", 2, "death probability multiplier for severe cases turned away (assumption)")
+	hospInf := fs.Int("hospital-infectious-days", 5, "days a severe case keeps shedding after admission (assumption)")
 	occ := fs.Float64("occupation", 0.5, "work/school contact intensity")
 	noVax := fs.Bool("no-vaccines", false, "disable the vaccine registry")
 	out := fs.String("out", "results", "output directory")
@@ -305,12 +315,13 @@ func cmdRun(args []string) {
 		check(err)
 		logf("vaccine registry: %d records", len(vaccines))
 	}
-	w, info := build(*n, *seed)
+	w, info := build(*n, *seed, *staffShare)
 
 	par := sim.DefaultParams()
 	par.Seed = *seed
 	par.DetectSymptomatic, par.DetectAsymptomatic = *detSym, *detAsym
 	par.CloseContacts, par.HomeContact, par.OccupationContact = *contacts, *home, *occ
+	par.CovidBedsPer1000, par.CareSeeking, par.OverloadDeathFactor, par.HospitalInfectiousDays = *beds, *care, *overload, *hospInf
 	par.Workers = *workers
 
 	trainDays := int(math.Ceil(float64(len(real)) * *train))
@@ -327,6 +338,7 @@ func cmdRun(args []string) {
 		par.Beta = prev.Params.Beta
 		par.DetectSymptomatic, par.DetectAsymptomatic = prev.Params.DetectSymptomatic, prev.Params.DetectAsymptomatic
 		par.CloseContacts, par.HomeContact, par.OccupationContact = prev.Params.CloseContacts, prev.Params.HomeContact, prev.Params.OccupationContact
+		par.CovidBedsPer1000, par.CareSeeking, par.OverloadDeathFactor, par.HospitalInfectiousDays = prev.Params.CovidBedsPer1000, prev.Params.CareSeeking, prev.Params.OverloadDeathFactor, prev.Params.HospitalInfectiousDays
 		if prev.Compliance > 0 {
 			sc = sc.WithCompliance(prev.Compliance)
 			sum.Compliance = prev.Compliance
@@ -486,6 +498,25 @@ func cmdRun(args []string) {
 	sum.Train, sum.Test, sum.Full = toJSON(mTrain), toJSON(mTest), toJSON(mFull)
 	sum.Totals = map[string]int{"infections": last.TotalInfections, "everInfected": last.EverInfected, "cases": last.TotalCases, "deaths": last.TotalDeaths}
 	sum.BySetting = map[string]int{}
+	sum.ByActivity = map[string]int{}
+	sum.Beds = map[string]int{"total": last.BedsTotal}
+	for _, d := range stats {
+		for l, v := range d.ByLabel {
+			if v == 0 {
+				continue
+			}
+			name := "imported"
+			if l < int(activity.NumLabels) {
+				name = activity.Catalog[l].Name
+			}
+			sum.ByActivity[name] += v
+		}
+		sum.Beds["turnedAway"] += d.TurnedAway
+		if d.BedsUsed > sum.Beds["peakUsed"] {
+			sum.Beds["peakUsed"] = d.BedsUsed
+		}
+		sum.Beds["admitted"] += d.NewHospitalizations - d.TurnedAway
+	}
 	for _, d := range stats {
 		for k, v := range d.BySetting {
 			sum.BySetting[sim.SettingNames[k]] += v
@@ -501,6 +532,23 @@ func cmdRun(args []string) {
 			row.m.RealCases, row.m.SimCases, row.m.RealDeaths, row.m.SimDeaths, row.m.PaperAccuracy(), row.m.CurveAccuracy())
 	}
 	fmt.Printf("infections by setting: %v\n", sum.BySetting)
+	type kv struct {
+		k string
+		v int
+	}
+	var acts []kv
+	for k, v := range sum.ByActivity {
+		acts = append(acts, kv{k, v})
+	}
+	sort.Slice(acts, func(a, b int) bool { return acts[a].v > acts[b].v })
+	fmt.Print("infections by activity:")
+	for k, a := range acts {
+		if k == 14 {
+			break
+		}
+		fmt.Printf(" %s=%d", a.k, a.v)
+	}
+	fmt.Printf("\nbeds: %v\n", sum.Beds)
 
 	b, _ := json.MarshalIndent(sum, "", "  ")
 	check(os.WriteFile(filepath.Join(*out, *name+".json"), b, 0o644))

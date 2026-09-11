@@ -147,6 +147,10 @@ const (
 
 const HousesWithVehicles = 229315
 
+// HealthWorkers2010: IBGE 2010 employed people in "Saúde humana e serviços
+// sociais" (campinas_2010_census.csv, 2.4.3.1.3.4.20).
+const HealthWorkers2010 = 30940
+
 // ResidentsPerHouse: houses by number of residents (11 = eleven or more).
 var ResidentsPerHouse = []Parameter{
 	{1, 48687}, {2, 87532}, {3, 87969}, {4, 72222}, {5, 31014}, {6, 11744},

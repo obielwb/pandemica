@@ -16,7 +16,7 @@ var testWorld *World
 func world(t *testing.T) *World {
 	t.Helper()
 	if testWorld == nil {
-		p, err := population.Generate(population.Options{N: 20000, Seed: 3})
+		p, err := population.Generate(population.Options{N: 20000, Seed: 3, HospitalStaffShare: 0.5})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -75,10 +75,17 @@ func TestPackRoundTrip(t *testing.T) {
 func TestHomeOverlap(t *testing.T) {
 	a := []seg{{0, 420, activity.Sleep7h, -1, true}, {420, 600, activity.StayAtHome, -1, true}, {600, 1440, activity.Gym, 3, false}}
 	b := []seg{{0, 480, activity.Sleep8h, -1, true}, {480, 1440, activity.StayAtHome, -1, true}}
-	// 0-420 both sleeping (silent 0.2) + 420-480 one asleep (silent) + 480-600 awake
-	want := 420.0/60*0.2 + 60.0/60*0.2 + 120.0/60*1
-	if got := homeOverlap(a, b); got < want-1e-9 || got > want+1e-9 {
-		t.Fatalf("overlap %v want %v", got, want)
+	// sleep partners share 0-420 asleep (silent 0.2); 420-480 one is asleep: no contact; 480-600 both awake
+	awake, sleep := homeOverlap(a, b, true)
+	if want := 420.0 / 60 * 0.2; sleep < want-1e-9 || sleep > want+1e-9 {
+		t.Fatalf("partner sleep %v want %v", sleep, want)
+	}
+	if want := 120.0 / 60; awake < want-1e-9 || awake > want+1e-9 {
+		t.Fatalf("awake %v want %v", awake, want)
+	}
+	// housemates in different bedrooms share no sleep
+	if _, sleep := homeOverlap(a, b, false); sleep != 0 {
+		t.Fatalf("non-partners share sleep %v", sleep)
 	}
 }
 

@@ -173,6 +173,8 @@ func (g *gen) profile(i int32) profile {
 		switch {
 		case p.School[i] >= 0:
 			pr.shift = PartTime
+		case label == activity.HospitalShift: // hospital wards run 12x36 shifts
+			pr.shift = TwelveByThirtySix
 		case industry && r.Bernoulli(0.5):
 			pr.shift = TwelveByThirtySix
 		case industry:
