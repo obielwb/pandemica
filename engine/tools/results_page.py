@@ -159,11 +159,23 @@ def main():
                     sm = json.load(open(f))
                     out.append({"deaths": sm["totals"]["deaths"], "curve": sm["test"]["curveAccuracy"]})
             return out
+        def seedsFull(dirpath, names):
+            out = []
+            for nm in names:
+                f = os.path.join(dirpath, nm + ".json")
+                if os.path.exists(f):
+                    sm = json.load(open(f))
+                    out.append({"deaths": sm["totals"]["deaths"], "curve": sm["test"]["curveAccuracy"],
+                                "casesMAPE": sm["test"]["cumulativeCasesMAPE"], "deathsMAPE": sm["test"]["cumulativeDeathsMAPE"],
+                                "weeklyDeathsMAPE": sm["test"]["weeklyDeathsMAPE"], "weeklyCasesMAPE": sm["test"]["weeklyCasesMAPE"],
+                                "paper": sm["full"]["paperAccuracy"]})
+            return out
         seedv1 = seeds(RES, ["compliance-fit", "compliance-fit-seed2", "compliance-fit-seed3"])
+        seedv2full = seedsFull(V2, ["v21-seed1", "v21-seed2", "v21-seed3"] if v2name == "v21-seed1" else [v2name])
         seedv2 = seeds(V2, ["v21-seed1", "v21-seed2", "v21-seed3"] if v2name == "v21-seed1" else [v2name, v2name + "-seed2", v2name + "-seed3"])
         acts = v2["summary"].get("infectionsByActivity", {})
         atot = sum(acts.values()) or 1
-        data["v2"] = {"deaths": col(v2["rows"], "deaths"), "v1shares": shares(head["summary"]), "v2shares": shares(v2["summary"]), "abl": abl, "seedv1": seedv1, "seedv2": seedv2,
+        data["v2"] = {"deaths": col(v2["rows"], "deaths"), "v1shares": shares(head["summary"]), "v2shares": shares(v2["summary"]), "abl": abl, "seedv1": seedv1, "seedv2": seedv2, "seedv2full": seedv2full,
                       "pharmacy": acts.get("pharmacy", 0) / atot,
                       "wards": (acts.get("hospital_shift", 0) + acts.get("hospitalized", 0)) / atot}
     page = TEMPLATE.replace("/*DATA*/", json.dumps(data, separators=(",", ":"), ensure_ascii=False))
@@ -383,6 +395,7 @@ footer .mono{color:var(--ink-2)}
   <div class="fighead"><h2><span class="fig">Table 1</span>What each v2 change does</h2></div>
   <div class="tablewrap"><table class="abl" id="t1"></table></div>
   <p class="seedline" id="s1"></p>
+  <p class="seedline" id="s2"></p>
   <figcaption>Every row recalibrates from scratch (R0 2.8, compliance fitted on 2020 deaths). The first v2 row has all four changes with 1 COVID bed per 1,000 people; each row below removes one. Curve score is on the held-out 80%.</figcaption>
 </figure>
 </section>
@@ -730,7 +743,14 @@ function seedLine() {
   const pc = (v) => dec(v, 1) + "%";
   $("s1").innerHTML = `Across ${a.length} seeds, the held-out curve score is <b class="num">${rng(a, "curve", pc)}</b> for v1 (mean <b class="num">${pc(mean(a, "curve"))}</b>) and <b class="num">${rng(b, "curve", pc)}</b> for v2.1 (mean <b class="num">${pc(mean(b, "curve"))}</b>); deaths are <b class="num">${rng(a, "deaths", fmt)}</b> and <b class="num">${rng(b, "deaths", fmt)}</b>. The table shows seed 1.`;
 }
-function drawAll() { fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8(); if (D.v2) { fig10(); fig11(); table1(); seedLine(); } else { $("v2sec").hidden = true; } }
+function metricCaveat() {
+  const f = D.v2.seedv2full;
+  if (!f || !f.length) { $("s2").hidden = true; return; }
+  const m = (k) => f.reduce((s, x) => s + x[k], 0) / f.length;
+  const p = (v) => dec(v, 1) + "%";
+  $("s2").innerHTML = `The curve score is not "the model's accuracy": it averages one good number with one bad one. For v2.1 it is deaths <b class="num">${p(m("deathsMAPE"))}</b> off and cases <b class="num">${p(m("casesMAPE"))}</b> off over the held-out days, and week to week the errors are far larger (deaths <b class="num">${p(m("weeklyDeathsMAPE"))}</b>, cases <b class="num">${p(m("weeklyCasesMAPE"))}</b>). Under the paper's own metric, the one that gives the 2023 run 58.48%, v2.1 scores <b class="num">${p(m("paper"))}</b>, because its final case total is far worse even though its deaths are far better.`;
+}
+function drawAll() { fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8(); if (D.v2) { fig10(); fig11(); table1(); seedLine(); metricCaveat(); } else { $("v2sec").hidden = true; } }
 drawAll();
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawAll, 120); });
 if (document.fonts) document.fonts.ready.then(drawAll);

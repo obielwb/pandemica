@@ -103,6 +103,25 @@ v2.1 adds two things and changes nothing else:
 Against v1 (mean held-out curve score 47.7%, deaths +12–15%) and v2 final
 (36.1%, +28–29%), v2.1 is the best of the three on every seed.
 
+**Do not quote the curve score as "the model's accuracy".** It is
+100 - mean(cumulative-cases MAPE, cumulative-deaths MAPE) on the held-out days,
+so it averages one good number with one bad one, and it depends entirely on
+which metric you pick:
+
+| v2.1, held-out 80%, mean of 3 seeds | |
+| --- | ---: |
+| cumulative deaths MAPE | 13.3% |
+| cumulative reported cases MAPE | 74.1% |
+| curve score (100 - mean of the two) | 56.3% |
+| weekly new deaths MAPE | 209% |
+| weekly new cases MAPE | 749% |
+| the paper's own metric (final totals) | **-20.8%** |
+
+Defensible claims: the death total lands within 5% on every seed and the
+cumulative death curve stays within ~13% over the held-out period; the 2020 peak
+falls in the right fortnight. Reported cases are ~3.5x too high, and week-to-week
+numbers are far noisier than the cumulative curves suggest.
+
 Deaths added per period (seed 1 of each engine; real bulletin in the first column):
 
 | Period | real | v1 | v2 final | v2.1 |
