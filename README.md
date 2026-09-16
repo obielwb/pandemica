@@ -1,4 +1,7 @@
 # Pandemica
+
+**FEBRACE 2024 finalist** (Brazil's largest science fair, [finalist list](https://febrace.org.br/wp-content/uploads/2024/01/lista_finalistas_2024.pdf)) · [White paper](https://pandemica.com.br/paper) · [pandemica.com.br](https://www.pandemica.com.br)
+
 This repository contains every piece of code related to our final thesis at the Colégio Técnico de Campinas - Unicamp, entitled _Pandemica: Agent-Based Pandemic Simulation for Optimal Public Health Crisis Management Using Adaptive Demographic Modeling with AI_.
 
 The goal of Pandemica is:
